@@ -37,7 +37,7 @@
     "jwt-decode": "^2.2.0",
     "kalendar-vue": "^2.0.1",
     "marked": "^4.0.17",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "netlify-plugin-inline-functions-env": "^1.0.9",
     "nuxt": "^2.10.0",
     "nuxt-i18n": "^6.28.1",

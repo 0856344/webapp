@@ -87,7 +87,7 @@
   "address": "Adresse",
   "streetAndHouseNumber": "Straße und Hausnummer",
   "city": "Stadt",
-  "city/location": "Stadt/Ort",
+  "city/location": "Ort",
   "zipCode": "PLZ",
   "country": "Land",
   "companyCode": "Kooperationscode",
@@ -98,15 +98,15 @@
   "tooYoung": "Du musst das 14. Lebensjahr abgeschlossen haben, um Mitglied zu werden.",
   "iHaveReadThe":"Ich habe die",
   "andAcceptTheTermsAndConditions":"gelesen und bin damit einverstanden.",
-  "conditionsOfParticipation": "Teilnahmebedingungen / AGB",
+  "conditionsOfParticipation": "AGB",
   "dataPrivacyPolicy": "Datenschutzerklärung",
   "register": "Registrieren",
   "additionalInformationPayment": "Bei einer jährlichen Zahlung schenken wir dir zwei Monate Mitgliedschaft GRATIS!\n      Dein Mitgliedsbeitrag sowie zusätzlich anfallende Kosten (Materialkosten, Getränke, etc.) werden von deinem Konto per SEPA-Lastschrift abgebucht.",
   "signupMakerSpace": "Anmeldung zum Makerspace GRAND GARAGE",
-  "beforeYouCanStart": "Bevor Du in unseren Werkstätten loslegen kannst, brauchen wir noch weitere Infos von Dir:",
+  "beforeYouCanStart": "Bevor du in unseren Werkstätten loslegen kannst, brauchen wir noch weitere Infos von dir:",
 
   "sentConfirmationLink": "Wir haben dir eine Mail mit einem Bestätigungslink geschickt.",
-  "checkSpamFolder": "Bitte prüfen Sie auch Ihren SPAM-Ordner, falls Sie in den nächsten Minuten keine Bestätigung erhalten haben!",
+  "checkSpamFolder": "Bitte prüfe auch deinen SPAM-Ordner, falls du in den nächsten Minuten keine Bestätigung erhalten hast.",
   "onceAccountConfirmed": "Wenn du deinen Account bestätigt hast kannst du voll durchstarten.",
 
   "theFuture": "Die Zukunft",
@@ -279,13 +279,13 @@
 
   "receiptAndConfirmationViaMail": "Die Rechnung und eine Bestätigung erhältst du per Mail.",
   "becomeAMemberIn4simpleSteps":"In wenigen Schritten zu deiner Mitgliedschaft!",
-  "startSafetyTraining": "Sicherheits-Unterweisung starten",
-  "nextStepsAfterASU": "Bitte komm nach absolvierter online-ASU mit einem Ausweis zum Frontdesk, um dein Onboarding persönlich abzuschließen und dir deine Membercard abzuholen. ",
-  "ourOpeningHours": "Unsere Öffnungszeiten",
-  "weAreLookingForwardToWelcomeYou":"Wir freuen uns auf dich in der offenen Werkstätte GRAND GARAGE! ",
+  "startSafetyTraining": "Hier geht’s zur ASU",
+  "nextStepsAfterASU": "Nach absolvierter ASU komm bitte mit einem Ausweis zum Frontdesk, um dein Onboarding persönlich abzuschließen und dir deine Member-Card abzuholen. ",
+  "ourOpeningHours": "Unsere aktuellen Öffnungszeiten findest du auf der Website",
+  "weAreLookingForwardToWelcomeYou":"Wir freuen uns darauf, dich in der GRAND GARAGE kennenzulernen. ",
 
-  "youMadeTheFirstStepsTowardsBecomingA-GG-Member": "Wir freuen uns, dass du nun Teil des Makerspace GRAND GARAGE bist! Wir wünschen dir viel Spaß mit deinen Projekten und stehen dir gerne mit Rat & Tat zur Seite!",
-  "toCompleteOnboardingStartSafetyTraining": "Im nächsten Schritt, bitten wir dich mit der Allgemeinen Sicherheitsunterweisung (ASU) zu starten:",
+  "youMadeTheFirstStepsTowardsBecomingA-GG-Member": "Wir freuen uns, dass du nun Mitglied in der GRAND GARAGE bist und wünschen dir viel Spaß in unserer Innovationswerkstatt!",
+  "toCompleteOnboardingStartSafetyTraining": "Bitte nimm dir noch kurz Zeit für die Allgemeine Sicherheitsunterweisung (kurz: ASU):",
 
   "dateOfBirth": "Geburtsdatum",
   "company": "Firma",
@@ -343,5 +343,8 @@
 
   "gender": "Geschlecht",
   "workshop": "Workshop",
-  "general": "Allgemein"
+  "general": "Allgemein",
+  "kidsWorkshop": "Workshops für Kinder",
+  "view": "Ansicht",
+  "details": "Details"
 }

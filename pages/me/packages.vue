@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="section">
+    <h2>{{ $t('membership') }}</h2>
     <div>  <loading-spinner
         v-if="!(memberPackages && memberStorage && availableStorage)"
         color="#333"
     />
-  </div>
-  <div class="section" v-if="memberPackages && memberStorage && availableStorage"  >
-    <h2>{{ $t('membership') }}</h2>
+    </div>
+  <div v-if="membership">
     <div
         v-for="userPackage of membership"
         :key="userPackage.id">
@@ -14,6 +14,12 @@
           :user-package="userPackage"
           :storage=false />
     </div>
+  </div>
+    <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
+      <a v-bind:href="mail">Frontdesk</a>
+      Frontdesk per E-Mail.  </p>
+  <div v-if="memberStorage" >
+    <h2>Lager</h2>
     <div
         v-for="userPackage of memberStorage"
         :key="userPackage.id">
@@ -23,7 +29,8 @@
           :booked=true
       />
     </div>
-
+  </div>
+  <div v-if="availableStorage && membership.length > 0" >
     <h2>Lager buchen</h2>
     <div
         v-for="userPackage of availableStorage"
@@ -34,10 +41,9 @@
           :booked=false
       />
     </div>
-
   </div>
   </div>
-</template>
+ </template>
 
 <script>
 
@@ -87,6 +93,13 @@ export default {
         }
         return p.notes.is_storage_box && p.notes.shop_visible
       })
+    }
+  },
+  computed: {
+    mail () {
+      const fullName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
+      const memberNumber = this.$store.state.user.profile.memberNumber
+      return 'mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: ' + fullName + ' ' + '(' + memberNumber + ')'
     }
   }
 

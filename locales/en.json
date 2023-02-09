@@ -88,7 +88,7 @@
   "address": "Address",
   "streetAndHouseNumber": "Street and house number",
   "city": "City",
-  "city/location": "City/location",
+  "city/location": "Location",
   "zipCode": "ZIP-code",
   "country": "country",
   "companyCode": "company code",
@@ -270,7 +270,7 @@
   "becomeAMemberIn4simpleSteps":"Become a member in 4 simple steps!",
   "startSafetyTraining": "Start your safety training",
   "nextStepsAfterASU": "Please visit our frontdesk team after finishing the general safety quiz. There we will complete your onboarding process and a personal member card will be handed to you",
-  "ourOpeningHours": "Our opening hours",
+  "ourOpeningHours": "Our opening hours can be found on the website",
   "weAreLookingForwardToWelcomeYou":"We are looking forward to seeing you!",
 
   "youMadeTheFirstStepsTowardsBecomingA-GG-Member": "You made the first steps towards becoming a GRAND GARAGE member!",
@@ -325,6 +325,8 @@
   "download": "Download",
 
   "workshop": "Workshop",
-  "general": "General"
-
+  "general": "General",
+  "kidsWorkshop": "Workshops for kids",
+  "view": "View",
+  "details": "Details"
 }

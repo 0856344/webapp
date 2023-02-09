@@ -58,7 +58,7 @@
         class="icon"
         icon="user-friends"
       />
-      <span>  {{ $t('registration') }}</span>
+      <span style="font-weight: bold">  {{ $t('joinNow') }}</span>
     </div>
     <div
       class="subtitle"
@@ -91,8 +91,7 @@ export default {
     },
     register () {
       this.close()
-      this.$router.push('/wizard/onboarding')
-      //this.$store.dispatch('setSidebar', 'register')
+      this.$router.push('/de/mitgliedschaften')
     },
     recover () {
       this.$store.dispatch('setSidebar', 'recover')

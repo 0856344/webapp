@@ -106,8 +106,7 @@ export default {
       this.priceView = v
     },
     register () {
-      this.$router.push('/wizard/onboarding')
-      //this.$store.dispatch('setSidebar', 'register')
+      this.$router.push('/wizard/onboarding/userInformation')
     },
     login () {
       this.$store.dispatch('setSidebar', 'login')

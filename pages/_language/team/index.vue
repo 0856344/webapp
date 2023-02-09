@@ -206,13 +206,7 @@ export default {
     @include margin-page-wide();
     display: grid;
     max-width: 70em;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    @include media-breakpoint-down(lg) {
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    }
-    @include media-breakpoint-down(md) {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
+    grid-template-columns: repeat(3, 1fr);
     @include media-breakpoint-down(sm) {
       grid-template-columns: 1fr 1fr;
       font-size: .85em;

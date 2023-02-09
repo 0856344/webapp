@@ -35,7 +35,7 @@
                   {{material.external_name}}
                 </div>
                 <div class="col info">
-                  {{Number(material.price).toFixed(2)}} / {{material.unit_name}}
+                  {{ formatPrice(material) }}
                 </div>
               </div>
             </div>
@@ -70,8 +70,23 @@ export default {
       }
     }
   },
+  methods: {
+    formatPrice ($material) {
+      const price = $material.price
+      if (typeof price === 'string' || price instanceof String) {
+        return price
+      } else {
+        return Number(price).toFixed(2).toString() + ' / ' + $material.unit_name
+      }
+    }
+  },
   async mounted () {
     this.materials = await this.$store.dispatch('getMaterials')
+    let materials = Object.assign([], this.materials)
+    materials = materials.sort(function (a, b) {
+      if (a.external_name > b.external_name) { return 1 } else if (a.external_name < b.external_name) { return -1 } else { return 0 }
+    })
+    this.materials = materials
   }
 }
 </script>

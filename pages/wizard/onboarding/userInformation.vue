@@ -1,5 +1,7 @@
 <template>
   <div class="section">
+      <h3 style="margin-top: 40px;">Willkommen in der GRAND GARAGE!</h3>
+      <p>Wir freuen uns darauf, dass du Mitglied in unserer Innovationswerkstatt wirst.</p>
       <p>{{ $t('beforeYouCanStart') }}</p>
     <form class="form">
       <div class="form-item">
@@ -97,16 +99,6 @@ export default {
   mounted () {
     //window.scrollTo(0, 0)
     this.$refs.firstInput.focus()
-  },
-  beforeRouteEnter (to, from, next) {
-    //console.log('USER INFO FROM: ', from.path)
-    if ((from.path === '/wizard/onboarding') || (from.path === '/wizard/onboarding/') || (from.path === '/wizard/onboarding/contact')) {
-      //console.log('passed')
-      next()
-    } else {
-      //console.log('not passed')
-      next('/wizard/onboarding/')
-    }
   },
   computed: {
     passwordValid () {

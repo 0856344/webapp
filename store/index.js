@@ -50,6 +50,7 @@ const version = tmpVersion
 
 const baseUrl = process.env.NUXT_ENV_CONNECTOR_URL ? process.env.NUXT_ENV_CONNECTOR_URL : 'https://connector.grandgarage.eu'
 const connectorBaseUrl = baseUrl + '/api'
+const pretixBaseUrl = 'https://connector.grandgarage.eu/api/pretix/events'
 
 let connector = axios.create({
   baseURL: connectorBaseUrl,
@@ -303,6 +304,11 @@ const createStore = () => {
         const res = await connector.put(`v1/fabman/members/${id}/packages/${memberPackageId}`, data)
         return res.data
       },
+      async getPaymentMethod ({ state }) {
+        const id = state.member.id
+        const res = await connector.get(`v1/fabman/members/${id}/payment-method`)
+        return res.data
+      },
       getInvoiceDocument ({ commit, dispatch, state }, id) {
         if (state.auth || getUserFromLocalStorage()) {
           // renew Token
@@ -330,6 +336,12 @@ const createStore = () => {
             })
           }).then((r) => {
           })
+        }
+      },
+      async getPretixEvents ({ state }, subEvent) {
+        const r = await axios.get(`${baseUrl + '/api/pretix/events'}/${subEvent}`)
+        if (r.status === 200) {
+          return r.data
         }
       },
       saveQuiz ({ state }, data) {
@@ -400,6 +412,15 @@ const createStore = () => {
         return connector.put('/v1/fabman/members/' + data.id, req).then((r) => {
           const member = Object.assign(state.member, r.data)
           commit('setMember', member)
+        }).catch((err) => {
+          this.$sentry.captureException(err)
+        })
+      },
+      updatePaymentMethod ({ state, commit, dispatch }, data) {
+        //Vue.delete(data, 'lockVersion')
+        const req = JSON.parse(JSON.stringify((data)))
+        const id = state.member.id
+        return connector.put(`v1/fabman/members/${id}/payment-method`, req).then((r) => {
         }).catch((err) => {
           this.$sentry.captureException(err)
         })
@@ -875,6 +896,7 @@ const createStore = () => {
           version: version,
           cv: state.cacheVersion,
           starts_with: `${state.language}/news`,
+          per_page: 100,
           sort_by: 'content.datetime:desc'
         }).then((res) => {
           return res.data
