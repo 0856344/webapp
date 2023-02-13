@@ -48,7 +48,7 @@ export default {
     },
     spaceBetween () {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 600) {
+        if (window.innerWidth < 500) {
           return 0
         }
       }
@@ -56,8 +56,10 @@ export default {
     },
     num () {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 600) {
-          return 1.5
+        if (window.innerWidth < 500) {
+          return 1
+        } else if (window.innerWidth < 900) {
+          return 2
         }
       }
       return 3
@@ -106,19 +108,22 @@ export default {
   .swiper-container {
     margin-top: 3%;
     height: 25em;
+    padding-bottom: 60px;
     .swiper-slide {
       display: block;
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      @include media-breakpoint-down(md){
+      @include media-breakpoint-down(xs){
         height: 180px !important;
-        margin-left: -20px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        width: 100% !important;
       }
     }
-    padding-bottom: 60px;
     @include media-breakpoint-down(md){
-      height: 25vh;
+      height: 15em;
     }
   }
   .swiper-button-prev,

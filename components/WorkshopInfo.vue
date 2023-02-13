@@ -5,42 +5,18 @@
   >
     <div class="left-content">
       <h2
-        v-if="blok.subtitle"
+        v-if="subtitle"
         class="headline"
       >
-        {{ blok.subtitle }}
+        {{ subtitle }}
       </h2>
     </div>
     <div class="right-content">
       <markdown
-        v-if="blok.teaser"
-        :value="blok.teaser"
-        class="teaser"
-      />
-      <markdown
-        v-if="blok.facts"
-        :value="blok.facts"
-        class="info-text"
-      />
-      <workshop-dates
-        :dates="dates"
-        class="workshop-dates"
-      />
-      <markdown
-        v-if="blok.info"
-        :value="blok.info"
-        class="info-text"
-      />
-      <workshop-dates
-        :dates="dates"
-        :pretix="blok.pretix_shortform"
-        class="workshop-dates"
-     />
-      <markdown
-          v-if="blok.requirements"
-          :value="blok.requirements"
+          :value="this.workShopInfo"
           class="info-text"
       />
+      <pretix-calendar :calendar="blok.pretix_shortform"/>
     </div>
     <div>
       <component v-for="i in blok.contentBloks" :blok="i" :is="i.component" :key="i.uid" />
@@ -53,12 +29,17 @@
 import { getMetaTagsForPage } from '../services/MetaDataService'
 
 export default {
-  props: ['blok', 'dates'],
+  props: ['blok', 'workshopInformation'],
   data () {
-    return {
-    }
+    return {}
   },
   computed: {
+    subtitle () {
+      return this.workshopInformation.split('\n')[0].slice(4)
+    },
+    workShopInfo () {
+      return this.workshopInformation.split('\n').splice(1).join('\n')
+    },
     linktitle () {
       return this.blok.linktitle
     },

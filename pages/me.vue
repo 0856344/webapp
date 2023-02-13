@@ -20,7 +20,7 @@
             <font-awesome-icon :style="{ color: '#E69140' }" v-if="!hasCompletedRequiredCourses" icon="info-circle"/> {{ $t('trainings') }}
           </MenuLink>
 <!--        <MenuLink to="/me/workshopBookings" icon="hammer">{{ $t('myWorkshops') }}</MenuLink>-->
-        <MenuLink to="/me/credits" icon="coins">Credits</MenuLink>
+        <MenuLink to="/de/gutscheine" icon="coins">Gutscheine</MenuLink>
         <MenuLink :isActive="$route.name.includes('invoices')" to="/me/invoices" icon="file-invoice">{{ $t('invoices') }}
         </MenuLink>
 <!--        <MenuLink to="/me/activities" icon="running">{{ $t('activities') }}</MenuLink>-->

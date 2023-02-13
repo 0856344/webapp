@@ -105,6 +105,7 @@ a {
       margin-bottom: .8rem;
       letter-spacing: 0.05em;
       font-weight: 400;
+      word-wrap: break-word;
     }
     .subtitle {
       margin:  0 0 1em 0;

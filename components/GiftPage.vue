@@ -62,6 +62,19 @@
 
           <template v-if="action === 'redeem'">
             <div v-if="step === 0" class="giftcardForm">
+              <br>
+              <h3>Du hast zwei Optionen zur Auswahl, um deinen Wertgutschein einzulösen.</h3>
+              <br>
+              <p><b>Option 1:</b> Du kannst deinen Wertgutschein in voller Höhe auf dein Mitgliedskonto aufladen und davon deine Mitgliedschaft, Maschinennutzung, verwendete Materialien aber auch Getränke und Merchandise bezahlen. Klingt gut? Dann einfach ins Feld „Gutschein einlösen“ den Gutscheincode eintragen und rechts „Einlösen“ klicken. Dein Guthaben kannst du in deinem
+                <router-link v-if="isAuthenticated" to="/me">Mitgliedskonto</router-link>
+                <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">Mitgliedskonto</a> unter
+                <router-link v-if="isAuthenticated" to="/me/invoices">„Rechnungen“ </router-link>
+                <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">„Rechnungen“</a>
+                abrufen.</p>
+              <br>
+              <p><b>Option 2:</b>  Alternativ kannst du deinen Wertgutschein auch für einen unserer Workshop & Events verwenden. Suche dir dazu zunächst den passenden Termin aus unserem aktuellen
+                <router-link to="/de/workshops">{{ 'Angebot' }}</router-link>
+                aus und lege den Kurs in deinen Warenkorb. Deinen Wertgutschein kannst du später im Bestellvorgang bei den Zahlungsmethoden einlösen. Ein etwaiger Restbetrag kann mit demselben Gutscheincode zu einem späteren Zeitpunkt eingelöst werden.</p>
               <div v-if="!isAuthenticated">
                 <div class="card">
                   <div class="input-redeem-card">
@@ -69,7 +82,7 @@
                 {{ $t('giftCard') }} </span>
                     <div class="redeem-card-bottom">
                       <div class=" code">
-                        <span class="code-span"> Code: </span>
+                        <span class="code-span"> Gutscheincode: </span>
                         <input v-model="giftCardCode" class="form-item" disabled>
                         <font-awesome-icon icon="info-circle"/>
                       </div>
@@ -83,8 +96,8 @@
                       <font-awesome-icon icon="info-circle"/>
                       {{ $t('registerToRedeemGiftCard') }}
                     </div>
-                    <div>{{ $t('ifNotAMemberGoAndRegister') }}
-                    </div>
+<!--                    <div>{{ $t('ifNotAMemberGoAndRegister') }}-->
+<!--                    </div>-->
                     <br>
                   </div>
                   <div class="buttons">
@@ -104,7 +117,7 @@
                 Gutschein</span>
                     <div class="redeem-card-bottom">
                       <div class=" code">
-                        <span class="code-span"> Code: </span>
+                        <span class="code-span"> Gutscheincode: </span>
                         <input
                             v-model="giftcardCode"
                             class="form-item"
@@ -114,6 +127,13 @@
                         <img src="~/assets/img/icons/gg-logo-icon.svg" width="40">
                       </div>
                     </div>
+                  </div>
+                  <div class="login-reminder">
+                    <div>
+                      <font-awesome-icon icon="info-circle"/>
+                      {{'Bitte den Gutscheincode ohne dem "ID" Präfix eingeben.'}}
+                    </div>
+                    <br>
                   </div>
                   <div class="buttons">
                     <button
@@ -213,6 +233,9 @@ export default {
     this.getQuery(this.$route.query)
   },
   methods: {
+    login () {
+      this.$store.dispatch('setSidebar', 'login')
+    },
     // loadUserData () {
     //   this.loading = true
     //   this.$store.dispatch('getUserMetadata')
@@ -255,7 +278,7 @@ export default {
       this.loading = true
       await this.$store.dispatch('redeemGiftCard', { secret: this.giftcardCode })
         .then((response) => {
-          console.log('success', response)
+          //console.log('success', response)
           this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
             className: 'goodToast'
           })

@@ -1,7 +1,5 @@
 <template>
   <div class="section">
-<!--      <h2>{{ $t('signupMakerSpace') }}</h2>-->
-      <p>{{ $t('beforeYouCanStart') }}</p>
     <form class="form">
       <div class="form-item" style="margin-top: 20px">
         <span class="label">{{ $t('dateOfBirth') }}<span class="red">*</span></span>
@@ -88,12 +86,12 @@
       </div>
       <div v-if="!hasAttendeesFreeCost">
         <div class="form-item">
-          <span class="label">Rechnungskontakt</span>
+          <span class="label">Rechnungsadresse</span>
           <div class="checkbox-wrapper" >
             <input id="checkbox" class="checkbox" type="checkbox"
                    :checked="onboardingData.contactInformation.hasBillingAddress"
                    v-model="onboardingData.contactInformation.hasBillingAddress" >
-            <p class="text">weicht von Kontaktaddresse ab</p>
+            <p class="text">weicht von Kontaktadresse ab</p>
           </div>
         </div>
         <div v-if="onboardingData.contactInformation.hasBillingAddress">
@@ -163,11 +161,11 @@ export default {
     this.countries = await this.$store.dispatch('getCountries')
   },
   beforeRouteEnter (to, from, next) {
-    console.log('CONTACT FROM: ', from.path)
+    //console.log('CONTACT FROM: ', from.path)
     if ((from.path === '/wizard/onboarding/userInformation') || (from.path === '/wizard/onboarding/image')) {
       next()
     } else {
-      next('/wizard/onboarding')
+      next('/wizard/onboarding/userInformation')
     }
   },
   computed: {

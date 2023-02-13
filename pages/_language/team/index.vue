@@ -32,7 +32,8 @@
     <div class="member-list-wrapper">
       <div v-if="members && members.length > 0" class="member-list">
         <transition-group name="list">
-          <team-member-preview :key="item.id" v-for="item in members" :story="item" class="list-item"></team-member-preview>
+          <team-member-preview :key="item.id" v-for="item in members" :story="item"
+                               class="list-item"></team-member-preview>
         </transition-group>
       </div>
       <div v-else class="member-list-none">
@@ -122,7 +123,7 @@ export default {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 
 .team-wrapper {
   padding: 10% 10% 0% 10%;
@@ -200,17 +201,12 @@ export default {
       margin-bottom: 10px;
     }
   }
+
   .tag-list {
     @include margin-page-wide();
     display: grid;
     max-width: 70em;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    @include media-breakpoint-down(lg) {
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    }
-    @include media-breakpoint-down(md) {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
+    grid-template-columns: repeat(3, 1fr);
     @include media-breakpoint-down(sm) {
       grid-template-columns: 1fr 1fr;
       font-size: .85em;
@@ -219,11 +215,13 @@ export default {
       grid-template-columns: 1fr;
     }
     grid-gap: 15px 20px;
+
     > .tag {
       font-family: $font-mono;
       color: #FFF;
       user-select: none;
       cursor: pointer;
+
       input[type=checkbox] {
         outline: none;
         -webkit-appearance: none;
@@ -232,12 +230,14 @@ export default {
         border-radius: 3px;
         position: relative;
         top: 0;
+
         &:checked {
           background-color: #FFF;
         }
       }
     }
   }
+
   background-color: $color-blue;
   @include media-breakpoint-down(sm) {
     overflow: hidden;
@@ -252,6 +252,7 @@ export default {
       width: 100%;
       height: 20px;
       transition: all .3s linear;
+
       &:after {
         transition: all .3s linear;
         content: "";
@@ -269,9 +270,11 @@ export default {
     }
     &.collapsed {
       max-height: 17vh;
+
       .expander {
         height: 70px;
         background: linear-gradient(rgba(0, 0, 0, 0), $color-blue 80%);
+
         &:after {
           transform: rotate(45deg);
           bottom: 18px;
@@ -284,7 +287,8 @@ export default {
 .member-list-wrapper {
   display: flex;
   margin-top: 3em;
-  @include margin-page-wide ();
+  @include margin-page-wide();
+
   .member-list {
     > span {
       display: grid;
@@ -303,6 +307,7 @@ export default {
     }
 
     flex: 3;
+
     .list-item {
       min-width: 150px;
       padding: 0 30px;
@@ -310,9 +315,11 @@ export default {
         min-width: 200px;
       }
     }
+
     .list-enter-active, .list-leave-active {
       transition: all 0.5s;
     }
+
     .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
     {
       opacity: 0;

@@ -67,10 +67,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
+.pretix-widget-event-list-entry pretix-widget-event-availability-red pretix-widget-event-availability-over{
+  color: white;
+}
 .oceaneye-overview {
   background-color: white;
   margin-bottom: 5%;
+  .pretix-widget-event-description{
+    display: none;
+  }
 }
 .container {
   max-width: 1255px;
@@ -157,14 +163,17 @@ export default {
     .pretix-widget-event-week-table {
       margin-top: 3%;
     }
-    .pretix-widget-event-availability-green {
+    .pretix-widget-event-availability-green, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-green {
       background-color: $color-primary !important;
     }
-    .pretix-widget-event-availability-red {
+    .pretix-widget-event-availability-red, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-red {
       background-color: $color-secondary !important;
     }
-    .pretix-widget-event-availability-reserved {
+    .pretix-widget-event-availability-reserved, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
       background-color: $color-yellow !important;
+    }
+    .pretix-widget-event-availability-unknown, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
+      background-color: black !important;
     }
     width: 70vw;
     max-width: 1000px;
@@ -183,15 +192,38 @@ export default {
         margin-top: 15%;
       }
     }
+    .pretix-widget-event-list-back a:hover, a:focus {
+      color: black;
+    }
+    .pretix-widget-event-calendar-head a:hover, a:focus {
+      color: black;
+    }
     .pretix-widget-event-calendar-previous-month{
       padding: 10px;
     }
     .pretix-widget-event-calendar-next-month{
       padding: 10px;
     }
+
     .pretix-widget .pretix-widget-loading svg {
       top: Min(40%);
       position: center;
+    }
+    .pretix-widget-primary-color {
+      fill: black;
+    }
+    .pretix-widget-event-form {
+      line-height: 25px;
+    }
+    .pretix-widget .pretix-widget-event-description h4 {
+      font-size: 2em;
+      line-height: 40px;
+      @include media-breakpoint-down(xs) {
+        font-size: 1.5em;
+      }
+    }
+    .pretix-widget .pretix-widget-event-description h5 {
+      font-size: 1em;
     }
   }
 }

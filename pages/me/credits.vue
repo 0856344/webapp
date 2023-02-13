@@ -1,4 +1,5 @@
 <template>
+<!--  @deprecated: Page unused currently-->
   <div>
     <h2>Credits</h2>
     <div

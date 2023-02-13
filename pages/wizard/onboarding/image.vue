@@ -1,9 +1,7 @@
 <template>
   <div class="section">
     <h2>Foto</h2>
-<!--    <p>Damit wir Dir Deine persönliche Memberkarte erstellen können, brauchen wir auch ein Foto von Dir.</p>-->
-    <p>Für Deine persönliche Memberkarte lade bitte hier Dein Bild hoch.</p>
-<!--    <p>Wenn Du grad keines hast ist das kein Problem, wir machen bei Deinem ersten Besuch in der GG eins von Dir.</p>-->
+    <p>Für deine persönliche Member-Card lade bitte noch dein Bild hoch.</p>
     <form class="form">
       <div v-if="image != null" class="form-item">
         <span class="label">{{ $t('Image-Preview') }}</span>
@@ -40,11 +38,10 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    console.log('INAGE FROM: ', from.path)
     if ((from.path === '/wizard/onboarding/contact') || (from.path === '/wizard/onboarding/payment')) {
       next()
     } else {
-      next('/wizard/onboarding/')
+      next('/wizard/onboarding/userInformation')
     }
   },
   computed: {

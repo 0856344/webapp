@@ -39,7 +39,8 @@ export default {
         { key: 'training', name: 'Unterweisungen', value: false },
         { key: 'meetup', name: 'Meetup', value: false },
         { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false },
-        { key: 'makemas', name: '#makemas2022', value: false }
+        { key: 'kids', name: 'Workshops für Kinder', value: false }
+        // { key: 'makemas', name: '#makemas2022', value: false }
       ],
       loading: false,
       search: '',
@@ -158,13 +159,7 @@ export default {
         @include margin-page-wide();
         display: grid;
         max-width: 70em;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-        @include media-breakpoint-down(lg) {
-          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        }
-        @include media-breakpoint-down(md) {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
+        grid-template-columns: repeat(3, 1fr);
         @include media-breakpoint-down(sm) {
           grid-template-columns: 1fr 1fr;
           font-size: .85em;

@@ -9,15 +9,6 @@ let tmpFabmanToken
 let tmpClient
 let tmpOrigin
 switch (process.env.NETLIFY_ENVIRONMENT) {
-  case 'local':
-    tmpFabmanToken = process.env.FABMAN_TOKEN_STAGING
-    tmpClient = jwksClient({
-      jwksUri: `${process.env.AUTH0_URL_DEVELOP}/.well-known/jwks.json`
-    })
-    tmpOrigin = process.env.ORIGIN_LOCAL
-    console.log('LOCAL ORIGIN: ' + tmpOrigin)
-    console.log('## Auth0 url:' + process.env.AUTH0_URL_DEVELOP)
-    break
   case 'develop':
     tmpFabmanToken = process.env.FABMAN_TOKEN_STAGING
     tmpClient = jwksClient({

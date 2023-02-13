@@ -50,6 +50,7 @@ const version = tmpVersion
 
 const baseUrl = process.env.NUXT_ENV_CONNECTOR_URL ? process.env.NUXT_ENV_CONNECTOR_URL : 'https://connector.grandgarage.eu'
 const connectorBaseUrl = baseUrl + '/api'
+const pretixBaseUrl = 'https://connector.grandgarage.eu/api/pretix/events'
 
 let connector = axios.create({
   baseURL: connectorBaseUrl,
@@ -295,12 +296,17 @@ const createStore = () => {
       },
       async uploadImage ({ state }, data) {
         const res = await connector.post('v1/files/image', data)
-        console.log(res)
+        //console.log(res)
         return res.data
       },
       async cancelPackage ({ state }, memberPackageId, data) {
         const id = state.member.id
         const res = await connector.put(`v1/fabman/members/${id}/packages/${memberPackageId}`, data)
+        return res.data
+      },
+      async getPaymentMethod ({ state }) {
+        const id = state.member.id
+        const res = await connector.get(`v1/fabman/members/${id}/payment-method`)
         return res.data
       },
       getInvoiceDocument ({ commit, dispatch, state }, id) {
@@ -330,6 +336,12 @@ const createStore = () => {
             })
           }).then((r) => {
           })
+        }
+      },
+      async getPretixEvents ({ state }, subEvent) {
+        const r = await axios.get(`${baseUrl + '/api/pretix/events'}/${subEvent}`)
+        if (r.status === 200) {
+          return r.data
         }
       },
       saveQuiz ({ state }, data) {
@@ -404,18 +416,27 @@ const createStore = () => {
           this.$sentry.captureException(err)
         })
       },
+      updatePaymentMethod ({ state, commit, dispatch }, data) {
+        //Vue.delete(data, 'lockVersion')
+        const req = JSON.parse(JSON.stringify((data)))
+        const id = state.member.id
+        return connector.put(`v1/fabman/members/${id}/payment-method`, req).then((r) => {
+        }).catch((err) => {
+          this.$sentry.captureException(err)
+        })
+      },
       getUser ({ state, commit, dispatch }) {
         return axios.get(`${origin}/.netlify/functions/getUser`).then((r) => {
           dispatch('getMemberByEmail', { email: r.data }).then((response) => {
             const profile = response
-            console.log(response)
+            //console.log(response)
             const user = {
               profile
               // trainings,
               // packages,
               // payment
             }
-            console.log(user)
+            //console.log(user)
             commit('setUser', user)
             // TODO remove getMember again (use user)
             dispatch('getMember', user.profile.id)
@@ -875,6 +896,7 @@ const createStore = () => {
           version: version,
           cv: state.cacheVersion,
           starts_with: `${state.language}/news`,
+          per_page: 100,
           sort_by: 'content.datetime:desc'
         }).then((res) => {
           return res.data

@@ -62,7 +62,7 @@
             <button
                 v-if="activeStep === 'confirmation'"
                 class="input-button-primary"
-                @click="$router.push('/me/trainings')"
+                @click="gotoASUorOpenLogin()"
             >
               <font-awesome-icon icon="arrow-circle-right"/> {{ $t('startSafetyTraining') }}
             </button>
@@ -86,16 +86,11 @@
         <div v-if="activeStep === 'confirmation'" class="confirmation-footer">
           {{ $t('nextStepsAfterASU') }}
           <br>
-          <p style="font-weight: bold">{{ $t('ourOpeningHours') }}
-            <br>
-            Do und Fr, 14:00 - 20:00 Uhr
-            <br>
-            Sa, 10:00 - 20:00 Uhr
-            <br>
-            Feiertags geschlossen
-            <br>
-          </p>
-          {{ $t('weAreLookingForwardToWelcomeYou') }}
+          <p style="margin-bottom: 7px">{{ $t('ourOpeningHours') }} </p>
+            <a href="https://grandgarage.eu/de/kontakt" target="_blank">
+              {{ 'https://grandgarage.eu/de/kontakt' }}
+            </a>
+          <p style="margin-top: 20px">{{ $t('weAreLookingForwardToWelcomeYou') }}</p>
         </div>
       </div>
       <p v-if="loadingEmail" >{{this.loadingCheckEmailStatus}}</p>
@@ -120,7 +115,7 @@ export default {
       loadingCheckEmailStatus: '',
       mailCheck: false,
       MemberType,
-      steps: ['index', 'userInformation', 'contact', 'image', 'payment', 'confirmation'],
+      steps: ['userInformation', 'contact', 'image', 'payment', 'confirmation'],
       onboardingData: {
         //image: null,
         image64: null,
@@ -189,15 +184,10 @@ export default {
         case 'index':
           return false
         case 'userInformation': {
-          //return false
-          // eslint-disable-next-line no-unreachable
-          // gender may be null = keine Angabe , 'gender'
           const requiredKeys = ['firstName', 'lastName', 'gender', 'email', 'password']
           return ((!!requiredKeys.filter(k => !data.userInformation[k]).length) || !data.userInformation.emailOk)
         }
         case 'contact': {
-          //return false
-          // eslint-disable-next-line no-unreachable
           const data = this.onboardingData
           const requiredKeys = ['birthdate', 'address', 'zip', 'city', 'country']
           const requiredKeysInvoiceContact = ['firstName', 'lastName', 'address', 'zip', 'city', 'country']
@@ -270,7 +260,7 @@ export default {
       const ni = this.index - 1 < 0 ? 0 : this.index - 1
       let path = this.steps[ni]
       if (ni === 0) {
-        path = ''
+        path = 'userInformation'
       }
       this.$router.push('/wizard/onboarding/' + path)
     },
@@ -296,7 +286,6 @@ export default {
           break
         case 'payment':
           this.saveOnboardingData()
-          //this.loadNextPage()
           this.submit()
           break
         case 'done':
@@ -311,8 +300,14 @@ export default {
       const ni = this.index + 1 < 0 ? 0 : this.index + 1
       const path = this.steps[ni]
       if (path) {
-        console.log('GOTO: /wizard/onboarding/' + path)
         this.$router.push('/wizard/onboarding/' + path)
+      }
+    },
+    gotoASUorOpenLogin () {
+      if (this.$store.state.auth) {
+        this.$router.push('/me/trainings')
+      } else {
+        this.$store.dispatch('setSidebar', 'login')
       }
     },
     getMemberType () {
@@ -373,12 +368,10 @@ export default {
         )
     },
     async submit () {
-      console.log('submit')
       const memberType = this.getMemberType()
       // STEP1: create FABMAN Member
       let memberDataBasic = {
         // basicData = data for the new fabman user, that is needed for any membership type
-        // TODO uncomment
         emailAddress: this.onboardingData.userInformation.email,
         address: this.onboardingData.contactInformation.address,
         city: this.onboardingData.contactInformation.city,
@@ -389,7 +382,6 @@ export default {
         //region, language,requireUpfrontPayment, state,  not used
         gender: null,
         dateOfBirth: this.onboardingData.contactInformation.birthdate,
-        // TODO: must be a number?
         phone: this.onboardingData.contactInformation.phone,
         countryCode: this.onboardingData.contactInformation.country,
         hasBillingAddress: this.onboardingData.contactInformation.hasBillingAddress
@@ -403,20 +395,27 @@ export default {
       let memberData = null
       switch (memberType) {
         case MemberType.corporate_freeCost:
-          console.log('MemberType: corporate_freeCost')
+          //console.log('MemberType: corporate_freeCost')
           memberData = memberDataBasic
           memberData = {
             ...memberData,
             paidForBy: this.onboardingData.contactInformation.company.id,
-            space: this.onboardingData.contactInformation.company.metadata.attendees_space_id
+            space: this.onboardingData.contactInformation.company.metadata.attendees_space_id,
+            metadata: {
+              corporateMemberId: this.onboardingData.contactInformation.company.id
+            }
+
           }
           break
         case MemberType.corporate:
-          console.log('MemberType: corporate')
+          //console.log('MemberType: corporate')
           memberData = memberDataBasic
           memberData = {
             ...memberData,
-            space: this.onboardingData.contactInformation.company.metadata.attendees_space_id
+            space: this.onboardingData.contactInformation.company.metadata.attendees_space_id,
+            metadata: {
+              corporateMemberId: this.onboardingData.contactInformation.company.id
+            }
           }
           extendMemberDataIban = {
             iban: this.onboardingData.payment.iban
@@ -436,7 +435,7 @@ export default {
           memberData = { ...memberData, ...extendMemberDataBillingAddress }
           break
         case MemberType.member:
-          console.log('MemberType: member or corporate (no free cost)')
+          //console.log('MemberType: member or corporate (no free cost)')
           extendMemberDataIban = {
             iban: this.onboardingData.payment.iban
           }
@@ -455,12 +454,12 @@ export default {
           memberData = { ...memberData, ...extendMemberDataBillingAddress }
           break
       }
-      console.log('memberData: ', memberData)
+      //console.log('memberData: ', memberData)
       this.loading = true
 
       //1) create Fabman member
       this.$store.dispatch('createMember', memberData).then((r) => {
-        console.log('RESULT FABMAN CREATE: ', r)
+        //console.log('RESULT FABMAN CREATE: ', r)
         // eslint-disable-next-line camelcase
         const fabman_id = r.id
         // eslint-disable-next-line camelcase
@@ -477,21 +476,21 @@ export default {
             id: this.onboardingData.contactInformation.company.metadata.attendees_package_id
           }
         }
-        console.log('packageData: ', packageData)
+        //console.log('packageData: ', packageData)
         // 2) set membership
         this.$store.dispatch('setPackageOnboarding', packageData).then((r) => {
-          console.log('RESULT SET PACKAGE: ', r)
+          //console.log('RESULT SET PACKAGE: ', r)
           if (this.onboardingData.payment.bookStorage && memberType === MemberType.member) {
             const storage = JSON.parse(JSON.stringify(this.onboardingData.payment.bookStorage))
             storage.forEach(storage => {
-              console.log('STORAGE: ', storage)
+              //console.log('STORAGE: ', storage)
               const storagePackageData = {
                 memberId: fabman_id,
                 id: storage.id
               }
               // 3) set storage packages
               this.$store.dispatch('setPackageOnboarding', storagePackageData).then((r) => {
-                console.log('STORAGE FABMAN CREATE: ', r)
+                //console.log('STORAGE FABMAN CREATE: ', r)
               })
             })
           }

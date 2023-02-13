@@ -60,6 +60,9 @@ export default {
       url: null
     }
   },
+  async mounted () {
+    window.scrollTo(0, 0)
+  },
   async asyncData (context) {
     const filters = {
       filter_query: {

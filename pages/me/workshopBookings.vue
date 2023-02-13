@@ -60,7 +60,7 @@ export default {
       if (confirm('Workshop ' + workshopDate.content.workshop.name + ' wirklich stornieren?')) {
         this.$store.dispatch('workshopStorno', data)
           .then((data) => {
-            console.log('status', status)
+            //console.log('status', status)
             if (data.status >= 200 && data.status < 300) {
               this.$toast.show('Der Workshop wurde erfolgreich storniert!', {
                 className: 'goodToast'

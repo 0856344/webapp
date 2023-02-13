@@ -3,7 +3,7 @@ const baseURL = 'https://fabman.io/api/v1/'
 
 // Environment settings
 let tmpFabmanToken
-if (process.env.NETLIFY_ENVIRONMENT === 'staging' || process.env.NETLIFY_ENVIRONMENT === 'develop' || process.env.NETLIFY_ENVIRONMENT === 'local') {
+if (process.env.NETLIFY_ENVIRONMENT === 'staging' || process.env.NETLIFY_ENVIRONMENT === 'develop') {
   tmpFabmanToken = process.env.FABMAN_TOKEN_STAGING
 } else {
   tmpFabmanToken = process.env.FABMAN_TOKEN
