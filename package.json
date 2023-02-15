@@ -6,6 +6,7 @@
     "nuxt-staging": "NUXT_ENV_ENVIRONMENT=staging NUXT_ENV_CONNECTOR_URL=https://staging.connector.grandgarage.eu nuxt",
     "nuxt-production": "NUXT_ENV_ENVIRONMENT=production NUXT_ENV_CONNECTOR_URL=https://connector.grandgarage.eu nuxt",
     "generate": "NUXT_ENV_ENVIRONMENT=production nuxt generate",
+    "generate-develop": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://develop.connector.grandgarage.eu nuxt generate",
     "generate-staging": "NUXT_ENV_ENVIRONMENT=staging NUXT_ENV_CONNECTOR_URL=https://staging.connector.grandgarage.eu nuxt generate",
     "lambda-local": "NETLIFY_ENVIRONMENT=develop AUTH0_URL_DEVELOP=https://gg-develop.eu.auth0.com ORIGIN_DEVELOP=http://localhost:3000 netlify-lambda serve lambda",
     "lambda-develop": "NETLIFY_ENVIRONMENT=develop AUTH0_URL_DEVELOP=https://gg-develop.eu.auth0.com ORIGIN_DEVELOP=https://develop.grandgarage.eu  netlify-lambda serve lambda",

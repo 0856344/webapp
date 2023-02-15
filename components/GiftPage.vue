@@ -48,7 +48,7 @@
                 {{ $t('redeemGiftCard') }}
               </div>
               <div class="buy-redeem-button"
-                   @click="$router.push('gutscheine?action=redeem')">
+                   @click=goToRedeem()>
                 {{ $t('redeem') }}
               </div>
             </div>
@@ -61,25 +61,25 @@
         <template>
 
           <template v-if="action === 'redeem'">
-            <div v-if="step === 0" class="giftcardForm">
+            <div v-if="step === 0" class="giftcardForm" style="margin-left: 10px; margin-right: 10px">
               <br>
               <h3>Du hast zwei Optionen zur Auswahl, um deinen Wertgutschein einzulösen.</h3>
               <br>
-              <p><b>Option 1:</b> Du kannst deinen Wertgutschein in voller Höhe auf dein Mitgliedskonto aufladen und davon deine Mitgliedschaft, Maschinennutzung, verwendete Materialien aber auch Getränke und Merchandise bezahlen. Klingt gut? Dann einfach ins Feld „Gutschein einlösen“ den Gutscheincode eintragen und rechts „Einlösen“ klicken. Dein Guthaben kannst du in deinem
+              <p style="text-align: justify"><b>Option 1: Mitgliedskonto</b></p> <p style="text-align: justify"> Du kannst deinen Wertgutschein in voller Höhe auf dein Mitgliedskonto aufladen und davon deine Mitgliedschaft, Maschinennutzung, verwendete Materialien aber auch Getränke und Merchandise bezahlen. Klingt gut? Dann einfach ins Feld „Gutschein einlösen“ den Gutscheincode eintragen und auf „Einlösen“ klicken. Dein Guthaben kannst du in deinem
                 <router-link v-if="isAuthenticated" to="/me">Mitgliedskonto</router-link>
                 <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">Mitgliedskonto</a> unter
                 <router-link v-if="isAuthenticated" to="/me/invoices">„Rechnungen“ </router-link>
                 <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">„Rechnungen“</a>
                 abrufen.</p>
               <br>
-              <p><b>Option 2:</b>  Alternativ kannst du deinen Wertgutschein auch für einen unserer Workshop & Events verwenden. Suche dir dazu zunächst den passenden Termin aus unserem aktuellen
+              <p ><b>Option 2: Workshop & Events</b> </p><p style="text-align: justify"> Alternativ kannst du deinen Wertgutschein auch für einen unserer Workshop & Events verwenden. Suche dir dazu zunächst den passenden Termin aus unserem aktuellen
                 <router-link to="/de/workshops">{{ 'Angebot' }}</router-link>
                 aus und lege den Kurs in deinen Warenkorb. Deinen Wertgutschein kannst du später im Bestellvorgang bei den Zahlungsmethoden einlösen. Ein etwaiger Restbetrag kann mit demselben Gutscheincode zu einem späteren Zeitpunkt eingelöst werden.</p>
               <div v-if="!isAuthenticated">
                 <div class="card">
-                  <div class="input-redeem-card">
+                  <div class="input-redeem-card" @click="login()">
                 <span class="span">
-                {{ $t('giftCard') }} </span>
+                {{ $t('giftCard') + ' einlösen' }} </span>
                     <div class="redeem-card-bottom">
                       <div class=" code">
                         <span class="code-span"> Gutscheincode: </span>
@@ -94,7 +94,7 @@
                   <div class="login-reminder">
                     <div>
                       <font-awesome-icon icon="info-circle"/>
-                      {{ $t('registerToRedeemGiftCard') }}
+                      Bitte <a @click="login()" target="_self" href="javascript:;">logge dich ein</a>, um deinen Gutschein einlösen zu könnnen!
                     </div>
 <!--                    <div>{{ $t('ifNotAMemberGoAndRegister') }}-->
 <!--                    </div>-->
@@ -103,7 +103,7 @@
                   <div class="buttons">
                     <button
                         class="input-button-primary"
-                        @click="$router.push('gutscheine')"
+                        @click="goToGutscheine()"
                     >
                       {{ $t('back') }}
                     </button>
@@ -138,7 +138,7 @@
                   <div class="buttons">
                     <button
                         class="input-button-payment"
-                        @click="$router.push('gutscheine')"
+                        @click="goToGutscheine()"
                     >
                       {{ $t('back') }}
                     </button>
@@ -273,6 +273,14 @@ export default {
         return
       }
       this.action = null
+    },
+    goToRedeem () {
+      this.$router.push('gutscheine?action=redeem')
+      window.scrollTo(0, 0)
+    },
+    goToGutscheine () {
+      this.$router.push('gutscheine')
+      window.scrollTo(0, 0)
     },
     async redeem () {
       this.loading = true
@@ -694,7 +702,7 @@ h2 {
     border: 1px solid grey;
     border-radius: 0.3em;
     flex-direction: column;
-    height: 240px;
+    height: 200px;
     width: 580px;
 
     .redeem-card-bottom {
@@ -765,7 +773,7 @@ h2 {
   display: flex;
   flex-flow: row;
   align-content: center;
-  margin-top: 4em;
+  margin-top: 1em;
   justify-content: center;
 
   & * {

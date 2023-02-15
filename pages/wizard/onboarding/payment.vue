@@ -49,15 +49,19 @@
             </div>
           </div>
         </div>
-<!--        <div class="form-item">-->
-<!--          <span class="label" >Volljähtig Kontoinhaber</span>-->
-<!--          <div class="checkbox-wrapper">-->
-<!--            <input class="checkbox" type="checkbox"-->
-<!--                   :checked="onboardingData.payment.sepaMandat"-->
-<!--                   v-model="onboardingData.payment.sepaMandat" >-->
-<!--            <p class="text" style="max-width: 600px">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein Konto gezogenen SEPA-Lastschriften einzulösen. Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.</p>-->
-<!--          </div>-->
-<!--        </div>-->
+        <div class="form-item">
+          <span class="label">{{ 'Kontoinhaber*in' }}<span class="red">*</span></span>
+          <input class="input-text" type="text" v-model="onboardingData.payment.accountOwner"/>
+        </div>
+        <div class="form-item">
+          <span class="label" >KontoinhaberIn volljährig?</span>
+          <div class="checkbox-wrapper">
+            <input class="checkbox" type="checkbox"
+                   :checked="onboardingData.payment.accountOwnerLegalAge"
+                   v-model="onboardingData.payment.accountOwnerLegalAge" >
+            <p class="text" style="max-width: 600px">Hiermit bestätige, dass der/die KontoinhaberIn volljährig ist.</p>
+          </div>
+        </div>
         <div class="form-item">
           <span class="label" >SEPA MANDAT</span>
           <div class="checkbox-wrapper">

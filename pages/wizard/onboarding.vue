@@ -157,6 +157,8 @@ export default {
           membership: null,
           sepaMandat: false,
           agb: false,
+          accountOwner: null,
+          accountOwnerLegalAge: false,
           privacyPolicy: false,
           ibanIsValid: false
         },
@@ -211,13 +213,13 @@ export default {
           }
           // if company & no free cost
           if (membershipType === MemberType.corporate) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid) {
+            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner) {
               return false
             }
           }
           // if no company member
           if (membershipType === MemberType.member) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.membership) {
+            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner && data.payment.membership) {
               return false
             }
           }
@@ -279,6 +281,13 @@ export default {
         case 'contact':
           this.loadNextPage()
           this.saveOnboardingData()
+          // set account owner default name
+          if (this.onboardingData.contactInformation.hasBillingAddress) {
+            this.onboardingData.payment.accountOwner = this.onboardingData.billingInformation.firstName + ' ' + this.onboardingData.billingInformation.lastName
+          } else {
+            this.onboardingData.payment.accountOwner = this.onboardingData.userInformation.firstName + ' ' + this.onboardingData.userInformation.lastName
+          }
+
           break
         case 'image':
           this.loadNextPage()
@@ -418,7 +427,8 @@ export default {
             }
           }
           extendMemberDataIban = {
-            iban: this.onboardingData.payment.iban
+            iban: this.onboardingData.payment.iban,
+            accountOwner: this.onboardingData.payment.accountOwner
           }
           if (this.onboardingData.contactInformation.hasBillingAddress) {
             // 'billingCompany', 'billingAddress', 'billingAddress2', 'billingRegion', 'billingInvoiceText', 'billingEmailAddress' unused
@@ -437,7 +447,8 @@ export default {
         case MemberType.member:
           //console.log('MemberType: member or corporate (no free cost)')
           extendMemberDataIban = {
-            iban: this.onboardingData.payment.iban
+            iban: this.onboardingData.payment.iban,
+            accountOwner: this.onboardingData.payment.accountOwner
           }
           if (this.onboardingData.contactInformation.hasBillingAddress) {
             // 'billingCompany', 'billingAddress', 'billingAddress2', 'billingRegion', 'billingInvoiceText', 'billingEmailAddress' unused
