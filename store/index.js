@@ -376,19 +376,13 @@ const createStore = () => {
           }
         })
       },
-      getBookings ({ state }, id) {
-        return axios.get(`${origin}/.netlify/functions/getBookings?id=${id}`).then((r) => {
-          return r.data
-        }).catch((err) => {
-          this.$sentry.captureException(err)
-        })
+      async getBookings ({ state }, id) {
+        const r = await connector.get(`v1/fabman/resources/${id}/bookings`)
+        return r.data
       },
-      checkStatus ({ state }, id) {
-        return axios.get(`${origin}/.netlify/functions/checkStatus?id=${id}`).then((r) => {
-          return r.data
-        }).catch((err) => {
-          this.$sentry.captureException(err)
-        })
+      async getResource ({ state }, id) {
+        const r = await connector.get(`v1/fabman/resources/${id}`)
+        return r.data
       },
       getFabman ({ state, commit }) {
         return axios.get(`${origin}/.netlify/functions/getFabman`).then((r) => {

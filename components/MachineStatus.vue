@@ -24,9 +24,13 @@
           {{ $t( "available" ) }}
         </div>
       </div>
-      <div
-        v-else-if="resource.state === 'locked'"
-        :title="resource.maintenanceNotes"
+<!--      TODO Wartungsnotiz wieder einblenden-->
+<!--      <div-->
+<!--        v-else-if="resource.state === 'locked'"-->
+<!--        :title="resource.maintenanceNotes"-->
+<!--      >-->
+        <div
+          v-else-if="resource.state === 'locked'"
       >
         {{ $t( "outOfOrder" ) }}
       </div>
@@ -71,10 +75,8 @@ export default {
       return this.resource && this.resource.inUse ? '0.9em' : '1em'
     }
   },
-  created () {
-    this.$store.dispatch('checkStatus', this.id).then((r) => {
-      this.resource = r
-    })
+  async created () {
+    this.resource = await this.$store.dispatch('getResource', this.id)
   }
 }
 </script>

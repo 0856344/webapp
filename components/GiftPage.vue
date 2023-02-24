@@ -65,16 +65,13 @@
               <br>
               <h3>Du hast zwei Optionen zur Auswahl, um deinen Wertgutschein einzulösen.</h3>
               <br>
-              <p style="text-align: justify"><b>Option 1: Mitgliedskonto</b></p> <p style="text-align: justify"> Du kannst deinen Wertgutschein in voller Höhe auf dein Mitgliedskonto aufladen und davon deine Mitgliedschaft, Maschinennutzung, verwendete Materialien aber auch Getränke und Merchandise bezahlen. Klingt gut? Dann einfach ins Feld „Gutschein einlösen“ den Gutscheincode eintragen und auf „Einlösen“ klicken. Dein Guthaben kannst du in deinem
+              <p style="text-align: justify;"><b>Option 1: Mitgliedskonto</b></p> <p style="text-align: justify; margin-bottom: 0px"> Du kannst deinen Wertgutschein in voller Höhe auf dein Mitgliedskonto aufladen und davon deine Mitgliedschaft, Maschinennutzung, verwendete Materialien aber auch Getränke und Merchandise bezahlen. Klingt gut? Dann einfach ins Feld „Gutschein einlösen“ den Gutscheincode eintragen und auf „Einlösen“ klicken. Dein Guthaben kannst du in deinem
                 <router-link v-if="isAuthenticated" to="/me">Mitgliedskonto</router-link>
                 <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">Mitgliedskonto</a> unter
                 <router-link v-if="isAuthenticated" to="/me/invoices">„Rechnungen“ </router-link>
                 <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">„Rechnungen“</a>
                 abrufen.</p>
               <br>
-              <p ><b>Option 2: Workshop & Events</b> </p><p style="text-align: justify"> Alternativ kannst du deinen Wertgutschein auch für einen unserer Workshop & Events verwenden. Suche dir dazu zunächst den passenden Termin aus unserem aktuellen
-                <router-link to="/de/workshops">{{ 'Angebot' }}</router-link>
-                aus und lege den Kurs in deinen Warenkorb. Deinen Wertgutschein kannst du später im Bestellvorgang bei den Zahlungsmethoden einlösen. Ein etwaiger Restbetrag kann mit demselben Gutscheincode zu einem späteren Zeitpunkt eingelöst werden.</p>
               <div v-if="!isAuthenticated">
                 <div class="card">
                   <div class="input-redeem-card" @click="login()">
@@ -114,7 +111,7 @@
                 <div class="card">
                   <div class="input-redeem-card">
                 <span class="span">
-                Gutschein</span>
+                Gutschein einlösen</span>
                     <div class="redeem-card-bottom">
                       <div class=" code">
                         <span class="code-span"> Gutscheincode: </span>
@@ -153,6 +150,10 @@
                   </div>
                 </div>
               </div>
+              <br>
+              <p ><b>Option 2: Workshop & Events</b> </p><p style="text-align: justify"> Alternativ kannst du deinen Wertgutschein auch für einen unserer Workshop & Events verwenden. Suche dir dazu zunächst den passenden Termin aus unserem aktuellen
+              <router-link to="/de/workshops">{{ 'Angebot' }}</router-link>
+              aus und lege den Kurs in deinen Warenkorb. Deinen Wertgutschein kannst du später im Bestellvorgang bei den Zahlungsmethoden einlösen. Ein etwaiger Restbetrag kann mit demselben Gutscheincode zu einem späteren Zeitpunkt eingelöst werden.</p>
             </div>
           </template>
         </template>
@@ -677,10 +678,12 @@ h2 {
 ///////////REDEEM-CARD-PAGE//////////////////////////////////////////
 .card {
   .login-reminder {
+    margin-bottom: 0;
     display: flex;
-    flex-flow: column;
+    //flex-flow: column;
     align-items: center;
-    line-height: 1.8;
+    font-size: medium;
+    line-height: 1.5;
     @include media-breakpoint-down(sm) {
       max-width: 80%;
     }

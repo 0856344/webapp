@@ -150,6 +150,10 @@
         </div>
       </div>
       <div class="form-item">
+        <span class="label">{{ 'KontoinhaberIn' }}</span>
+        <input class="input-text" type="text" v-model="paymentMethod.accountOwnerName" name=""/>
+      </div>
+      <div class="form-item">
         <span class="label" >SEPA MANDAT</span>
         <div class="checkbox-wrapper">
           <input class="checkbox" type="checkbox"
@@ -174,7 +178,7 @@
         <button
             type="submit"
             :class="['input-button-primary', { disabled: !dataValid }]"
-            :disabled="!sepaMandat || !ibanIsValid || (paymentMethod.iban === currentIban)"
+            :disabled="!sepaMandat || !ibanIsValid || (paymentMethod.iban === currentIban) || (paymentMethod.accountOwnerName === '')"
         >
           <font-awesome-icon icon="save"/> {{ $t('save') }}
         </button>
@@ -237,7 +241,7 @@ export default {
     dataValid () {
       //check contact fields
       if (this.member) {
-        if (this.member.address && this.member.zip && this.member.city && this.member.countryCode) {
+        if (this.member.address && this.member.zip && this.member.city && this.member.countryCode && this.member.countryCode !== 'XX') {
           // check optional invoice contact fields
           if (!this.member.hasBillingAddress) {
             return true
@@ -299,11 +303,11 @@ export default {
     },
     updatePaymentMethod (event) {
       this.loadingPayment = true
-      const accountOwnerName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
+      //const accountOwnerName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
       const updatePaymentRequest = {
         type: 'sepa',
         iban: this.paymentMethod.iban,
-        accountOwnerName: accountOwnerName
+        accountOwnerName: this.paymentMethod.accountOwnerName
       }
       this.$store.dispatch('updatePaymentMethod', Object.assign({}, updatePaymentRequest)).then(() => {
         this.loadingPayment = false

@@ -97,7 +97,7 @@ module.exports = {
     '~/plugins/libs',
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
-    '~/plugins/snow.js',
+    //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
   ],
   purgeCSS: {

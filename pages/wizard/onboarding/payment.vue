@@ -10,20 +10,21 @@
           </option>
         </select>
       </div>
-      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">
-        <div class="form-item" >
-          <label ></label>
-          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>
-        </div>
-      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">
-        <span class="label">{{storage.name}}</span>
-        <div class="checkbox-wrapper">
-          <input class="checkbox" type="checkbox"
-                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">
-          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>
-        </div>
-      </div>
-      </div>
+<!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
+<!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
+<!--        <div class="form-item" >-->
+<!--          <label ></label>-->
+<!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
+<!--        </div>-->
+<!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
+<!--        <span class="label">{{storage.name}}</span>-->
+<!--        <div class="checkbox-wrapper">-->
+<!--          <input class="checkbox" type="checkbox"-->
+<!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
+<!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      </div>-->
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">
         <span class="label">LAGER: PREIS<span class="red">*</span></span>
         <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>

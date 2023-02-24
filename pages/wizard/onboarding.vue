@@ -193,6 +193,7 @@ export default {
           const data = this.onboardingData
           const requiredKeys = ['birthdate', 'address', 'zip', 'city', 'country']
           const requiredKeysInvoiceContact = ['firstName', 'lastName', 'address', 'zip', 'city', 'country']
+          if (data.contactInformation.country === 'XX') return true
           const allInvoiceContactFieldsSet = (!requiredKeysInvoiceContact.filter(k => !data.billingInformation[k]).length)
           // if another invoice contact (checkbox) is selected, then the additional fields are required to proceed
           if (data.contactInformation.hasBillingAddress && !allInvoiceContactFieldsSet) {

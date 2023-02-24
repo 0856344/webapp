@@ -5,13 +5,13 @@
         class="calendar"
         xsmall
         default-view="day"
-        :events="bookings"
+        :events="events"
         locale="de"
         :hide-weekdays="[1, 7]"
         :time-from="9 * 60"
         :time-to="20 * 60"
         :time-step="30"
-        :disable-views="['years', 'year', 'month']"
+        :disable-views="['years', 'year', 'month', 'week']"
       />
     </div>
     <div v-else>
@@ -41,7 +41,7 @@ export default {
     events () {
       return this.bookings.map((b) => {
         return {
-          title: b.title,
+          title: 'reserviert',
           class: b.class,
           start: moment(b.fromDateTime).format('YYYY-MM-DD HH:mm'),
           end: moment(b.untilDateTime).format('YYYY-MM-DD HH:mm')
@@ -49,10 +49,9 @@ export default {
       })
     }
   },
-  created () {
-    this.$store.dispatch('getBookings', this.id).then((r) => {
-      this.bookings = JSON.parse(JSON.stringify(r))
-    })
+  async created () {
+    const bookings = await this.$store.dispatch('getBookings', this.id)
+    this.bookings = Object.assign([], bookings)
   }
 }
 </script>

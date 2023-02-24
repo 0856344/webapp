@@ -30,18 +30,19 @@
       />
     </div>
   </div>
-  <div v-if="availableStorage && membership.length > 0" >
-    <h2>Lager buchen</h2>
-    <div
-        v-for="userPackage of availableStorage"
-        :key="userPackage.id">
-      <package v-on:reload="reload"
-          :user-package="userPackage"
-          :storage=true
-          :booked=false
-      />
-    </div>
-  </div>
+    <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
+<!--  <div v-if="availableStorage && membership.length > 0" >-->
+<!--    <h2>Lager buchen</h2>-->
+<!--    <div-->
+<!--        v-for="userPackage of availableStorage"-->
+<!--        :key="userPackage.id">-->
+<!--      <package v-on:reload="reload"-->
+<!--          :user-package="userPackage"-->
+<!--          :storage=true-->
+<!--          :booked=false-->
+<!--      />-->
+<!--    </div>-->
+<!--  </div>-->
   </div>
  </template>
 
