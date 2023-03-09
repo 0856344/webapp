@@ -3,36 +3,65 @@
     <form class="form">
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT<span class="red">*</span></span>
-        <select class="input-select" v-model="onboardingData.payment.membership">
+        <select class="input-select" v-model="selectedMembership">
           <option
-              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">
+              v-for="membership in membershipList" :value="membership" v-bind:key="membership.id">
             {{ membership.name }}
           </option>
         </select>
       </div>
-<!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-<!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
-<!--        <div class="form-item" >-->
-<!--          <label ></label>-->
-<!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
-<!--        </div>-->
-<!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
-<!--        <span class="label">{{storage.name}}</span>-->
-<!--        <div class="checkbox-wrapper">-->
-<!--          <input class="checkbox" type="checkbox"-->
-<!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
-<!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
-<!--        </div>-->
+<!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px">-->
+<!--        <span class="label">MITGLIEDSCHAFT HIDDEN<span class="red">*</span></span>-->
+<!--        <select class="input-select" v-model="onboardingData.payment.membership">-->
+<!--          <option-->
+<!--              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">-->
+<!--            {{ membership.name }}-->
+<!--          </option>-->
+<!--        </select>-->
 <!--      </div>-->
-<!--      </div>-->
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">
-        <span class="label">LAGER: PREIS<span class="red">*</span></span>
-        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>
+      <div class="form-item">
+        <span class="label" >Ermäßigung vorhanden?</span>
+        <div class="checkbox-wrapper">
+          <input class="checkbox" type="checkbox"
+                 :checked="discounted"
+                 v-model="discounted" >
+        </div>
       </div>
-      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">
+      <div class="form-item">
+        <span class="label" >Jährliche Abbuchung?</span>
+        <div class="checkbox-wrapper">
+          <input class="checkbox" type="checkbox"
+                 :checked="yearly"
+                 v-model="yearly" >
+        </div>
+      </div>
+      <div class="form-item" v-if="this.selectedMembership">
         <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>
-        <p class="text">{{ this.price }} (inkl. MwSt)</p>
+        <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
       </div>
+      <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
+      <!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
+      <!--        <div class="form-item" >-->
+      <!--          <label ></label>-->
+      <!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
+      <!--        </div>-->
+      <!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
+      <!--        <span class="label">{{storage.name}}</span>-->
+      <!--        <div class="checkbox-wrapper">-->
+      <!--          <input class="checkbox" type="checkbox"-->
+      <!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
+      <!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      </div>-->
+      <!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">-->
+      <!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
+      <!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
+      <!--      </div>-->
+      <!--      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">-->
+      <!--        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>-->
+      <!--        <p class="text">{{ this.price }} (inkl. MwSt)</p>-->
+      <!--      </div>-->
       <div class="form-item" v-if="this.onboardingData.contactInformation.company">
         <span class="label">FIRMENMITGLIEDSCHAFT<span class="red">*</span></span>
         <span class="text-content">{{ companyInformation }}</span>
@@ -40,7 +69,7 @@
       <div v-if="!this.hasAttendeesFreeCost">
         <div class="form-item">
           <span class="label">IBAN<span class="red">*</span></span>
-            <div>
+          <div>
             <input class="input-text" style="margin-bottom: 3px" type="text" v-model="onboardingData.payment.iban" name="" @input="validateIban()"/>
             <div class="date-error">
             <span
@@ -79,10 +108,10 @@
           <input class="checkbox" type="checkbox"
                  :checked="onboardingData.payment.agb"
                  v-model="onboardingData.payment.agb" >
-          <label class="text-content" >{{ $t('iHaveReadThe') }} <nuxt-link
+          <p class="text" style="max-width: 600px"> {{ $t('iHaveReadThe') }}&nbsp;<nuxt-link
               target="_blank"
               to="/de/agb"
-          >{{ $t('conditionsOfParticipation') }} </nuxt-link> {{ $t('andAcceptTheTermsAndConditions') }}</label>
+          > {{ $t('conditionsOfParticipation') }} </nuxt-link>&nbsp;{{ $t('andAcceptTheTermsAndConditions') }}</p>
         </div>
       </div>
       <div class="form-item">
@@ -91,10 +120,10 @@
           <input class="checkbox" type="checkbox"
                  :checked="onboardingData.payment.privacyPolicy"
                  v-model="onboardingData.payment.privacyPolicy" >
-          <label class="text-content">{{ $t('iHaveReadThe') }} <nuxt-link
+          <p class="text" style="max-width: 600px">{{ $t('iHaveReadThe') }}&nbsp; <nuxt-link
               target="_blank"
               to="/de/datenschutzerklaerung"
-          >{{ $t('dataPrivacyPolicy') }}</nuxt-link> {{ $t('andAcceptTheTermsAndConditions') }}</label>
+          >{{ $t('dataPrivacyPolicy') }}</nuxt-link>&nbsp; {{ $t('andAcceptTheTermsAndConditions') }}</p>
         </div>
       </div>
     </form>
@@ -119,6 +148,15 @@ export default {
       packages: [],
       availableStorage: [],
       availableMemberships: [],
+      membershipList: [
+        { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
+        { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SGMW' },
+        { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SGDT' },
+        { id: 3, name: 'SMART GARAGE + Plastic Garage', shortform: 'SGPG' },
+        { id: 4, name: 'SMART GARAGE + All inclusive', shortform: 'SGAI' }],
+      selectedMembership: null,
+      discounted: false,
+      yearly: false,
       MembershipPrice: null,
       selected: null,
       mutableOnBoarding: this.onboardingData
@@ -147,6 +185,7 @@ export default {
         return p.notes.is_storage_box && p.notes.shop_visible
       }
       )
+      this.selectedMembership = this.membershipList[0]
     })
   },
   beforeRouteEnter (to, from, next) {
@@ -200,6 +239,94 @@ export default {
       }
       this.onboardingData.payment.ibanIsValid = false
       return false
+    },
+    getMembershipPrice () {
+      let membership = null
+      switch (this.discounted) {
+        case true:
+          switch (this.yearly) {
+            case true:
+              // discounted & yearly - (J)ährlich (E)rmäßigt
+              switch (this.selectedMembership.shortform) {
+                case 'SG': membership = this.getMembershipByShortform('SG-JE')
+                  break
+                case 'SGMW': membership = this.getMembershipByShortform('SGMW-JE')
+                  break
+                case 'SGDT': membership = this.getMembershipByShortform('SGDT-JE')
+                  break
+                case 'SGPG': membership = this.getMembershipByShortform('SGPG-JE')
+                  break
+                case 'SGAI': membership = this.getMembershipByShortform('SGAI-JE')
+                  break
+              }
+              break
+              // discounted & monthly - (M)onatlich (E)rmäßigt
+            case false:
+              switch (this.selectedMembership.shortform) {
+                case 'SG': membership = this.getMembershipByShortform('SG-ME')
+                  break
+                case 'SGMW': membership = this.getMembershipByShortform('SGMW-ME')
+                  break
+                case 'SGDT': membership = this.getMembershipByShortform('SGDT-ME')
+                  break
+                case 'SGPG': membership = this.getMembershipByShortform('SGPG-ME')
+                  break
+                case 'SGAI': membership = this.getMembershipByShortform('SGAI-ME')
+                  break
+              }
+          }
+          break
+        case false:
+          switch (this.yearly) {
+            case true:
+              // not discounted & yearly - (J)ährlich (R)egulär
+              switch (this.selectedMembership.shortform) {
+                case 'SG': membership = this.getMembershipByShortform('SG-JR')
+                  break
+                case 'SGMW': membership = this.getMembershipByShortform('SGMW-JR')
+                  break
+                case 'SGDT': membership = this.getMembershipByShortform('SGDT-JR')
+                  break
+                case 'SGPG': membership = this.getMembershipByShortform('SGPG-JR')
+                  break
+                case 'SGAI': membership = this.getMembershipByShortform('SGAI-JR')
+                  break
+              }
+              break
+            case false:
+              // not discounted & monthly - (M)onatlich (R)egulär
+              switch (this.selectedMembership.shortform) {
+                case 'SG': membership = this.getMembershipByShortform('SG-MR')
+                  break
+                case 'SGMW': membership = this.getMembershipByShortform('SGMW-MR')
+                  break
+                case 'SGDT': membership = this.getMembershipByShortform('SGDT-MR')
+                  break
+                case 'SGPG': membership = this.getMembershipByShortform('SGPG-MR')
+                  break
+                case 'SGAI': membership = this.getMembershipByShortform('SGAI-MR')
+                  break
+              }
+              break
+          }
+      }
+      if (membership) {
+        this.onboardingData.payment.membership = membership
+        if (this.yearly) {
+          return membership.recurringFee + '€ jährlich'
+        } else {
+          return membership.recurringFee + '€ monatlich'
+        }
+      }
+    },
+    getMembershipByShortform (shortform) {
+      const ms = this.availableMemberships.filter((m) => {
+        //handle packages with no notes available for storage & visibility or malformed format
+        if (m.notes.shortform === shortform) {
+          return true
+        } else return false
+      })[0]
+      if (ms) { return ms } else return null
     }
   }
 }
@@ -220,16 +347,21 @@ export default {
 
 .form-item {
   .text {
-    margin: 0;
-    margin-top: 4px;
+    //margin: 0;
+    margin-top: 3px;
+    margin-bottom: 10px;
     //max-width: 100px;
     font-weight: lighter;
     text-transform: none;
     font-size: 1.0em;
+    display: flex;
+    align-items: flex-start;
+
   }
   .checkbox-wrapper {
     padding-right: 20px;
     margin-right: 0;
+    padding: 3px;
     //margin-bottom: 0;
     display: flex;
     .checkbox {
@@ -238,18 +370,23 @@ export default {
       //align-items: center;
       //vertical-align: middle;
       //line-height: normal;
-      max-width: 15px;
-      max-height: 15px;
+      max-width: 13px;
+      max-height: 13px;
       margin-right: 5px;
+      margin-top: 3px;
     }
     .text {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
+      //justify-content: center;
+      //align-items: center;
+      //margin: 0;
       font-weight: lighter;
       text-transform: none;
       font-size: .7em;
+      margin-top: 3px;
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
 
     }
   }
@@ -274,6 +411,8 @@ export default {
     //display: flex;
     justify-content: end;
     //align-self: flex-end;
+    margin: 6px 10px 4px 0px;
+    //margin-left: 0px;
   }
   .text-content {
     align-self: flex-end;
@@ -287,9 +426,9 @@ export default {
     outline: none;
     flex-grow: 1;
     padding: 5px 10px;
-    @include media-breakpoint-down(xs) {
-      margin: 1vh 0;
-    }
+    //@include media-breakpoint-down(xs) {
+    //  margin: 1vh 0;
+    //}
     background: #fff;
     border: 1px solid #fff;
     width: 100%;
