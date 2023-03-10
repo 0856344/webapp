@@ -4,7 +4,7 @@
       <div class="form-item" style="margin-top: 20px">
         <span class="label">{{ $t('dateOfBirth') }}<span class="red">*</span></span>
         <div>
-        <input class="input-text" ref="firstInput" type="date" min="1900-01-01"
+        <input class="input-text" ref="firstInput" type="date" min="1900-01-01" max='2023-01-01'
                v-model="onboardingData.contactInformation.birthdate"
                name=""
                @change="checkBirthdate"/>
@@ -91,7 +91,7 @@
             <input id="checkbox" class="checkbox" type="checkbox"
                    :checked="onboardingData.contactInformation.hasBillingAddress"
                    v-model="onboardingData.contactInformation.hasBillingAddress" >
-            <p style="max-width: 600px" class="text">weicht von Kontaktadresse ab</p>
+            <p class="text">weicht von Kontaktadresse ab</p>
           </div>
         </div>
         <div v-if="onboardingData.contactInformation.hasBillingAddress">
@@ -206,7 +206,9 @@ export default {
       if (this.onboardingData.contactInformation.birthdate) {
         const birthDate = new Date(this.onboardingData.contactInformation.birthdate)
         const age = this.calculateAge(birthDate)
-        if (age >= 14) {
+        this.onboardingData.contactInformation.age = age
+        console.log('age: ', this.onboardingData.contactInformation.age)
+        if (age >= 12) {
           //this.onboardingData.contactInformation.birthdate = this.birthdate
           this.onboardingData.contactInformation.birthdateValid = true
         }
@@ -279,18 +281,22 @@ export default {
 }
 
 .form-item {
-  .text {
-    //margin: 0;
-    margin-top: 3px;
-    margin-bottom: 10px;
-    //max-width: 100px;
-    font-weight: lighter;
-    text-transform: none;
-    font-size: 1.0em;
-    display: flex;
-    align-items: flex-start;
-
-  }
+  //min-width: 27em;
+  //@include media-breakpoint-down(md) {
+  //  min-width: auto;
+  //}
+  //padding: 0 0 5px;
+  //@include media-breakpoint-up(sm) {
+  //  padding: 0 0 18px;
+  //  display: grid;
+  //  grid-template-columns: 28% 72%;
+  //}
+  //align-items: center;
+  //.label {
+  //  font-weight: bold;
+  //  text-transform: uppercase;
+  //  font-size: .7em;
+  //}
   .checkbox-wrapper {
     padding-right: 20px;
     margin-right: 0;
@@ -298,11 +304,6 @@ export default {
     //margin-bottom: 0;
     display: flex;
     .checkbox {
-      //display: flex;
-      //justify-content: center;
-      //align-items: center;
-      //vertical-align: middle;
-      //line-height: normal;
       max-width: 13px;
       max-height: 13px;
       margin-right: 5px;
@@ -310,9 +311,6 @@ export default {
     }
     .text {
       display: flex;
-      //justify-content: center;
-      //align-items: center;
-      //margin: 0;
       font-weight: lighter;
       text-transform: none;
       font-size: .7em;

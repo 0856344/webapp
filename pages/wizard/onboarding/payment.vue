@@ -1,7 +1,7 @@
 <template>
   <div class="section">
     <form class="form">
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px">
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 14" style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT<span class="red">*</span></span>
         <select class="input-select" v-model="selectedMembership">
           <option
@@ -9,6 +9,20 @@
             {{ membership.name }}
           </option>
         </select>
+      </div>
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 14" style="margin-top: 40px">
+        <span class="label">MITGLIEDSCHAFT für Kids</span>
+        <select class="input-select" v-model="selectedMembership" >
+          <option
+              v-for="membership in membershipList" :value="membership" v-bind:key="membership.id" disabled>
+            {{ membership.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 14" style="margin-top: 0px" >
+        <label ></label>
+        <h5 style="margin: 0px">Personen, zwischen dem 12. bis zum vollendeten 14. Lebensjahr dürfen ausschließlich die "SMART GARAGE" Mitgliedschaft abschließen.
+        </h5>
       </div>
 <!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px">-->
 <!--        <span class="label">MITGLIEDSCHAFT HIDDEN<span class="red">*</span></span>-->
@@ -25,6 +39,7 @@
           <input class="checkbox" type="checkbox"
                  :checked="discounted"
                  v-model="discounted" >
+          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>
         </div>
       </div>
       <div class="form-item">
@@ -33,6 +48,7 @@
           <input class="checkbox" type="checkbox"
                  :checked="yearly"
                  v-model="yearly" >
+          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>
         </div>
       </div>
       <div class="form-item" v-if="this.selectedMembership">
