@@ -403,7 +403,7 @@ export default {
       display: flex;
       align-items: flex-start;
       flex-wrap: wrap;
-
+      justify-content: flex-start;
     }
   }
   input {
