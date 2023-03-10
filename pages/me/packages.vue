@@ -18,7 +18,7 @@
     <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
       <a v-bind:href="mail">Frontdesk</a>
       Frontdesk per E-Mail.  </p>
-  <div v-if="memberStorage" >
+  <div v-if="memberStorage && memberStorage.length > 0" >
     <h2>Lager</h2>
     <div
         v-for="userPackage of memberStorage"

@@ -150,7 +150,7 @@
         </div>
       </div>
       <div class="form-item">
-        <span class="label">{{ 'KontoinhaberIn' }}</span>
+        <span class="label">{{ 'Kontoinhaber*In' }}</span>
         <input class="input-text" type="text" v-model="paymentMethod.accountOwnerName" name=""/>
       </div>
       <div class="form-item">

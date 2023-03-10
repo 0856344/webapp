@@ -4,7 +4,7 @@
       <div class="form-item" style="margin-top: 20px">
         <span class="label">{{ $t('dateOfBirth') }}<span class="red">*</span></span>
         <div>
-        <input class="input-text" ref="firstInput" type="date" min="1900-01-01"
+        <input class="input-text" ref="firstInput" type="date" min="1900-01-01" max='2023-01-01'
                v-model="onboardingData.contactInformation.birthdate"
                name=""
                @change="checkBirthdate"/>
@@ -206,7 +206,8 @@ export default {
       if (this.onboardingData.contactInformation.birthdate) {
         const birthDate = new Date(this.onboardingData.contactInformation.birthdate)
         const age = this.calculateAge(birthDate)
-        if (age >= 14) {
+        this.onboardingData.contactInformation.age = age
+        if (age >= 12) {
           //this.onboardingData.contactInformation.birthdate = this.birthdate
           this.onboardingData.contactInformation.birthdateValid = true
         }
@@ -298,24 +299,24 @@ export default {
   .checkbox-wrapper {
     padding-right: 20px;
     margin-right: 0;
+    padding: 3px;
     //margin-bottom: 0;
     display: flex;
     .checkbox {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      vertical-align: middle;
-      line-height: normal;
-      max-width: 30px;
+      max-width: 13px;
+      max-height: 13px;
+      margin-right: 5px;
+      margin-top: 3px;
     }
     .text {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
       font-weight: lighter;
       text-transform: none;
       font-size: .7em;
+      margin-top: 3px;
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
     }
   }
   input {
