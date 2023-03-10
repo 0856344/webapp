@@ -207,7 +207,6 @@ export default {
         const birthDate = new Date(this.onboardingData.contactInformation.birthdate)
         const age = this.calculateAge(birthDate)
         this.onboardingData.contactInformation.age = age
-        console.log('age: ', this.onboardingData.contactInformation.age)
         if (age >= 12) {
           //this.onboardingData.contactInformation.birthdate = this.birthdate
           this.onboardingData.contactInformation.birthdateValid = true
