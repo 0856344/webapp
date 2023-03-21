@@ -1,6 +1,5 @@
 <template>
   <section class="workshop-overview">
-    <!--TODO set scss class to "workshop-filters" and fix style -->
     <div class="machine-filters">
       <code class="loading" v-if="loading">{{ $t('Loading') }}</code>
       <div class="tags" :class="(tagsCollapsed ? 'collapsed' : '')">
@@ -15,7 +14,7 @@
                 v-model="c.value"
                 class="tag"
                 theme="white"
-            >{{c.name}}</checkbox>
+            >{{c.nameToDisplay}}</checkbox>
           </div>
         </div>
         <br>
@@ -30,60 +29,69 @@
         </div>
       </div>
     </div>
-    <div v-if="!isCalendar">
-      <div class="search">
+    <div v-show="!isCalendar" >
+<!--      <div class="search">
         <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
-      </div>
+      </div>-->
       <div class="workshop-list-wrapper" :key="this.filter">
         <div v-if="filteredWorkshops && filteredWorkshops.length > 0" class="workshop-list">
           <transition-group name="list">
             <workshop-list-item
                 v-for="item in filteredWorkshops"
-                :blok="item"
-                :key="item.id"
+                :blok="item.blok"
+                :pretix="item.pretix"
+                :key="item.blok.id"
                 class="list-item"
                 :slim="false"
             ></workshop-list-item>
           </transition-group>
         </div>
-        <div v-else>
-          <div v-if="workshops && workshops.length > 0" class="workshop-list">
+        <div >
+          <div v-if="fullWorkshops && fullWorkshops.length > 0 && !noResults" class="workshop-list">
             <transition-group name="list">
               <workshop-list-item
-                  v-for="item in workshops"
-                  :blok="item"
-                  :key="item.id"
+                  v-for="item in fullWorkshops"
+                  :blok="item.blok"
+                  :pretix="item.pretix"
+                  :key="item.blok.id"
                   class="list-item"
                   :slim="false"
               ></workshop-list-item>
             </transition-group>
           </div>
-          <div v-else>
+<!--          <div >
             <div class="workshop-list-none">
               <code> {{ $t('noSearchResults') }}</code>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
-    <div v-if="isCalendar" :key="this.filter">
-      <script type="text/javascript" src="https://pretix.eu/widget/v1.de.js"></script>
-      <link rel="stylesheet" type="text/css" href="https://pretix.eu/demo/democon/widget/v1.css">
-      <div id="pretix-container" class="pretix-content">
-        <div v-show="selectedEvent.length !== 0" >
-          <pretix-widget id="pretix" name="pretix" event="https://pretix.eu/grandgarage" :filter=this.formatPretixCategoryRequest(this.filter)></pretix-widget>
-        </div>
-        <div v-show="selectedEvent.length === 0" >
-          <pretix-widget name="pretix" event="https://pretix.eu/grandgarage"></pretix-widget>
-        </div>
-        <noscript>
-          <div class="pretix-widget">
-            <div class="pretix-widget-info-message">
-              JavaScript is disabled in your browser. To access our ticket shop without JavaScript,
-              please <a target="_blank" href="https://pretix.eu/ggTest">click here</a>.
-            </div>
+    <div v-if="isCalendar"  :key="this.display" >
+      <div :key="this.filter" >
+        <script type="text/javascript" src="https://pretix.eu/widget/v1.de.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://pretix.eu/demo/democon/widget/v1.css">
+        <div id="pretix-container" class="pretix-content">
+          <div v-show="selectedEvent.length !== 0" >
+            <pretix-widget id="pretix" name="pretix" event="https://pretix.eu/grandgarage"
+                           :list-type="this.calenderDisplayOnChange(this.display)"
+                           :filter=this.formatPretixCategoryRequest(this.filter)></pretix-widget>
           </div>
-        </noscript>
+          <div v-show="selectedEvent.length === 0" >
+            <pretix-widget name="pretix"
+                           :list-type="this.calenderDisplayOnChange(this.display)"
+                           event="https://pretix.eu/grandgarage"
+            ></pretix-widget>
+          </div>
+          <noscript>
+            <div class="pretix-widget">
+              <div class="pretix-widget-info-message">
+                JavaScript is disabled in your browser. To access our ticket shop without JavaScript,
+                please <a target="_blank" href="https://pretix.eu/grandgarage">click here</a>.
+              </div>
+            </div>
+          </noscript>
+        </div>
       </div>
     </div>
   </section>
@@ -96,37 +104,86 @@ export default {
   data () {
     return {
       categories: [
-        { key: 'event', name: 'Event', value: false },
-        { key: 'workshop', name: 'Workshops', value: false },
-        { key: 'training', name: 'Einschulungen', value: false },
-        { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false }
-        // { key: 'for_kids', name: 'Workshops für Kinder', value: false }
+        { key: 'event', name: 'Event', value: false, nameToDisplay: 'Event' },
+        { key: 'workshop', name: 'Workshops', value: false, nameToDisplay: 'Workshops' },
+        { key: 'training', name: 'Einschulungen', value: false, nameToDisplay: 'Einschulungen' },
+        { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false, nameToDisplay: 'Frauen und Technik' },
+        { key: 'for_kids', name: 'for_kids', value: false, nameToDisplay: 'Workshops für Kinder' }
         // { key: 'makemas', name: '#makemas2022', value: false }
       ],
       loading: false,
       search: '',
       workshops: [],
+      pretixWorkshops: [],
       tags: [],
       tagsCollapsed: false,
+      fullWorkshops: [],
       selectedEvent: '',
       filteredWorkshops: [],
       filter: '',
-      isCalendar: false // false = grid , true = calender
+      noResults: false,
+      isCalendar: false, // false = grid , true = calender,
+      windowWidth: Infinity,
+      display: 'calendar'
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize)
+    })
+    this.onResize()
+  },
   created () {
+    this.addPretixToStoryblok()
     this.$watch('categories', (newVal, oldVal) => {
-      this.update()
+      this.updateFilter()
     }, { deep: true })
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
   },
   watch: {
     search () {
-      this.update()
+      this.noResults = false
+      this.updateSearch()
     }
   },
   methods: {
-    update () {
+    onResize () {
+      this.windowWidth = window.innerWidth
+      if (this.windowWidth <= 1200) {
+        this.display = 'week'
+      } else {
+        this.display = 'calendar'
+      }
+    },
+    filterByDate () {
+      this.pretixWorkshops.forEach((item) => {
+      })
+    },
+
+    addPretixToStoryblok () {
+      this.workshops.forEach((item) => {
+        this.pretixWorkshops.forEach((pretixItem) => {
+          if (item.content.pretix_shortform && item.content.pretix_shortform === pretixItem[0].slug) {
+            const lastItem = pretixItem[pretixItem.length - 1]
+            const startDate = moment(lastItem.date_from)
+            if (startDate != null && startDate.isAfter(moment())) {
+              this.fullWorkshops.push({
+                blok: item,
+                pretix: pretixItem
+              })
+            }
+          }
+        })
+      })
+    },
+    updateSearch () {
+      this.filterWorkshopsBySearch()
+    },
+    updateFilter () {
       this.loading = true
+      this.noResults = false
       this.selectedEvent = this.selectedCategories()
       if (this.selectedEvent.length > 1) {
         this.deselectOldest()
@@ -134,24 +191,34 @@ export default {
       }
       if (this.selectedEvent.length === 0) {
         this.filteredWorkshops = []
+        this.search = ''
+        this.filter = ''
       }
       if (this.selectedEvent.length === 1) {
         this.filter = this.selectedEvent[0].name
-        this.filterWorkshops()
+        this.filterWorkshopsBySearch()
       }
+
       this.loading = false
     },
     toggleTags () {
       this.tagsCollapsed = !this.tagsCollapsed
     },
-    filterWorkshops () {
+    filterWorkshopsBySearch () {
       this.filteredWorkshops = []
-      this.workshops.forEach((item) => {
-        if (item.content.category === this.filter) {
-          this.filteredWorkshops.push(item)
+      this.fullWorkshops.forEach((item) => {
+        if (item.blok.content.title.includes(this.search)) {
+          if (this.filter !== '') {
+            if (item.blok.content.category === this.filter) {
+              this.filteredWorkshops.push(item)
+            } else {
+              this.noResults = true
+            }
+          } else {
+            this.filteredWorkshops.push(item)
+          }
         }
       })
-      return this.filteredWorkshops
     },
     deselectOldest () {
       this.categories.forEach((item) => {
@@ -169,6 +236,9 @@ export default {
     },
     formatPretixCategoryRequest ($category) {
       return 'attr[Kategorie]=' + escape($category)
+    },
+    calenderDisplayOnChange ($displayType) {
+      return $displayType
     }
   },
   computed: {
@@ -176,35 +246,34 @@ export default {
       return {
         filter_query: {
           component: {
-            in: 'workshop-date'
-          },
-          starttime: {
-            'gt-date': moment().subtract(24, 'hours').format('DD.MM.YYYYY HH:mm')
+            in: 'workshop'
           }
         }
-        // search_term: this.search
       }
     }
   },
-  async asyncData (context) {
-    // let tags = await context.store.dispatch("loadTags");
+  async asyncData  (context) {
     const filters = {
       filter_query: {
         component: {
-          in: 'workshop-date'
-        },
-        starttime: {
-          'gt-date': moment().subtract(24, 'hours').format('YYYY-MM-DD HH:mm')
+          in: 'workshop'
         }
       }
     }
-    const workshops = await context.store.dispatch('findWorkshops', { filters: filters, search: '' }).then((data) => {
-      if (data) {
-        return { workshops: data }
+    const workshops = await context.store.dispatch('loadWorkshops', filters).then((data) => {
+      if (data.stories) {
+        return { workshops: data.stories }
       }
       return { workshops: [] }
     })
-    return { ...workshops }
+    const pretixWorkshops = await context.store.dispatch('getPretixEvents').then((data) => {
+      if (data) {
+        return { pretixWorkshops: data }
+      } else {
+        return { pretixWorkshops: [] }
+      }
+    })
+    return { ...workshops, ...pretixWorkshops }
   }
 }
 </script>
@@ -299,6 +368,7 @@ export default {
 }
 
 .workshop-list-wrapper {
+  margin-top: 30px;
   display: flex;
 
   .workshop-list {

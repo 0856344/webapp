@@ -16,10 +16,13 @@
             v-if="workshop.subtitle"
             class="subtitle"
           >
-            {{ workshop.subtitle }}
+            {{ subtitle }}
           </div>
           <div class="teaser">
-            {{ workshop.teaser }}
+            <markdown
+                :value="teaser"
+                class="info-text"
+            />
           </div>
         </router-link>
       </div>
@@ -32,7 +35,10 @@ export default {
   props: ['id'],
   data () {
     return {
-      story: null
+      story: null,
+      info: '',
+      subtitle: '',
+      teaser: ''
     }
   },
   computed: {
@@ -40,7 +46,7 @@ export default {
       return this.story.content
     }
   },
-  created () {
+  mounted () {
     this.$store.app.$storyapi.get(`cdn/stories/${this.id}`, {
       find_by: 'uuid'
     }).then((res) => {
@@ -48,16 +54,25 @@ export default {
     }).catch((e) => {
     })
   },
+  updated () {
+    this.getPretixData()
+  },
   methods: {
+    async getPretixData () {
+      if (this.story.content.pretix_shortform) {
+        const events = await this.$store.dispatch('getPretixEventsForWorkshop', this.story.content.pretix_shortform)
+        const info = events.pop().frontpage_text['de-informal']
+        this.subtitle = info.split('\n')[0].slice(4)
+        this.teaser = info.split('\n').splice(1).join('\n')
+      }
+    },
     open () {
       this.$router.push({ path: this.story.full_slug })
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
-
 .preview-wrapper {
   width: 100%;
   display: flex;
@@ -66,6 +81,9 @@ export default {
   .workshop-preview {
     padding: 20px;
     width: 600px;
+    @include media-breakpoint-down(sm) {
+      width: 330px;
+    }
 
     .loading {
     }
@@ -103,10 +121,22 @@ export default {
         font-size: 1rem;
         font-family: $font-mono;
       }
-
       .teaser {
-        font-size: 1rem;
+        position: relative;
+        z-index: 1;
+        flex: 1;
         font-family: $font-mono;
+        line-height: 1.6;
+        font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        hyphens: auto;
+        @include media-breakpoint-down(sm) {
+          font-size: 0.7rem;
+          width: 100%;
+        }
       }
     }
   }

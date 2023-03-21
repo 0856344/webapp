@@ -22,7 +22,7 @@ export default {
   methods: {
     async getPretixData () {
       if (this.workshop.content.pretix_shortform) {
-        const events = await this.$store.dispatch('getPretixEvents', this.workshop.content.pretix_shortform)
+        const events = await this.$store.dispatch('getPretixEventsForWorkshop', this.workshop.content.pretix_shortform)
         const lastEvent = events.pop().frontpage_text
         this.workshopInformation = lastEvent['de-informal']
       }

@@ -1,6 +1,7 @@
 <template>
   <div
     v-editable="blok"
+    v-if="workshopInformation"
     class="workshop-info"
   >
     <div class="left-content">

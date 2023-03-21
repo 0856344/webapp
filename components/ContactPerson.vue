@@ -67,7 +67,7 @@ export default {
   flex-direction: row;
   flex: 1;
   justify-content: center;
-  margin: 2rem 0 8rem 0;
+  margin: 2rem 0 6rem 0;
 
   .teaser-content {
     max-width: 100%;
@@ -154,28 +154,33 @@ export default {
   }
 }
 @include media-breakpoint-down(md) {
-  .contact-block {
-    .info {
-      line-height: 1.2;
-      font-size: 1.1em;
+  .contact-person {
+    margin: 2rem 0 2rem 0;
 
-    }
-    .contact-details {
-      flex-flow: column;
+    .contact-block {
+      .info {
+        line-height: 1.2;
+        font-size: 1.1em;
 
-      .contact-image {
-        height: 20vh;
+      }
+
+      .contact-details {
+        flex-flow: column;
+
+        .contact-image {
+          height: 20vh;
+        }
       }
     }
   }
 }
 @include media-breakpoint-down(xs) {
   .contact-block {
-    .info {
-      line-height: 1.2;
-      font-size: 0.9em;
+      .info {
+        line-height: 1.2;
+        font-size: 0.9em;
 
+      }
     }
   }
-}
 </style>

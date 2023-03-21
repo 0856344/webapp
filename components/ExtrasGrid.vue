@@ -52,18 +52,18 @@ export default {
 }
 
 .extras-grid {
-  column-count: 3;
-  column-gap: 2em;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 2vw;
   @include media-breakpoint-down(md) {
-    column-count: 2;
+    grid-template-columns: 1fr 1fr;
   }
   @include media-breakpoint-down(sm) {
-    column-count: 1;
+    grid-template-columns: 1fr;
   }
 }
 
 .extra-item {
-  background-color: #eee;
   display: inline-block;
   margin: 0 0 2em;
   width: 100%;
