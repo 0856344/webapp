@@ -55,29 +55,43 @@
         <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>
         <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
       </div>
-      <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-      <!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
-      <!--        <div class="form-item" >-->
-      <!--          <label ></label>-->
-      <!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
-      <!--        </div>-->
-      <!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
-      <!--        <span class="label">{{storage.name}}</span>-->
-      <!--        <div class="checkbox-wrapper">-->
-      <!--          <input class="checkbox" type="checkbox"-->
-      <!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
-      <!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      </div>-->
-      <!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">-->
-      <!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
-      <!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
-      <!--      </div>-->
-      <!--      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">-->
-      <!--        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>-->
-      <!--        <p class="text">{{ this.price }} (inkl. MwSt)</p>-->
-      <!--      </div>-->
+<!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
+<!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
+<!--        <div class="form-item" >-->
+<!--          <label ></label>-->
+<!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
+<!--        </div>-->
+<!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
+<!--        <span class="label">{{storage.name}}</span>-->
+<!--        <div class="checkbox-wrapper">-->
+<!--          <input class="checkbox" type="checkbox"-->
+<!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
+<!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      </div>-->
+<!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">-->
+<!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
+<!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
+<!--      </div>-->
+<!--      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">-->
+<!--        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>-->
+<!--        <p class="text">{{ this.price }} (inkl. MwSt)</p>-->
+<!--      </div>-->
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company"  style="margin-top: 20px">
+        <span class="label">{{ 'Beginn der Mitgliedschaft' }}<span class="red">*</span></span>
+        <div>
+          <input class="input-text" type="date"  :min="minDate"  :max="maxDate"
+                 v-model="onboardingData.payment.startDate"
+                 name=""/>
+          <div class="date-error">
+<!--          <span-->
+<!--              v-if="!onboardingData.contactInformation.birthdateValid"-->
+<!--              class="bad"-->
+<!--          >{{ $t('tooYoung') }} </span>-->
+          </div>
+        </div>
+      </div>
       <div class="form-item" v-if="this.onboardingData.contactInformation.company">
         <span class="label">FIRMENMITGLIEDSCHAFT<span class="red">*</span></span>
         <span class="text-content">{{ companyInformation }}</span>
@@ -175,7 +189,10 @@ export default {
       yearly: false,
       MembershipPrice: null,
       selected: null,
-      mutableOnBoarding: this.onboardingData
+      mutableOnBoarding: this.onboardingData,
+      // new memberships only in the future
+      minDate: new Date().toISOString().split('T')[0],
+      maxDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0]
     }
   },
   mounted () {
@@ -403,7 +420,7 @@ export default {
       display: flex;
       align-items: flex-start;
       flex-wrap: wrap;
-
+      justify-content: flex-start;
     }
   }
   input {

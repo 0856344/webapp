@@ -23,6 +23,8 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL_DEVELOP
+    // set public captcha site key (develop)
+    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG'
     break
   case 'staging':
     tmpAuth = new auth0.WebAuth({
@@ -33,6 +35,8 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL_STAGING
+    // set public captcha site key (develop)
+    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG'
     break
   default: // production
     tmpAuth = new auth0.WebAuth({
@@ -179,14 +183,15 @@ const createStore = () => {
           this.$sentry.captureException(err)
         })
       },
-      getUserMetadata ({ state }) {
-        const id = state.member.id
-        return connector.get(`v1/fabman/members/${id}/metadata`).then((r) => {
-          return r
-        }).catch((err) => {
-          this.$sentry.captureException(err)
-        })
-      },
+      //@deprecated
+      // getUserMetadata ({ state }) {
+      //   const id = state.member.id
+      //   return connector.get(`v1/fabman/members/${id}/metadata`).then((r) => {
+      //     return r
+      //   }).catch((err) => {
+      //     this.$sentry.captureException(err)
+      //   })
+      // },
       getBookedWorkshops () {
         return connector.post('member/bookedWorkshops').then((r) => {
           return r.data
@@ -234,14 +239,15 @@ const createStore = () => {
       workshopStorno ({ state }, data) {
         return connector.post('/member/workshopStorno', data)
       },
-      async getCredits ({ state }) {
-        const res = await connector.get('/v1/members/getCredits')
-        return res.data
-      },
-      async getCreditsLog ({ state }) {
-        const res = await connector.get('/v1/members/getCreditsLog')
-        return res.data
-      },
+      //@deprecated
+      // async getCredits ({ state }) {
+      //   const res = await connector.get('/v1/members/getCredits')
+      //   return res.data
+      // },
+      // async getCreditsLog ({ state }) {
+      //   const res = await connector.get('/v1/members/getCreditsLog')
+      //   return res.data
+      // },
       startTransaction ({ state }, data) {
         // Returns payrexx checkout link
         return axios.post(connectorBaseUrl + '/payrexx/checkout', data)
@@ -288,12 +294,13 @@ const createStore = () => {
         const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
         return res.data
       },
-      async setPackageOnboarding ({ state }, data) {
-        const id = data.memberId
-        //const req = data.req
-        const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
-        return res.data
-      },
+      // TODO delete (package set in create member, security fix)
+      // async setPackageOnboarding ({ state }, data) {
+      //   const id = data.memberId
+      //   //const req = data.req
+      //   const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
+      //   return res.data
+      // },
       async uploadImage ({ state }, data) {
         const res = await connector.post('v1/files/image', data)
         //console.log(res)
@@ -338,7 +345,13 @@ const createStore = () => {
           })
         }
       },
-      async getPretixEvents ({ state }, subEvent) {
+      async getPretixEvents ({ state }) {
+        const r = await axios.get(`${baseUrl + '/api/pretix/subevents'}`)
+        if (r.status === 200) {
+          return r.data
+        }
+      },
+      async getPretixEventsForWorkshop ({ state }, subEvent) {
         const r = await axios.get(`${baseUrl + '/api/pretix/events'}/${subEvent}`)
         if (r.status === 200) {
           return r.data

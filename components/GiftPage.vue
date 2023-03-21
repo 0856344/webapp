@@ -1,24 +1,26 @@
 <template href="http://www.w3.org/1999/html">
   <div v-editable="blok" class="gift-page">
     <div class="gift-card-body">
-      <h2 v-if="action" class="gift-page-headline">
+      <div class="gift-card-header">
+        <h2 v-if="action" class="gift-page-headline">
       <span class="svg-icon mr-05">
-        <img width="50px" src="~/assets/img/icons/gift-card-icon.svg" class="decorator">
+        <img src="~/assets/img/icons/gift-card-icon.svg" class="decorator">
       </span>
-        <span class="svg-h2">
+          <span class="svg-h2">
         {{ $t('giftCard') }} {{ action === 'buy' ? 'kaufen' : 'einlösen' }}
       </span>
-        <loading-spinner v-if="loading" class="loading-spinner ml-05"/>
-      </h2>
-      <h2 v-else class="gift-page-headline">
+          <loading-spinner v-if="loading" class="loading-spinner ml-05"/>
+        </h2>
+        <h2 v-else class="gift-page-headline">
       <span class="svg-icon mr-05">
-        <img width="50px" src="~/assets/img/icons/gift-card-icon.svg" class="decorator">
+        <img src="~/assets/img/icons/gift-card-icon.svg" class="decorator">
       </span>
-        <span class="svg-h2">
+          <span class="svg-h2">
         {{ $t('giftCards') }}
       </span>
-        <loading-spinner v-if="loading" class="loading-spinner ml-05"/>
-      </h2>
+          <loading-spinner v-if="loading" class="loading-spinner ml-05"/>
+        </h2>
+      </div>
       <template v-if="!action">
         <div class="description-gift-card">
           <markdown :value="blok.Title" />
@@ -61,7 +63,7 @@
         <template>
 
           <template v-if="action === 'redeem'">
-            <div v-if="step === 0" class="giftcardForm" style="margin-left: 10px; margin-right: 10px">
+            <div v-if="step === 0" class="description-gift-card">
               <br>
               <h3>Du hast zwei Optionen zur Auswahl, um deinen Wertgutschein einzulösen.</h3>
               <br>
@@ -368,6 +370,12 @@ h2 {
 .svg-icon, .svg-h2 {
   vertical-align: middle;
   display: inline-grid;
+  .decorator {
+    width: 50px;
+    @include media-breakpoint-down(sm) {
+      width: 30px;
+    }
+  }
 }
 
 //.paypal-icon {
@@ -423,13 +431,12 @@ h2 {
 //////////FIRST-PAGE//////////////////////////////////////////
 .gift-page-headline {
   width: 1200px;
-  background: white;
   margin-left: auto;
   margin-right: auto;
   font-size: 2.8rem;
   font-family: "Chakra Petch", sans-serif;
   text-transform: uppercase;
-  padding: 38px;
+  padding: 20px;
   padding-left: 130px;
   @include media-breakpoint-down(md) {
     max-width: 800px;
@@ -442,7 +449,7 @@ h2 {
   }
   @include media-breakpoint-down(xs) {
     max-width: 400px;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     padding: 19px;
   }
 }
@@ -743,6 +750,12 @@ h2 {
   flex-flow: column;
 }
 
+.gift-card-header {
+  max-width: 1264px;
+  background-color: white;
+  margin: 20px 0;
+}
+
 .headline {
   padding-left: 21vw;
   text-decoration: underline;
@@ -821,6 +834,7 @@ h2 {
   line-height: 1.6;
   font-size: 0.9em;
   letter-spacing: .03em;
+  flex-direction: column;
   @include media-breakpoint-up(md) {
     width: 70%;
     font-size: 1em;

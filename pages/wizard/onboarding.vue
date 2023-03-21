@@ -102,6 +102,15 @@
 
 <script>
 
+import Vue from 'vue'
+import { VueReCaptcha } from 'vue-recaptcha-v3'
+Vue.use(VueReCaptcha, {
+  siteKey: process.env.RECAPTCHA_SITE_KEY,
+  loaderOptions: {
+    autoHideBadge: true
+  }
+})
+
 const MemberType = {
   member: 1,
   corporate: 2,
@@ -161,7 +170,8 @@ export default {
           accountOwner: null,
           accountOwnerLegalAge: false,
           privacyPolicy: false,
-          ibanIsValid: false
+          ibanIsValid: false,
+          startDate: new Date().toISOString().split('T')[0]
         },
         profile: {
           address: null,
@@ -221,7 +231,7 @@ export default {
           }
           // if no company member
           if (membershipType === MemberType.member) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner && data.payment.membership) {
+            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner && data.payment.membership && data.payment.startDate) {
               return false
             }
           }
@@ -380,7 +390,7 @@ export default {
     },
     async submit () {
       const memberType = this.getMemberType()
-      // STEP1: create FABMAN Member
+      // build onboarding requests
       let memberDataBasic = {
         // basicData = data for the new fabman user, that is needed for any membership type
         emailAddress: this.onboardingData.userInformation.email,
@@ -433,7 +443,6 @@ export default {
             accountOwner: this.onboardingData.payment.accountOwner
           }
           if (this.onboardingData.contactInformation.hasBillingAddress) {
-            // 'billingCompany', 'billingAddress', 'billingAddress2', 'billingRegion', 'billingInvoiceText', 'billingEmailAddress' unused
             extendMemberDataBillingAddress = {
               billingFirstName: this.onboardingData.billingInformation.firstName,
               billingLastName: this.onboardingData.billingInformation.lastName,
@@ -453,7 +462,6 @@ export default {
             accountOwner: this.onboardingData.payment.accountOwner
           }
           if (this.onboardingData.contactInformation.hasBillingAddress) {
-            // 'billingCompany', 'billingAddress', 'billingAddress2', 'billingRegion', 'billingInvoiceText', 'billingEmailAddress' unused
             extendMemberDataBillingAddress = {
               billingFirstName: this.onboardingData.billingInformation.firstName,
               billingLastName: this.onboardingData.billingInformation.lastName,
@@ -468,95 +476,79 @@ export default {
           break
       }
       //console.log('memberData: ', memberData)
+      // bundle package (membership) information
+      let packageData = null
+      // private member
+      if (memberType === MemberType.member) {
+        packageData = {
+          packageId: this.onboardingData.payment.membership.id,
+          startDate: this.onboardingData.payment.startDate
+        }
+      } else {
+        // company member
+        packageData = {
+          packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id
+        }
+      }
+      // add package information to memberdata
+      memberData = { ...memberData, packageData }
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // add captcha token to memberData
+      memberData = { ...memberData, ...captchaData }
       this.loading = true
-
-      //1) create Fabman member
+      // 1) create Fabman member and set membership
       this.$store.dispatch('createMember', memberData).then((r) => {
-        //console.log('RESULT FABMAN CREATE: ', r)
         // eslint-disable-next-line camelcase
         const fabman_id = r.id
-        // eslint-disable-next-line camelcase
-        //const fabman_memberNumber = r.memberNumber
-        let packageData = null
-        if (memberType === MemberType.member) {
-          packageData = {
-            memberId: r.id,
-            id: this.onboardingData.payment.membership.id
+        // 2) upload Image
+        if (this.onboardingData.image64) {
+          const uploadImageRequest = {
+            memberId: fabman_id.toString(),
+            dataUrl: this.onboardingData.image64
           }
-        } else {
-          packageData = {
-            memberId: r.id,
-            id: this.onboardingData.contactInformation.company.metadata.attendees_package_id
+          this.$store.dispatch('uploadImage', uploadImageRequest).then((r) => {})
+        }
+        // 3) register Auth0
+        const registerAuth0Data = {
+          email: this.onboardingData.userInformation.email,
+          password: this.onboardingData.userInformation.password,
+          user_metadata: {
+            firstName: this.onboardingData.userInformation.firstName,
+            lastName: this.onboardingData.userInformation.lastName,
+            address: this.onboardingData.contactInformation.address,
+            city: this.onboardingData.contactInformation.city,
+            zip: this.onboardingData.contactInformation.zip
           }
         }
-        //console.log('packageData: ', packageData)
-        // 2) set membership
-        this.$store.dispatch('setPackageOnboarding', packageData).then((r) => {
-          //console.log('RESULT SET PACKAGE: ', r)
-          if (this.onboardingData.payment.bookStorage && memberType === MemberType.member) {
-            const storage = JSON.parse(JSON.stringify(this.onboardingData.payment.bookStorage))
-            storage.forEach(storage => {
-              //console.log('STORAGE: ', storage)
-              const storagePackageData = {
-                memberId: fabman_id,
-                id: storage.id
-              }
-              // 3) set storage packages
-              this.$store.dispatch('setPackageOnboarding', storagePackageData).then((r) => {
-                //console.log('STORAGE FABMAN CREATE: ', r)
-              })
-            })
-          }
-          // 4) upload Image
-          if (this.onboardingData.image64) {
-            const uploadImageRequest = {
-              memberId: fabman_id.toString(),
-              dataUrl: this.onboardingData.image64
-            }
-            this.$store.dispatch('uploadImage', uploadImageRequest).then((r) => {})
-          }
-          // 5) register Auth0
-          const registerAuth0Data = {
-            email: this.onboardingData.userInformation.email,
-            password: this.onboardingData.userInformation.password,
-            user_metadata: {
-              firstName: this.onboardingData.userInformation.firstName,
-              lastName: this.onboardingData.userInformation.lastName,
-              address: this.onboardingData.contactInformation.address,
-              city: this.onboardingData.contactInformation.city,
-              zip: this.onboardingData.contactInformation.zip
-            }
-          }
-          this.$store.dispatch('registerUser', registerAuth0Data).then((r) => {
-            // TODO remove or use loading madness
-            this.loadNextPage()
-            this.loading = false
-            this.$store.dispatch('setSidebar', 'register-success')
-          }).catch((e) => {
-            this.loading = false
-            if (e.error) {
-              this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-              return
-            }
-            if (e.code) {
-              switch (e.code) {
-                case 'user_exists':
-                  this.errorMessage = 'Ein User mit dieser Email Adresse existiert bereits'
-                  break
-                case 'invalid_password':
-                  this.errorMessage = 'Das Passwort ist zu schwach.'
-                  this.errorDescription = e.policy
-                  break
-                default:
-                  this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.code + '"'
-                  break
-              }
-            }
-          })
+        this.$store.dispatch('registerUser', registerAuth0Data).then((r) => {
+          this.loadNextPage()
+          this.loading = false
+          this.$store.dispatch('setSidebar', 'register-success')
         }).catch((e) => {
-          this.$toast.show('Ein Fehler beim Abschließen der Mitgliedschaft ist aufgetreten ', e.code, {
-            theme: 'bubble'
-          })
+          this.loading = false
+          if (e.error) {
+            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
+            return
+          }
+          if (e.code) {
+            switch (e.code) {
+              case 'user_exists':
+                this.errorMessage = 'Ein User mit dieser Email Adresse existiert bereits'
+                break
+              case 'invalid_password':
+                this.errorMessage = 'Das Passwort ist zu schwach.'
+                this.errorDescription = e.policy
+                break
+              default:
+                this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.code + '"'
+                break
+            }
+          }
         })
       })
         .catch((e) => {

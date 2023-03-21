@@ -68,6 +68,11 @@ export default {
 </script>
 
 <style lang="scss" >
+ .pretix-widget-event-availability-low.pretix-widget-event-calendar-event {
+   border-right: 10px solid #e69140 !important;
+
+ }
+
 .pretix-widget-event-list-entry pretix-widget-event-availability-red pretix-widget-event-availability-over{
   color: white;
 }

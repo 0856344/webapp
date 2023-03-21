@@ -11,20 +11,20 @@ module.exports = {
         name: 'DE',
         file: 'de.json',
         path: ''
-      },
-      {
-        code: 'en',
-        iso: 'en-US',
-        name: 'EN',
-        file: 'en.json',
-        path: 'en'
-      }
+      }//,
+      // {
+      //   code: 'en',
+      //   iso: 'en-US',
+      //   name: 'EN',
+      //   file: 'en.json',
+      //   path: 'en'
+      // }
     ],
     defaultLocale: 'de',
     lazy: true,
     langDir: '~/locales/',
     vueI18n: {
-      fallbackLocale: 'en'
+      fallbackLocale: 'de'
     }
   },
   robots: [
