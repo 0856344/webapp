@@ -41,11 +41,10 @@
             v-if="!slim"
             class="teaser"
         >
-          {{content.teaser}}
-<!--          <markdown
+          <markdown
               :value="teaserText"
               class="info-text"
-          />-->
+          />
         </div>
         <div class="trainer">
           {{ content.trainer }}
@@ -141,10 +140,8 @@ export default {
       return false
     },
     teaserText () {
-      if (this.pretix) {
-        return this.pretix
-        // return this.pretix['de-informal']
-        //.split('\n').splice(1).join('\n')
+      if (this.pretix[this.pretix.length - 1].frontpage_text['de-informal']) {
+        return this.pretix[this.pretix.length - 1].frontpage_text['de-informal'].split('\n').splice(1).join('\n')
       }
       return ''
     },

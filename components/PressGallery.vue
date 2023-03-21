@@ -14,19 +14,26 @@
         </a>
       </li>
     </ul>
-<!--    <div id="modal" class="modal">
-      <div class="modal-display">
-        <a class="xButton" href="javascript:void(0)"
-           @click="closeModal()">&times;</a>
-        <div class="display-image">
-          <a id="arrow-left" class="arrow-left" href="javascript:void(0)"
-             @click="changeImage(-1)">&lt;</a>
-          <img id="modal-img" class="modal-img"/>
-          <a id="arrow-right" class="arrow-right" href="javascript:void(0)"
-             @click="changeImage(1)">></a>
-        </div>
-      </div>
-    </div>-->
+<!--    <ul>
+      <li v-for="i in imageList"  :key="i.uuid" >
+        <img :src="i.image.filename" loading="lazy">
+      </li>
+      <li></li>
+    </ul>-->
+    <!--    <div id="modal" class="modal">
+          <div class="modal-display">
+            <a class="xButton" href="javascript:void(0)"
+               @click="closeModal()">&times;</a>
+            <div class="display-image">
+              <a id="arrow-left" class="arrow-left" href="javascript:void(0)"
+                 @click="changeImage(-1)">&lt;</a>
+              <img id="modal-img" class="modal-img"/>
+              <a id="arrow-right" class="arrow-right" href="javascript:void(0)"
+                 @click="changeImage(1)">></a>
+            </div>
+          </div>
+        </div>-->
+
   </div>
 </template>
 
@@ -97,6 +104,82 @@ export default {
 </script>
 
 <style lang="scss" >
+// BASIC
+/*
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+}
+
+li {
+  height: 20vh;
+  flex-grow: 1;
+  img {
+    padding:10px;
+    max-height: 100%;
+    min-width: 100%;
+    object-fit: contain;
+    vertical-align: bottom;
+    &:hover {
+        transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+        --transform-scale-x: 1.1;
+        --transform-scale-y: 1.1;
+        opacity: 0.75;
+        --tw-scale-x: 1.1;
+        --tw-scale-y: 1.1;
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        transition-duration: 500ms;
+    }
+  }
+}
+
+li:last-child {
+  // There's no science in using "10" here. In all my testing, this delivered the best results.
+  flex-grow: 10;
+}
+// ADVANCED
+
+// Portrait
+
+@media (max-aspect-ratio: 1/1) {
+  li {
+    height: 20vh;
+  }
+}
+
+// Short screens
+
+@media (max-height: 480px) {
+  li {
+    height: 60vh;
+  }
+}
+
+// Smaller screens in portrait
+
+@media (max-aspect-ratio: 1/1) and (max-width: 480px) {
+  ul {
+    flex-direction: row;
+  }
+
+  li {
+    height: auto;
+    width: 100%;
+  }
+  img {
+    width: 100%;
+    max-height: 75vh;
+    min-width: 0;
+  }
+}*/
+
 .image-title{
   color: black;
   font-size: 1.2rem;

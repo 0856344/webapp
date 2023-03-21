@@ -25,7 +25,6 @@ export default {
         const events = await this.$store.dispatch('getPretixEventsForWorkshop', this.workshop.content.pretix_shortform)
         const lastEvent = events.pop().frontpage_text
         this.workshopInformation = lastEvent['de-informal']
-        console.log(this.workshopInformation)
       }
     }
   },
