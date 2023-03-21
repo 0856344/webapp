@@ -23,6 +23,8 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL_DEVELOP
+    // set public captcha site key (develop)
+    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG'
     break
   case 'staging':
     tmpAuth = new auth0.WebAuth({
@@ -33,6 +35,8 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL_STAGING
+    // set public captcha site key (develop)
+    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG'
     break
   default: // production
     tmpAuth = new auth0.WebAuth({
