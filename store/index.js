@@ -47,6 +47,10 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL
+    // set public captcha site key (production)
+    // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
+    // env variables stored on netlify are only available during build
+    process.env.RECAPTCHA_SITE_KEY = '6Ld5hhclAAAAAMYEqSvK9SxLbzZQhDMa1ouOaksM'
 }
 
 const webAuth = tmpAuth
