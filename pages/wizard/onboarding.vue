@@ -102,6 +102,15 @@
 
 <script>
 
+import Vue from 'vue'
+import { VueReCaptcha } from 'vue-recaptcha-v3'
+Vue.use(VueReCaptcha, {
+  siteKey: process.env.RECAPTCHA_SITE_KEY,
+  loaderOptions: {
+    autoHideBadge: true
+  }
+})
+
 const MemberType = {
   member: 1,
   corporate: 2,
@@ -482,6 +491,14 @@ export default {
       }
       // add package information to memberdata
       memberData = { ...memberData, packageData }
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // add captcha token to memberData
+      memberData = { ...memberData, ...captchaData }
       this.loading = true
       // 1) create Fabman member and set membership
       this.$store.dispatch('createMember', memberData).then((r) => {
@@ -508,7 +525,6 @@ export default {
           }
         }
         this.$store.dispatch('registerUser', registerAuth0Data).then((r) => {
-          // TODO remove or use loading madness
           this.loadNextPage()
           this.loading = false
           this.$store.dispatch('setSidebar', 'register-success')
