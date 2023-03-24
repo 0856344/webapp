@@ -95,8 +95,6 @@
                       <font-awesome-icon icon="info-circle"/>
                       Bitte <a @click="login()" target="_self" href="javascript:;">logge dich ein</a>, um deinen Gutschein einlösen zu könnnen!
                     </div>
-<!--                    <div>{{ $t('ifNotAMemberGoAndRegister') }}-->
-<!--                    </div>-->
                     <br>
                   </div>
                   <div class="buttons">
@@ -165,7 +163,6 @@
 </template>
 
 <script>
-// import { helpers } from '~/utils/helper'
 
 export default {
   props: ['blok'],
@@ -183,46 +180,18 @@ export default {
     return {
       step: 0,
       action: null,
-      //origin: null,
-      //selectedProductId: null,
       giftcardCode: null,
-      //paymentMethod: 0,
       error: '',
-      //shippingstreetEnabled: 0,
-      //invoiceContact: {},
-      //connectorInvoiceContact: null,
-      //sepa_active: false,
-      //shippingstreet: [],
       loading: false
-      //sepaActive: false
     }
   },
   computed: {
     user () {
-      // if (this.$store.state.user) {
-      //   this.loadUserData()
-      // }
       return this.$store.state.user
     },
     isAuthenticated () {
       return !!this.$store.state.auth
     },
-    // validInvoiceContact () {
-    //   if (!this.invoiceContact) {
-    //     return false
-    //   }
-    //   if (this.user === null) {
-    //     return (this.invoiceContact.firstname && this.invoiceContact.lastname && helpers.validateEmail(this.invoiceContact.email) && this.invoiceContact.street && this.invoiceContact.city && this.invoiceContact.zip)
-    //   } else {
-    //     return (this.invoiceContact.firstname && this.invoiceContact.lastname && this.invoiceContact.street && this.invoiceContact.city && this.invoiceContact.zip)
-    //   }
-    // },
-    // validPayment () {
-    //   return this.paymentMethod !== 0
-    // },
-    // ibanIsValid () {
-    //   return helpers.validateIban(this.invoiceContact.iban)
-    // },
     images () {
       return this.blok.Images
     }
@@ -239,31 +208,6 @@ export default {
     login () {
       this.$store.dispatch('setSidebar', 'login')
     },
-    // loadUserData () {
-    //   this.loading = true
-    //   this.$store.dispatch('getUserMetadata')
-    //     .then((data) => {
-    //       this.invoiceContact = data.data.invoice_contact
-    //       this.sepaActive = data.data.sepa_active
-    //     })
-    //     .catch((error) => {
-    //       console.log(error.response.status, error.response.data.msg)
-    //       this.$toast.show('Ein Fehler ist aufgetreten', {
-    //         theme: 'bubble'
-    //       })
-    //     })
-    //     .finally(() => {
-    //       this.loading = false
-    //     })
-    // },
-    // capitalize (str) {
-    //   return helpers.capitalize(str)
-    // },
-    // isValidEmailAdress (email) {
-    //   if (this.user === null) {
-    //     return helpers.validateEmail(email)
-    //   } else return true
-    // },
     getQuery (to) {
       // eslint-disable-next-line no-prototype-builtins
       if (to.hasOwnProperty('origin')) {
@@ -287,15 +231,21 @@ export default {
     },
     async redeem () {
       this.loading = true
-      await this.$store.dispatch('redeemGiftCard', { secret: this.giftcardCode })
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // add captcha token to memberData
+      let payload = { secret: this.giftcardCode }
+      payload = { ...payload, ...captchaData }
+      await this.$store.dispatch('redeemGiftCard', payload)
         .then((response) => {
           //console.log('success', response)
           this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
             className: 'goodToast'
           })
-          // if (this.origin) {
-          //   this.$router.push(`buyWorkshop?uuid=${this.origin}`)
-          // }
           this.$router.push('/me/invoices')
         })
         .catch((error) => {
@@ -377,30 +327,6 @@ h2 {
     }
   }
 }
-
-//.paypal-icon {
-//  background-color: grey; /* defines the background color of the image */
-//  mask: url('~/assets/img/icons/cc-paypal.svg') no-repeat center / contain;
-//  -webkit-mask: url('~/assets/img/icons/cc-paypal.svg') no-repeat center / contain;
-//}
-//
-//.mastercard-icon {
-//  background-color: grey; /* defines the background color of the image */
-//  mask: url('~/assets/img/icons/cc-mastercard.svg') no-repeat center / contain;
-//  -webkit-mask: url('~/assets/img/icons/cc-mastercard.svg') no-repeat center / contain;
-//}
-//
-//.visa-icon {
-//  background-color: grey; /* defines the background color of the image */
-//  mask: url('~/assets/img/icons/cc-visa.svg') no-repeat center / contain;
-//  -webkit-mask: url('~/assets/img/icons/cc-visa.svg') no-repeat center / contain;
-//}
-//
-//.apple-pay-icon {
-//  background-color: grey; /* defines the background color of the image */
-//  mask: url('~/assets/img/icons/cc-apple-pay.svg') no-repeat center / contain;
-//  -webkit-mask: url('~/assets/img/icons/cc-apple-pay.svg') no-repeat center / contain;
-//}
 
 .silent-link, .silent-info {
   font-size: 0.6em;

@@ -149,10 +149,6 @@ export default {
       loading: false,
       birthdate: null,
       countries: null
-      //optionalInvoiceContactSelected: false
-      // companyCodeValid: false,
-      // company: null
-    //invoiceContact: {}
     }
   },
   async mounted () {
@@ -189,15 +185,6 @@ export default {
       return this.onboardingData?.contactInformation?.company?.metadata?.attendees_free_cost
     }
 
-    // user () {
-    //   if (this.$store.state.user) {
-    //     this.loadUserData()
-    //   }
-    //   return this.$store.state.user
-    // },
-    // invoice () {
-    //   return this.invoiceContact
-    // }
   },
   methods: {
     checkBirthdate () {
@@ -219,12 +206,19 @@ export default {
       return Math.floor(difference / 31557600000)
     },
 
-    checkCompanyCode () {
+    async checkCompanyCode () {
       this.loading = true
-      const data = {
+      let payload = {
         companyCode: this.onboardingData.contactInformation.companyCode
       }
-      return this.$store.dispatch('checkCompanyCode', data).then((r) => {
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      payload = { ...payload, ...captchaData }
+      return this.$store.dispatch('checkCompanyCode', payload).then((r) => {
         // this.mailCheck = true
         this.onboardingData.contactInformation.companyCodeValid = true
         this.onboardingData.contactInformation.company = r
