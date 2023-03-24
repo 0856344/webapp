@@ -103,13 +103,6 @@
 <script>
 
 import Vue from 'vue'
-import { VueReCaptcha } from 'vue-recaptcha-v3'
-Vue.use(VueReCaptcha, {
-  siteKey: process.env.RECAPTCHA_SITE_KEY,
-  loaderOptions: {
-    autoHideBadge: true
-  }
-})
 
 const MemberType = {
   member: 1,
@@ -343,7 +336,7 @@ export default {
     async checkLoginDataAndProceed () {
       this.loadingEmail = true
       this.loadingCheckEmailStatus = 'Prüfe E-Mail Adresse...'
-      const data = {
+      let payload = {
         email: this.onboardingData.userInformation.email,
         password: this.onboardingData.userInformation.password,
         user_metadata: {
@@ -351,7 +344,14 @@ export default {
           lastName: this.onboardingData.userInformation.lastName
         }
       }
-      this.$store.dispatch('checkLoginData', data).then((r) => {
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      payload = { ...payload, ...captchaData }
+      this.$store.dispatch('checkLoginData', payload).then((r) => {
         this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar'
         return new Promise(resolve => {
           setTimeout(() => {

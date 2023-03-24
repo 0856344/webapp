@@ -25,10 +25,11 @@
 <!--        </div>-->
 <!--      </div>-->
 <!--      </div>-->
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">
-        <span class="label">LAGER: PREIS<span class="red">*</span></span>
-        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>
-      </div>
+<!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">-->
+<!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
+<!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
+<!--      </div>-->
+      <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
       <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">
         <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>
         <p class="text">{{ this.price }} (inkl. MwSt)</p>
