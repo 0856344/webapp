@@ -2,7 +2,7 @@
 <img src="./docs/graphs/gg-logo.png" width="200">
 </p>
 
-# GrandGarage - Website (vueJs)
+# GrandGarage - Website
 
 This badly named repository contains the source code that powers the web application hosted at [grandgarage.eu](https://grandgarage.eu/).<br> It's a member portal to interface with services at Grand Garage, a makerspace in Linz, Austria.
 
