@@ -51,6 +51,7 @@
           <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>
         </div>
       </div>
+      <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
       <div class="form-item" v-if="this.selectedMembership">
         <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>
         <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
@@ -99,7 +100,7 @@
       <div v-if="!this.hasAttendeesFreeCost">
         <div class="form-item">
           <span class="label">IBAN<span class="red">*</span></span>
-          <div>
+            <div>
             <input class="input-text" style="margin-bottom: 3px" type="text" v-model="onboardingData.payment.iban" name="" @input="validateIban()"/>
             <div class="date-error">
             <span
@@ -421,6 +422,7 @@ export default {
       align-items: flex-start;
       flex-wrap: wrap;
       justify-content: flex-start;
+
     }
   }
   input {

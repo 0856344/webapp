@@ -284,9 +284,17 @@ export default {
       this.ibanIsValid = false
       return false
     },
-    updateMember (event) {
+    async updateMember (event) {
       this.loading = true
-      this.$store.dispatch('updateMember', Object.assign({}, this.member)).then(() => {
+      let payload = Object.assign({}, this.member)
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      payload = { ...payload, ...captchaData }
+      this.$store.dispatch('updateMember', payload).then(() => {
         this.loading = false
         this.$notify({
           title: 'Yay!',
@@ -301,14 +309,20 @@ export default {
         })
       })
     },
-    updatePaymentMethod (event) {
+    async updatePaymentMethod (event) {
       this.loadingPayment = true
       //const accountOwnerName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
-      const updatePaymentRequest = {
+      let updatePaymentRequest = {
         type: 'sepa',
         iban: this.paymentMethod.iban,
         accountOwnerName: this.paymentMethod.accountOwnerName
       }
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      updatePaymentRequest = { ...updatePaymentRequest, ...captchaData }
       this.$store.dispatch('updatePaymentMethod', Object.assign({}, updatePaymentRequest)).then(() => {
         this.loadingPayment = false
         this.currentIban = updatePaymentRequest.iban
