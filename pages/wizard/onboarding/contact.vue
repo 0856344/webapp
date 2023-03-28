@@ -224,29 +224,33 @@ export default {
         this.onboardingData.contactInformation.company = r
         this.loading = false
       }).catch((e) => {
-        this.onboardingData.contactInformation.companyCodeValid = false
-        this.onboardingData.contactInformation.company = null
-        this.loading = false
-        const errorMsg = e?.response?.data?.msg
-        if (e.error) {
-          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-        }
-        if (errorMsg) {
-          switch (errorMsg) {
-            case 'code_invalid':
-              this.$toast.show('Dieser Firmencode existiert nicht.', {
-                theme: 'bubble'
-              })
-              break
-            default:
-              this.$toast.show('Ein Fehler ist aufgetreten: ', e.code, {
-                theme: 'bubble'
-              })
-              break
+          this.onboardingData.contactInformation.companyCodeValid = false
+          this.onboardingData.contactInformation.company = null
+          this.loading = false
+          const errorStatus = e?.response?.status
+          if (e.error) {
+            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
           }
-          //this.mailCheck = false
+          if (errorStatus) {
+            switch (errorStatus) {
+              case 401:
+                this.$toast.show('Dieser Firmencode existiert nicht.', {
+                  theme: 'bubble'
+                })
+                break
+              case 429:
+                this.$toast.show('Überprüfung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
+                  theme: 'bubble'
+                })
+                break
+              default:
+                this.$toast.show('Ein Fehler ist aufgetreten. ', e, {
+                  theme: 'bubble'
+                })
+                break
+            }
+          }
         }
-      }
       )
     },
     cleanCompanyCode () {

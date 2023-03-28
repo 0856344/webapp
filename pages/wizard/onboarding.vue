@@ -365,19 +365,24 @@ export default {
         .catch((e) => {
           this.loadingEmail = false
           this.mailCheck = false
-          const errorMsg = e?.response?.data?.msg
+          const errorStatus = e?.response?.status
           if (e.error) {
             this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
           }
-          if (errorMsg) {
-            switch (errorMsg) {
-              case 'user_exists':
-                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits', {
+          if (errorStatus) {
+            switch (errorStatus) {
+              case 401:
+                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits.', {
+                  theme: 'bubble'
+                })
+                break
+              case 429:
+                this.$toast.show('E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
                   theme: 'bubble'
                 })
                 break
               default:
-                this.$toast.show('Ein Fehler ist aufgetreten: ', e.code, {
+                this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
                   theme: 'bubble'
                 })
                 break
