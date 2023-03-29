@@ -42,5 +42,19 @@ export default {
     align-self: center;
     width: 60%;
   }
+  @include media-breakpoint-down(md) {
+    flex-flow: column;
+    height: inherit;
+    padding: 20px;
+    .logo{
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding-bottom: 20px;
+    }
+    .text-center{
+      width: 100%;
+    }
+  }
 }
 </style>
