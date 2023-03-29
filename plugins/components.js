@@ -99,6 +99,7 @@ import PretixCalendar from '../components/PretixCalendar'
 import TwoVideosColumn from '@/components/TwoVideosColumn'
 import DownloadCard from '../components/DownloadCard'
 import SingleImage from '@/components/SingleImage.vue'
+import LogoText from '@/components/LogoText.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -203,3 +204,4 @@ Vue.component('pretix-calendar', PretixCalendar)
 Vue.component('two-videos-column', TwoVideosColumn)
 Vue.component('download-card', DownloadCard)
 Vue.component('single-image', SingleImage)
+Vue.component('logo-text', LogoText)
