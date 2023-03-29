@@ -127,6 +127,7 @@ export default {
   data () {
     return {
       events: null,
+      pretixInfoArray: this.pretix,
       eventDates: [],
       teaser: '',
       nextEvent: {}
@@ -140,8 +141,8 @@ export default {
       return false
     },
     teaserText () {
-      if (this.pretix[this.pretix.length - 1].frontpage_text['de-informal']) {
-        return this.pretix[this.pretix.length - 1].frontpage_text['de-informal'].split('\n').splice(1).join('\n')
+      if (this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text['de-informal']) {
+        return this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text['de-informal'].split('\n').splice(1).join('\n')
       }
       return ''
     },
@@ -170,6 +171,7 @@ export default {
       }
     },*/
     formatEventDates () {
+      console.log(this.pretixInfoArray)
       this.pretix.forEach((item) => {
         if (item.date_from !== null && moment(item.date_from).isAfter(moment())) {
           const startDate = moment(item.date_from)
