@@ -7,8 +7,8 @@
         class="header-image"
         :style="{ 'background-image': 'url(' + $resizeImage(blok.image, '1600x0') + ')' }"
     >
-      <div class="general-header-box">
-        <div class="testing">
+      <div v-if="blok.ButtonText" class="general-header-box">
+        <div class="inner-box">
           <div v-if="blok.boxText" class="text-center">
             {{blok.boxText}}
           </div>
@@ -16,12 +16,6 @@
             BUTTON
           </button>
         </div>
-        <!--        <div class="box" style="&#45;&#45;c:repeating-linear-gradient(45deg,#ffffff 0 5px,rgb(255,255,255) 5px 10px);&#45;&#45;w:calc(30% - 10px);&#45;&#45;b:4px;&#45;&#45;r:10px">
-                  {{blok.boxText}}
-                  <button class="input-button-secondary">
-                    BUTTON
-                  </button>
-                </div>-->
       </div>
     </div>
     <div
@@ -41,15 +35,13 @@ export default {
 
 <style lang="scss">
 .general-header{
-  .testing {
+  .inner-box {
     display: flex;
     flex-flow: column;
     justify-content: center;
-    height: 80%;
+    height: fit-content;
     width: 80%;
     align-self: center;
-    display: flex;
-    justify-content: center;
     --b: 4px;  /* border thickness*/
     --s: 50px; /* size of the corner*/
     --g: 10px; /* the gap*/
@@ -77,7 +69,7 @@ export default {
         calc(100% - var(--_p,0%)) var(--_p,0%),
         var(--_p,0%) calc(100% - var(--_p,0%));
   }
-  .testing:hover {
+  .inner-box:hover {
     background-size: calc(100% - var(--g)) calc(100% - var(--g));
     --_p: calc(var(--g)/2);
     --_i: 0s;
@@ -94,51 +86,16 @@ export default {
   }
 }
 
-.box {
-  flex-flow: column;
-  padding: 20px;
-  align-self: center;
-  color:white;
-  --b: 5px;   /* thickness of the border */
-  --c: red;   /* color of the border */
-  --w: 20px;  /* width of border */
-  --r: 25px;  /* radius */
-
-  /* space for the border */
-  position:relative;
-  /*Irrelevant code*/
-  width:85%;
-  height:85%;
-  box-sizing:border-box;
-  margin:5px;
-  display:inline-flex;
-  font-size:1em;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
-.box::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--c,red);
-  padding: var(--b);
-  border-radius: var(--r);
-  -webkit-mask:
-      linear-gradient(  0deg,#000 calc(2*var(--b)),#0000 0) 50% var(--b)/calc(100% - 2*var(--w)) 100% repeat-y,
-      linear-gradient(-90deg,#000 calc(2*var(--b)),#0000 0) var(--b) 50%/100% calc(100% - 2*var(--w)) repeat-x,
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude;
-}
 .general-header-box{
   color:white;
   background: rgba(39, 46, 68, 0.71);
-  height: 20vh;
+  height: fit-content;
   width: 20vw;
   display: flex;
   justify-content: center;
+  .text-center{
+    margin-bottom: 2vh;
+  }
   @include media-breakpoint-down(lg) {
     width: 45vw;
   }
@@ -148,7 +105,9 @@ export default {
   @include media-breakpoint-down(sm) {
     font-size: 15px;
     width: 70vw;
-    height: 20vh;
+  }
+  .input-button-primary{
+    margin: 0;
   }
 }
 .general-header {
