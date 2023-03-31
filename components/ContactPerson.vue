@@ -26,17 +26,26 @@
           <div class="info">
             <markdown :value="blok.info" />
           </div>
-          <div class="contact-details">
-            <contact-preview
-                v-for="p in person"
-                :id="p"
-                :key="p"
-            />
-            <contact-preview
-                v-for="p in member"
-                :id="p"
-                :key="p._uid"
-            />
+          <div v-if="person.length === 1"  class="contact-details">
+            <div >
+              <single-contact-preview
+                  :id="person[0]"
+              />
+            </div>
+          </div>
+          <div  v-else class="contact-details">
+            <div class="double-contact">
+              <contact-preview
+                  v-for="p in person"
+                  :id="p"
+                  :key="p"
+              />
+              <contact-preview
+                  v-for="p in member"
+                  :id="p"
+                  :key="p._uid"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -44,7 +53,10 @@
 </template>
 
 <script>
+import SingleContactPreview from '@/components/SingleContactPreview.vue'
+
 export default {
+  components: { SingleContactPreview },
   props: ['blok'],
   computed: {
     person () {
@@ -68,7 +80,12 @@ export default {
   flex: 1;
   justify-content: center;
   margin: 2rem 0 6rem 0;
-
+  .double-contact{
+    display: flex;
+    @include media-breakpoint-down(md) {
+      flex-flow:column;
+    }
+  }
   .teaser-content {
     max-width: 100%;
     position: relative;
