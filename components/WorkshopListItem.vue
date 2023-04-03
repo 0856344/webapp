@@ -171,7 +171,7 @@ export default {
       }
     },*/
     formatEventDates () {
-      console.log(this.pretixInfoArray)
+      //console.log(this.pretixInfoArray)
       this.pretix.forEach((item) => {
         if (item.date_from !== null && moment(item.date_from).isAfter(moment())) {
           const startDate = moment(item.date_from)
