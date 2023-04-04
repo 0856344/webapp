@@ -504,20 +504,16 @@ export default {
       }
       // add captcha token to memberData
       memberData = { ...memberData, ...captchaData }
+
+      // add image data to memberData
+      const imageData = {
+        dataUrl: this.onboardingData.image64
+      }
+      memberData = { ...memberData, imageData }
       this.loading = true
-      // 1) create Fabman member and set membership
+      //  create Fabman member and set membership
       this.$store.dispatch('createMember', memberData).then((r) => {
-        // eslint-disable-next-line camelcase
-        const fabman_id = r.id
-        // 2) upload Image
-        if (this.onboardingData.image64) {
-          const uploadImageRequest = {
-            memberId: fabman_id.toString(),
-            dataUrl: this.onboardingData.image64
-          }
-          this.$store.dispatch('uploadImage', uploadImageRequest).then((r) => {})
-        }
-        // 3) register Auth0
+        // register Auth0
         const registerAuth0Data = {
           email: this.onboardingData.userInformation.email,
           password: this.onboardingData.userInformation.password,
