@@ -2,7 +2,7 @@
   <div class="section">
     <h2>{{ $t('membership') }}</h2>
     <div>  <loading-spinner
-        v-if="!(memberPackages && memberStorage && availableStorage)"
+        v-if="!(memberPackages && memberStorage)"
         color="#333"
     />
     </div>
@@ -54,8 +54,8 @@ export default {
     return {
       memberPackages: null,
       membership: null,
-      memberStorage: null,
-      availableStorage: null
+      memberStorage: null
+      //availableStorage: null
     }
   },
   async mounted () {
@@ -79,21 +79,21 @@ export default {
       })
 
       //all packages available for booking
-      this.packages = await this.$store.dispatch('getPackages')
-      // filter already booked storages
-      this.availableStorage = this.packages.filter((p) => {
-        for (const s of this.memberStorage) {
-          if (s.package === p.id) {
-            return false
-          }
-        }
-        //handle packages with no notes available for storage & visibility or malformed format
-        if (!p.notes) {
-          console.error('no notes (storage, visible) for package: ', p)
-          return false
-        }
-        return p.notes.is_storage_box && p.notes.shop_visible
-      })
+      // this.packages = await this.$store.dispatch('getPackages')
+      // // filter already booked storages
+      // this.availableStorage = this.packages.filter((p) => {
+      //   for (const s of this.memberStorage) {
+      //     if (s.package === p.id) {
+      //       return false
+      //     }
+      //   }
+      //   //handle packages with no notes available for storage & visibility or malformed format
+      //   if (!p.notes) {
+      //     console.error('no notes (storage, visible) for package: ', p)
+      //     return false
+      //   }
+      //   return p.notes.is_storage_box && p.notes.shop_visible
+      // })
     }
   },
   computed: {
