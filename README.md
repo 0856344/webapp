@@ -8,7 +8,7 @@ This badly named repository contains the source code that powers the web applica
 
 <br><br>
 
-## Dev Setup
+## Setup
 
 1. **Install Dependencies**
    `yarn`

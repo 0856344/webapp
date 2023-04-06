@@ -1,25 +1,22 @@
 <template>
   <div>
-    <ul
-        class="grid-container">
-      <li v-for="image in imageList" :key="image.uuid" class="relative">
-        <a  :href="image.pdf.filename" target="_blank">
-          <div
-              class="display-grid-item"
-            >
-            <img :src="image.image.filename" alt=""
-                 class="grid-image"
-            />
-          </div>
+    <ul   class="grid-container">
+      <li v-for="i in imageList"  :key="i.uuid" class="grid-image">
+        <a  :href="i.pdf.filename" target="_blank">
+        <img :src="i.image.filename" loading="lazy" >
         </a>
       </li>
-    </ul>
-<!--    <ul>
-      <li v-for="i in imageList"  :key="i.uuid" >
-        <img :src="i.image.filename" loading="lazy">
-      </li>
       <li></li>
-    </ul>-->
+    </ul>
+<!--    <ul
+        class="grid-container">
+    </ul>
+        <ul>
+          <li v-for="i in imageList"  :key="i.uuid" >
+            <img :src="i.image.filename" loading="lazy">
+          </li>
+          <li></li>
+        </ul>-->
     <!--    <div id="modal" class="modal">
           <div class="modal-display">
             <a class="xButton" href="javascript:void(0)"
@@ -33,7 +30,6 @@
             </div>
           </div>
         </div>-->
-
   </div>
 </template>
 
@@ -52,194 +48,148 @@ export default {
       return this.images
     }
   }
-/*  methods: {
-    showModal (src) {
-      const modal = document.getElementById('modal')
-      modal.style.setProperty('display', 'flex')
-      const modalImg = document.getElementById('modal-img')
-      modalImg.src = src
-      this.imageList.forEach((item, index) => {
-        if (item.image.filename === src) {
-          this.currentPosition = index
+  /*  methods: {
+      showModal (src) {
+        const modal = document.getElementById('modal')
+        modal.style.setProperty('display', 'flex')
+        const modalImg = document.getElementById('modal-img')
+        modalImg.src = src
+        this.imageList.forEach((item, index) => {
+          if (item.image.filename === src) {
+            this.currentPosition = index
+          }
+        })
+        this.checkForEnd()
+      },
+      closeModal () {
+        const modal = document.getElementById('modal')
+        modal.style.setProperty('display', 'none')
+        this.currentPosition = 0
+      },
+      changeImage (val) {
+        if (this.currentPosition + val === this.imageList.length || this.currentPosition + val < 0) {
+          return
         }
-      })
-      this.checkForEnd()
-    },
-    closeModal () {
-      const modal = document.getElementById('modal')
-      modal.style.setProperty('display', 'none')
-      this.currentPosition = 0
-    },
-    changeImage (val) {
-      if (this.currentPosition + val === this.imageList.length || this.currentPosition + val < 0) {
-        return
-      }
-      const modalImg = document.getElementById('modal-img')
-      const rightArrow = document.getElementById('arrow-right')
+        const modalImg = document.getElementById('modal-img')
+        const rightArrow = document.getElementById('arrow-right')
 
-      this.currentPosition = this.currentPosition + val
-      this.checkForEnd()
-      this.imageList.forEach((item, index) => {
-        if (this.currentPosition === index) {
-          modalImg.src = item.image.filename
+        this.currentPosition = this.currentPosition + val
+        this.checkForEnd()
+        this.imageList.forEach((item, index) => {
+          if (this.currentPosition === index) {
+            modalImg.src = item.image.filename
+          }
+        })
+      },
+      checkForEnd () {
+        const rightArrow = document.getElementById('arrow-right')
+        if (this.currentPosition === this.imageList.length - 1) {
+          rightArrow.style.setProperty('opacity', '0')
+        } else {
+          rightArrow.style.setProperty('opacity', '1')
         }
-      })
-    },
-    checkForEnd () {
-      const rightArrow = document.getElementById('arrow-right')
-      if (this.currentPosition === this.imageList.length - 1) {
-        rightArrow.style.setProperty('opacity', '0')
-      } else {
-        rightArrow.style.setProperty('opacity', '1')
+        const leftArrow = document.getElementById('arrow-left')
+        if (this.currentPosition === 0) {
+          leftArrow.style.setProperty('opacity', '0')
+        } else {
+          leftArrow.style.setProperty('opacity', '1')
+        }
       }
-      const leftArrow = document.getElementById('arrow-left')
-      if (this.currentPosition === 0) {
-        leftArrow.style.setProperty('opacity', '0')
-      } else {
-        leftArrow.style.setProperty('opacity', '1')
-      }
-    }
-  }*/
+    }*/
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss"  >
 // BASIC
-/*
-ul {
+.grid-container{
   display: flex;
   flex-wrap: wrap;
-  list-style-type: none;
-}
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
 
-li {
-  height: 20vh;
-  flex-grow: 1;
+  li {
+    height: 20vh;
+    flex-grow: 1;
+    list-style: none;
+  }
+
+  li:last-child {
+    // There's no science in using "10" here. In all my testing, this delivered the best results.
+    flex-grow: 10;
+  }
+
   img {
-    padding:10px;
     max-height: 100%;
     min-width: 100%;
-    object-fit: contain;
+    object-fit: cover;
     vertical-align: bottom;
-    &:hover {
-        transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-        --transform-scale-x: 1.1;
-        --transform-scale-y: 1.1;
-        opacity: 0.75;
-        --tw-scale-x: 1.1;
-        --tw-scale-y: 1.1;
-        --tw-border-spacing-x: 0;
-        --tw-border-spacing-y: 0;
-        --tw-translate-x: 0;
-        --tw-translate-y: 0;
-        --tw-rotate: 0;
-        --tw-skew-x: 0;
-        --tw-skew-y: 0;
-        transition-duration: 500ms;
+    padding:10px;
+  }
+}
+
+  // ADVANCED
+
+  // Portrait
+
+  @media (max-aspect-ratio: 1/1) {
+    li {
+      height: 15vh;
+    }
+  }
+
+  // Short screens
+
+  @media (max-height: 480px) {
+    li {
+      height: 80vh;
+    }
+  }
+
+  // Smaller screens in portrait
+
+  @media (max-aspect-ratio: 1/1) and (max-width: 480px) {
+    ul {
+      flex-direction: row;
+    }
+
+    li {
+      height: auto;
+      width: 100%;
+    }
+    img {
+      width: 100%;
+      max-height: 75vh;
+      min-width: 0;
+      &:hover {
+        .grid-image {
+          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          --transform-scale-x: 1.1;
+          --transform-scale-y: 1.1;
+          opacity: 0.75;
+          --tw-scale-x: 1.1;
+          --tw-scale-y: 1.1;
+          --tw-border-spacing-x: 0;
+          --tw-border-spacing-y: 0;
+          --tw-translate-x: 0;
+          --tw-translate-y: 0;
+          --tw-rotate: 0;
+          --tw-skew-x: 0;
+          --tw-skew-y: 0;
+          transition-duration: 500ms;
+        }
+      }
     }
   }
 }
-
-li:last-child {
-  // There's no science in using "10" here. In all my testing, this delivered the best results.
-  flex-grow: 10;
-}
-// ADVANCED
-
-// Portrait
-
-@media (max-aspect-ratio: 1/1) {
-  li {
-    height: 20vh;
-  }
-}
-
-// Short screens
-
-@media (max-height: 480px) {
-  li {
-    height: 60vh;
-  }
-}
-
-// Smaller screens in portrait
-
-@media (max-aspect-ratio: 1/1) and (max-width: 480px) {
-  ul {
-    flex-direction: row;
-  }
-
-  li {
-    height: auto;
-    width: 100%;
-  }
-  img {
-    width: 100%;
-    max-height: 75vh;
-    min-width: 0;
-  }
-}*/
 
 .image-title{
   color: black;
   font-size: 1.2rem;
 }
-.grid-container {
-  width: 100%;
-  display: grid;
-  padding-bottom: 1rem;
-  column-gap: 1rem;
-  row-gap: 2rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  list-style: none;
-  margin-left: -20px;
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 1.5rem;
-  }
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-left: 0px;
-  }
-  @media (min-width: 1280px) {
-    column-gap: 2rem;
-    margin-left: 0px;
-  }
-}
-
-.display-grid-item {
-  display: block;
-  overflow: hidden;
-  width: 100%;
-
-  &:hover {
-    .grid-image {
-      transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-      --transform-scale-x: 1.1;
-      --transform-scale-y: 1.1;
-      opacity: 0.75;
-      --tw-scale-x: 1.1;
-      --tw-scale-y: 1.1;
-      --tw-border-spacing-x: 0;
-      --tw-border-spacing-y: 0;
-      --tw-translate-x: 0;
-      --tw-translate-y: 0;
-      --tw-rotate: 0;
-      --tw-skew-x: 0;
-      --tw-skew-y: 0;
-      transition-duration: 500ms;
-    }
-  }
-}
 
 .grid-image {
-  object-fit: cover;
-  cursor: pointer;
-  pointer-events: none;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  height: auto;
-  width: 100%;
 
   &:hover {
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));

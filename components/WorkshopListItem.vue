@@ -140,8 +140,14 @@ export default {
       return false
     },
     teaserText () {
-      if (this.pretix[this.pretix.length - 1].frontpage_text['de-informal']) {
-        return this.pretix[this.pretix.length - 1].frontpage_text['de-informal'].split('\n').splice(1).join('\n')
+      if (this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text['de-informal']) {
+        let text = this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text['de-informal'].split('\n').splice(1).join('\n')
+        // use teaser text to Hard Facts (which is markdown H5 #####)
+        if (text.includes('HARD FACTS')) {
+          text = text.substring(0, text.indexOf('HARD FACTS'))
+        }
+
+        return text
       }
       return ''
     },
