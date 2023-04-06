@@ -127,7 +127,6 @@ export default {
     vertical-align: bottom;
     padding:10px;
   }
-}
 
   // ADVANCED
 

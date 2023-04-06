@@ -383,7 +383,7 @@ export default {
                 })
                 break
               default:
-                this.$toast.show('Ein Fehler ist aufgetreten: ', e.code, {
+                this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
                   theme: 'bubble'
                 })
                 break

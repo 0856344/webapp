@@ -24,7 +24,7 @@
     >
       <h4>{{ blok.title }}</h4>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -121,6 +121,10 @@ export default {
     height: 100%;
     background-size: cover;
     background-position: center;
+    display: flex;
+    justify-content: flex-end;
+    flex-flow: wrap-reverse;
+    padding: 20px;
   }
   .header-title {
     position: absolute;
@@ -140,7 +144,7 @@ export default {
   @include media-breakpoint-down(sm) {
     height: auto;
     .header-image {
-      height: 20vh;
+      height: 30vh;
     }
     .header-title {
       position: relative;

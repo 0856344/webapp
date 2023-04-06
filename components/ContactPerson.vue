@@ -53,7 +53,10 @@
 </template>
 
 <script>
+import SingleContactPreview from '@/components/SingleContactPreview.vue'
+
 export default {
+  components: { SingleContactPreview },
   props: ['blok'],
   computed: {
     person () {
@@ -77,7 +80,12 @@ export default {
   flex: 1;
   justify-content: center;
   margin: 2rem 0 6rem 0;
-
+  .double-contact{
+    display: flex;
+    @include media-breakpoint-down(md) {
+      flex-flow:column;
+    }
+  }
   .teaser-content {
     max-width: 100%;
     position: relative;
