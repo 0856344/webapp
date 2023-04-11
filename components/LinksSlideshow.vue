@@ -95,48 +95,48 @@ export default {
       let string
       let url
       let item
-      console.log(this.blok.items)
+      //console.log(this.blok.items)
       for (let i = 0; i < this.blok.items.length; i++) {
-        console.log(this.blok.items[i].link.cached_url)
+        //console.log(this.blok.items[i].link.cached_url)
         // this.slug = this.blok.items[0].link.cached_url.split('/')[0];
         string = this.blok.items[i].link.cached_url.substring(this.blok.items[i].link.cached_url.indexOf('/') + 1)
         if (this.blok.items[i].link.cached_url.indexOf('machines') !== -1) {
           this.type = 'machines'
-          console.log(this.type)
+          //console.log(this.type)
         }
         if (this.blok.items[i].link.cached_url.indexOf('workshops') !== -1) {
           this.type = 'workshops'
-          console.log(this.type)
+          //console.log(this.type)
         }
         if (this.blok.items[i].link.cached_url.indexOf('workshopdates') !== -1) {
           this.type = 'workshopdates'
-          console.log(this.type)
+          //console.log(this.type)
         }
         this.slug.push((string.substring(string.indexOf('/') + 1)).toUpperCase())
-        console.log(this.slug)
+        //console.log(this.slug)
         this.uuid = this.blok.items[0].link.id
         if (this.type === 'machines') {
           this.$store.dispatch('loadMachineItem', string.substring(string.indexOf('/') + 1)).then((data) => {
-            console.log(data.story)
+            // console.log(data.story)
             string = data.story.content.image
             url = string.substring(string.indexOf('/') + 1)
             item = url.substring(url.indexOf('.') + 1)
             this.link_item.push('//img2.' + item)
-            console.log(this.link_item)
+            //console.log(this.link_item)
           }).catch((err) => {
             console.log(err)
           })
         }
         if (this.type === 'workshops') {
-          console.log(string.substring(string.indexOf('/') + 1))
+          //console.log(string.substring(string.indexOf('/') + 1))
           this.$store.dispatch('loadWorkshopItem', string.substring(string.indexOf('/') + 1)).then((data) => {
-            console.log(data.workshop)
-            console.log('workshop')
+            // console.log(data.workshop)
+            // console.log('workshop')
             string = data.workshop.content.image
             url = string.substring(string.indexOf('/') + 1)
             item = url.substring(url.indexOf('.') + 1)
             this.link_item.push('//img2.' + item)
-            console.log(this.link_item)
+            // console.log(this.link_item)
           }).catch((err) => {
             console.log(err)
           })

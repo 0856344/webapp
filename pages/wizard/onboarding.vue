@@ -365,19 +365,24 @@ export default {
         .catch((e) => {
           this.loadingEmail = false
           this.mailCheck = false
-          const errorMsg = e?.response?.data?.msg
+          const errorStatus = e?.response?.status
           if (e.error) {
             this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
           }
-          if (errorMsg) {
-            switch (errorMsg) {
-              case 'user_exists':
-                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits', {
+          if (errorStatus) {
+            switch (errorStatus) {
+              case 401:
+                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits.', {
+                  theme: 'bubble'
+                })
+                break
+              case 429:
+                this.$toast.show('E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
                   theme: 'bubble'
                 })
                 break
               default:
-                this.$toast.show('Ein Fehler ist aufgetreten: ', e.code, {
+                this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
                   theme: 'bubble'
                 })
                 break
@@ -499,20 +504,16 @@ export default {
       }
       // add captcha token to memberData
       memberData = { ...memberData, ...captchaData }
+
+      // add image data to memberData
+      const imageData = {
+        dataUrl: this.onboardingData.image64
+      }
+      memberData = { ...memberData, imageData }
       this.loading = true
-      // 1) create Fabman member and set membership
+      //  create Fabman member and set membership
       this.$store.dispatch('createMember', memberData).then((r) => {
-        // eslint-disable-next-line camelcase
-        const fabman_id = r.id
-        // 2) upload Image
-        if (this.onboardingData.image64) {
-          const uploadImageRequest = {
-            memberId: fabman_id.toString(),
-            dataUrl: this.onboardingData.image64
-          }
-          this.$store.dispatch('uploadImage', uploadImageRequest).then((r) => {})
-        }
-        // 3) register Auth0
+        // register Auth0
         const registerAuth0Data = {
           email: this.onboardingData.userInformation.email,
           password: this.onboardingData.userInformation.password,

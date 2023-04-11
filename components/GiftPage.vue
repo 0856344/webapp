@@ -249,21 +249,25 @@ export default {
           this.$router.push('/me/invoices')
         })
         .catch((error) => {
-          console.log('error', error.response)
           this.giftcardCode = ''
           switch (error.response.status) {
-            case 405:
-              this.$toast.show('Dieser Gutschein wurde bereits eingelöst', {
-                className: 'badToast'
-              })
-              break
             case 404:
               this.$toast.show('Kein Gutschein mit diesem Code gefunden', {
-                className: 'badToast'
+                className: 'bubble'
+              })
+              break
+            case 405:
+              this.$toast.show('Dieser Gutschein wurde bereits eingelöst', {
+                className: 'bubble'
+              })
+              break
+            case 429:
+              this.$toast.show('Überprüfung von Gutscheincode nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
+                theme: 'bubble'
               })
               break
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten', {
+              this.$toast.show('Ein Fehler ist aufgetreten.', error, {
                 className: 'badToast'
               })
               break
