@@ -107,7 +107,7 @@
                   </div>
                 </div>
               </div>
-              <div v-if="isAuthenticated">
+              <div v-if="isAuthenticated && !isGiftcardSelected">
                 <div class="card">
                   <div class="input-redeem-card">
                 <span class="span">
@@ -142,6 +142,57 @@
                     <button
                         class="input-button-payment"
                         :disabled="!giftcardCode"
+                        @click="getGiftCard"
+                    >
+                      Einlösen
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+              <div v-if="isAuthenticated && isGiftcardSelected">
+                <div class="card">
+                  <div class="input-redeem-card">
+                <span class="span">
+                Gutschein einlösen</span>
+                    <span class="code-span" style="margin-bottom: 10px; top: 10px">aktuelles Guthaben: <div style="font-weight: bold; color: darkgreen">{{deposit}}€</div></span>
+                    <div class="redeem-card-bottom">
+                      <div class=" code">
+                        <span class="code-span"> Betrag einlösen: </span>
+
+                        <input type="number" step=".01" :max="deposit" style="width: 80px; margin-left: 5px;" @input="checkValue(redeemDeposit)"
+                            v-model="redeemDeposit"
+                            class="form-item"
+                        >€
+                      </div>
+                      <div class="image">
+                        <img src="~/assets/img/icons/gg-logo-icon.svg" width="40">
+                      </div>
+                    </div>
+                  </div>
+<!--                  <div class="login-reminder">-->
+<!--                    <div>-->
+<!--                      <font-awesome-icon icon="info-circle"/>-->
+<!--                      {{'Der Restbetrag bleibt .'}}-->
+<!--                    </div>-->
+<!--                    <br>-->
+<!--                  </div>-->
+                  <div class="buttons">
+                    <button
+                        class="input-button-payment"
+                        @click="goToGutscheine()"
+                    >
+                      {{ $t('back') }}
+                    </button>
+                    <button v-if="!isGiftcardSelected"
+                        class="input-button-payment"
+                        :disabled="!giftcardCode"
+                        @click="getGiftCard"
+                    >
+                    </button>
+                    <button v-if="isGiftcardSelected"
+                        class="input-button-payment"
+                        :disabled="!giftcardCode || redeemDeposit <= 0"
                         @click="redeem"
                     >
                       Einlösen
@@ -182,6 +233,9 @@ export default {
       action: null,
       giftcardCode: null,
       error: '',
+      isGiftcardSelected: false,
+      deposit: 0,
+      redeemDeposit: 0,
       loading: false
     }
   },
@@ -226,8 +280,80 @@ export default {
       window.scrollTo(0, 0)
     },
     goToGutscheine () {
+      this.isGiftcardSelected = 0
+      this.deposit = 0
+      this.redeemDeposit = 0
+      this.giftcardCode = null
       this.$router.push('gutscheine')
       window.scrollTo(0, 0)
+    },
+    checkValue ($value) {
+      if (parseFloat($value) > this.deposit) {
+        this.redeemDeposit = this.deposit
+      }
+      if (this.decimalCount($value) > 2) {
+        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2)
+      }
+    },
+    decimalCount (number) {
+      // Convert to String
+      const numberAsString = number.toString()
+      // String Contains Decimal
+      if (numberAsString.includes('.')) {
+        return numberAsString.split('.')[1].length
+      }
+      // String Does Not Contain Decimal
+      return 0
+    },
+    async getGiftCard () {
+      this.loading = true
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // add captcha token to memberData
+      let payload = { secret: this.giftcardCode }
+      payload = { ...payload, ...captchaData }
+      await this.$store.dispatch('getGiftCard', payload)
+          .then((response) => {
+            //console.log('success', response)
+            // this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
+            //   className: 'goodToast'
+            // })
+            this.isGiftcardSelected = true
+            this.deposit = response.value
+            this.redeemDeposit = this.deposit
+          })
+          .catch((error) => {
+            this.giftcardCode = ''
+            switch (error.response.status) {
+              case 404:
+                this.$toast.show('Kein Gutschein mit diesem Code gefunden', {
+                  className: 'bubble'
+                })
+                break
+              case 405:
+                this.$toast.show('Dieser Gutschein wurde bereits eingelöst', {
+                  className: 'bubble'
+                })
+                break
+              case 429:
+                this.$toast.show('Überprüfung von Gutscheincode nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
+                  theme: 'bubble'
+                })
+                break
+              default:
+                this.$toast.show('Ein Fehler ist aufgetreten.', error, {
+                  className: 'badToast'
+                })
+                break
+            }
+          })
+          .finally(() => {
+            this.loading = false
+          })
     },
     async redeem () {
       this.loading = true
@@ -238,7 +364,7 @@ export default {
         'g-recaptcha-response': token
       }
       // add captcha token to memberData
-      let payload = { secret: this.giftcardCode }
+      let payload = { secret: this.giftcardCode, value: this.redeemDeposit }
       payload = { ...payload, ...captchaData }
       await this.$store.dispatch('redeemGiftCard', payload)
         .then((response) => {
@@ -278,6 +404,9 @@ export default {
         })
     }
   }
+  // formatPrice ($price) {
+  //   return Number($price).toFixed(2).toString() + ' €'
+  // }
 }
 </script>
 
@@ -649,6 +778,7 @@ h2 {
       display: flex;
       flex-flow: row;
       justify-content: inherit;
+      align-items: center;
 
       .form-item {
         width: 150px;
