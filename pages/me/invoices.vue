@@ -24,7 +24,7 @@
                 :key="activity.id"
                 class="table-row">
               <div class="table-data">{{ new Date(activity.date).toLocaleDateString('de-AT') }}</div>
-              <div class="table-data activity-amount" :style="{color: activity.price > 0 ? 'red' : 'green'}">{{Number(activity.price * (-1)).toFixed(2)}} €</div>
+              <div class="table-data activity-amount" :style="{color: activity.price > 0 ? 'red' : 'green'}">{{Number(activity.price * (-1)).toFixed(2).replace('.', ',')}} €</div>
               <div class="table-data activity-description">{{activity.description}}</div>
 
             </div>
@@ -32,7 +32,7 @@
           <div class="table-content">
             <div class="table-row end">
               <div class="table-data result">{{totalResult > 0 ? 'Kosten:' : 'Guthaben:'}}</div>
-              <div class="table-data total" :style="{color: totalResult > 0 ? 'red' : 'green'}">{{totalResult.toFixed(2) * (-1)}} €</div>
+              <div class="table-data total" :style="{color: totalResult > 0 ? 'red' : 'green'}">{{(Number(totalResult * (-1)).toFixed(2).replace('.', ','))}} €</div>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
                 class="table-row">
               <div class="table-data invoice-date">{{ new Date(invoice.date).toLocaleDateString('de-AT') }}</div>
               <div class="table-data invoice-number">{{invoice.number}}</div>
-              <div class="table-data invoice-amount">{{invoice.total}} €</div>
+              <div class="table-data invoice-amount">{{invoice.total.replace('.', ',')}} €</div>
               <div class="table-data invoice-status">
                 <span :class="[['paid'].includes(invoice.state) ? 'bubble grey' : 'noStatus']">Bezahlt</span>
                 <span :class="[['unpaid'].includes(invoice.state) ? 'bubble yellow' : 'noStatus']">Offen</span>

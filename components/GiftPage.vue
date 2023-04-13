@@ -144,7 +144,7 @@
                         :disabled="!giftcardCode"
                         @click="getGiftCard"
                     >
-                      Einlösen
+                      Weiter
                     </button>
 
                   </div>
@@ -155,7 +155,7 @@
                   <div class="input-redeem-card">
                 <span class="span">
                 Gutschein einlösen</span>
-                    <span class="code-span" style="margin-bottom: 10px; top: 10px">aktuelles Guthaben: <div style="font-weight: bold; color: darkgreen">{{deposit}}€</div></span>
+                    <span class="code-span" style="margin-bottom: 10px; top: 10px">aktuelles Guthaben: <div style="font-weight: bold; color: darkgreen">{{deposit | replaceDotByComma}}€</div></span>
                     <div class="redeem-card-bottom">
                       <div class=" code">
                         <span class="code-span"> Betrag einlösen: </span>
@@ -257,6 +257,11 @@ export default {
   },
   mounted () {
     this.getQuery(this.$route.query)
+  },
+  filters: {
+    replaceDotByComma (value) {
+      return value.replace('.', ',')
+    }
   },
   methods: {
     login () {
