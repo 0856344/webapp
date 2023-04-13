@@ -76,7 +76,7 @@ export default {
       if (typeof price === 'string' || price instanceof String) {
         return price
       } else {
-        return Number(price).toFixed(2).toString() + ' / ' + $material.unit_name
+        return Number(price).toFixed(2).replace('.', ',').toString() + ' / ' + $material.unit_name
       }
     }
   },
