@@ -267,6 +267,11 @@ const createStore = () => {
         const res = await connector.post(`v1/pretix/${id}/`, data)
         return res.data
       },
+      async getGiftCard ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.post(`v1/pretix/get-voucher/${id}/`, data)
+        return res.data
+      },
       async getInvoices ({ state }) {
         const params = {
           member: state.member.id
