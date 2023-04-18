@@ -7,7 +7,6 @@
         </div>
         <vue-cal
                 v-else
-                xsmall
                 class="vuecal--blue-theme"
                 default-view="week"
                 :events="events"
@@ -35,53 +34,7 @@ export default {
   data () {
     return {
       isLoading: false,
-      bookings: null,
-      eventsExample: [
-        {
-          start: '2023-04-19 10:35',
-          end: '2023-04-19 11:30',
-          title: 'Doctor appointment'
-        },
-        {
-          start: '2023-04-19 18:30',
-          end: '2023-04-19 19:15',
-          title: 'Dentist appointment'
-        },
-        {
-          start: '2023-04-20 18:30',
-          end: '2023-04-20 20:30',
-          title: 'Crossfit'
-        },
-        {
-          start: '2023-04-21 11:00',
-          end: '2023-04-21 13:00',
-          title: 'Brunch with Jane'
-        },
-        {
-          start: '2023-04-21 19:30',
-          end: '2023-04-21 23:00',
-          title: 'Swimming lesson'
-        },
-        {
-          start: '2019-09-30 19:30',
-          end: '2019-09-30 23:00',
-          title: 'Swimming lesson'
-        },
-        {
-          start: '2023-04-19 12:00',
-          end: '2023-04-19 14:00',
-          title: 'LUNCH',
-          class: 'lunch',
-          background: true
-        },
-        {
-          start: '2023-04-20 12:00',
-          end: '2023-04-20 14:00',
-          title: 'LUNCH',
-          class: 'lunch',
-          background: true
-        }
-      ]
+      bookings: null
     }
   },
   computed: {
@@ -92,7 +45,7 @@ export default {
       return this.bookings.map((booking) => {
         return {
           title: 'reserviert',
-          class: booking.class,
+          class: 'reserved',
           start: moment(booking.fromDateTime).format('YYYY-MM-DD HH:mm'),
           end: moment(booking.untilDateTime).format('YYYY-MM-DD HH:mm'),
           background: true
@@ -129,13 +82,37 @@ export default {
 <style lang="scss">
 
 .machine-calendar {
-  .calendar {
-    background-color: #FFF;
-  }
+    background-color: white;
 }
 
 .w-100 {
     width: 100%;
+}
+
+.booking-element {
+    background-color: rgba(255, 255, 0, 0.15);
+    border: solid rgba(255, 210, 0, 0.3);
+    border-width: 2px 0;
+}
+
+.reserved {
+    background:
+      #fff7f0
+      repeating-linear-gradient(
+          -45deg,
+          rgba(255, 162, 87, 0.25),
+          rgba(255, 162, 87, 0.25) 5px,
+          rgba(255, 255, 255, 0) 5px,
+          rgba(255, 255, 255, 0) 15px
+      );
+    color: #484848;
+    border: 1px solid rgb(255 162 2 / 74%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 20%;
 }
 
 /** @see https://loading.io/css/ */
