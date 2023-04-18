@@ -7,11 +7,11 @@
         </div>
         <vue-cal
                 v-else
+                style="height: 90vh;"
                 class="vuecal--blue-theme"
                 default-view="week"
                 :events="events"
                 events-count-on-year-view
-                events-on-month-view="short"
                 locale="de"
                 :hide-weekdays="[1, 7]"
                 :time-from="9 * 60"
