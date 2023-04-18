@@ -188,13 +188,18 @@ export default {
   },
   methods: {
     checkBirthdate () {
-      //this.onboardingData.contactInformation.birthdate = null
       this.onboardingData.contactInformation.birthdateValid = false
       if (this.onboardingData.contactInformation.birthdate) {
+        const d = new Date(this.onboardingData.contactInformation.birthdate)
+        if (isNaN(d.getFullYear())) {
+          const day = this.onboardingData.contactInformation.birthdate.slice(-2)
+          const month = this.onboardingData.contactInformation.birthdate.slice(-5, -3)
+          const year = this.onboardingData.contactInformation.birthdate.slice(0, 4)
+          this.onboardingData.contactInformation.birthdate = year + '-' + month + '-' + day
+        }
         const birthDate = new Date(this.onboardingData.contactInformation.birthdate)
         const age = this.calculateAge(birthDate)
         if (age >= 14) {
-          //this.onboardingData.contactInformation.birthdate = this.birthdate
           this.onboardingData.contactInformation.birthdateValid = true
         }
       }
