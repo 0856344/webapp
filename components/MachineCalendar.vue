@@ -59,7 +59,7 @@ export default {
   methods: {
     async getBookings () {
       this.isLoading = true
-      this.$store.dispatch('getBookingsByResource', 3136)
+      this.$store.dispatch('getBookingsByResource', this.id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
             console.log('Error', data)
