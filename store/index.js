@@ -294,6 +294,10 @@ const createStore = () => {
         const res = await connector.get(`/v1/fabman/members/${id}/packages`)
         return res.data
       },
+      async getMemberCredits ({ state }, id) {
+        const res = await connector.get(`/v1/fabman/members/${id}/credits`)
+        return res.data
+      },
       async getPackages ({ state }) {
         const res = await connector.get('/v1/fabman/packages')
         return res.data

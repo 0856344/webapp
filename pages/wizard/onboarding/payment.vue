@@ -19,42 +19,49 @@
           </option>
         </select>
       </div>
+      <p>{{ membership }}</p>
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 14" style="margin-top: 0px" >
         <label ></label>
         <h5 style="margin: 0px">Personen, zwischen dem 12. bis zum vollendeten 14. Lebensjahr dürfen ausschließlich die "SMART GARAGE" Mitgliedschaft abschließen.
         </h5>
       </div>
-<!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px">-->
-<!--        <span class="label">MITGLIEDSCHAFT HIDDEN<span class="red">*</span></span>-->
-<!--        <select class="input-select" v-model="onboardingData.payment.membership">-->
-<!--          <option-->
-<!--              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">-->
-<!--            {{ membership.name }}-->
-<!--          </option>-->
-<!--        </select>-->
+<!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
+<!--      <div class="form-item">-->
+<!--        <span class="label" >Ermäßigung vorhanden?</span>-->
+<!--        <div class="checkbox-wrapper">-->
+<!--          <input class="checkbox" type="checkbox"-->
+<!--                 :checked="discounted"-->
+<!--                 v-model="discounted" >-->
+<!--          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>-->
+<!--        </div>-->
 <!--      </div>-->
-      <div class="form-item">
-        <span class="label" >Ermäßigung vorhanden?</span>
-        <div class="checkbox-wrapper">
-          <input class="checkbox" type="checkbox"
-                 :checked="discounted"
-                 v-model="discounted" >
-          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>
-        </div>
-      </div>
-      <div class="form-item">
-        <span class="label" >Jährliche Abbuchung?</span>
-        <div class="checkbox-wrapper">
-          <input class="checkbox" type="checkbox"
-                 :checked="yearly"
-                 v-model="yearly" >
-          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>
-        </div>
-      </div>
+<!--      <div class="form-item">-->
+<!--        <span class="label" >Jährliche Abbuchung?</span>-->
+<!--        <div class="checkbox-wrapper">-->
+<!--          <input class="checkbox" type="checkbox"-->
+<!--                 :checked="yearly"-->
+<!--                 v-model="yearly" >-->
+<!--          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>-->
+<!--        </div>-->
+<!--      </div>-->
       <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
       <div class="form-item" v-if="this.selectedMembership">
-        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>
+        <span class="label">MITGLIEDSCHAFT: PREIS</span>
         <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
+      </div>
+      <div class="form-item" v-if="this.selectedMembership" style="margin-bottom: 4px">
+        <span class="label">Coins</span>
+        <p class="text">{{ getMembershipCredits() }}</p>
+      </div>
+      <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
+        <label ></label>
+        <h5 style="margin: 0px">*Das monatliche Kontingent an Coins setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
+          Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
+          <nuxt-link
+              target="_blank"
+              to="/de/agb"
+          > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
+        </h5>
       </div>
 <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 <!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
@@ -181,13 +188,13 @@ export default {
       availableMemberships: [],
       membershipList: [
         { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
-        { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SGMW' },
-        { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SGDT' },
-        { id: 3, name: 'SMART GARAGE + Plastic Garage', shortform: 'SGPG' },
-        { id: 4, name: 'SMART GARAGE + All inclusive', shortform: 'SGAI' }],
+        { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
+        { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
+        { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
+          ],
       selectedMembership: null,
-      discounted: false,
-      yearly: false,
+      // discounted: false,
+      // yearly: false,
       MembershipPrice: null,
       selected: null,
       mutableOnBoarding: this.onboardingData,
@@ -276,81 +283,52 @@ export default {
     },
     getMembershipPrice () {
       let membership = null
-      switch (this.discounted) {
-        case true:
-          switch (this.yearly) {
-            case true:
-              // discounted & yearly - (J)ährlich (E)rmäßigt
-              switch (this.selectedMembership.shortform) {
-                case 'SG': membership = this.getMembershipByShortform('SG-JE')
-                  break
-                case 'SGMW': membership = this.getMembershipByShortform('SGMW-JE')
-                  break
-                case 'SGDT': membership = this.getMembershipByShortform('SGDT-JE')
-                  break
-                case 'SGPG': membership = this.getMembershipByShortform('SGPG-JE')
-                  break
-                case 'SGAI': membership = this.getMembershipByShortform('SGAI-JE')
-                  break
-              }
-              break
-              // discounted & monthly - (M)onatlich (E)rmäßigt
-            case false:
-              switch (this.selectedMembership.shortform) {
-                case 'SG': membership = this.getMembershipByShortform('SG-ME')
-                  break
-                case 'SGMW': membership = this.getMembershipByShortform('SGMW-ME')
-                  break
-                case 'SGDT': membership = this.getMembershipByShortform('SGDT-ME')
-                  break
-                case 'SGPG': membership = this.getMembershipByShortform('SGPG-ME')
-                  break
-                case 'SGAI': membership = this.getMembershipByShortform('SGAI-ME')
-                  break
-              }
-          }
-          break
-        case false:
-          switch (this.yearly) {
-            case true:
-              // not discounted & yearly - (J)ährlich (R)egulär
-              switch (this.selectedMembership.shortform) {
-                case 'SG': membership = this.getMembershipByShortform('SG-JR')
-                  break
-                case 'SGMW': membership = this.getMembershipByShortform('SGMW-JR')
-                  break
-                case 'SGDT': membership = this.getMembershipByShortform('SGDT-JR')
-                  break
-                case 'SGPG': membership = this.getMembershipByShortform('SGPG-JR')
-                  break
-                case 'SGAI': membership = this.getMembershipByShortform('SGAI-JR')
-                  break
-              }
-              break
-            case false:
-              // not discounted & monthly - (M)onatlich (R)egulär
-              switch (this.selectedMembership.shortform) {
-                case 'SG': membership = this.getMembershipByShortform('SG-MR')
-                  break
-                case 'SGMW': membership = this.getMembershipByShortform('SGMW-MR')
-                  break
-                case 'SGDT': membership = this.getMembershipByShortform('SGDT-MR')
-                  break
-                case 'SGPG': membership = this.getMembershipByShortform('SGPG-MR')
-                  break
-                case 'SGAI': membership = this.getMembershipByShortform('SGAI-MR')
-                  break
-              }
-              break
-          }
-      }
+        switch (this.selectedMembership.shortform) {
+          case 'SG': membership = this.getMembershipByShortform('SG')
+            break
+          case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
+            break
+          case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
+            break
+          case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
+            break
+        }
       if (membership) {
         this.onboardingData.payment.membership = membership
-        if (this.yearly) {
-          return membership.recurringFee + '€ jährlich'
-        } else {
           return membership.recurringFee + '€ monatlich'
+      }
+    },
+
+    getMembershipCredits () {
+      let membership = null
+      switch (this.selectedMembership.shortform) {
+        case 'SG': membership = this.getMembershipByShortform('SG')
+          break
+        case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
+          break
+        case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
+          break
+        case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
+          break
+      }
+      if (membership) {
+        const allCredits = membership.credits
+        let monthlyCredit = 0
+        allCredits.forEach((credit) => {
+          if (credit?.period === 'month') {
+            monthlyCredit = credit.amount
+          }
+        })
+        let oneTimeCredits = 0
+        allCredits.forEach((credit) => {
+            if (credit?.period === 'once') {
+              oneTimeCredits = credit.amount
+            }
+        })
+        if (oneTimeCredits !== 0) {
+          return (monthlyCredit * 10) + ' Coins monatlich' + ' + ' + (oneTimeCredits * 10) + ' Coins einmalig*'
         }
+        return (monthlyCredit * 10) + ' Coins monatlich*'
       }
     },
     getMembershipByShortform (shortform) {
