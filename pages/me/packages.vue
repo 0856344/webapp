@@ -1,35 +1,49 @@
 <template>
   <div class="section">
-    <h2>{{ $t('membership') }}</h2>
-    <div>  <loading-spinner
-        v-if="!(memberPackages && memberStorage)"
-        color="#333"
-    />
-    </div>
-  <div v-if="membership">
-    <div
-        v-for="userPackage of membership"
-        :key="userPackage.id">
-      <package v-on:reload="reload"
-          :user-package="userPackage"
-          :storage=false />
-    </div>
-  </div>
-    <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
-      <a v-bind:href="mail">Frontdesk</a>
-      Frontdesk per E-Mail.  </p>
-  <div v-if="memberStorage && memberStorage.length > 0" >
-    <h2>Lager</h2>
-    <div
-        v-for="userPackage of memberStorage"
-        :key="userPackage.id">
-      <package v-on:reload="reload"
-          :user-package="userPackage"
-          :storage=true
-          :booked=true
-      />
-    </div>
-  </div>
+    <h2>{{ $t('membership') }} & Coins</h2>
+    <br>
+    <fieldset>
+      <legend>Mitgliedschaft</legend>
+<!--        <h2>{{ $t('membership') }}</h2>-->
+        <div>  <loading-spinner
+            v-if="!(memberPackages && memberStorage)"
+            color="#333"
+        />
+        </div>
+      <div v-if="membership">
+        <div
+            v-for="userPackage of membership"
+            :key="userPackage.id">
+          <package v-on:reload="reload"
+              :user-package="userPackage"
+              :storage=false />
+        </div>
+      </div>
+        <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
+          <a v-bind:href="mail">Frontdesk</a>
+          Frontdesk per E-Mail.  </p>
+      <div v-if="memberStorage && memberStorage.length > 0" >
+        <h2>Lager</h2>
+        <div
+            v-for="userPackage of memberStorage"
+            :key="userPackage.id">
+          <package v-on:reload="reload"
+              :user-package="userPackage"
+              :storage=true
+              :booked=true
+          />
+        </div>
+      </div>
+    </fieldset>
+    <br>
+    <br>
+    <fieldset>
+      <legend>Coins</legend>
+<!--      <p>{{ this.getMonthlyMembershipCredits() }}</p>-->
+      <p>aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Coins</span> </strong></p>
+      <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Coins</strong> </p>
+      <p style="font-size: smaller"><u>benötigst du mehr Coins? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Coins!</u></p>
+    </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 <!--  <div v-if="availableStorage && membership.length > 0" >-->
 <!--    <h2>Lager buchen</h2>-->
@@ -54,7 +68,8 @@ export default {
     return {
       memberPackages: null,
       membership: null,
-      memberStorage: null
+      memberStorage: null,
+      memberCredits: null
       //availableStorage: null
     }
   },
@@ -63,6 +78,7 @@ export default {
   },
   methods: {
     async reload () {
+      this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
       this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
       // membership of the current member
@@ -94,6 +110,29 @@ export default {
       //   }
       //   return p.notes.is_storage_box && p.notes.shop_visible
       // })
+    },
+    getAllCredits () {
+      if (this.memberCredits) {
+        let creditSum = 0
+        this.memberCredits.forEach((credit) => {
+          if (credit?.amount) {
+            creditSum += parseFloat(credit.amount)
+          }
+        })
+        return creditSum
+      }
+    },
+    getMonthlyCredits () {
+      if (this?.membership) {
+        console.log(this.membership[0])
+        let monthlyCredits = 0
+        this.membership[0].credits.forEach((credit) => {
+          if (credit?.period === 'month') {
+            monthlyCredits = parseFloat(credit.amount)
+          }
+        })
+        return monthlyCredits
+      }
     }
   },
   computed: {
@@ -108,4 +147,7 @@ export default {
 </script>
 
 <style lang="scss">
+  fieldset {
+    border: 1px solid #000;
+  }
 </style>
