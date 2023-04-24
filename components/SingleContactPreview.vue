@@ -17,7 +17,7 @@
                     {{ maker.email }}
                 </a>
             </div>
-            <div class="w-1/2">
+            <div class="w-1/2 px-8">
                 <p>{{ single_member_text }}</p>
             </div>
         </div>
