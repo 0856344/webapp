@@ -3,9 +3,9 @@
     <h2>Foto</h2>
     <p>Für deine persönliche Member-Card lade bitte noch dein Bild hoch.</p>
     <form class="form">
-      <div v-if="image != null" class="form-item">
+      <div v-if="this.onboardingData.image64" class="form-item">
         <span class="label">{{ $t('Image-Preview') }}</span>
-        <img id="imgId" class="profilePic" v-if="image" :src="imageUrl">
+        <img id="imgId" class="profilePic" v-if="this.onboardingData.image64" :src="this.onboardingData.imageUrl">
       </div>
       <div class="form-item">
         <span class="label">{{ $t('Upload-Image') }}</span>
@@ -32,8 +32,6 @@ export default {
   },
   data () {
     return {
-      image: null,
-      imageUrl: null,
       loading: false
     }
   },
@@ -53,16 +51,13 @@ export default {
         alert('Es sind nur Bilddateien unter 2MB erlaubt')
         return false
       }
-      this.image = file
-      this.imageUrl = URL.createObjectURL(file)
-      //.console.log(this.imageUrl)
+      this.onboardingData.imageUrl = URL.createObjectURL(file)
       const reader = new FileReader()
       reader.onloadend = () => {
         // TODO: ratio check
         //const img = document.getElementById('imgId')
         // const width = img.offsetWidth
         // const height = img.offsetHeight
-        // console.log('image data: ', img.getBoundingClientRect())
         this.onboardingData.image64 = reader.result
       }
       this.onboardingData.image64 = reader.readAsDataURL(file)
