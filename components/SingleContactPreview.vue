@@ -1,7 +1,7 @@
 <template>
     <div v-if="story">
-        <div class="preview-wrapper">
-            <div v-if="(maker != null && maker.length !=0)" class="maker-preview flex-row">
+        <div class="preview-wrapper flex">
+            <div v-if="(maker != null && maker.length !=0)" class="maker-preview">
                 <nuxt-link class="story" :to="makerlink">
                     <div class="display-maker">
                         <div class="banner" :style="{ 'background-image': 'url(' + $resizeImage(maker.image, '250x250') + ')' }"/>
@@ -17,8 +17,8 @@
                     {{ maker.email }}
                 </a>
             </div>
-            <div class="flex">
-
+            <div class="w-1/2">
+                <p>{{ single_member_text }}</p>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@ export default {
       }
     }
   },
-  props: ['id'],
+  props: ['id', 'single_member_text'],
   data () {
     return {
       story: null
@@ -72,6 +72,7 @@ export default {
     }
   },
   created () {
+    //console.log('single_text', this.single_member_text)
     this.$store.app.$storyapi.get(`cdn/stories/${this.id}`, {
       find_by: 'uuid'
     }).then((res) => {
@@ -100,7 +101,6 @@ export default {
       cursor: pointer;
       text-decoration: none;
       color: #000;
-      margin-right: 50px;
       .banner {
         height: 250px;
         background-size: cover;

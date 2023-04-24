@@ -28,9 +28,7 @@
           </div>
           <div v-if="person.length === 1"  class="contact-details">
             <div >
-              <single-contact-preview
-                  :id="person[0]"
-              />
+              <single-contact-preview :id="person[0]" :single_member_text="singleMemberText"/>
             </div>
           </div>
           <div  v-else class="contact-details">
@@ -60,6 +58,7 @@ export default {
   props: ['blok'],
   computed: {
     person () {
+      //console.log('blok', this.blok)
       return this.blok.contact
     },
     member () {
@@ -67,6 +66,10 @@ export default {
         return this.blok.member
       }
       return null
+    },
+    singleMemberText () {
+      //console.log('blok', this.blok)
+      return this.blok.single_member_text
     }
   }
 }
