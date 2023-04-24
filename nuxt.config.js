@@ -77,6 +77,7 @@ module.exports = {
     ]
   },
   modules: [
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/sentry',
     '@nuxtjs/toast',
     '@nuxtjs/eslint-module',
