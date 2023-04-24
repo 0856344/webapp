@@ -121,7 +121,7 @@ export default {
       onboardingData: {
         //image: null,
         image64: null,
-        //imageUrl: null,
+        imageUrl: null,
         userInformation: {
           firstName: null,
           lastName: null,
