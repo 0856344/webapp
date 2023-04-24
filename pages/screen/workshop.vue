@@ -268,6 +268,7 @@ export default {
     margin: 0 4%;
     display: flex;
     .workshop-list {
+      list-style: none;
       flex: 3;
       .list-item {
         margin-right: 10px;

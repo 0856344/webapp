@@ -68,4 +68,7 @@ export default {
   margin: 0 0 2em;
   width: 100%;
 }
+.content {
+  min-height: 500px;
+}
 </style>
