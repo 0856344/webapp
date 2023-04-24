@@ -7,7 +7,8 @@
       <div class="body">
         <div class="title">
           <div v-if="this.userPackage._embedded" class="interval">
-            {{ this.getMembershipName() }}
+            {{ this.userPackage._embedded.package.name }}
+<!--            {{ this.getMembershipName() }}-->
 
           </div>
 <!--          <div v-if="this.userPackage.name" class="interval">-->
@@ -79,13 +80,15 @@ export default {
   data () {
     return {
       setPackageDialog: false,
-      cancelPackageDialog: false,
-      membershipList: [
-        { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
-        { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
-        { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
-        { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
-      ]
+      cancelPackageDialog: false
+      // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
+      // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
+      // membershipList: [
+      //   { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
+      //   { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
+      //   { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
+      //   { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
+      // ]
     }
   },
   props: ['userPackage', 'storage', 'booked'],
@@ -130,14 +133,16 @@ export default {
           }
         })
     },
-    getMembershipName () {
-      if (this?.userPackage?._embedded?.package?.notes?.shortform) {
-        const ms = this.membershipList.filter((ms) => {
-          return ms.shortform === this.userPackage._embedded.package.notes.shortform
-        })
-        return ms[0].name
-      }
-    },
+    // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
+    // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
+    // getMembershipName () {
+    //   if (this?.userPackage?._embedded?.package?.notes?.shortform) {
+    //     const ms = this.membershipList.filter((ms) => {
+    //       return ms.shortform === this.userPackage._embedded.package.notes.shortform
+    //     })
+    //     return ms[0].name
+    //   }
+    // },
     showSetPackageDialog () {
       this.setPackageDialog = true
     },

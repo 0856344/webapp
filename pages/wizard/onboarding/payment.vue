@@ -1,11 +1,16 @@
 <template>
   <div class="section">
-    <form class="form">
+    <div v-if="this.loading" style="margin-top: 30px; margin-bottom: 500px">
+      <loading-spinner/>
+<!--      <p>lade Mitgliedschaften...</p>-->
+    </div>
+    <form v-if="!this.loading" class="form">
+
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 14" style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT<span class="red">*</span></span>
         <select class="input-select" v-model="selectedMembership">
           <option
-              v-for="membership in membershipList" :value="membership" v-bind:key="membership.id">
+              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">
             {{ membership.name }}
           </option>
         </select>
@@ -14,15 +19,14 @@
         <span class="label">MITGLIEDSCHAFT für Kids</span>
         <select class="input-select" v-model="selectedMembership" >
           <option
-              v-for="membership in membershipList" :value="membership" v-bind:key="membership.id" disabled>
+              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id" disabled>
             {{ membership.name }}
           </option>
         </select>
       </div>
-      <p>{{ membership }}</p>
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 14" style="margin-top: 0px" >
         <label ></label>
-        <h5 style="margin: 0px">Personen, zwischen dem 12. bis zum vollendeten 14. Lebensjahr dürfen ausschließlich die "SMART GARAGE" Mitgliedschaft abschließen.
+        <h5 style="margin: 0px">Personen, zwischen dem 12. bis zum vollendeten 14. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" Mitgliedschaft abschließen.
         </h5>
       </div>
 <!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
@@ -186,12 +190,14 @@ export default {
       packages: [],
       availableStorage: [],
       availableMemberships: [],
-      membershipList: [
-        { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
-        { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
-        { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
-        { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
-          ],
+      // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
+      // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
+      // membershipList: [
+      //   { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
+      //   { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
+      //   { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
+      //   { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
+      //     ],
       selectedMembership: null,
       // discounted: false,
       // yearly: false,
@@ -206,12 +212,14 @@ export default {
   mounted () {
     // this.$refs.firstInput.focus()
     window.scrollTo(0, 0)
+    this.loading = true
     this.$store.dispatch('getCountries').then((r) => (this.countries = r))
     //all packages available for booking
     this.$store.dispatch('getPackages').then((r) => {
       this.packages = r
       // filter already booked storages
       this.availableStorage = this.packages.filter((p) => {
+
         //handle packages with no notes available for storage & visibility or malformed format
         if (!p.notes) {
           console.error('no notes (storage, visible) for package: ', p)
@@ -226,7 +234,8 @@ export default {
         return p.notes.is_storage_box && p.notes.shop_visible
       }
       )
-      this.selectedMembership = this.membershipList[0]
+      this.loading = false
+      this.selectedMembership = this.availableMemberships[0]
     })
   },
   beforeRouteEnter (to, from, next) {
@@ -283,7 +292,8 @@ export default {
     },
     getMembershipPrice () {
       let membership = null
-        switch (this.selectedMembership.shortform) {
+      //console.log('this.selectedMembership: ', this.selectedMembership.notes.shortform)
+        switch (this.selectedMembership.notes.shortform) {
           case 'SG': membership = this.getMembershipByShortform('SG')
             break
           case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
@@ -301,7 +311,7 @@ export default {
 
     getMembershipCredits () {
       let membership = null
-      switch (this.selectedMembership.shortform) {
+      switch (this.selectedMembership.notes.shortform) {
         case 'SG': membership = this.getMembershipByShortform('SG')
           break
         case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
