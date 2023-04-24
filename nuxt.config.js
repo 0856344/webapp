@@ -55,6 +55,12 @@ module.exports = {
       pathRewrite: { '^/.netlify/functions': '' }
     }
   },
+  buildModules: [
+    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
+    '@nuxtjs/proxy',
+    ['@nuxtjs/google-analytics'],
+    ['@nuxtjs/style-resources']
+  ],
   /**
    * Importing scss
    * @see https://dev.to/nbhankes/using-sass-in-nuxt-js-4595
@@ -64,15 +70,10 @@ module.exports = {
     'swiper/dist/css/swiper.css',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  buildModules: [
-    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
-    '@nuxtjs/proxy',
-    ['@nuxtjs/google-analytics'],
-    ['@nuxtjs/style-resources']
-  ],
   styleResources: {
     scss: [
-      '@/assets/scss/styles.scss'
+      '@/assets/scss/variables.scss',
+      '@/assets/scss/mixins.scss'
     ]
   },
   modules: [
