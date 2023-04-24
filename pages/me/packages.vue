@@ -42,7 +42,7 @@
 <!--      <p>{{ this.getMonthlyMembershipCredits() }}</p>-->
       <p>aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Coins</span> </strong></p>
       <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Coins</strong> </p>
-      <p style="font-size: smaller"><u>benötigst du mehr Coins? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Coins!</u></p>
+      <p style="font-size: smaller"><u>benötigst du mehr Coins? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Coins! [@devs Verlinkung zu FAQ]</u></p>
     </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 <!--  <div v-if="availableStorage && membership.length > 0" >-->
@@ -112,26 +112,26 @@ export default {
       // })
     },
     getAllCredits () {
+      let creditSum = 0
       if (this.memberCredits) {
-        let creditSum = 0
         this.memberCredits.forEach((credit) => {
           if (credit?.amount) {
             creditSum += parseFloat(credit.amount)
           }
         })
-        return creditSum
       }
+      return creditSum
     },
     getMonthlyCredits () {
       if (this?.membership) {
-        console.log(this.membership[0])
+        //console.log(this.membership[0])
         let monthlyCredits = 0
         this.membership[0].credits.forEach((credit) => {
           if (credit?.period === 'month') {
             monthlyCredits = parseFloat(credit.amount)
           }
         })
-        return monthlyCredits
+        return monthlyCredits * 10
       }
     }
   },
