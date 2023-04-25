@@ -1,10 +1,9 @@
 <template>
   <div class="section">
-    <h2>{{ $t('membership') }} & Coins</h2>
+    <h2>{{ $t('membership') }} & Credits</h2>
     <br>
     <fieldset>
       <legend>Mitgliedschaft</legend>
-<!--        <h2>{{ $t('membership') }}</h2>-->
         <div>  <loading-spinner
             v-if="!(memberPackages && memberStorage)"
             color="#333"
@@ -19,11 +18,8 @@
               :storage=false />
         </div>
       </div>
-        <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
-          <a v-bind:href="mail">Frontdesk</a>
-          Frontdesk per E-Mail.  </p>
+
       <div v-if="memberStorage && memberStorage.length > 0" >
-        <h2>Lager</h2>
         <div
             v-for="userPackage of memberStorage"
             :key="userPackage.id">
@@ -34,15 +30,33 @@
           />
         </div>
       </div>
+      <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
+        <a v-bind:href="mail">Frontdesk</a>
+        Frontdesk per E-Mail.  </p>
     </fieldset>
     <br>
     <br>
     <fieldset>
-      <legend>Coins</legend>
-<!--      <p>{{ this.getMonthlyMembershipCredits() }}</p>-->
-      <p>aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Coins</span> </strong></p>
-      <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Coins</strong> </p>
-      <p style="font-size: smaller"><u>benötigst du mehr Coins? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Coins! [@devs Verlinkung zu FAQ]</u></p>
+      <legend>Credits</legend>
+      <p>aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></p>
+      <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
+      <p style="font-size: smaller"><u>benötigst du mehr Credits? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Credits! [TODO: Verlinkung zu FAQ/AGB]</u></p>
+      <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
+        <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
+        <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort! [TODO: Verlinkung zu FAQ/AGB]</u></p>
+      </div>
+    </fieldset>
+    <fieldset style="margin-top: 50px">
+      <legend style="margin-bottom: 20px">Credits kaufen</legend>
+      <div>  <loading-spinner
+          v-if="!memberPackages"
+          color="#333"
+      />
+      </div>
+      <div style="margin-bottom: 20px" v-if="memberPackages">
+        <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
+        <p style="font-size: smaller"><u>ausschließlich für die Bezahlung von Maschinengebühren güligt. [TODO: Verlinkung zu FAQ/AGB] </u></p>
+      </div>
     </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 <!--  <div v-if="availableStorage && membership.length > 0" >-->
@@ -69,7 +83,10 @@ export default {
       memberPackages: null,
       membership: null,
       memberStorage: null,
-      memberCredits: null
+      memberCredits: null,
+      buyCredits: null,
+      discount: null,
+      hasDiscount: false
       //availableStorage: null
     }
   },
@@ -77,15 +94,25 @@ export default {
     await this.reload()
   },
   methods: {
+    formatDate (date) {
+      return new Date(date).toLocaleDateString('de-at')
+    },
     async reload () {
       this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
       this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
-      // membership of the current member
+      // membership of the current member (precondition: only one membership per member)
+      // filter discount package
       this.membership = this.memberPackages.filter((p) => {
-        //console.log(p)
         const notes = p._embedded.package.notes
-        return !notes.is_storage_box
+        if (notes?.shortform === 'DISCOUNT') {
+          this.discount = p
+          this.hasDiscount = true
+        }
+        if (notes.is_storage_box || notes?.shortform === 'DISCOUNT' || notes?.shortform === '500COINS' || notes?.shortform === '500COINS_DISCOUNTED') {
+          return false
+        }
+        return true
       })
 
       // storage of the current member
@@ -94,7 +121,7 @@ export default {
         return notes.is_storage_box
       })
 
-      //all packages available for booking
+      //all packages available for booking (Verkauf wurde ausgesetzt)
       // this.packages = await this.$store.dispatch('getPackages')
       // // filter already booked storages
       // this.availableStorage = this.packages.filter((p) => {
@@ -132,6 +159,14 @@ export default {
           }
         })
         return monthlyCredits * 10
+      }
+    },
+    checkValue ($value) {
+      if (parseFloat($value) > this.deposit) {
+        this.redeemDeposit = this.deposit
+      }
+      if (this.decimalCount($value) > 2) {
+        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2)
       }
     }
   },
