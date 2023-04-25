@@ -54,7 +54,7 @@
       />
       </div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
-        <credit-package v-on:reload="reload" :discount=hasDiscount />
+        <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
         <p style="font-size: smaller"><u>ausschließlich für die Bezahlung von Maschinengebühren güligt. [TODO: Verlinkung zu FAQ/AGB] </u></p>
       </div>
     </fieldset>
@@ -109,7 +109,10 @@ export default {
           this.discount = p
           this.hasDiscount = true
         }
-        return !notes.is_storage_box && !(notes?.shortform === 'DISCOUNT')
+        if (notes.is_storage_box || notes?.shortform === 'DISCOUNT' || notes?.shortform === '500COINS' || notes?.shortform === '500COINS_DISCOUNTED') {
+          return false
+        }
+        return true
       })
 
       // storage of the current member

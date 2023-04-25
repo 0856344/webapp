@@ -1,9 +1,8 @@
 <template>
-  <div v-if="discount!== undefined">
     <div class="credit-package-item">
         <div class="price-title">Preis:</div>
-        <div v-if="!discount" class="price">{{'50€'}}</div>
-        <div v-if="discount" class="price">{{'10€'}}</div>
+        <div v-if="!hasDiscount" class="price">{{'50€'}}</div>
+        <div v-if="hasDiscount" class="price">{{'10€'}}</div>
         <div class="rewards-box">
           <div class="rewards-small-text">{{'erhalte'}}</div>
           <div class="rewards">{{'500 Credits'}}</div>
@@ -15,8 +14,8 @@
               {{ 'kaufen' }}
             </div>
           </div>
-
-          <div class="button-dialog-container">
+          <div class="button-dialog-container"> <loading-spinner style="margin-top: 7%" v-if="buyLoading" color="#333"/></div>
+          <div v-if="!buyLoading" class="button-dialog-container">
             <div v-if="buyCreditsDialog">
               <div class="button-dialog-no" @click="closeBuyCreditsDialog()">
                 <div>
@@ -31,7 +30,6 @@
             </div>
           </div>
           </div>
-        </div>
   </div>
 
 </template>
@@ -41,15 +39,17 @@ export default {
   data () {
     return {
       buyCreditsDialog: false,
-      cancelPackageDialog: false
+      cancelPackageDialog: false,
+      buyLoading: false
     }
   },
-  props: ['discount'],
+  props: ['hasDiscount'],
   computed: {
   },
   methods: {
     // get credit
     async buyCredits () {
+      this.buyLoading = true
       this.buyCreditsDialog = true
       // get captcha token
       await this.$recaptchaLoaded()
@@ -58,20 +58,24 @@ export default {
         'g-recaptcha-response': token
       }
       // connector will double-check if discount is valid
-      let payload = { discount: this.discount }
+      const payload = { hasDiscount: this.hasDiscount }
       // add captcha token to payload
-      payload = { ...payload, ...captchaData }
+      //payload = { ...payload, ...captchaData }
       await this.$store.dispatch('buyCredits', payload)
         .then((response) => {
-          this.$toast.show('Buchung wurde erfolgreich durchgeführt', {
+          this.buyLoading = false
+          this.buyCreditsDialog = false
+          this.$toast.show('Credits wurden erfolgreich verbucht!', {
             className: 'goodToast'
           })
           this.$emit('reload')
         })
         .catch((error) => {
+          this.buyLoading = false
+          this.buyCreditsDialog = false
           switch (error.response.status) {
-            case 404:
-              this.$toast.show('Lagerort bereits ausgebucht!', {
+            case 401:
+              this.$toast.show('Ermäßigung nicht bestätigt. Kontaktiere bitte den Frontdesk.', {
                 className: 'badToast'
               })
               break
