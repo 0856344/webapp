@@ -36,17 +36,28 @@
     </fieldset>
     <br>
     <br>
-    <fieldset>
+    <fieldset v-if="hasSmartGarage">
       <legend>Credits</legend>
-      <p>aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></p>
+      <div style="margin-top: 20px; margin-bottom: 15px">
+        <span>aktueller Status: </span>
+        <transition name="fade">
+          <span v-show="!loading"><strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></span>
+        </transition>
+<!--        <transition name="fade">-->
+
+<!--          <p v-show="!loadingCredits">aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></p>-->
+<!--        </transition>-->
+      </div>
+
       <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
       <p style="font-size: smaller"><u>benötigst du mehr Credits? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Credits! [TODO: Verlinkung zu FAQ/AGB]</u></p>
       <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
         <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
         <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort! [TODO: Verlinkung zu FAQ/AGB]</u></p>
       </div>
+      <div> <loading-spinner v-if="loading" color="#333"/> </div>
     </fieldset>
-    <fieldset style="margin-top: 50px">
+    <fieldset style="margin-top: 50px" v-if="hasSmartGarage">
       <legend style="margin-bottom: 20px">Credits kaufen</legend>
       <div>  <loading-spinner
           v-if="!memberPackages"
@@ -86,7 +97,10 @@ export default {
       memberCredits: null,
       buyCredits: null,
       discount: null,
-      hasDiscount: false
+      hasDiscount: false,
+      // only SmartGarage members have credit feature
+      hasSmartGarage: false,
+      loading: false
       //availableStorage: null
     }
   },
@@ -98,6 +112,7 @@ export default {
       return new Date(date).toLocaleDateString('de-at')
     },
     async reload () {
+      this.loading = true
       this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
       this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
@@ -109,8 +124,13 @@ export default {
           this.discount = p
           this.hasDiscount = true
         }
+        // filter only membership from memberPackages - precondition: one member has one membership
         if (notes.is_storage_box || notes?.shortform === 'DISCOUNT' || notes?.shortform === '500COINS' || notes?.shortform === '500COINS_DISCOUNTED') {
           return false
+        }
+        // only SmartGarage members have credit feature
+        if (notes?.shortform === 'SG' || notes?.shortform === 'SG+DT' || notes?.shortform === 'SG+ALL' || notes?.shortform === 'SG+MW') {
+          this.hasSmartGarage = true
         }
         return true
       })
@@ -120,6 +140,7 @@ export default {
         const notes = p._embedded.package.notes
         return notes.is_storage_box
       })
+      this.loading = false
 
       //all packages available for booking (Verkauf wurde ausgesetzt)
       // this.packages = await this.$store.dispatch('getPackages')
@@ -143,7 +164,7 @@ export default {
       if (this.memberCredits) {
         this.memberCredits.forEach((credit) => {
           if (credit?.amount) {
-            creditSum += parseFloat(credit.amount)
+            creditSum += (parseFloat(credit.amount) * 10)
           }
         })
       }
@@ -177,12 +198,17 @@ export default {
       return 'mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: ' + fullName + ' ' + '(' + memberNumber + ')'
     }
   }
-
 }
 </script>
 
 <style lang="scss">
   fieldset {
     border: 1px solid #000;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>
