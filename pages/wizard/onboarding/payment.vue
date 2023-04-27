@@ -48,23 +48,25 @@
 <!--        </div>-->
 <!--      </div>-->
       <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
-      <div class="form-item" v-if="this.selectedMembership">
-        <span class="label">MITGLIEDSCHAFT: PREIS</span>
-        <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
-      </div>
-      <div class="form-item" v-if="this.selectedMembership" style="margin-bottom: 4px">
-        <span class="label">Coins</span>
-        <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
-      </div>
-      <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
-        <label ></label>
-        <h5 style="margin: 0px">*Das monatliche Kontingent an Coins setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
-          Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
-          <nuxt-link
-              target="_blank"
-              to="/de/agb"
-          > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
-        </h5>
+        <div v-if="!this.onboardingData.contactInformation.company">
+        <div class="form-item" v-if="this.selectedMembership">
+          <span class="label">MITGLIEDSCHAFT: PREIS</span>
+          <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
+        </div>
+        <div class="form-item" v-if="this.selectedMembership" style="margin-bottom: 4px">
+          <span class="label">Coins</span>
+          <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
+        </div>
+        <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
+          <label ></label>
+          <h5 style="margin: 0px">*Das monatliche Kontingent an Coins setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
+            Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
+            <nuxt-link
+                target="_blank"
+                to="/de/agb"
+            > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
+          </h5>
+        </div>
       </div>
 <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 <!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
@@ -105,7 +107,7 @@
       </div>
       <div class="form-item" v-if="this.onboardingData.contactInformation.company">
         <span class="label">FIRMENMITGLIEDSCHAFT<span class="red">*</span></span>
-        <span class="text-content">{{ companyInformation }}</span>
+        <p class="text">{{ companyInformation }}</p>
       </div>
       <div v-if="!this.hasAttendeesFreeCost">
         <div class="form-item">
@@ -270,7 +272,7 @@ export default {
     },
     companyInformation () {
       //console.log('Kosten werden übernommen: ', this.onboardingData.contactInformation.company?.metadata?.attendees_free_cost)
-      const information = 'Firmenabo von: ' + this.onboardingData.contactInformation.company?.lastName + ' wird eingelöst.'
+      const information = 'Firmenmitgliedschaft von: ' + this.onboardingData.contactInformation.company?.lastName + ' wird eingelöst.'
       return information
     },
     hasAttendeesFreeCost () {
