@@ -1,7 +1,7 @@
 <template>
     <div class="credit-package-item">
         <div class="price-title">Preis:</div>
-        <div v-if="!hasDiscount" class="price">{{'50€'}}</div>
+        <div v-if="!hasDiscount" class="price">{{'40€'}}</div>
         <div v-if="hasDiscount" class="price">{{'10€'}}</div>
         <div class="rewards-box">
           <div class="rewards-small-text">{{'erhalte'}}</div>
