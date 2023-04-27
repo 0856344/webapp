@@ -40,9 +40,14 @@
       <legend>Credits</legend>
       <div style="margin-top: 20px; margin-bottom: 15px">
         <span>aktueller Status: </span>
-        <transition name="fade">
-          <span v-show="!loading"><strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></span>
-        </transition>
+        <span v-if="this.getAllCredits() === 0">
+          <strong><span>0 Credits</span> </strong>
+        </span>
+        <span v-if="this.getAllCredits() !== 0">
+          <transition name="fade">
+            <span v-show="!loading"><strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></span>
+          </transition>
+        </span>
 <!--        <transition name="fade">-->
 
 <!--          <p v-show="!loadingCredits">aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></p>-->
@@ -55,15 +60,11 @@
         <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
         <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort! [TODO: Verlinkung zu FAQ/AGB]</u></p>
       </div>
-      <div> <loading-spinner v-if="loading" color="#333"/> </div>
+      <div> <loading-spinner v-if="loading" color="#333"/>  </div>
     </fieldset>
     <fieldset style="margin-top: 50px" v-if="hasSmartGarage">
       <legend style="margin-bottom: 20px">Credits kaufen</legend>
-      <div>  <loading-spinner
-          v-if="!memberPackages"
-          color="#333"
-      />
-      </div>
+      <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
         <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
         <p style="font-size: smaller"><u>ausschließlich für die Bezahlung von Maschinengebühren güligt. [TODO: Verlinkung zu FAQ/AGB] </u></p>
@@ -113,7 +114,7 @@ export default {
     },
     async reload () {
       this.loading = true
-      this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
+      await this.loadCreditStatus()
       this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
       // membership of the current member (precondition: only one membership per member)
@@ -159,16 +160,27 @@ export default {
       //   return p.notes.is_storage_box && p.notes.shop_visible
       // })
     },
+    async loadCreditStatus () {
+      this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
+      // update credits status every 30 seconds
+      setInterval(() => {
+        this.$store.dispatch('getMemberCredits', this.$store.state.member.id).then((response) => {
+          this.memberCredits = response
+        }).catch(err => {
+          console.log(err)
+        })
+      }, 30000)
+    },
     getAllCredits () {
       let creditSum = 0
       if (this.memberCredits) {
         this.memberCredits.forEach((credit) => {
-          if (credit?.amount) {
-            creditSum += (parseFloat(credit.amount) * 10)
+          if (credit?.remainingAmount) {
+            creditSum += parseFloat(credit.remainingAmount)
           }
         })
       }
-      return creditSum
+      return creditSum * 10
     },
     getMonthlyCredits () {
       if (this?.membership) {
