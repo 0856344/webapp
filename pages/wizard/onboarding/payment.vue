@@ -5,8 +5,7 @@
 <!--      <p>lade Mitgliedschaften...</p>-->
     </div>
     <form v-if="!this.loading" class="form">
-
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 14" style="margin-top: 40px">
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 18" style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT<span class="red">*</span></span>
         <select class="input-select" v-model="selectedMembership">
           <option
@@ -15,18 +14,18 @@
           </option>
         </select>
       </div>
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 14" style="margin-top: 40px">
-        <span class="label">MITGLIEDSCHAFT für Kids</span>
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 40px">
+        <span class="label">MITGLIEDSCHAFT für Jugendliche</span>
         <select class="input-select" v-model="selectedMembership" >
           <option
-              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id" disabled>
+              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id" :disabled = "(membership.notes.shortform === 'SG+MW')  || (membership.notes.shortform === 'SG+ALL')">
             {{ membership.name }}
           </option>
         </select>
       </div>
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 14" style="margin-top: 0px" >
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 0px" >
         <label ></label>
-        <h5 style="margin: 0px">Personen, zwischen dem 12. bis zum vollendeten 14. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" Mitgliedschaft abschließen.
+        <h5 style="margin: 0px">Personen, zwischen dem 14. bis zum vollendeten 19. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" oder "SMART GARAGE + DIGI" Mitgliedschaft abschließen.
         </h5>
       </div>
 <!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
@@ -55,7 +54,7 @@
       </div>
       <div class="form-item" v-if="this.selectedMembership" style="margin-bottom: 4px">
         <span class="label">Coins</span>
-        <p class="text">{{ getMembershipCredits() }}</p>
+        <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
       </div>
       <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
         <label ></label>
@@ -219,7 +218,6 @@ export default {
       this.packages = r
       // filter already booked storages
       this.availableStorage = this.packages.filter((p) => {
-
         //handle packages with no notes available for storage & visibility or malformed format
         if (!p.notes) {
           console.error('no notes (storage, visible) for package: ', p)
@@ -234,6 +232,7 @@ export default {
         return p.notes.is_storage_box && p.notes.shop_visible
       }
       )
+      this.sortByKey(this.availableMemberships, 'recurringFee')
       this.loading = false
       this.selectedMembership = this.availableMemberships[0]
     })
@@ -293,19 +292,19 @@ export default {
     getMembershipPrice () {
       let membership = null
       //console.log('this.selectedMembership: ', this.selectedMembership.notes.shortform)
-        switch (this.selectedMembership.notes.shortform) {
-          case 'SG': membership = this.getMembershipByShortform('SG')
-            break
-          case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
-            break
-          case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
-            break
-          case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
-            break
-        }
+      switch (this.selectedMembership.notes.shortform) {
+        case 'SG': membership = this.getMembershipByShortform('SG')
+          break
+        case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
+          break
+        case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
+          break
+        case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
+          break
+      }
       if (membership) {
         this.onboardingData.payment.membership = membership
-          return membership.recurringFee + '€ monatlich'
+        return membership.recurringFee + '€ monatlich'
       }
     },
 
@@ -331,16 +330,20 @@ export default {
         })
         let oneTimeCredits = 0
         allCredits.forEach((credit) => {
-            if (credit?.period === 'once') {
-              oneTimeCredits = credit.amount
-            }
+          if (credit?.period === 'once') {
+            oneTimeCredits = credit.amount
+          }
         })
+        const resultTextmonthlyCredits = (monthlyCredit * 10) + ' Coins monatlich'
+        const resultsTexts = [resultTextmonthlyCredits, '']
         if (oneTimeCredits !== 0) {
-          return (monthlyCredit * 10) + ' Coins monatlich' + ' + ' + (oneTimeCredits * 10) + ' Coins einmalig*'
+          resultsTexts[1] = (oneTimeCredits * 10) + ' Coins einmalig'
+          return resultsTexts
         }
-        return (monthlyCredit * 10) + ' Coins monatlich*'
+        return resultsTexts
       }
     },
+
     getMembershipByShortform (shortform) {
       const ms = this.availableMemberships.filter((m) => {
         //handle packages with no notes available for storage & visibility or malformed format
@@ -349,6 +352,12 @@ export default {
         } else return false
       })[0]
       if (ms) { return ms } else return null
+    },
+    sortByKey (array, key) {
+      return array.sort(function (a, b) {
+        const x = a[key]; const y = b[key]
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+      })
     }
   }
 }
@@ -442,7 +451,6 @@ export default {
     font-weight: lighter;
     text-transform: none;
     font-size: .7em;
-
   }
   input {
     display: flex;
@@ -534,6 +542,11 @@ export default {
       }
     }
   }
+}
+
+.specialOffer {
+  //background-color: $color-blue;
+  color: $color-orange;
 }
 
 .red {
