@@ -58,9 +58,9 @@ export default {
         'g-recaptcha-response': token
       }
       // connector will double-check if discount is valid
-      const payload = { hasDiscount: this.hasDiscount }
+      let payload = { hasDiscount: this.hasDiscount }
       // add captcha token to payload
-      //payload = { ...payload, ...captchaData }
+      payload = { ...payload, ...captchaData }
       await this.$store.dispatch('buyCredits', payload)
         .then((response) => {
           this.buyLoading = false
