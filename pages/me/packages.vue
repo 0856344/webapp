@@ -125,7 +125,7 @@ export default {
           this.hasDiscount = true
         }
         // filter only membership from memberPackages - precondition: one member has one membership
-        if (notes.is_storage_box || notes?.shortform === 'DISCOUNT' || notes?.shortform === '500COINS' || notes?.shortform === '500COINS_DISCOUNTED') {
+        if (notes.is_storage_box || notes?.shortform === 'DISCOUNT' || notes?.shortform === '500_CREDITS' || notes?.shortform === '500_CREDITS_DISCOUNTED') {
           return false
         }
         // only SmartGarage members have credit feature

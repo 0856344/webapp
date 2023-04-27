@@ -13,7 +13,7 @@
     <div class="tab-section">
       <div class="tab-section-menu">
         <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-        <MenuLink v-if="isMember" to="/me/packages" icon="coins">{{ $t('membership') }} & Coins</MenuLink>
+        <MenuLink v-if="isMember" to="/me/packages" icon="coins">{{ $t('membership') }} & Credits</MenuLink>
 <!--        <MenuLink v-if="!isMember && !hasCompletedOnboarding" to="/wizard/onboarding" icon="user-friends"><span-->
 <!--            class="fat">{{ $t('joinNow') }}</span></MenuLink>-->
           <MenuLink to="/me/trainings" icon="graduation-cap" style="color: white !important;">
