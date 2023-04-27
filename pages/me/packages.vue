@@ -180,7 +180,7 @@ export default {
           }
         })
       }
-      return creditSum * 10
+      return Number(creditSum * 10).toFixed(1)
     },
     getMonthlyCredits () {
       if (this?.membership) {
