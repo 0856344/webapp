@@ -31,8 +31,7 @@
         </div>
       </div>
       <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
-        <a v-bind:href="mail">Frontdesk</a>
-        Frontdesk per E-Mail.  </p>
+        <a v-bind:href="mail">Frontdesk</a> per E-Mail.  </p>
     </fieldset>
     <br>
     <br>
