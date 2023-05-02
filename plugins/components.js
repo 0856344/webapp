@@ -101,6 +101,7 @@ import DownloadCard from '../components/DownloadCard'
 import SingleImage from '@/components/SingleImage.vue'
 import LogoText from '@/components/LogoText.vue'
 import CreditPackage from '~/components/CreditPackage.vue'
+import FabmanCalendar from '@/components/calendar/FabmanCalendar.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -207,3 +208,4 @@ Vue.component('download-card', DownloadCard)
 Vue.component('single-image', SingleImage)
 Vue.component('logo-text', LogoText)
 Vue.component('credit-package', CreditPackage)
+Vue.component('fabman-calendar', FabmanCalendar)

@@ -40,7 +40,7 @@
                 class="status"
                 :name="m.name"
             />
-            <machine-calendar :id="m.fabmanId"/>
+            <machine-calendar :resource="m.fabmanId"/>
           </div>
         </div>
         <div
@@ -85,9 +85,9 @@
 
 <script>
 import MachineStatus from '@/components/MachineStatus'
-import MachineCalendar from '@/components/MachineCalendar'
+import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
 import MachineHeader from '@/components/MachineHeader'
-import { getMetaTagsForPage } from '../services/MetaDataService'
+import { getMetaTagsForPage } from '@/services/MetaDataService'
 
 export default {
   components: {

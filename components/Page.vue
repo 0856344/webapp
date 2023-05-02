@@ -9,7 +9,7 @@
 
 <script>
 import BlogBestOf from './BlogBestOf'
-import { getMetaTagsForPage } from '../services/MetaDataService'
+import { getMetaTagsForPage } from '@/services/MetaDataService'
 export default {
   components: {
     BlogBestOf
