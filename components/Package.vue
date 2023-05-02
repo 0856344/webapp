@@ -1,17 +1,19 @@
 <template>
   <div>
     <div v-if="userPackage" class="package-item">
-      <div class="icon">
-        <font-awesome-icon icon="cube"/>
-      </div>
+<!--      <div class="icon">-->
+<!--        <font-awesome-icon icon="cube"/>-->
+<!--      </div>-->
       <div class="body">
         <div class="title">
           <div v-if="this.userPackage._embedded" class="interval">
             {{ this.userPackage._embedded.package.name }}
+<!--            {{ this.getMembershipName() }}-->
+
           </div>
-          <div v-if="this.userPackage.name" class="interval">
-            {{ this.userPackage.name }}
-          </div>
+<!--          <div v-if="this.userPackage.name" class="interval">-->
+<!--            {{ this.userPackage.name }}-->
+<!--          </div>-->
         </div>
         <div class="package">
           <div class="package-date" v-if="this.userPackage.fromDate">
@@ -79,6 +81,14 @@ export default {
     return {
       setPackageDialog: false,
       cancelPackageDialog: false
+      // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
+      // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
+      // membershipList: [
+      //   { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
+      //   { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
+      //   { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
+      //   { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
+      // ]
     }
   },
   props: ['userPackage', 'storage', 'booked'],
@@ -123,6 +133,16 @@ export default {
           }
         })
     },
+    // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
+    // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
+    // getMembershipName () {
+    //   if (this?.userPackage?._embedded?.package?.notes?.shortform) {
+    //     const ms = this.membershipList.filter((ms) => {
+    //       return ms.shortform === this.userPackage._embedded.package.notes.shortform
+    //     })
+    //     return ms[0].name
+    //   }
+    // },
     showSetPackageDialog () {
       this.setPackageDialog = true
     },
@@ -170,7 +190,7 @@ export default {
   margin: 1em 0;
   border: 1px solid grey;
   border-radius: 0.3em;
-  width: 300px;
+  max-width: 500px;
   box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.14118);
   .title{
     font-weight: bold;

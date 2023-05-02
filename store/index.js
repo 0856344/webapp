@@ -272,6 +272,11 @@ const createStore = () => {
         const res = await connector.post(`v1/pretix/get-voucher/${id}/`, data)
         return res.data
       },
+      async buyCredits ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.post(`/v1/fabman/members/${id}/credits`, data)
+        return res.data
+      },
       async getInvoices ({ state }) {
         const params = {
           member: state.member.id
@@ -292,6 +297,10 @@ const createStore = () => {
       },
       async getMemberPackages ({ state }, id) {
         const res = await connector.get(`/v1/fabman/members/${id}/packages`)
+        return res.data
+      },
+      async getMemberCredits ({ state }, id) {
+        const res = await connector.get(`/v1/fabman/members/${id}/credits`)
         return res.data
       },
       async getPackages ({ state }) {

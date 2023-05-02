@@ -188,6 +188,7 @@ export default {
   },
   methods: {
     checkBirthdate () {
+      //this.onboardingData.contactInformation.birthdate = null
       this.onboardingData.contactInformation.birthdateValid = false
       if (this.onboardingData.contactInformation.birthdate) {
         const d = new Date(this.onboardingData.contactInformation.birthdate)
@@ -199,7 +200,9 @@ export default {
         }
         const birthDate = new Date(this.onboardingData.contactInformation.birthdate)
         const age = this.calculateAge(birthDate)
+        this.onboardingData.contactInformation.age = age
         if (age >= 14) {
+          //this.onboardingData.contactInformation.birthdate = this.birthdate
           this.onboardingData.contactInformation.birthdateValid = true
         }
       }
@@ -229,33 +232,34 @@ export default {
         this.onboardingData.contactInformation.company = r
         this.loading = false
       }).catch((e) => {
-          this.onboardingData.contactInformation.companyCodeValid = false
-          this.onboardingData.contactInformation.company = null
-          this.loading = false
-          const errorStatus = e?.response?.status
-          if (e.error) {
-            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-          }
-          if (errorStatus) {
-            switch (errorStatus) {
-              case 401:
-                this.$toast.show('Dieser Firmencode existiert nicht.', {
-                  theme: 'bubble'
-                })
-                break
-              case 429:
-                this.$toast.show('Überprüfung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
-                  theme: 'bubble'
-                })
-                break
-              default:
-                this.$toast.show('Ein Fehler ist aufgetreten. ', e, {
-                  theme: 'bubble'
-                })
-                break
-            }
+        this.onboardingData.contactInformation.companyCodeValid = false
+        this.onboardingData.contactInformation.company = null
+        this.loading = false
+        const errorStatus = e?.response?.status
+        if (e.error) {
+          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
+        }
+        if (errorStatus) {
+          switch (errorStatus) {
+            case 401:
+              this.$toast.show('Dieser Firmencode existiert nicht.', {
+                theme: 'bubble'
+              })
+              break
+            case 429:
+              this.$toast.show('Überprüfung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
+                theme: 'bubble'
+              })
+              break
+            default:
+              this.$toast.show('Ein Fehler ist aufgetreten. ', e, {
+                theme: 'bubble'
+              })
+              break
           }
         }
+      }
+
       )
     },
     cleanCompanyCode () {
