@@ -27,7 +27,7 @@
 
 <script>
 
-import { getMetaTagsForPage } from '../services/MetaDataService'
+import { getMetaTagsForPage } from '@/services/MetaDataService'
 
 export default {
   props: ['blok', 'workshopInformation'],

@@ -17,8 +17,9 @@
                     {{ maker.email }}
                 </a>
             </div>
+            <h1>test</h1>
             <div class="w-1/2 px-8">
-                <p>{{ single_member_text }}</p>
+                <markdown :value="single_member_text" />
             </div>
         </div>
     </div>

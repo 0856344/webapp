@@ -4,7 +4,7 @@
             <div class="spinner-ring"></div>
         </div>
     </div>
-    <div v-else-if="bookings.length > 0" class="machine-calendar">
+    <div v-else class="machine-calendar">
         <vue-cal
                 style="height: 90vh;"
                 class="vuecal--blue-theme"
@@ -29,7 +29,10 @@ import 'vue-cal/dist/vuecal.css'
 
 export default {
   components: { VueCal },
-  props: ['id'],
+  props: ['resource', 'space'],
+  mounted () {
+    console.log('space', this.space)
+  },
   data () {
     return {
       isLoading: false,
@@ -59,7 +62,18 @@ export default {
     async getBookings () {
       this.bookings = []
       this.isLoading = true
-      this.$store.dispatch('getBookingsByResource', this.id)
+      //this.resource = 3136 //TODO for debugging - remove!
+      if (this.space) {
+        // TODO
+        //console.log('SPACE FOUND - booking calender', this.space)
+        this.getBookingByMethod('getBookingsBySpace', this.space)
+      } else if (this.resource) {
+        //console.log('RESOURCE FOUND - booking calender', this.resource)
+        this.getBookingByMethod('getBookingsByResource', this.resource)
+      }
+    },
+    getBookingByMethod (method, id) {
+      this.$store.dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
             console.log('Buchungskalender konnte nicht geladen werden.', data)
