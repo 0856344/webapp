@@ -374,6 +374,7 @@ export default {
   .workshop-list {
     padding-right: 10px;
     padding-left: 10px;
+    list-style: none;
 
     > span {
       display: grid;

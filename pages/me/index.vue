@@ -1,187 +1,105 @@
 <template>
   <div class="section">
-
-    <form
-      class="form"
-      @submit.prevent="updateMember"
-    >
+    <form class="flex flex-col gap-4 mx-4 sm:mx-0 sm:mr-4" @submit.prevent="updateMember">
       <h2>{{ $t('contactDetails') }}</h2>
-      <div class="form-item">
-        <span class="label">{{ $t('firstName') }}</span>
-        <input
-          v-model="member.firstName"
-          class="input-text"
-          disabled
-          type="text"
-          name=""
-        >
-      </div>
-      <div class="form-item">
-        <span class="label">{{ $t('lastName') }}</span>
-        <input
-          v-model="member.lastName"
-          class="input-text"
-          disabled
-          type="text"
-          name=""
-        >
-      </div>
-      <div class="form-item">
-        <span class="label">{{ $t('address') }}</span>
-        <input
-          v-model="member.address"
-          class="input-text"
-          type="text"
-          name=""
-        >
-      </div>
-      <div class="form-item">
-        <span class="label">{{ $t('zipCode') }}</span>
-        <input
-          v-model="member.zip"
-          class="input-text"
-          type="text"
-          name=""
-        >
-      </div>
-      <div class="form-item">
-        <span class="label">{{ $t('city') }}</span>
-        <input
-          v-model="member.city"
-          class="input-text"
-          type="text"
-          name=""
-        >
-      </div>
-      <div class="form-item">
-        <span class="label">{{ $t('country') }}</span>
-        <select class="input-select" v-model="member.countryCode">
-          <option
-              v-for="country in countries" :value="country.id" v-bind:key="country.id">
+      <TextInput :label="$t('firstName')" v-model="member.firstName" :disabled="true" :isContact="true" />
+      <TextInput :label="$t('lastName')" v-model="member.lastName" :disabled="true" :isContact="true" />
+      <TextInput :label="$t('address')" v-model="member.address" :isContact="true" />
+      <TextInput :label="$t('zipCode')" v-model="member.zipCode" :isContact="true" />
+      <TextInput :label="$t('city')" v-model="member.city" :isContact="true" />
+      <div class="grid items-baseline grid-flow-row gap-2 sm:py-2 sm:h-8 sm:grid-cols-contact ">
+        <label class="block text-xs font-bold uppercase sm:text-end" for="country-input">
+          {{ $t('country') }}
+        </label>
+        <select id="country-input" v-model="member.countryCode"
+          class="self-end h-full min-w-full px-2 border-2 border-white rounded-sm">
+          <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
         </select>
       </div>
-      <div class="form-item">
-        <span class="label">{{ $t('phone') }}</span>
-        <input
-            id=""
-            v-model="member.phone"
-            class="input-text"
-            type="text"
-            name=""
-        >
-      </div>
-      <div class="form-item" v-if="!member.paidForBy">
-        <span class="label">Rechnungsadresse</span>
-        <div class="checkbox-wrapper" >
-          <input id="checkbox" class="checkbox" type="checkbox"
-                 :checked="member.hasBillingAddress"
-                 v-model="member.hasBillingAddress" >
-          <p class="text">weicht von Kontaktadresse ab</p>
-        </div>
-      </div>
-      <div v-if="member.hasBillingAddress">
-        <br>
-        <h2>Rechnungsadresse</h2>
-        <div class="form-item">
-          <span class="label">{{ $t('firstName') }}</span>
-          <input class="input-text"  type="text" v-model="member.billingFirstName" name=""/>
-        </div>
-        <div class="form-item">
-          <span class="label">{{ $t('lastName') }}</span>
-          <input class="input-text"  type="text" v-model="member.billingLastName" name=""/>
-        </div>
-        <div class="form-item">
-          <span class="label">{{ $t('address') }}</span>
-          <input class="input-text" type="text" v-model="member.billingAddress" name=""/>
-        </div>
-        <div class="form-item">
-          <span class="label">{{ $t('zipCode') }}</span>
-          <input class="input-text" type="text" v-model="member.billingZip" name=""/>
-        </div>
-        <div class="form-item">
-          <span class="label">{{ $t('city/location') }}</span>
-          <input class="input-text" type="text" v-model="member.billingCity" name=""/>
-        </div>
-        <div class="form-item">
-          <span class="label">{{ $t('country') }}</span>
-          <select class="input-select" v-model="member.billingCountryCode">
-            <option
-                v-for="country in countries" :value="country.id" v-bind:key="country.id">
-              {{ country.name }}
-            </option>
-          </select>
+      <TextInput :label="$t('phone')" v-model="member.phone" :isContact="true" />
+      <div class="grid items-baseline grid-flow-row gap-2 sm:py-2 sm:h-8 sm:grid-cols-contact" v-if="!member.paidForBy">
+        <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
+          Rechnungsadresse
+        </label>
+        <div class="flex items-end h-full gap-2">
+          <input id="checkbox" class="w-4 h-4 ml-px" type="checkbox" :checked="member.hasBillingAddress"
+            v-model="member.hasBillingAddress">
+          <div class="text-md">weicht von Kontaktadresse ab</div>
         </div>
       </div>
 
-      <div class="button-row">
+      <h2 v-if="member.hasBillingAddress">Rechnungsadresse</h2>
+      <TextInput v-if="member.hasBillingAddress" :label="$t('firstName')" v-model="member.billingFirstName"
+        :disabled="true" :isContact="true" />
+      <TextInput v-if="member.hasBillingAddress" :label="$t('lastName')" v-model="member.billingLastName" :disabled="true"
+        :isContact="true" />
+      <TextInput v-if="member.hasBillingAddress" :label="$t('address')" v-model="member.billingAddress"
+        :isContact="true" />
+      <TextInput v-if="member.hasBillingAddress" :label="$t('zipCode')" v-model="member.billingZipCode"
+        :isContact="true" />
+      <TextInput v-if="member.hasBillingAddress" :label="$t('city')" v-model="member.billingCity" :isContact="true" />
+      <div v-if="member.hasBillingAddress"
+        class="grid items-baseline grid-flow-row gap-2 sm:py-2 sm:h-8 sm:grid-cols-contact">
+        <label class="block text-xs font-bold uppercase sm:text-end" for="country-input">
+          {{ $t('country') }}
+        </label>
+        <select id="country-input" v-model="member.billingCountryCode"
+          class="self-end h-full px-2 border-2 border-white rounded-sm min-w-fit">
+          <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
+            {{ country.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex justify-center w-full sm:justify-end">
         <div v-if="loading">
           Saving…
         </div>
-        <button
-          v-else
-          type="submit"
-          :class="['input-button-primary', { disabled: !dataValid }]"
-          :disabled="!dataValid"
-        >
-          <font-awesome-icon icon="save"/> {{ $t('save') }}
+        <button v-else type="submit"
+          class="w-5/6 py-2 mt-6 text-white rounded-sm bg-orange ring-2 ring-orange-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
+          :disabled="!dataValid">
+          <font-awesome-icon icon="save" /> {{ $t('save') }}
         </button>
       </div>
     </form>
 
-    <form
-        v-if="!member.paidForBy"
-        class="form"
-        @submit.prevent="updatePaymentMethod"
-    >
+    <form v-if="!member.paidForBy" class="flex flex-col gap-4 mx-4 sm:mx-0 sm:mr-4" @submit.prevent="updatePaymentMethod">
       <h2>Zahlungsmethode</h2>
-      <div class="form-item">
-        <span class="label">IBAN</span>
-        <div>
-          <input class="input-text" style="margin-bottom: 3px" type="text" v-model="iban" name="" @input="validateIban()" @focus="clearIban()"/>
-          <div class="date-error">
-            <span
-                v-if="!ibanIsValid && paymentMethod.iban"
-                class="bad"
-            >{{ 'IBAN ist üngültig' }}
-            </span>
-          </div>
+      <TextInput :label="'IBAN'" v-model="iban" @input="validateIban()" @focus="clearIban()" :isContact="true" />
+      <div v-if="!ibanIsValid && paymentMethod.iban" class="text-xs text-orange">
+        IBAN ist ungültig
+      </div>
+      <TextInput :label="'Kontoinhaber*In'" v-model="paymentMethod.accountOwnerName" :isContact="true" />
+      <div class="grid items-baseline grid-flow-row gap-2 grow sm:py-2 sm:grid-cols-contact">
+        <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
+          SEPA MANDAT
+        </label>
+        <div class="flex items-start h-full gap-2">
+          <input id="checkbox-sepa" class="w-4 h-4 ml-px" type="checkbox" :checked="sepaMandat" v-model="sepaMandat">
+          <div class="text-xs">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels
+            SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein
+            Konto gezogenen SEPA-Lastschriften einzulösen. Ich kann innerhalb von acht Wochen, beginnend mit dem
+            Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem
+            Kreditinstitut vereinbarten Bedingungen.</div>
         </div>
       </div>
-      <div class="form-item">
-        <span class="label">{{ 'Kontoinhaber*In' }}</span>
-        <input class="input-text" type="text" v-model="paymentMethod.accountOwnerName" name=""/>
-      </div>
-      <div class="form-item">
-        <span class="label" >SEPA MANDAT</span>
-        <div class="checkbox-wrapper">
-          <input class="checkbox" type="checkbox"
-                 :checked="sepaMandat"
-                 v-model="sepaMandat" >
-          <p class="text" style="max-width: 600px">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein Konto gezogenen SEPA-Lastschriften einzulösen. Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.</p>
-        </div>
-      </div>
-      <div class="button-row">
+      <div class="flex justify-center w-full sm:justify-end">
         <div v-if="loadingPayment">
           Saving…
         </div>
-        <div v-else>
-        <button
-            type="button"
-            :class="['input-button-primary', { disabled: !ibanFieldFocus }]"
-            :disabled="!ibanFieldFocus"
-            @click="restoreIban()"
-        >
-          Abbrechen
-        </button>
-        <button
-            type="submit"
-            :class="['input-button-primary', { disabled: !dataValid }]"
-            :disabled="!sepaMandat || !ibanIsValid || (paymentMethod.iban === currentIban) || (paymentMethod.accountOwnerName === '')"
-        >
-          <font-awesome-icon icon="save"/> {{ $t('save') }}
-        </button>
+        <div v-else class="flex w-5/6 gap-2 mt-6 sm:w-auto">
+          <button type="button"
+            class="py-2 text-white rounded-sm grow sm:px-12 bg-orange ring-2 ring-orange-300 cursor:pointer disabled:bg-gray-700 disabled:ring-gray-300 disabled:cursor-default hover:bg-gray-900 hover:ring-gray-300"
+            :disabled="!ibanFieldFocus" @click="restoreIban()">
+            Abbrechen
+          </button>
+          <button type="submit"
+            class="py-2 text-white rounded-sm grow sm:px-12 bg-orange ring-2 ring-orange-300 cursor:pointer disabled:bg-gray-700 disabled:ring-gray-300 disabled:cursor-default hover:bg-gray-900 hover:ring-gray-300"
+            :disabled="!sepaMandat || !ibanIsValid || (paymentMethod.iban === currentIban) || (paymentMethod.accountOwnerName === '')">
+            <font-awesome-icon icon="save" /> {{ $t('save') }}
+          </button>
         </div>
       </div>
     </form>
@@ -190,9 +108,11 @@
 
 <script>
 import { helpers } from '../../utils/helper'
+import TextInput from '../../components/TextInput.vue'
 
 export default {
   middleware: 'authenticated',
+  components: { TextInput },
   data () {
     return {
       loading: false,
@@ -247,7 +167,7 @@ export default {
             return true
           } else {
             if (this.member.billingFirstName && this.member.billingLastName && this.member.billingAddress &&
-                this.member.billingCity && this.member.billingZip && this.member.billingCountryCode) {
+              this.member.billingCity && this.member.billingZip && this.member.billingCountryCode) {
               return true
             } else {
               return false
@@ -344,110 +264,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-  form{
-    .form-item {
-      .text {
-        margin: 0;
-        margin-top: 4px;
-        //max-width: 100px;
-        font-weight: lighter;
-        text-transform: none;
-        font-size: 1.0em;
-      }
-      .bad {
-        color: $color-orange;
-        font-size: .7em;
-        font-weight: bold;
-      }
-
-      .checkbox-wrapper {
-        margin-top: 4px;
-        padding-right: 20px;
-        margin-right: 0;
-        //margin-bottom: 0;
-        display: flex;
-
-        .checkbox {
-          //display: flex;
-          //justify-content: center;
-          //align-items: center;
-          //vertical-align: middle;
-          //line-height: normal;
-          max-width: 15px;
-          max-height: 15px;
-          margin-right: 5px;
-        }
-
-        .text {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 0;
-          font-weight: lighter;
-          text-transform: none;
-          font-size: .7em;
-
-        }
-      }
-    }
-    .button-row {
-    grid-column: 2;
-    margin-bottom: 5px; // fix for some strange ios safari error
-    .input-button-primary {
-      align-self: flex-end;
-      cursor: pointer;
-      background-color: $color-orange;
-      color: #FFF;
-      min-width: 30%;
-      border: 1px solid lighten($color-orange, 10);
-      padding: 7px 12px 8px;
-      line-height: 1;
-      outline: none;
-      //&:focus {
-      //  background-color: $color-orange;
-      //}
-    }
-    .input-button-primary:disabled {
-      cursor: default;
-      background-color: grey;
-      border: 1px solid darkgrey;
-    }
-  }
-    .input {
-      display: flex;
-      outline: none;
-      flex-grow: 1;
-      padding: 5px 10px;
-      @include media-breakpoint-down(xs) {
-        margin: 1vh 0;
-      }
-      background: #fff;
-      border: 1px solid #fff;
-      width: 100%;
-      &:focus {
-        border-color: $color-orange;
-      }
-    }
-    .password-wrapper {
-      position: relative;
-      .password-status {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        background-color: $color-orange;
-        height: .5em;
-        width: .5em;
-        padding: 0;
-        margin-top: -.25em;
-        border-radius: 50%
-      }
-    }
-    .date-error {
-      grid-column: 2;
-    }
-
-  }
-
-</style>

@@ -80,11 +80,7 @@
                 <span class="span">
                 {{ $t('giftCard') + ' einlösen' }} </span>
                     <div class="redeem-card-bottom">
-                      <div class=" code">
-                        <span class="code-span"> Gutscheincode: </span>
-                        <input v-model="giftCardCode" class="form-item" disabled>
-                        <font-awesome-icon icon="info-circle"/>
-                      </div>
+                        <TextInput v-model="giftcardCode" label="Gutscheincode:" ></TextInput>
                       <div class="image">
                         <img src="~/assets/img/icons/gg-logo-icon.svg" width="50">
                       </div>
@@ -113,13 +109,7 @@
                 <span class="span">
                 Gutschein einlösen</span>
                     <div class="redeem-card-bottom">
-                      <div class=" code">
-                        <span class="code-span"> Gutscheincode: </span>
-                        <input
-                            v-model="giftcardCode"
-                            class="form-item"
-                        >
-                      </div>
+                        <TextInput v-model="giftcardCode" label="Gutscheincode:" ></TextInput>
                       <div class="image">
                         <img src="~/assets/img/icons/gg-logo-icon.svg" width="40">
                       </div>
@@ -214,9 +204,13 @@
 </template>
 
 <script>
+import TextInput from './TextInput.vue'
 
 export default {
   props: ['blok'],
+  components: {
+    TextInput
+  },
   scrollToTop: true,
   asyncData (context) {
     const path = '/members/shop'
@@ -596,6 +590,7 @@ h2 {
         padding: 20px;
         font-size: 16px;
         margin-left: 35%;
+        justify-content: center;
         @include media-breakpoint-down(sm) {
           margin-left: 35%;
         }
