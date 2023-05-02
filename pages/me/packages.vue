@@ -214,6 +214,7 @@ export default {
 
 <style lang="scss">
   fieldset {
+    padding: 10px;
     border: 1px solid #000;
   }
   .fade-enter-active, .fade-leave-active {
