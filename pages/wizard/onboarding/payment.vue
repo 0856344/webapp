@@ -301,19 +301,6 @@ export default {
       return false
     },
     getMembershipPrice () {
-      let membership = null
-      //console.log('this.selectedMembership: ', this.selectedMembership.notes.shortform)
-      switch (this.selectedMembership.notes.shortform) {
-        case 'SG': membership = this.getMembershipByShortform('SG')
-          break
-        case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
-          break
-        case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
-          break
-        case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
-          break
-      }
-      console.log(this.selectedMembership.recurringFee)
       this.onboardingData.payment.membership = this.selectedMembership
       return this.onboardingData.payment.membership.recurringFee + '€ monatlich'
     },
