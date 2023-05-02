@@ -33,8 +33,6 @@
       <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
         <a v-bind:href="mail">Frontdesk</a> per E-Mail.  </p>
     </fieldset>
-    <br>
-    <br>
     <fieldset v-if="hasSmartGarage">
       <legend>Credits</legend>
       <div style="margin-top: 20px; margin-bottom: 15px">
@@ -61,7 +59,7 @@
       </div>
       <div> <loading-spinner v-if="loading" color="#333"/>  </div>
     </fieldset>
-    <fieldset style="margin-top: 50px" v-if="hasSmartGarage">
+    <fieldset v-if="hasSmartGarage">
       <legend style="margin-bottom: 20px">Credits kaufen</legend>
       <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
@@ -214,6 +212,7 @@ export default {
 
 <style lang="scss">
   fieldset {
+    margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #000;
   }
