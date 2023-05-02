@@ -134,6 +134,7 @@ export default {
         contactInformation: {
           birthdate: null,
           birthdateValid: false,
+          age: null,
           name: null,
           address: null,
           zip: null,

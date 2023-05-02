@@ -100,6 +100,7 @@ import TwoVideosColumn from '@/components/TwoVideosColumn'
 import DownloadCard from '../components/DownloadCard'
 import SingleImage from '@/components/SingleImage.vue'
 import LogoText from '@/components/LogoText.vue'
+import CreditPackage from '~/components/CreditPackage.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -205,3 +206,4 @@ Vue.component('two-videos-column', TwoVideosColumn)
 Vue.component('download-card', DownloadCard)
 Vue.component('single-image', SingleImage)
 Vue.component('logo-text', LogoText)
+Vue.component('credit-package', CreditPackage)

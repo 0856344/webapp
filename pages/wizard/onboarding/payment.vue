@@ -1,14 +1,81 @@
 <template>
   <div class="section">
-    <form class="form">
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px">
+    <div v-if="this.loading" style="margin-top: 30px; margin-bottom: 500px">
+      <loading-spinner/>
+<!--      <p>lade Mitgliedschaften...</p>-->
+    </div>
+    <form v-if="!this.loading" class="form">
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 18" style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT<span class="red">*</span></span>
-        <select class="input-select" v-model="onboardingData.payment.membership">
+        <select class="input-select" v-model="selectedMembership">
           <option
               v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">
             {{ membership.name }}
           </option>
         </select>
+      </div>
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 40px">
+        <span class="label">MITGLIEDSCHAFT für Jugendliche</span>
+        <select class="input-select" v-model="selectedMembership" >
+          <option
+              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id" :disabled = "(membership.notes.shortform === 'SG+MW')  || (membership.notes.shortform === 'SG+ALL')">
+            {{ membership.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 0px" >
+        <label ></label>
+        <h5 style="margin: 0px">Für Personen bis zum vollendeten 18. Lebensjahr gelten besondere Konditionen nach unseren
+          <nuxt-link
+              target="_blank"
+              to="/de/agb"
+          >AGB.</nuxt-link>
+        </h5>
+<!--        Hinweis Text kann nach 12.5. verwendet werden-->
+<!--        <h5 style="margin: 0px">Personen, zwischen dem 14. bis zum vollendeten 19. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" oder "SMART GARAGE + DIGI" Mitgliedschaft abschließen.</h5>-->
+      </div>
+<!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
+<!--      <div class="form-item">-->
+<!--        <span class="label" >Ermäßigung vorhanden?</span>-->
+<!--        <div class="checkbox-wrapper">-->
+<!--          <input class="checkbox" type="checkbox"-->
+<!--                 :checked="discounted"-->
+<!--                 v-model="discounted" >-->
+<!--          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="form-item">-->
+<!--        <span class="label" >Jährliche Abbuchung?</span>-->
+<!--        <div class="checkbox-wrapper">-->
+<!--          <input class="checkbox" type="checkbox"-->
+<!--                 :checked="yearly"-->
+<!--                 v-model="yearly" >-->
+<!--          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
+        <div v-if="!this.onboardingData.contactInformation.company">
+        <div class="form-item" v-if="this.selectedMembership">
+          <span class="label">MITGLIEDSCHAFT: PREIS</span>
+          <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
+        </div>
+
+        <div v-if="this.selectedMembership && getMembershipCredits()">
+          <div class="form-item"  style="margin-bottom: 4px">
+            <span class="label">Coins</span>
+            <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
+          </div>
+          <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
+            <label ></label>
+            <h5 style="margin: 0px">*Das monatliche Kontingent an Coins setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
+              Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
+              <nuxt-link
+                  target="_blank"
+                  to="/de/agb"
+              > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
+            </h5>
+          </div>
+        </div>
       </div>
 <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 <!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
@@ -29,11 +96,10 @@
 <!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
 <!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
 <!--      </div>-->
-      <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
-      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">
-        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>
-        <p class="text">{{ this.price }} (inkl. MwSt)</p>
-      </div>
+<!--      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">-->
+<!--        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>-->
+<!--        <p class="text">{{ this.price }} (inkl. MwSt)</p>-->
+<!--      </div>-->
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company"  style="margin-top: 20px">
         <span class="label">{{ 'Beginn der Mitgliedschaft' }}<span class="red">*</span></span>
         <div>
@@ -50,7 +116,7 @@
       </div>
       <div class="form-item" v-if="this.onboardingData.contactInformation.company">
         <span class="label">FIRMENMITGLIEDSCHAFT<span class="red">*</span></span>
-        <span class="text-content">{{ companyInformation }}</span>
+        <p class="text">{{ companyInformation }}</p>
       </div>
       <div v-if="!this.hasAttendeesFreeCost">
         <div class="form-item">
@@ -134,6 +200,17 @@ export default {
       packages: [],
       availableStorage: [],
       availableMemberships: [],
+      // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
+      // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
+      // membershipList: [
+      //   { id: 0, name: 'SMART GARAGE', shortform: 'SG' },
+      //   { id: 1, name: 'SMART GARAGE + Metallwerkstatt', shortform: 'SG+MW' },
+      //   { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
+      //   { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
+      //     ],
+      selectedMembership: null,
+      // discounted: false,
+      // yearly: false,
       MembershipPrice: null,
       selected: null,
       mutableOnBoarding: this.onboardingData,
@@ -145,6 +222,7 @@ export default {
   mounted () {
     // this.$refs.firstInput.focus()
     window.scrollTo(0, 0)
+    this.loading = true
     this.$store.dispatch('getCountries').then((r) => (this.countries = r))
     //all packages available for booking
     this.$store.dispatch('getPackages').then((r) => {
@@ -165,6 +243,9 @@ export default {
         return p.notes.is_storage_box && p.notes.shop_visible
       }
       )
+      this.sortByKey(this.availableMemberships, 'recurringFee')
+      this.loading = false
+      this.selectedMembership = this.availableMemberships[0]
     })
   },
   beforeRouteEnter (to, from, next) {
@@ -200,7 +281,7 @@ export default {
     },
     companyInformation () {
       //console.log('Kosten werden übernommen: ', this.onboardingData.contactInformation.company?.metadata?.attendees_free_cost)
-      const information = 'Firmenabo von: ' + this.onboardingData.contactInformation.company?.lastName + ' wird eingelöst.'
+      const information = 'Firmenmitgliedschaft von: ' + this.onboardingData.contactInformation.company?.lastName + ' wird eingelöst.'
       return information
     },
     hasAttendeesFreeCost () {
@@ -218,6 +299,77 @@ export default {
       }
       this.onboardingData.payment.ibanIsValid = false
       return false
+    },
+    getMembershipPrice () {
+      let membership = null
+      //console.log('this.selectedMembership: ', this.selectedMembership.notes.shortform)
+      switch (this.selectedMembership.notes.shortform) {
+        case 'SG': membership = this.getMembershipByShortform('SG')
+          break
+        case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
+          break
+        case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
+          break
+        case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
+          break
+      }
+      console.log(this.selectedMembership.recurringFee)
+      this.onboardingData.payment.membership = this.selectedMembership
+      return this.onboardingData.payment.membership.recurringFee + '€ monatlich'
+    },
+
+    getMembershipCredits () {
+      let membership = null
+      switch (this.selectedMembership.notes.shortform) {
+        case 'SG': membership = this.getMembershipByShortform('SG')
+          break
+        case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
+          break
+        case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
+          break
+        case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
+          break
+      }
+      if (membership) {
+        const allCredits = membership.credits
+        let monthlyCredit = 0
+        allCredits.forEach((credit) => {
+          if (credit?.period === 'month') {
+            monthlyCredit = credit.amount
+          }
+        })
+        let oneTimeCredits = 0
+        allCredits.forEach((credit) => {
+          if (credit?.period === 'once') {
+            oneTimeCredits = credit.amount
+          }
+        })
+        const resultTextmonthlyCredits = (monthlyCredit * 10) + ' Coins monatlich'
+        const resultsTexts = [resultTextmonthlyCredits, '']
+        if (oneTimeCredits !== 0) {
+          resultsTexts[1] = (oneTimeCredits * 10) + ' Coins einmalig'
+          return resultsTexts
+        }
+        return resultsTexts
+      } else {
+        return null
+      }
+    },
+
+    getMembershipByShortform (shortform) {
+      const ms = this.availableMemberships.filter((m) => {
+        //handle packages with no notes available for storage & visibility or malformed format
+        if (m.notes.shortform === shortform) {
+          return true
+        } else return false
+      })[0]
+      if (ms) { return ms } else return null
+    },
+    sortByKey (array, key) {
+      return array.sort(function (a, b) {
+        const x = a[key]; const y = b[key]
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+      })
     }
   }
 }
@@ -311,7 +463,6 @@ export default {
     font-weight: lighter;
     text-transform: none;
     font-size: .7em;
-
   }
   input {
     display: flex;
@@ -403,6 +554,11 @@ export default {
       }
     }
   }
+}
+
+.specialOffer {
+  //background-color: $color-blue;
+  color: $color-orange;
 }
 
 .red {
