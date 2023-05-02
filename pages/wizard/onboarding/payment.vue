@@ -62,12 +62,12 @@
 
         <div v-if="this.selectedMembership && getMembershipCredits()">
           <div class="form-item"  style="margin-bottom: 4px">
-            <span class="label">Coins</span>
+            <span class="label">Credits</span>
             <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
           </div>
           <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
             <label ></label>
-            <h5 style="margin: 0px">*Das monatliche Kontingent an Coins setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
+            <h5 style="margin: 0px">*Das monatliche Kontingent an Credits setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
               Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
               <nuxt-link
                   target="_blank"
