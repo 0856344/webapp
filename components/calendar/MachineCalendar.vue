@@ -68,7 +68,7 @@ export default {
         // TODO
         console.log('SPACE FOUND - booking calender', this.space)
         //this.getBookingByMethod('getBookingsBySpace', this.space)
-        this.getBookingByMethod('getBookingsByResource', 4048)
+        this.getBookingByMethod('getBookingsByResource', 4049)
       } else if (this.resource) {
         //console.log('RESOURCE FOUND - booking calender', this.resource)
         this.getBookingByMethod('getBookingsByResource', this.resource)

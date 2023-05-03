@@ -17,8 +17,7 @@
                     {{ maker.email }}
                 </a>
             </div>
-            <h1>test</h1>
-            <div class="w-1/2 px-8">
+            <div class="w-1/2 px-8" style="display: flex;align-items: center;justify-content: center;">
                 <markdown :value="single_member_text" />
             </div>
         </div>
