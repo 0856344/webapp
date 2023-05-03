@@ -1,7 +1,9 @@
 <template>
-    <div v-editable="blok" class="fabman-calendar">
+    <div v-editable="blok">
         <!-- TODO -->
-        <machine-calendar :space="this.blok.space" :resource="4049"></machine-calendar>
+        <div class="fabman-calendar">
+            <machine-calendar :space="this.blok.space" :resource="4049"></machine-calendar>
+        </div>
     </div>
 </template>
 
@@ -24,8 +26,9 @@ export default {
 
 <style lang="scss" scoped>
 .fabman-calendar {
-    display: flex;
-    justify-content: center;
-    margin: 50px 0;
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
+  background-color: white;
 }
 </style>
