@@ -13,8 +13,8 @@
                 :events="events"
                 events-count-on-year-view
                 locale="de"
-                :hide-weekdays="[7]"
-                :time-from="9 * 60"
+                :hide-weekdays="[]"
+                :time-from="7 * 60"
                 :time-to="20 * 60"
                 :time-step="60"
                 :disable-views="['years']"
@@ -109,6 +109,8 @@ export default {
 
 .machine-calendar {
   background-color: white;
+  padding: 50px 0;
+  width: 50em;
 }
 
 .w-100 {
