@@ -1,7 +1,7 @@
 <template>
     <div v-editable="blok" class="fabman-calendar">
         <!-- TODO -->
-        <machine-calendar :space="this.blok.space" :resource="4048"></machine-calendar>
+        <machine-calendar :space="this.blok.space" :resource="4049"></machine-calendar>
     </div>
 </template>
 
