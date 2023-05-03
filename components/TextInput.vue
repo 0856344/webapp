@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <input :id="id" v-bind:value="value"
-      class="h-full px-2 border-2 rounded-sm sm:min-w-fit focus:border-orange"
+      class="px-2 border-2 rounded-sm sm:min-w-fit focus:border-orange"
       v-bind:class="{ 'bg-white': !disabled, 'border-white': isContact, 'border-gray-300': !isContact }"
       v-on:input="$emit('input', $event.target.value)"
       v-on:focus="$emit('focus', $event.target.value)"
