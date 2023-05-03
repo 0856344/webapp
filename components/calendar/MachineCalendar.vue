@@ -31,9 +31,6 @@ import 'vue-cal/dist/vuecal.css'
 export default {
   components: { VueCal },
   props: ['resource', 'space'],
-  mounted () {
-    console.log('space', this.space)
-  },
   data () {
     return {
       isLoading: false,
@@ -78,10 +75,9 @@ export default {
       this.$store.dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
-            console.log('Buchungskalender konnte nicht geladen werden.', data)
+              //success
           } else {
             this.bookings = Object.assign([], data)
-            console.log('bookings', this.bookings)
           }
         }).catch((error) => {
           console.log(error.response.status, error.response.data.error)

@@ -12,15 +12,7 @@ import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
 
 export default {
   components: { MachineCalendar },
-  props: ['blok'],
-  created () {
-    console.log('My new block created')
-  },
-  mounted () {
-    console.log('blok', this.blok)
-    console.log('space', this.blok.space)
-    console.log('resource', this.blok.resource)
-  }
+  props: ['blok']
 }
 </script>
 
