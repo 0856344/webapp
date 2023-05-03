@@ -12,7 +12,7 @@
           {{ $t('country') }}
         </label>
         <select id="country-input" v-model="member.countryCode"
-          class="self-end h-full min-w-full px-2 border-2 border-white rounded-sm">
+          class="self-end px-2 border-2 border-white rounded-sm">
           <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
@@ -23,7 +23,7 @@
         <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
           Rechnungsadresse
         </label>
-        <div class="flex items-end h-full gap-2">
+        <div class="flex items-end gap-2">
           <input id="checkbox" class="w-4 h-4 ml-px" type="checkbox" :checked="member.hasBillingAddress"
             v-model="member.hasBillingAddress">
           <div class="text-md">weicht von Kontaktadresse ab</div>
@@ -46,7 +46,7 @@
           {{ $t('country') }}
         </label>
         <select id="country-input" v-model="member.billingCountryCode"
-          class="self-end h-full px-2 border-2 border-white rounded-sm min-w-fit">
+          class="self-end px-2 border-2 border-white rounded-sm">
           <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
@@ -76,7 +76,7 @@
         <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
           SEPA MANDAT
         </label>
-        <div class="flex items-start h-full gap-2">
+        <div class="flex items-start gap-2">
           <input id="checkbox-sepa" class="w-4 h-4 ml-px" type="checkbox" :checked="sepaMandat" v-model="sepaMandat">
           <div class="text-xs">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels
             SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein
