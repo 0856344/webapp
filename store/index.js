@@ -416,6 +416,7 @@ const createStore = () => {
         return r.data
       },
       async getBookingsBySpace ({ state }, id) {
+        //TODO
         const r = await connector.get(`v1/fabman/bookings?space=${id}`)
         return r.data
       },

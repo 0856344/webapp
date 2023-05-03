@@ -6,16 +6,17 @@
     </div>
     <div v-else class="machine-calendar">
         <vue-cal
-                style="height: 90vh;"
+                xsmall
+                style="height: 50vh;"
                 class="vuecal--blue-theme"
                 default-view="week"
                 :events="events"
                 events-count-on-year-view
                 locale="de"
-                :hide-weekdays="[1, 7]"
+                :hide-weekdays="[7]"
                 :time-from="9 * 60"
                 :time-to="20 * 60"
-                :time-step="30"
+                :time-step="60"
                 :disable-views="['years']"
         />
     </div>
@@ -63,10 +64,11 @@ export default {
       this.bookings = []
       this.isLoading = true
       //this.resource = 3136 //TODO for debugging - remove!
-      if (this.space) {
+      if (this.space === 'smartgarage') {
         // TODO
-        //console.log('SPACE FOUND - booking calender', this.space)
-        this.getBookingByMethod('getBookingsBySpace', this.space)
+        console.log('SPACE FOUND - booking calender', this.space)
+        //this.getBookingByMethod('getBookingsBySpace', this.space)
+        this.getBookingByMethod('getBookingsByResource', 4048)
       } else if (this.resource) {
         //console.log('RESOURCE FOUND - booking calender', this.resource)
         this.getBookingByMethod('getBookingsByResource', this.resource)
