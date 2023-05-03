@@ -40,7 +40,7 @@
                 class="status"
                 :name="m.name"
             />
-            <machine-calendar :id="m.fabmanId"/>
+            <machine-calendar :resource="m.fabmanId"/>
           </div>
         </div>
         <div
@@ -85,9 +85,9 @@
 
 <script>
 import MachineStatus from '@/components/MachineStatus'
-import MachineCalendar from '@/components/MachineCalendar'
+import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
 import MachineHeader from '@/components/MachineHeader'
-import { getMetaTagsForPage } from '../services/MetaDataService'
+import { getMetaTagsForPage } from '@/services/MetaDataService'
 
 export default {
   components: {
@@ -220,8 +220,14 @@ export default {
 
         .machine-list-warning {
           max-width: 400px;
-          padding: 10px;
-          background-color: $color-yellow;
+          padding: 20px 50px;
+          background-color: $color-orange;
+          color: white;
+          border-radius: 10px;
+          text-align: center;
+          -webkit-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
+          -moz-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
+          box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
         }
       }
     }

@@ -11,7 +11,7 @@
         </sb-link>
       </div>
     </section>
-    <div class="grid">
+    <div class="gg-grid">
       <workshop-preview
         v-for="w in blok.workshops"
         :id="w"
@@ -107,7 +107,7 @@ export default {
       }
     }
 
-  .grid {
+  .gg-grid {
     padding: 0 5% 0 5%;
     @include media-breakpoint-down(sm) {
       padding: 0 10% 0 3%;

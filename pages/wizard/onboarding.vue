@@ -102,8 +102,6 @@
 
 <script>
 
-import Vue from 'vue'
-
 const MemberType = {
   member: 1,
   corporate: 2,

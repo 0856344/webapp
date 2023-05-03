@@ -407,8 +407,16 @@ const createStore = () => {
           }
         })
       },
-      async getBookings ({ state }, id) {
-        const r = await connector.get(`v1/fabman/resources/${id}/bookings`)
+      async getBookingsByMember ({ state }, id) {
+        const r = await connector.get(`v1/fabman/bookings?member=${id}`)
+        return r.data
+      },
+      async getBookingsByResource ({ state }, id) {
+        const r = await connector.get(`v1/fabman/bookings?resource=${id}`)
+        return r.data
+      },
+      async getBookingsBySpace ({ state }, id) {
+        const r = await connector.get(`v1/fabman/bookings?space=${id}`)
         return r.data
       },
       async getResource ({ state }, id) {

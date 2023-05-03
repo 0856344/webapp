@@ -25,8 +25,14 @@
       </div>
       <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 0px" >
         <label ></label>
-        <h5 style="margin: 0px">Personen, zwischen dem 14. bis zum vollendeten 19. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" oder "SMART GARAGE + DIGI" Mitgliedschaft abschließen.
+        <h5 style="margin: 0px">Für Personen bis zum vollendeten 18. Lebensjahr gelten besondere Konditionen nach unseren
+          <nuxt-link
+              target="_blank"
+              to="/de/agb"
+          >AGB.</nuxt-link>
         </h5>
+<!--        Hinweis Text kann nach 12.5. verwendet werden-->
+<!--        <h5 style="margin: 0px">Personen, zwischen dem 14. bis zum vollendeten 19. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" oder "SMART GARAGE + DIGI" Mitgliedschaft abschließen.</h5>-->
       </div>
 <!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
 <!--      <div class="form-item">-->
@@ -53,19 +59,22 @@
           <span class="label">MITGLIEDSCHAFT: PREIS</span>
           <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
         </div>
-        <div class="form-item" v-if="this.selectedMembership" style="margin-bottom: 4px">
-          <span class="label">Coins</span>
-          <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
-        </div>
-        <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
-          <label ></label>
-          <h5 style="margin: 0px">*Das monatliche Kontingent an Coins setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
-            Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
-            <nuxt-link
-                target="_blank"
-                to="/de/agb"
-            > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
-          </h5>
+
+        <div v-if="this.selectedMembership && getMembershipCredits()">
+          <div class="form-item"  style="margin-bottom: 4px">
+            <span class="label">Credits</span>
+            <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
+          </div>
+          <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
+            <label ></label>
+            <h5 style="margin: 0px">*Das monatliche Kontingent an Credits setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
+              Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
+              <nuxt-link
+                  target="_blank"
+                  to="/de/agb"
+              > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
+            </h5>
+          </div>
         </div>
       </div>
 <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
@@ -292,22 +301,8 @@ export default {
       return false
     },
     getMembershipPrice () {
-      let membership = null
-      //console.log('this.selectedMembership: ', this.selectedMembership.notes.shortform)
-      switch (this.selectedMembership.notes.shortform) {
-        case 'SG': membership = this.getMembershipByShortform('SG')
-          break
-        case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
-          break
-        case 'SG+DT': membership = this.getMembershipByShortform('SG+DT')
-          break
-        case 'SG+ALL': membership = this.getMembershipByShortform('SG+ALL')
-          break
-      }
-      if (membership) {
-        this.onboardingData.payment.membership = membership
-        return membership.recurringFee + '€ monatlich'
-      }
+      this.onboardingData.payment.membership = this.selectedMembership
+      return this.onboardingData.payment.membership.recurringFee + '€ monatlich'
     },
 
     getMembershipCredits () {
@@ -343,6 +338,8 @@ export default {
           return resultsTexts
         }
         return resultsTexts
+      } else {
+        return null
       }
     },
 

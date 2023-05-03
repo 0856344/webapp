@@ -132,8 +132,8 @@ export default {
     background-color: white;
     .headline-text{
       max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0.8em auto;
+      font-weight: bold;
       color:black;
       font-size: 5rem;
       display: flex;

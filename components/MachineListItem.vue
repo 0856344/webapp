@@ -97,6 +97,7 @@ a {
       font-family: $font-secondary;
       font-size: 1.2rem;
       margin-bottom: .4em;
+      overflow-wrap: break-word;
     }
     .machine-tags {
       font-size: 0.9rem;

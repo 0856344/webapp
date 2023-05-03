@@ -3,7 +3,7 @@
     v-editable="blok"
   >
     <div v-if="blok.title" class="title"> {{blok.title}}</div>
-    <div class="grid">
+    <div class="gg-grid">
       <component
           v-for="story in blok.columns"
           :is="story.component"
@@ -26,7 +26,7 @@ export default {
   margin-left: 120px;
   font-weight: bold;
 }
-.grid {
+.gg-grid {
   display: flex;
   @include margin-page-wide();
   @include media-breakpoint-down(md) {

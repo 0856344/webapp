@@ -289,6 +289,7 @@ export default {
         padding: 12px 15px;
         button {
           font-weight: bold;
+          font-size: 0.9em;
           line-height: 1em;
           padding: 10px;
           outline: none;

@@ -55,6 +55,12 @@ module.exports = {
       pathRewrite: { '^/.netlify/functions': '' }
     }
   },
+  buildModules: [
+    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
+    '@nuxtjs/proxy',
+    ['@nuxtjs/google-analytics'],
+    ['@nuxtjs/style-resources']
+  ],
   /**
    * Importing scss
    * @see https://dev.to/nbhankes/using-sass-in-nuxt-js-4595
@@ -64,18 +70,14 @@ module.exports = {
     'swiper/dist/css/swiper.css',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  buildModules: [
-    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
-    '@nuxtjs/proxy',
-    ['@nuxtjs/google-analytics'],
-    ['@nuxtjs/style-resources']
-  ],
   styleResources: {
     scss: [
-      '@/assets/scss/styles.scss'
+      '@/assets/scss/variables.scss',
+      '@/assets/scss/mixins.scss'
     ]
   },
   modules: [
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/sentry',
     '@nuxtjs/toast',
     '@nuxtjs/eslint-module',
@@ -162,6 +164,19 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    postcss: {
+      plugins: {
+        // Removed calc because its conflict with postcss8 + swiperjs
+        cssnano: {
+          preset: [
+            'default',
+            {
+              calc: false
+            }
+          ]
+        }
+      }
+    },
     transpile: [/^vue2-google-maps($|\/)/]
   },
   googleAnalytics: {
