@@ -59,6 +59,10 @@ export default {
 .preview-wrapper{
   height: inherit;
 }
+.machine-preview:hover {
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2);
+}
+
 .preview-wrapper {
   width: 100%;
   display: flex;
@@ -66,8 +70,12 @@ export default {
 
   .machine-preview {
     padding: 10px;
-    width: 300px;
-    height: 500px;
+    width: 280px;
+    height: 450px;
+    background-color: white;
+    margin: 10px;
+    word-wrap: break-word;
+    border-radius: 10px;
     @include media-breakpoint-down(sm) {
       height:auto;
       margin-left: 5%;

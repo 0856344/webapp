@@ -5,9 +5,9 @@
                 <div class="name"> {{ this.blok.title }}</div>
                 <div class="display-machines">
                     <machine-preview
-                      v-for="machine in machines"
-                      :id="machine"
-                      :key="machine"
+                            v-for="machine in machines"
+                            :id="machine"
+                            :key="machine"
                     />
                 </div>
             </div>
@@ -45,24 +45,26 @@ export default {
 
 <style lang="scss" scoped>
 .machine-card {
-    background-color: white;
+  padding: 0 50px;
 }
+
 .display-machines {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    margin-top: 2vh;
-    @include media-breakpoint-down(md) {
-        grid-template-columns: 1fr 1fr;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    @include media-breakpoint-down(sm) {
-        grid-template-columns: 1fr;
-        flex-flow: column;
-        margin-bottom: 1vh;
-    }
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  margin-top: 2vh;
+  @include media-breakpoint-down(md) {
+    grid-template-columns: 1fr 1fr;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @include media-breakpoint-down(sm) {
+    grid-template-columns: 1fr;
+    flex-flow: column;
+    margin-bottom: 1vh;
+  }
 }
+
 .display-machine {
   @include media-breakpoint-down(sm) {
     background: white;
@@ -74,15 +76,27 @@ export default {
   height: inherit;
 }
 
+.preview-wrapper:hover {
+    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2);
+}
+
 .preview-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
 
+  .machine-preview:hover {
+    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2) !important;
+  }
+
   .machine-preview {
     padding: 10px;
-    width: 300px;
-    height: 500px;
+    width: 280px;
+    height: 450px;
+    background-color: white;
+    margin: 10px;
+    word-wrap: break-word;
+    border-radius: 10px;
     @include media-breakpoint-down(sm) {
       height: auto;
       margin-left: 5%;
@@ -129,22 +143,23 @@ export default {
     }
   }
 }
+
 .name {
-    font-size: 2.5rem;
-    font-weight: bold;
-    padding-top: 1vh;
-    padding-left: 0;
-    font-family: $font-secondary;
-    margin-top: 5vh;
-    @include media-breakpoint-down(md) {
-        display: flex;
-        justify-content: center;
-    }
-    @include media-breakpoint-down(sm) {
-        font-size: 1.9rem;
-    }
-    @include media-breakpoint-down(xs) {
-        font-size: 1.4rem;
-    }
+  font-size: 2.5rem;
+  font-weight: bold;
+  padding-top: 1vh;
+  padding-left: 0;
+  font-family: $font-secondary;
+  margin-top: 5vh;
+  @include media-breakpoint-down(md) {
+    display: flex;
+    justify-content: center;
+  }
+  @include media-breakpoint-down(sm) {
+    font-size: 1.9rem;
+  }
+  @include media-breakpoint-down(xs) {
+    font-size: 1.4rem;
+  }
 }
 </style>
