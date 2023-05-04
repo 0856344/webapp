@@ -5,7 +5,7 @@
       <TextInput :label="$t('firstName')" v-model="member.firstName" :disabled="true" :isContact="true" />
       <TextInput :label="$t('lastName')" v-model="member.lastName" :disabled="true" :isContact="true" />
       <TextInput :label="$t('address')" v-model="member.address" :isContact="true" />
-      <TextInput :label="$t('zipCode')" v-model="member.zipCode" :isContact="true" />
+      <TextInput :label="$t('zipCode')" v-model="member.zip" :isContact="true" />
       <TextInput :label="$t('city')" v-model="member.city" :isContact="true" />
       <div class="grid items-baseline grid-flow-row gap-2 sm:py-2 sm:h-8 sm:grid-cols-contact ">
         <label class="block text-xs font-bold uppercase sm:text-end" for="country-input">
@@ -37,7 +37,7 @@
         :isContact="true" />
       <TextInput v-if="member.hasBillingAddress" :label="$t('address')" v-model="member.billingAddress"
         :isContact="true" />
-      <TextInput v-if="member.hasBillingAddress" :label="$t('zipCode')" v-model="member.billingZipCode"
+      <TextInput v-if="member.hasBillingAddress" :label="$t('zipCode')" v-model="member.billingZip"
         :isContact="true" />
       <TextInput v-if="member.hasBillingAddress" :label="$t('city')" v-model="member.billingCity" :isContact="true" />
       <div v-if="member.hasBillingAddress"
