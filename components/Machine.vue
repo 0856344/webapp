@@ -13,10 +13,10 @@
               alt=""
           >
         </div>
-        <div class="description text" v-if="!this.resource">
+        <div class="description text" v-if="!this.machines">
           <markdown :value="machine.details"/>
         </div>
-        <div class="description text" v-if="this.resource">
+        <div class="description text" v-if="this.machines">
           <markdown :value="machine.details + machineCosts"/>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default {
   props: ['story'],
   data () {
     return {
-      resource: null
+      machines: []
     }
   },
   computed: {
@@ -119,20 +119,37 @@ export default {
 
       // Text ab 12.5
       if (isSG) {
-        let priceText = '\n\n**KOSTEN:** '
-        if (this.resource?.pricePerTimeIdle && this.resource?.pricePerTimeBusySeconds) {
-          priceText = priceText + this.resource?.pricePerTimeIdle * 10 + ' Credits pro ' + this.resource.pricePerTimeBusySeconds / 60 + ' Minute(n)'
-          priceText = priceText + '\n\n *Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' + this.resource?.pricePerTimeIdle + ' € pro ' + this.resource.pricePerTimeBusySeconds / 60 + ' Minute(n)*'
-        } else priceText = ''
-        return priceText
+        const priceHeader = '\n\n**KOSTEN:** '
+        let priceText = ''
+        for (const machineItem of this.machines) {
+          if (machineItem?.pricePerTimeBusy && machineItem?.pricePerTimeBusySeconds && machineItem?.pricePerTimeBusy !== '0.00') {
+            priceText = priceText + '\n\n'
+            priceText = priceText + machineItem.name + ': ' + '**' + (Number(machineItem.pricePerTimeBusy * 10).toFixed(1)) + ' Credits pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
+            priceText = priceText + '<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' + machineItem.pricePerTimeBusy + ' € pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)*</sub> '
+            priceText = priceText + '\n\n' + '---' + '\n\n'
+          }
+        }
+        if (priceText !== '') {
+          return priceHeader + '\n\n' + '---' + '\n\n' + priceText
+        } else {
+          return ''
+        }
       } else {
         // Text bis 12.5
-        let priceText = '\n\n**KOSTEN:** '
-        if (this.resource?.pricePerTimeIdle && this.resource?.pricePerTimeBusySeconds) {
-          priceText = priceText + this.resource?.pricePerTimeIdle + '€ pro ' + this.resource.pricePerTimeBusySeconds / 60 + ' Minute(n)'
-        } else priceText = ''
-        // ALTERNATIVE? else priceText = priceText + 'Preis auf Anfrage'
-        return priceText
+        const priceHeader = '\n\n**KOSTEN:** '
+        let priceText = ''
+        for (const machineItem of this.machines) {
+          if (machineItem?.pricePerTimeBusy && machineItem?.pricePerTimeBusySeconds && machineItem?.pricePerTimeBusy !== '0.00') {
+            priceText = priceText + '\n\n'
+            priceText = priceText + machineItem.name + ': ' + '**' + machineItem.pricePerTimeBusy + '€ pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
+            priceText = priceText + '\n\n' + '---' + '\n\n'
+          }
+        }
+        if (priceText !== '') {
+          return priceHeader + '\n\n' + '---' + '\n\n' + priceText
+        } else {
+          return ''
+        }
       }
     },
     tags () {
@@ -151,10 +168,9 @@ export default {
     }
   },
   async mounted () {
-    if (this.machine?.fabmanId) {
-      this.resource = await this.$store.dispatch('getResource', this.machine.fabmanId)
-      // TEST with Trotec Speedy 360
-      //this.resource = await this.$store.dispatch('getResource', 3167)
+    for (const machineItem of this.machine.machine_status_items) {
+      const machineResource = await this.$store.dispatch('getResource', machineItem.fabmanId)
+      this.machines.push(machineResource)
     }
   },
   head () {
