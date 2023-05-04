@@ -13,8 +13,11 @@
               alt=""
           >
         </div>
-        <div class="description text">
+        <div class="description text" v-if="!this.resource">
           <markdown :value="machine.details"/>
+        </div>
+        <div class="description text" v-if="this.resource">
+          <markdown :value="machine.details + machineCosts"/>
         </div>
       </div>
     </div>
@@ -96,9 +99,41 @@ export default {
     MachineCalendar
   },
   props: ['story'],
+  data () {
+    return {
+      resource: null
+    }
+  },
   computed: {
     machine () {
       return this.story.content
+    },
+    machineCosts () {
+      // Maschinen werden momentan via Fabman ID aus Storyblok identifiziert
+      // Im 1755 Fabman Account unterscheiden sich die IDs zum Produktivsystem - daher werden die Kosten in der lokalen Entwicklung nicht angezeigt
+      // Es sollte stattdessen eine "shortform" wie bei den Mitgliedschaften verwendet werden
+
+      const goLiveSG = new Date(2023, 4, 12).getTime()
+      const today = new Date().getTime()
+      const isSG = (today >= goLiveSG)
+
+      // Text ab 12.5
+      if (isSG) {
+        let priceText = '\n\n**KOSTEN:** '
+        if (this.resource?.pricePerTimeIdle && this.resource?.pricePerTimeBusySeconds) {
+          priceText = priceText + this.resource?.pricePerTimeIdle * 10 + ' Credits pro ' + this.resource.pricePerTimeBusySeconds / 60 + ' Minute(n)'
+          priceText = priceText + '\n\n *Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' + this.resource?.pricePerTimeIdle + ' € pro ' + this.resource.pricePerTimeBusySeconds / 60 + ' Minute(n)*'
+        } else priceText = ''
+        return priceText
+      } else {
+        // Text bis 12.5
+        let priceText = '\n\n**KOSTEN:** '
+        if (this.resource?.pricePerTimeIdle && this.resource?.pricePerTimeBusySeconds) {
+          priceText = priceText + this.resource?.pricePerTimeIdle + '€ pro ' + this.resource.pricePerTimeBusySeconds / 60 + ' Minute(n)'
+        } else priceText = ''
+        // ALTERNATIVE? else priceText = priceText + 'Preis auf Anfrage'
+        return priceText
+      }
     },
     tags () {
       return this.story.tag_list
@@ -113,6 +148,13 @@ export default {
       return {
         items: this.machine.images
       }
+    }
+  },
+  async mounted () {
+    if (this.machine?.fabmanId) {
+      this.resource = await this.$store.dispatch('getResource', this.machine.fabmanId)
+      // TEST with Trotec Speedy 360
+      //this.resource = await this.$store.dispatch('getResource', 3167)
     }
   },
   head () {
