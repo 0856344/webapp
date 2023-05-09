@@ -52,10 +52,10 @@
       </div>
 
       <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
-      <p style="font-size: smaller"><u>benötigst du mehr Credits? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Credits! [TODO: Verlinkung zu FAQ/AGB]</u></p>
+      <!---p style="font-size: smaller"><u>benötigst du mehr Credits? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Credits! [TODO: Verlinkung zu FAQ/AGB]</u></p-->
       <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
         <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
-        <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort! [TODO: Verlinkung zu FAQ/AGB]</u></p>
+        <!-- <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort! [TODO: Verlinkung zu FAQ/AGB]</u></p> -->
       </div>
       <div> <loading-spinner v-if="loading" color="#333"/>  </div>
     </fieldset>
@@ -64,7 +64,7 @@
       <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
         <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
-        <p style="font-size: smaller"><u>ausschließlich für die Bezahlung von Maschinengebühren güligt. [TODO: Verlinkung zu FAQ/AGB] </u></p>
+        <!-- <p style="font-size: smaller"><u>ausschließlich für die Bezahlung von Maschinengebühren güligt. [TODO: Verlinkung zu FAQ/AGB] </u></p> -->
       </div>
     </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
