@@ -1,116 +1,117 @@
 <template>
   <div class="section">
     <div v-if="this.loading" style="margin-top: 30px; margin-bottom: 500px">
-      <loading-spinner/>
-<!--      <p>lade Mitgliedschaften...</p>-->
+      <loading-spinner />
+      <!--      <p>lade Mitgliedschaften...</p>-->
     </div>
     <form v-if="!this.loading" class="form">
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 18" style="margin-top: 40px">
+      <div class="form-item"
+        v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age >= 18"
+        style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT<span class="red">*</span></span>
         <select class="input-select" v-model="selectedMembership">
-          <option
-              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">
+          <option v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id">
             {{ membership.name }}
           </option>
         </select>
       </div>
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 40px">
+      <div class="form-item"
+        v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18"
+        style="margin-top: 40px">
         <span class="label">MITGLIEDSCHAFT für Jugendliche</span>
-        <select class="input-select" v-model="selectedMembership" >
-          <option
-              v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id" :disabled = "(membership.notes.shortform === 'SG+MW')  || (membership.notes.shortform === 'SG+ALL')">
+        <select class="input-select" v-model="selectedMembership">
+          <option v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id"
+            :disabled="(membership.notes.shortform === 'SG+MW') || (membership.notes.shortform === 'SG+ALL')">
             {{ membership.name }}
           </option>
         </select>
       </div>
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18" style="margin-top: 0px" >
-        <label ></label>
-        <h5 style="margin: 0px">Für Personen bis zum vollendeten 18. Lebensjahr gelten besondere Konditionen nach unseren
-          <nuxt-link
-              target="_blank"
-              to="/de/agb"
-          >AGB.</nuxt-link>
+      <div class="form-item"
+        v-if="!this.onboardingData.contactInformation.company && this.onboardingData.contactInformation.age < 18"
+        style="margin-top: 0px">
+        <label></label>
+        <h5 style="margin: 0px">HINWEIS: Das Mindestalter für eine Mitgliedschaft SMART 14+ bzw. DIGI 14+ liegt bei 14
+          Jahren. Für die Nutzung von METAL 18+ und GRAND 18+ als Mitglied musst du 18 Jahre alt sein. Weitere Infos >
+          <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>. TOO YOUNG? Klick dich in unsere <nuxt-link
+            target="_blank" to="/de/bildungswerkstatt">Bildungswerkstatt</nuxt-link> rein, da gibt's coole Formate und
+          Workshops für dich!
         </h5>
-<!--        Hinweis Text kann nach 12.5. verwendet werden-->
-<!--        <h5 style="margin: 0px">Personen, zwischen dem 14. bis zum vollendeten 19. Lebensjahr dürfen ausschließlich die "SMART GARAGE -Base" oder "SMART GARAGE + DIGI" Mitgliedschaft abschließen.</h5>-->
       </div>
-<!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
-<!--      <div class="form-item">-->
-<!--        <span class="label" >Ermäßigung vorhanden?</span>-->
-<!--        <div class="checkbox-wrapper">-->
-<!--          <input class="checkbox" type="checkbox"-->
-<!--                 :checked="discounted"-->
-<!--                 v-model="discounted" >-->
-<!--          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="form-item">-->
-<!--        <span class="label" >Jährliche Abbuchung?</span>-->
-<!--        <div class="checkbox-wrapper">-->
-<!--          <input class="checkbox" type="checkbox"-->
-<!--                 :checked="yearly"-->
-<!--                 v-model="yearly" >-->
-<!--          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
+      <!--      <div class="form-item">-->
+      <!--        <span class="label" >Ermäßigung vorhanden?</span>-->
+      <!--        <div class="checkbox-wrapper">-->
+      <!--          <input class="checkbox" type="checkbox"-->
+      <!--                 :checked="discounted"-->
+      <!--                 v-model="discounted" >-->
+      <!--          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="form-item">-->
+      <!--        <span class="label" >Jährliche Abbuchung?</span>-->
+      <!--        <div class="checkbox-wrapper">-->
+      <!--          <input class="checkbox" type="checkbox"-->
+      <!--                 :checked="yearly"-->
+      <!--                 v-model="yearly" >-->
+      <!--          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
-        <div v-if="!this.onboardingData.contactInformation.company">
+      <div v-if="!this.onboardingData.contactInformation.company">
         <div class="form-item" v-if="this.selectedMembership">
-          <span class="label">MITGLIEDSCHAFT: PREIS</span>
+          <span class="label">Paket-Preis</span>
           <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
         </div>
 
         <div v-if="this.selectedMembership && getMembershipCredits()">
-          <div class="form-item"  style="margin-bottom: 4px">
+          <div class="form-item" style="margin-bottom: 4px">
             <span class="label">Credits</span>
-            <p class="text">{{ getMembershipCredits()[0]}} <strong v-if="getMembershipCredits()[1]!==''"><span class="specialOffer"> + {{ getMembershipCredits()[1]}} [%Aktion%]</span></strong></p>
+            <p class="text">{{ getMembershipCredits()[0] }} <strong v-if="getMembershipCredits()[1] !== ''"><span
+                  class="specialOffer"> + {{ getMembershipCredits()[1] }} [%Aktion%]</span></strong></p>
           </div>
-          <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px" >
-            <label ></label>
-            <h5 style="margin: 0px">*Das monatliche Kontingent an Credits setzt sich zum Beginn des Abrechnungsintervalls wieder zurück.
-              Wird das Kontingent überschritten, wird der Verbrauch in Rechnung gestellt. Einmalige Coins verfallen nicht zum Ende des Abrechnungsintervalls (siehe
-              <nuxt-link
-                  target="_blank"
-                  to="/de/agb"
-              > {{ $t('conditionsOfParticipation') }} </nuxt-link>).
+          <div class="form-item" v-if="this.selectedMembership" style="margin-top: 0px; margin-bottom: 30px">
+            <label></label>
+            <h5 style="margin: 0px">Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die
+              Freikontingente können nicht ins nächste Monat mitgenommen werden. Die zusätzlich (gekauften) Credits
+              bleiben auch über die Monatsgrenze hinweg erhalten. Weitere Infos >
+              <nuxt-link target="_blank" to="/de/agb"> {{ $t('conditionsOfParticipation') }} </nuxt-link>).
             </h5>
           </div>
         </div>
       </div>
-<!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-<!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
-<!--        <div class="form-item" >-->
-<!--          <label ></label>-->
-<!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
-<!--        </div>-->
-<!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
-<!--        <span class="label">{{storage.name}}</span>-->
-<!--        <div class="checkbox-wrapper">-->
-<!--          <input class="checkbox" type="checkbox"-->
-<!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
-<!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      </div>-->
-<!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">-->
-<!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
-<!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
-<!--      </div>-->
-<!--      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">-->
-<!--        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>-->
-<!--        <p class="text">{{ this.price }} (inkl. MwSt)</p>-->
-<!--      </div>-->
-      <div class="form-item" v-if="!this.onboardingData.contactInformation.company"  style="margin-top: 20px">
+      <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
+      <!--      <div v-if="!this.onboardingData.contactInformation.company" style="margin-top: 40px; margin-bottom: 40px">-->
+      <!--        <div class="form-item" >-->
+      <!--          <label ></label>-->
+      <!--          <h5 style="margin: 0">Zusätzlich kannst du deine Projekte in einer unserer Lagerboxen aufbewahren.</h5>-->
+      <!--        </div>-->
+      <!--      <div class="form-item" v-for="storage in this.availableStorage" :key="storage.id" style="margin: 0">-->
+      <!--        <span class="label">{{storage.name}}</span>-->
+      <!--        <div class="checkbox-wrapper">-->
+      <!--          <input class="checkbox" type="checkbox"-->
+      <!--                 :id="storage" v-model="onboardingData.payment.bookStorage" :value="storage">-->
+      <!--          <p class="text">für {{storage.recurringFee}}€ monatlich buchen</p>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      </div>-->
+      <!--      <div class="form-item" v-if="!this.onboardingData.contactInformation.company && this.onboardingData.payment.bookStorage.length > 0">-->
+      <!--        <span class="label">LAGER: PREIS<span class="red">*</span></span>-->
+      <!--        <p class="text">{{ this.storagePrice }} (inkl. MwSt)</p>-->
+      <!--      </div>-->
+      <!--      <div class="form-item" v-if="this.onboardingData.payment.membership || this.onboardingData.contactInformation.company">-->
+      <!--        <span class="label">MITGLIEDSCHAFT: PREIS<span class="red">*</span></span>-->
+      <!--        <p class="text">{{ this.price }} (inkl. MwSt)</p>-->
+      <!--      </div>-->
+      <div class="form-item" v-if="!this.onboardingData.contactInformation.company" style="margin-top: 20px">
         <span class="label">{{ 'Beginn der Mitgliedschaft' }}<span class="red">*</span></span>
         <div>
-          <input class="input-text" type="date"  :min="minDate"  :max="maxDate"
-                 v-model="onboardingData.payment.startDate"
-                 name=""/>
+          <input class="input-text" type="date" :min="minDate" :max="maxDate" v-model="onboardingData.payment.startDate"
+            name="" />
           <div class="date-error">
-<!--          <span-->
-<!--              v-if="!onboardingData.contactInformation.birthdateValid"-->
-<!--              class="bad"-->
-<!--          >{{ $t('tooYoung') }} </span>-->
+            <!--          <span-->
+            <!--              v-if="!onboardingData.contactInformation.birthdateValid"-->
+            <!--              class="bad"-->
+            <!--          >{{ $t('tooYoung') }} </span>-->
           </div>
         </div>
       </div>
@@ -121,66 +122,61 @@
       <div v-if="!this.hasAttendeesFreeCost">
         <div class="form-item">
           <span class="label">IBAN<span class="red">*</span></span>
-            <div>
-            <input class="input-text" style="margin-bottom: 3px" type="text" v-model="onboardingData.payment.iban" name="" @input="validateIban()"/>
+          <div>
+            <input class="input-text" style="margin-bottom: 3px" type="text" v-model="onboardingData.payment.iban" name=""
+              @input="validateIban()" />
             <div class="date-error">
-            <span
-                v-if="!this.onboardingData.payment.ibanIsValid && this.onboardingData.payment.iban"
-                class="bad"
-            >{{ 'IBAN ist üngültig' }} </span>
+              <span v-if="!this.onboardingData.payment.ibanIsValid && this.onboardingData.payment.iban" class="bad">{{
+                'IBAN ist üngültig' }} </span>
             </div>
           </div>
         </div>
         <div class="form-item">
-          <span class="label">{{ 'Kontoinhaber*in' }}<span class="red">*</span></span>
-          <input class="input-text" type="text" v-model="onboardingData.payment.accountOwner"/>
+          <span class="label">Kontoinhaber:in <span class="red">*</span></span>
+          <input class="input-text" type="text" v-model="onboardingData.payment.accountOwner" />
         </div>
         <div class="form-item">
-          <span class="label" >KontoinhaberIn volljährig?</span>
+          <span class="label">Kontoinhaber:in volljährig?</span>
           <div class="checkbox-wrapper">
-            <input class="checkbox" type="checkbox"
-                   :checked="onboardingData.payment.accountOwnerLegalAge"
-                   v-model="onboardingData.payment.accountOwnerLegalAge" >
-            <p class="text" style="max-width: 600px">Hiermit bestätige, dass der/die KontoinhaberIn volljährig ist.</p>
+            <input class="checkbox" type="checkbox" :checked="onboardingData.payment.accountOwnerLegalAge"
+              v-model="onboardingData.payment.accountOwnerLegalAge">
+            <p class="text" style="max-width: 600px">Hiermit bestätige, dass der/die Kontoinhaber:in volljährig ist.</p>
           </div>
         </div>
         <div class="form-item">
-          <span class="label" >SEPA MANDAT</span>
+          <span class="label">SEPA MANDAT</span>
           <div class="checkbox-wrapper">
-            <input class="checkbox" type="checkbox"
-                   :checked="onboardingData.payment.sepaMandat"
-                   v-model="onboardingData.payment.sepaMandat" >
-            <p class="text" style="max-width: 600px">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein Konto gezogenen SEPA-Lastschriften einzulösen. Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.</p>
+            <input class="checkbox" type="checkbox" :checked="onboardingData.payment.sepaMandat"
+              v-model="onboardingData.payment.sepaMandat">
+            <p class="text" style="max-width: 600px">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto
+              mittels SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH
+              auf mein Konto gezogenen SEPA-Lastschriften einzulösen. Ich kann innerhalb von acht Wochen, beginnend mit
+              dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem
+              Kreditinstitut vereinbarten Bedingungen.</p>
           </div>
         </div>
       </div>
       <div class="form-item">
         <span class="label">AGB</span>
         <div class="checkbox-wrapper">
-          <input class="checkbox" type="checkbox"
-                 :checked="onboardingData.payment.agb"
-                 v-model="onboardingData.payment.agb" >
-          <p class="text" style="max-width: 600px"> {{ $t('iHaveReadThe') }}&nbsp;<nuxt-link
-              target="_blank"
-              to="/de/agb"
-          > {{ $t('conditionsOfParticipation') }} </nuxt-link>&nbsp;{{ $t('andAcceptTheTermsAndConditions') }}</p>
+          <input class="checkbox" type="checkbox" :checked="onboardingData.payment.agb"
+            v-model="onboardingData.payment.agb">
+          <p class="text" style="max-width: 600px"> {{ $t('iHaveReadThe') }}&nbsp;<nuxt-link target="_blank" to="/de/agb">
+              {{ $t('conditionsOfParticipation') }} </nuxt-link>&nbsp;{{ $t('andAcceptTheTermsAndConditions') }}</p>
         </div>
       </div>
       <div class="form-item">
         <span class="label">DATENSCHUTZERKLÄRUNG</span>
         <div class="checkbox-wrapper">
-          <input class="checkbox" type="checkbox"
-                 :checked="onboardingData.payment.privacyPolicy"
-                 v-model="onboardingData.payment.privacyPolicy" >
-          <p class="text" style="max-width: 600px">{{ $t('iHaveReadThe') }}&nbsp; <nuxt-link
-              target="_blank"
-              to="/de/datenschutzerklaerung"
-          >{{ $t('dataPrivacyPolicy') }}</nuxt-link>&nbsp; {{ $t('andAcceptTheTermsAndConditions') }}</p>
+          <input class="checkbox" type="checkbox" :checked="onboardingData.payment.privacyPolicy"
+            v-model="onboardingData.payment.privacyPolicy">
+          <p class="text" style="max-width: 600px">{{ $t('iHaveReadThe') }}&nbsp; <nuxt-link target="_blank"
+              to="/de/datenschutzerklaerung">{{ $t('dataPrivacyPolicy') }}</nuxt-link>&nbsp; {{
+                $t('andAcceptTheTermsAndConditions') }}</p>
         </div>
       </div>
     </form>
   </div>
-
 </template>
 
 <script>
@@ -331,10 +327,10 @@ export default {
             oneTimeCredits = credit.amount
           }
         })
-        const resultTextmonthlyCredits = (monthlyCredit * 10) + ' Coins monatlich'
+        const resultTextmonthlyCredits = (monthlyCredit * 10) + ' Credits monatlich'
         const resultsTexts = [resultTextmonthlyCredits, '']
         if (oneTimeCredits !== 0) {
-          resultsTexts[1] = (oneTimeCredits * 10) + ' Coins einmalig'
+          resultsTexts[1] = (oneTimeCredits * 10) + ' Credits einmalig'
           return resultsTexts
         }
         return resultsTexts
@@ -363,9 +359,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .form {
   margin-left: -6em;
+
   @include media-breakpoint-down(md) {
     margin-left: 0em;
   }
@@ -388,12 +384,14 @@ export default {
     align-items: flex-start;
 
   }
+
   .checkbox-wrapper {
     padding-right: 20px;
     margin-right: 0;
     padding: 3px;
     //margin-bottom: 0;
     display: flex;
+
     .checkbox {
       //display: flex;
       //justify-content: center;
@@ -405,6 +403,7 @@ export default {
       margin-right: 5px;
       margin-top: 3px;
     }
+
     .text {
       display: flex;
       //justify-content: center;
@@ -421,20 +420,25 @@ export default {
 
     }
   }
+
   input {
     outline: none;
     flex-grow: 1;
     padding: 5px 10px;
+
     @include media-breakpoint-down(xs) {
       margin: 1vh 0;
     }
+
     background: #fff;
     border: 1px solid #fff;
     width: 100%;
+
     &:focus {
       border-color: $color-orange;
     }
   }
+
   .label {
     font-weight: bold;
     text-transform: uppercase;
@@ -445,12 +449,14 @@ export default {
     margin: 6px 10px 4px 0px;
     //margin-left: 0px;
   }
+
   .text-content {
     align-self: flex-end;
     font-weight: lighter;
     text-transform: none;
     font-size: .7em;
   }
+
   input {
     display: flex;
     outline: none;
@@ -462,12 +468,15 @@ export default {
     background: #fff;
     border: 1px solid #fff;
     width: 100%;
+
     &:focus {
       border-color: $color-orange;
     }
   }
+
   .password-wrapper {
     position: relative;
+
     .password-status {
       position: absolute;
       right: 10px;
@@ -480,12 +489,15 @@ export default {
       border-radius: 50%
     }
   }
+
   .date-error {
     grid-column: 2;
   }
+
   .button-row {
     grid-column: 2;
     margin-bottom: 5px; // fix for some strange ios safari error
+
     .input-button-primary {
       align-self: flex-end;
       cursor: pointer;
@@ -500,6 +512,7 @@ export default {
       //  background-color: $color-orange;
       //}
     }
+
     .input-button-primary:disabled {
       cursor: default;
       background-color: grey;
@@ -516,25 +529,32 @@ export default {
 
 .disclaimer {
   color: #333;
+
   a {
     color: $color-orange;
     padding: 0 3px;
   }
 }
+
 .error-message {
   color: red;
+
   .policy {
     font-size: 0.8em;
     color: #333;
-    > ul {
+
+    >ul {
       list-style-type: circle;
       padding: 0 0 0 1em;
-      > li {
+
+      >li {
         margin: .4em 0 0 0;
-        > ul {
+
+        >ul {
           padding: 0 0 0 1em;
           list-style-type: circle;
-          > li {
+
+          >li {
             margin: .4em 0 0 0;
           }
         }
@@ -550,5 +570,4 @@ export default {
 
 .red {
   border-color: red !important;
-}
-</style>
+}</style>

@@ -71,7 +71,7 @@
       <div v-if="!ibanIsValid && paymentMethod.iban" class="text-xs text-orange">
         IBAN ist ungültig
       </div>
-      <TextInput :label="'Kontoinhaber*In'" v-model="paymentMethod.accountOwnerName" :isContact="true" />
+      <TextInput :label="'Kontoinhaber:in'" v-model="paymentMethod.accountOwnerName" :isContact="true" />
       <div class="grid items-baseline grid-flow-row gap-2 grow sm:py-2 sm:grid-cols-contact">
         <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
           SEPA MANDAT
