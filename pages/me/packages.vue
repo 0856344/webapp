@@ -30,13 +30,13 @@
           />
         </div>
       </div>
-      <p>Bei Änderungen Deiner Mitgliedschaft kontaktiere bitte unseren
-        <a v-bind:href="mail">Frontdesk</a> per E-Mail.  </p>
+      <p>Bei Änderungen deiner Mitgliedschaft kontaktiere bitte unseren Frontdesk per Mail an
+        <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
     </fieldset>
     <fieldset v-if="hasSmartGarage">
       <legend>Credits</legend>
       <div style="margin-top: 20px; margin-bottom: 15px">
-        <span>aktueller Status: </span>
+        <span>Aktueller Status: </span>
         <span v-if="this.getAllCredits() === 0">
           <strong><span>0 Credits</span> </strong>
         </span>
@@ -51,8 +51,9 @@
 <!--        </transition>-->
       </div>
 
-      <p>monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
-      <p style="font-size: smaller"><u>Benötigst du mehr Credits? Dann wechsle deine Mitgliedschaft oder kaufe zusätzliche Credits!</u></p>
+      <p>Monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
+      <p>Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die Freikontingente können nicht ins nächste Monat mitgenommen werden. Die zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.  Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.</p>
+      <p style="font-size: smaller"><u>Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten, oder wechsle deine Mitgliedschaft, indem du ein Mail an den Frontdesk schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a></u></p>
       <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
         <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
         <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort!</u></p>
@@ -64,7 +65,7 @@
       <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
         <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
-        <p style="font-size: smaller"><u>Ausschließlich für die Bezahlung von Maschinengebühren gültig.</u></p>
+        <p style="font-size: smaller"><u>Hinweis: Derzeit können Credits nur für Arbeitszeit an den Maschinen genutzt werden.</u></p>
       </div>
     </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
