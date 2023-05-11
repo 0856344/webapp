@@ -47,7 +47,10 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
       { rel: 'icon', type: 'image/x-icon', href: '/gg-logo.svg' }
-    ]
+    ],
+    htmlAttrs: {
+      lang: 'de'
+    }
   },
   proxy: {
     '/.netlify': {
@@ -80,7 +83,7 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/sentry',
     '@nuxtjs/toast',
-    '@nuxtjs/eslint-module',
+    //'@nuxtjs/eslint-module',
     '@nuxtjs/robots',
     'nuxt-i18n'
   ],
@@ -100,6 +103,7 @@ module.exports = {
     '~/plugins/libs',
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
+    '~/plugins/getActiveBreakpoint.client.js',
     //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
   ],

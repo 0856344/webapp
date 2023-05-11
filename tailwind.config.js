@@ -49,7 +49,8 @@ module.exports = {
         700: '#7d7d7d',
         800: '#6c6c6c',
         900: '#2d2d2d'
-      }
+      },
+      transparent: 'transparent'
     },
     fontFamily: {
       sans: ['IBM Plex Sans Condensed', 'sans-serif'],
@@ -59,6 +60,9 @@ module.exports = {
     extend: {
       gridTemplateColumns: {
         contact: '28% 72%'
+      },
+      gridTemplateRows: {
+        plan: '3em repeat(auto-fill, minmax(5em, 1fr))'
       }
     }
   },
