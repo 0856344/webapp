@@ -18,13 +18,11 @@
       </div>
       <div class="form-item" style="margin-top: 0px" >
         <label ></label>
-        <h5 style="margin: 0px">Für Personen bis zum vollendeten 18. Lebensjahr gelten besondere Konditionen nach unseren
-<!--          <a href="https://a.storyblok.com/f/47294/x/ab97a83e24/gg_hausordnung.pdf"-->
-<!--            target="new">AGB.</a>-->
-          <nuxt-link
-              target="_blank"
-              to="/de/agb"
-          >AGB.</nuxt-link>
+        <h5 style="margin: 0px">HINWEIS: Das Mindestalter für eine Mitgliedschaft SMART 14+ bzw. DIGI 14+ liegt bei 14
+          Jahren. Für die Nutzung von METAL 18+ und GRAND 18+ als Mitglied musst du 18 Jahre alt sein. Weitere Infos >
+          <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>. TOO YOUNG? Klick dich in unsere <nuxt-link
+            target="_blank" to="/de/bildungswerkstatt">Bildungswerkstatt</nuxt-link> rein, da gibt's coole Formate und
+          Workshops für dich!
         </h5>
       </div>
       <div class="form-item">
