@@ -61,15 +61,6 @@
       <span style="font-weight: bold">  {{ $t('joinNow') }}</span>
     </div>
     <div
-      class="text-md text-red font-mono font-bold py-4"
-    >
-      <font-awesome-icon
-        class="icon"
-        icon="info-circle"
-      />
-      <span style="font-weight: bold">Derzeit ist der Link deaktiviert.<BR/>Ab 12. Mai kannst du hier unsere neuen Pakete buchen. Stay tuned!</span>
-    </div>
-    <div
       class="subtitle"
       @click="recover"
     >
