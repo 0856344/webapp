@@ -15,17 +15,13 @@ export default {
   computed: {
     buildClassString () {
       const classes = []
-      if (this.blok.color === 'orange') {
-        classes.push('bg-orange', 'ring-orange-300')
-      } else if (this.blok.color === 'blue') {
-        classes.push('bg-blue', 'ring-blue-300')
-      }
+      classes.push(`bg-${this.blok.color}`, `ring-${this.blok.color}-300`)
       if (this.blok.size === 'small') {
-        classes.push('text-base', 'py-1', 'px-8', 'max-w-max')
+        classes.push('text-base', 'py-1', 'px-8', 'mt-1')
       } else if (this.blok.size === 'medium') {
-        classes.push('text-lg', 'py-2', 'px-12', 'max-w-max')
+        classes.push('text-lg', 'py-2', 'px-12', 'mt-2')
       } else if (this.blok.size === 'large') {
-        classes.push('text-3xl', 'py-4', 'px-16', 'max-w-max')
+        classes.push('text-3xl', 'py-4', 'px-16', 'mt-4')
       }
       return classes.join(' ')
     }
