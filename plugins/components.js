@@ -104,6 +104,10 @@ import CreditPackage from '~/components/CreditPackage.vue'
 import FabmanCalendar from '@/components/calendar/FabmanCalendar.vue'
 import MachineCard from '@/components/machines/MachineCard.vue'
 import ButtonLink from '@/components/ButtonLink.vue'
+import FabmanMachine from '@/components/FabmanMachine.vue'
+
+import MemberShipPlanSG from '@/components/MemberShipPlanSG.vue'
+import MemberShipGridSG from '@/components/MemberShipGridSG.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -213,3 +217,7 @@ Vue.component('credit-package', CreditPackage)
 Vue.component('fabman-calendar', FabmanCalendar)
 Vue.component('machine-card', MachineCard)
 Vue.component('button-link', ButtonLink)
+Vue.component('fabman-machine', FabmanMachine)
+
+Vue.component('membership-plan-sg', MemberShipPlanSG)
+Vue.component('membership-grid-sg', MemberShipGridSG)
