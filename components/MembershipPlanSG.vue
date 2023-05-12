@@ -1,5 +1,5 @@
 <template>
-  <div v-editable="blok" class="grid grid-rows-plan h-screen" :class="[isMobile ? 'w-72' : 'w-48']">
+  <div v-editable="blok" class="grid grid-rows-plan md:h-screen w-72 md:w-48 snap-start shrink-0 mr-12 md:mr-0" >
     <div class="bg-gray-900 rounded-t-lg text-yellow inline-flex justify-center items-center gap-4 w-">
       <h2 class="uppercase">
         {{ blok.name }}
@@ -23,7 +23,7 @@
       <span v-if="isMobile">{{ $t('creditsDescription') }}</span>
     </div>
     <div
-      class="rounded-b-lg bg-yellow border-b-2 border-x-2 border-gray-900 text-gray-900 inline-flex items-center justify-center gap-2">
+      class="px-2 rounded-b-lg bg-yellow border-b-2 border-x-2 border-gray-900 text-gray-900 inline-flex items-center justify-center gap-2">
       <span class="text-2-xl">EUR</span>
       <h2 class="uppercase text-5xl leading-3">
         {{ `${blok.price},-` }}

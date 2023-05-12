@@ -1,7 +1,7 @@
 <template>
   <div v-editable="blok" class="">
     <div class="membership-details">
-      <div class="grid grid-flow-col auto-cols-max gap-4 w-full">
+      <div class="md:grid md:grid-flow-col md:auto-cols-max md:gap-4 w-full">
         <div v-if="!isMobile" class="grid grid-rows-plan w-72 h-screen">
           <div class="bg-transparent rounded-t-lg text-yellow inline-flex justify-center items-center gap-4"></div>
           <div v-for="item in featureStrings" :key="item._uid"
@@ -15,8 +15,10 @@
           <div class="rounded-b-lg bg-transparent text-gray-900 inline-flex items-center justify-center gap-2">
           </div>
         </div>
+        <div class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth md:overflow-visible">
         <component :is="blok.component" v-for="blok in blok.columns" :key="blok.uid" :blok="blok"
           :strings="featureStrings" :isMobile="isMobile" />
+        </div>
       </div>
       <div v-if="!isAuthenticated" class="login-register-info">
         <p>Registriere dich jetzt und werde Mitglied</p>
