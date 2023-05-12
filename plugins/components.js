@@ -103,6 +103,7 @@ import LogoText from '@/components/LogoText.vue'
 import CreditPackage from '~/components/CreditPackage.vue'
 import FabmanCalendar from '@/components/calendar/FabmanCalendar.vue'
 import MachineCard from '@/components/machines/MachineCard.vue'
+import ButtonLink from '@/components/ButtonLink.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -211,3 +212,4 @@ Vue.component('logo-text', LogoText)
 Vue.component('credit-package', CreditPackage)
 Vue.component('fabman-calendar', FabmanCalendar)
 Vue.component('machine-card', MachineCard)
+Vue.component('button-link', ButtonLink)
