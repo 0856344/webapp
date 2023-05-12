@@ -90,8 +90,8 @@ export default {
       this.$store.dispatch('setSidebar', null)
     },
     register () {
-/*       this.close()
-      this.$router.push('/de/mitgliedschaften') */
+      this.close()
+      this.$router.push('/de/mitgliedschaften')
     },
     recover () {
       this.$store.dispatch('setSidebar', 'recover')
