@@ -26,7 +26,7 @@
           <div class="info">
             <markdown :value="blok.info" />
           </div>
-          <div v-if="person.length === 1"  class="contact-details">
+          <div v-if="person.length === 1 && !member"  class="contact-details">
             <div >
               <single-contact-preview :id="person[0]" :single_member_text="singleMemberText"/>
             </div>
