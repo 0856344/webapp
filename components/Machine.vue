@@ -124,7 +124,7 @@ export default {
         for (const machineItem of this.machines) {
           if (machineItem?.pricePerTimeBusy && machineItem?.pricePerTimeBusySeconds && machineItem?.pricePerTimeBusy !== '0.00') {
             priceText = priceText + '\n\n'
-            priceText = priceText + machineItem.name + ': ' + '**' + (Number(machineItem.pricePerTimeBusy * 10).toFixed(1)) + ' Credits pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
+            priceText = priceText + machineItem.name + ': ' + '**' + (Number(machineItem.pricePerTimeBusy * 10).toFixed(0)) + ' Credits pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
             priceText = priceText + '<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' + machineItem.pricePerTimeBusy + ' € pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)*</sub> '
             priceText = priceText + '\n\n' + '---' + '\n\n'
           }
