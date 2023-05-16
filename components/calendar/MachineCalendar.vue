@@ -75,9 +75,12 @@ export default {
       this.$store.dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
-              //success
+            console.log('error', data)
           } else {
-            this.bookings = Object.assign([], data)
+            const bookings = Object.assign([], data)
+            this.bookings = bookings.filter(function (booking) {
+              return booking.state && (booking.state !== 'cancelled')
+            })
           }
         }).catch((error) => {
           console.log(error.response.status, error.response.data.error)
