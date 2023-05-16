@@ -1,6 +1,6 @@
 <template>
     <div v-editable="blok">
-        <div v-if="machine" class="preview-wrapper">
+        <div v-if="machine && (typeof machine === 'object')" class="preview-wrapper">
             <div class="machine-preview">
                 <nuxt-link class="story" :to="machinelink">
                     <div class="display-machine">
@@ -31,8 +31,9 @@ export default {
     }
   },
   async mounted () {
-    this.machine = await this.$store.dispatch('getResource', this.machineId)
-    console.log('fabman-machine', this.machine)
+    if (this.machineId) {
+      this.machine = await this.$store.dispatch('getResource', this.machineId)
+    }
   },
   computed: {
     machineId () {
