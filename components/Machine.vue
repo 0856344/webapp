@@ -23,11 +23,6 @@
     </div>
     <div class="body">
       <div class="inner-body">
-        <!--
-        <div class="description">
-          <markdown :value="machine.description"></markdown>
-        </div>
-        -->
         <div
             v-if="hasUser"
             class="machine-list"
@@ -113,12 +108,6 @@ export default {
       // Im 1755 Fabman Account unterscheiden sich die IDs zum Produktivsystem - daher werden die Kosten in der lokalen Entwicklung nicht angezeigt
       // Es sollte stattdessen eine "shortform" wie bei den Mitgliedschaften verwendet werden
 
-      const goLiveSG = new Date(2023, 4, 12).getTime()
-      const today = new Date().getTime()
-      const isSG = (today >= goLiveSG)
-
-      // Text ab 12.5
-      if (isSG) {
         const priceHeader = '\n\n**KOSTEN:** '
         let priceText = ''
         for (const machineItem of this.machines) {
@@ -134,23 +123,6 @@ export default {
         } else {
           return ''
         }
-      } else {
-        // Text bis 12.5
-        const priceHeader = '\n\n**KOSTEN:** '
-        let priceText = ''
-        for (const machineItem of this.machines) {
-          if (machineItem?.pricePerTimeBusy && machineItem?.pricePerTimeBusySeconds && machineItem?.pricePerTimeBusy !== '0.00') {
-            priceText = priceText + '\n\n'
-            priceText = priceText + machineItem.name + ': ' + '**' + machineItem.pricePerTimeBusy + '€ pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
-            priceText = priceText + '\n\n' + '---' + '\n\n'
-          }
-        }
-        if (priceText !== '') {
-          return priceHeader + '\n\n' + '---' + '\n\n' + priceText
-        } else {
-          return ''
-        }
-      }
     },
     tags () {
       return this.story.tag_list

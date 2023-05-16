@@ -63,7 +63,7 @@ export default {
       //this.resource = 3136 //TODO for debugging - remove!
       if (this.space === 'smartgarage') {
         // TODO
-        console.log('SPACE FOUND - booking calender', this.space)
+        //console.log('SPACE FOUND - booking calender', this.space)
         //this.getBookingByMethod('getBookingsBySpace', this.space)
         this.getBookingByMethod('getBookingsByResource', 4049)
       } else if (this.resource) {
