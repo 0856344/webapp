@@ -31,7 +31,7 @@ export default {
     }
   },
   async mounted () {
-    this.machine = await this.$store.dispatch('getResource', 3777)
+    this.machine = await this.$store.dispatch('getResource', this.machineId)
     console.log('fabman-machine', this.machine)
   },
   computed: {
