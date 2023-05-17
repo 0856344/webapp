@@ -62,9 +62,9 @@ module.exports = {
         contact: '28% 72%'
       },
       gridTemplateRows: {
-        plan: '3em repeat(auto-fill, minmax(5em, 1fr))'
+        plan: '3em repeat(auto-fill, minmax(5em, 1fr))',
+        'plan-mobile': '3em repeat(auto-fill, minmax(4em, 1fr))'
       }
     }
-  },
-  plugins: []
+  }
 }

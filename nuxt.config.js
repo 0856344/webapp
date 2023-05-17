@@ -31,7 +31,7 @@ module.exports = {
   robots: [
     {
       UserAgent: '*',
-      Disallow: '/lukas-thauerboeck'
+      Disallow: ['/lukas-thauerboeck', '/de/testpage']
     }
   ],
   /*
