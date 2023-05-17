@@ -23,6 +23,8 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL_DEVELOP
+    // set public captcha site key (develop)
+    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG'
     break
   case 'staging':
     tmpAuth = new auth0.WebAuth({
@@ -33,6 +35,8 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL_STAGING
+    // set public captcha site key (develop)
+    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG'
     break
   default: // production
     tmpAuth = new auth0.WebAuth({
@@ -43,6 +47,10 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       redirectUri: origin + '/auth'
     })
     tmpVersion = process.env.CONNECTOR_API_URL
+    // set public captcha site key (production)
+    // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
+    // env variables stored on netlify are only available during build
+    process.env.RECAPTCHA_SITE_KEY = '6Ld5hhclAAAAAMYEqSvK9SxLbzZQhDMa1ouOaksM'
 }
 
 const webAuth = tmpAuth
@@ -179,14 +187,15 @@ const createStore = () => {
           this.$sentry.captureException(err)
         })
       },
-      getUserMetadata ({ state }) {
-        const id = state.member.id
-        return connector.get(`v1/fabman/members/${id}/metadata`).then((r) => {
-          return r
-        }).catch((err) => {
-          this.$sentry.captureException(err)
-        })
-      },
+      //@deprecated
+      // getUserMetadata ({ state }) {
+      //   const id = state.member.id
+      //   return connector.get(`v1/fabman/members/${id}/metadata`).then((r) => {
+      //     return r
+      //   }).catch((err) => {
+      //     this.$sentry.captureException(err)
+      //   })
+      // },
       getBookedWorkshops () {
         return connector.post('member/bookedWorkshops').then((r) => {
           return r.data
@@ -234,14 +243,15 @@ const createStore = () => {
       workshopStorno ({ state }, data) {
         return connector.post('/member/workshopStorno', data)
       },
-      async getCredits ({ state }) {
-        const res = await connector.get('/v1/members/getCredits')
-        return res.data
-      },
-      async getCreditsLog ({ state }) {
-        const res = await connector.get('/v1/members/getCreditsLog')
-        return res.data
-      },
+      //@deprecated
+      // async getCredits ({ state }) {
+      //   const res = await connector.get('/v1/members/getCredits')
+      //   return res.data
+      // },
+      // async getCreditsLog ({ state }) {
+      //   const res = await connector.get('/v1/members/getCreditsLog')
+      //   return res.data
+      // },
       startTransaction ({ state }, data) {
         // Returns payrexx checkout link
         return axios.post(connectorBaseUrl + '/payrexx/checkout', data)
@@ -255,6 +265,16 @@ const createStore = () => {
       async redeemGiftCard ({ state }, data) {
         const id = state.member.id
         const res = await connector.post(`v1/pretix/${id}/`, data)
+        return res.data
+      },
+      async getGiftCard ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.post(`v1/pretix/get-voucher/${id}/`, data)
+        return res.data
+      },
+      async buyCredits ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.post(`/v1/fabman/members/${id}/credits`, data)
         return res.data
       },
       async getInvoices ({ state }) {
@@ -279,6 +299,10 @@ const createStore = () => {
         const res = await connector.get(`/v1/fabman/members/${id}/packages`)
         return res.data
       },
+      async getMemberCredits ({ state }, id) {
+        const res = await connector.get(`/v1/fabman/members/${id}/credits`)
+        return res.data
+      },
       async getPackages ({ state }) {
         const res = await connector.get('/v1/fabman/packages')
         return res.data
@@ -288,12 +312,13 @@ const createStore = () => {
         const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
         return res.data
       },
-      async setPackageOnboarding ({ state }, data) {
-        const id = data.memberId
-        //const req = data.req
-        const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
-        return res.data
-      },
+      // TODO delete (package set in create member, security fix)
+      // async setPackageOnboarding ({ state }, data) {
+      //   const id = data.memberId
+      //   //const req = data.req
+      //   const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
+      //   return res.data
+      // },
       async uploadImage ({ state }, data) {
         const res = await connector.post('v1/files/image', data)
         //console.log(res)
@@ -338,7 +363,13 @@ const createStore = () => {
           })
         }
       },
-      async getPretixEvents ({ state }, subEvent) {
+      async getPretixEvents ({ state }) {
+        const r = await axios.get(`${baseUrl + '/api/pretix/subevents'}`)
+        if (r.status === 200) {
+          return r.data
+        }
+      },
+      async getPretixEventsForWorkshop ({ state }, subEvent) {
         const r = await axios.get(`${baseUrl + '/api/pretix/events'}/${subEvent}`)
         if (r.status === 200) {
           return r.data
@@ -376,19 +407,22 @@ const createStore = () => {
           }
         })
       },
-      getBookings ({ state }, id) {
-        return axios.get(`${origin}/.netlify/functions/getBookings?id=${id}`).then((r) => {
-          return r.data
-        }).catch((err) => {
-          this.$sentry.captureException(err)
-        })
+      async getBookingsByMember ({ state }, id) {
+        const r = await connector.get(`v1/fabman/bookings?member=${id}`)
+        return r.data
       },
-      checkStatus ({ state }, id) {
-        return axios.get(`${origin}/.netlify/functions/checkStatus?id=${id}`).then((r) => {
-          return r.data
-        }).catch((err) => {
-          this.$sentry.captureException(err)
-        })
+      async getBookingsByResource ({ state }, id) {
+        const r = await connector.get(`v1/fabman/bookings?resource=${id}`)
+        return r.data
+      },
+      async getBookingsBySpace ({ state }, id) {
+        //TODO
+        const r = await connector.get(`v1/fabman/bookings?space=${id}`)
+        return r.data
+      },
+      async getResource ({ state }, id) {
+        const r = await connector.get(`v1/fabman/resources/${id}`)
+        return r.data
       },
       getFabman ({ state, commit }) {
         return axios.get(`${origin}/.netlify/functions/getFabman`).then((r) => {

@@ -11,7 +11,7 @@
       v-if="blok.title"
       class="header-title"
     >
-      <h4>{{ blok.title }}</h4>
+      <h1>{{ blok.title }}</h1>
     </div>
   </div>
 </template>
@@ -45,7 +45,7 @@ export default {
     @include media-breakpoint-up(md) {
       max-width: 70%;
     }
-    h4 {
+    h1 {
       margin: 0;
       font-size: 3rem;
       font-family: $font-secondary;
@@ -61,7 +61,7 @@ export default {
     .header-title {
       position: relative;
       padding: 5%;
-      h4 {
+      h1 {
         font-size: 2rem;
       }
 

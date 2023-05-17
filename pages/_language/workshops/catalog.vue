@@ -1,37 +1,26 @@
 <template>
   <section class="workshop-overview">
-    <div class="workshop-filters">
-      <div class="filters">
-      </div>
-      <!--      <CovidInfobox />-->
-      <div class="search">
-        <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
-      </div>
-      <loading class="loading" v-if="loading"></loading>
-    </div>
-    <div class="workshop-list-wrapper" >
-      <div v-if="filteredWorkshops && filteredWorkshops.length > 0" class="workshop-list">
-        <transition-group name="list">
-          <workshop-list-item
-              v-for="item in filteredWorkshops"
-              :blok="item"
-              :key="item.id"
-              class="list-item"
-              :slim="false"
-          ></workshop-list-item>
-        </transition-group>
-      </div>
-      <div v-else>
-        <div v-if="workshops && workshops.length > 0 && !noResults" class="workshop-list">
-          <transition-group name="list">
-            <workshop-list-item
-                v-for="item in workshops"
-                :blok="item"
-                :key="item.id"
-                class="list-item"
-                :slim="false"
-            ></workshop-list-item>
-          </transition-group>
+    <div v-show="!isCalendar" >
+      <!--      <div class="search">
+              <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
+            </div>-->
+      <div class="workshop-list-wrapper" :key="this.filter">
+          <div v-if="fullWorkshops && fullWorkshops.length > 0 && !noResults" class="workshop-list">
+            <transition-group name="list">
+              <workshop-list-item
+                  v-for="item in fullWorkshops"
+                  :blok="item.blok"
+                  :pretix="item.pretix"
+                  :key="item.blok.id"
+                  class="list-item"
+                  :slim="false"
+              ></workshop-list-item>
+            </transition-group>
+          <!--          <div >
+                      <div class="workshop-list-none">
+                        <code> {{ $t('noSearchResults') }}</code>
+                      </div>
+                    </div>-->
         </div>
       </div>
     </div>
@@ -39,31 +28,143 @@
 </template>
 
 <script>
+import moment from 'moment'
 
 export default {
   data () {
     return {
+      categories: [
+        { key: 'event', name: 'Event', value: false, nameToDisplay: 'Event' },
+        { key: 'workshop', name: 'Workshops', value: false, nameToDisplay: 'Workshops' },
+        { key: 'training', name: 'Einschulungen', value: false, nameToDisplay: 'Einschulungen' },
+        { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false, nameToDisplay: 'Frauen und Technik' },
+        { key: 'for_kids', name: 'for_kids', value: false, nameToDisplay: 'Workshops für Kinder' }
+        // { key: 'makemas', name: '#makemas2022', value: false }
+      ],
       loading: false,
       search: '',
       workshops: [],
+      pretixWorkshops: [],
+      tags: [],
+      tagsCollapsed: false,
+      fullWorkshops: [],
+      selectedEvent: '',
       filteredWorkshops: [],
-      noResults: false
+      filter: '',
+      noResults: false,
+      isCalendar: false, // false = grid , true = calender,
+      windowWidth: Infinity,
+      display: 'calendar'
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize)
+    })
+    this.onResize()
+  },
+  created () {
+    this.addPretixToStoryblok()
+    this.$watch('categories', (newVal, oldVal) => {
+      this.updateFilter()
+    }, { deep: true })
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
   },
   watch: {
     search () {
-      this.update()
+      this.noResults = false
+      this.updateSearch()
     }
   },
   methods: {
-    update () {
-      this.noResults = false
-      this.filteredWorkshops = []
+    onResize () {
+      this.windowWidth = window.innerWidth
+      if (this.windowWidth <= 1200) {
+        this.display = 'week'
+      } else {
+        this.display = 'calendar'
+      }
+    },
+    filterByDate () {
+      this.pretixWorkshops.forEach((item) => {
+      })
+    },
+
+    addPretixToStoryblok () {
       this.workshops.forEach((item) => {
-        if (item.content.title.includes(this.search)) {
-          this.filteredWorkshops.push(item)
+        this.pretixWorkshops.forEach((pretixItem) => {
+          if (item.content.pretix_shortform && item.content.pretix_shortform === pretixItem[0].slug) {
+            this.fullWorkshops.push({
+              blok: item,
+              pretix: pretixItem
+            })
+          }
+        })
+      })
+    },
+    updateSearch () {
+      this.filterWorkshopsBySearch()
+    },
+    updateFilter () {
+      this.loading = true
+      this.noResults = false
+      this.selectedEvent = this.selectedCategories()
+      if (this.selectedEvent.length > 1) {
+        this.deselectOldest()
+        this.selectedEvent = this.selectedCategories()
+      }
+      if (this.selectedEvent.length === 0) {
+        this.filteredWorkshops = []
+        this.search = ''
+        this.filter = ''
+      }
+      if (this.selectedEvent.length === 1) {
+        this.filter = this.selectedEvent[0].name
+        this.filterWorkshopsBySearch()
+      }
+
+      this.loading = false
+    },
+    toggleTags () {
+      this.tagsCollapsed = !this.tagsCollapsed
+    },
+    filterWorkshopsBySearch () {
+      this.filteredWorkshops = []
+      this.fullWorkshops.forEach((item) => {
+        if (item.blok.content.title.includes(this.search)) {
+          if (this.filter !== '') {
+            if (item.blok.content.category === this.filter) {
+              this.filteredWorkshops.push(item)
+            } else {
+              this.noResults = true
+            }
+          } else {
+            this.filteredWorkshops.push(item)
+          }
         }
       })
+    },
+    deselectOldest () {
+      this.categories.forEach((item) => {
+        if (item.name === this.filter) {
+          item.value = false
+        }
+      })
+    },
+    selectedCategories () {
+      return this.categories.filter((c) => {
+        return (c.value) ? c.name : ''
+      }).map((c) => {
+        return { name: c.name, value: c.value, key: c.key }
+      })
+    },
+    formatPretixCategoryRequest ($category) {
+      return 'attr[Kategorie]=' + escape($category)
+    },
+    calenderDisplayOnChange ($displayType) {
+      return $displayType
     }
   },
   computed: {
@@ -73,8 +174,7 @@ export default {
           component: {
             in: 'workshop'
           }
-        },
-        search_term: this.search
+        }
       }
     }
   },
@@ -92,12 +192,98 @@ export default {
       }
       return { workshops: [] }
     })
-    return { ...workshops }
+    const pretixWorkshops = await context.store.dispatch('getPretixEvents').then((data) => {
+      if (data) {
+        return { pretixWorkshops: data }
+      } else {
+        return { pretixWorkshops: [] }
+      }
+    })
+    return { ...workshops, ...pretixWorkshops }
   }
 }
 </script>
 
 <style lang="scss">
+.pretix-content{
+  margin-top: 50px;
+}
+.pretix-content .pretix-widget-wrapper .pretix-widget-event-availability-red {
+  color: white !important;
+}
+.switch-button {
+  background: rgba(255, 255, 255, 0.56);
+  margin-left: 50px;
+  margin-top: 20px;
+  border-radius: 30px;
+  overflow: hidden;
+  width: 162px;
+  text-align: center;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: black;
+  position: relative;
+  padding-right: 120px;
+  position: relative;
+
+  &:before {
+    content: "Kalender";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  &-checkbox {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 2;
+
+    &:checked + .switch-button-label:before {
+      transform: translateX(80px);
+      transition: transform 300ms linear;
+    }
+
+    & + .switch-button-label {
+      position: relative;
+      padding: 10px 0;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+      width: 60px;
+
+      &:before {
+        content: "";
+        background: #fff;
+        height: 100%;
+        width: 135%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 30px;
+        transform: translateX(0);
+        transition: transform 300ms;
+      }
+
+      .switch-button-label-span {
+        position: relative;
+        padding-left: 15px;
+      }
+    }
+  }
+}
 
 .workshop-overview {
   .loading {
@@ -105,73 +291,119 @@ export default {
     left: 50%;
     transform: translate(-50%, -40px);
   }
+}
 
-  .workshop-filters {
-    .filters {
-      background-color: $color-orange;
-      display: flex;
-      .tags {
-        flex: 3;
+.workshop-list-wrapper {
+  margin-top: 30px;
+  display: flex;
+
+  .workshop-list {
+    padding-right: 10px;
+    padding-left: 10px;
+    list-style: none;
+
+    > span {
+      display: grid;
+      @include media-breakpoint-up(sm) {
+        grid-template-columns: 1fr 1fr;
       }
-      .calendar {
-        flex: 1;
-        max-width: 320px;
-        .reset {
-          margin-top: -3px;
-          background-color: #000;
-          padding: 10px;
-          .all {
-            padding: 10px;
-            color: #FFF;
-            &:hover {
-              cursor: pointer;
-              color: #000;
-              background-color: $color-yellow;
-            }
+      @include media-breakpoint-up(md) {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      @include media-breakpoint-up(xl) {
+        grid-template-columns: 1fr 1fr 1fr;
+        padding: 0px;
+      }
+      grid-column-gap: 2vw;
+      grid-row-gap: 2vw;
+    }
+
+    flex: 3;
+
+    .list-item {
+      min-width: 150px;
+      border-radius: 10px;
+      @include media-breakpoint-up(lg) {
+        min-width: 200px;
+      }
+    }
+
+    .list-enter-active, .list-leave-active {
+      transition: all 0.5s;
+    }
+
+    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
+    {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+
+  .workshop-list-none {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.machine-filters {
+  .tags {
+    padding: 8vh 0;
+    @include media-breakpoint-down(sm) {
+      padding: 4vh 0;
+    }
+
+    .headline {
+      color: #FFF;
+      font-weight: bold;
+      font-size: 1.8rem;
+      @include margin-page-wide();
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      @include media-breakpoint-down(sm) {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+    }
+
+    .tag-list {
+      @include margin-page-wide();
+      display: grid;
+      max-width: 70em;
+      grid-template-columns: repeat(3, 1fr);
+      @include media-breakpoint-down(sm) {
+        grid-template-columns: 1fr 1fr;
+        font-size: .85em;
+      }
+      @include media-breakpoint-down(xs) {
+        grid-template-columns: 1fr;
+      }
+      grid-gap: 15px 20px;
+
+      > .tag {
+        font-family: $font-mono;
+        color: #FFF;
+        user-select: none;
+        cursor: pointer;
+
+        input[type=checkbox] {
+          outline: none;
+          -webkit-appearance: none;
+          padding: 5px;
+          border: 1px solid #FFF;
+          border-radius: 3px;
+          position: relative;
+          top: 0;
+
+          &:checked {
+            background-color: #FFF;
           }
         }
       }
     }
-    .tags {
-      padding-bottom: 4vh;
-      @include media-breakpoint-down(sm) {
-        padding: 4vh 0;
-      }
-      .headline {
-        padding-top: 4vh;
-        color: #FFF;
-        font-weight: bold;
-        font-size: 1.8rem;
-        @include margin-page-wide();
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        letter-spacing: .05em;
-        @include media-breakpoint-down(sm) {
-          font-size: 1.2rem;
-          margin-bottom: 10px;
-        }
-      }
-      .tag-list {
-        @include margin-page-wide();
-        display: grid;
-        max-width: 70em;
-        grid-template-columns: repeat(3, 1fr);
-        @include media-breakpoint-down(sm) {
-          grid-template-columns: 1fr 1fr;
-          font-size: .85em;
-        }
-        @include media-breakpoint-down(xs) {
-          grid-template-columns: 1fr;
-        }
-        grid-gap: 15px 20px;
-        >.tag {
-          font-family: $font-mono;
-          color: #FFF;
-          user-select: none;
-          cursor: pointer;
-        }
-      }
-    }
+
+    background-color: $color-blue;
     @include media-breakpoint-down(sm) {
       overflow: hidden;
       position: relative;
@@ -185,6 +417,7 @@ export default {
         width: 100%;
         height: 20px;
         transition: all .3s linear;
+
         &:after {
           transition: all .3s linear;
           content: "";
@@ -203,9 +436,11 @@ export default {
       }
       &.collapsed {
         max-height: 17vh;
+
         .expander {
           height: 70px;
-          background: linear-gradient(rgba(0,0,0,0), $color-orange 80%);
+          background: linear-gradient(rgba(0, 0, 0, 0), $color-blue 80%);
+
           &:after {
             transform: rotate(45deg);
             bottom: 18px;
@@ -217,15 +452,11 @@ export default {
 
   .search {
     display: flex;
-    @include media-breakpoint-down(lg) {
-      @include margin-page-wide;
-    }
-    padding-top: 1rem;
-    margin-bottom: 2em;
-    @include media-breakpoint-down(xs) {
-      padding-bottom: 0rem;
-    }
-    input[type="text"] {
+    @include margin-page-wide();
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+
+    input[type=text] {
       flex: 1;
       display: block;
       width: 100%;
@@ -235,7 +466,8 @@ export default {
       font-size: 1.1rem;
       border: none;
     }
-    input[type="button"] {
+
+    input[type=button] {
       font-size: 1.1rem;
       margin-left: 10px;
       text-transform: uppercase;
@@ -247,35 +479,4 @@ export default {
     }
   }
 }
-.workshop-list-wrapper {
-  @include media-breakpoint-down(lg) {
-    @include margin-page-wide;
-  }
-  display: flex;
-
-  .workshop-list {
-    flex: 3;
-
-    .list-item {
-      margin-right: 10px;
-    }
-
-    .list-enter-active,
-    .list-leave-active {
-      transition: all 0.5s;
-    }
-
-    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
-    {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-  }
-
-  .workshop-list-none {
-    flex: 3;
-    text-align: center;
-  }
-}
-
 </style>

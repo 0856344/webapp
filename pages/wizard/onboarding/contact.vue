@@ -4,7 +4,7 @@
       <div class="form-item" style="margin-top: 20px">
         <span class="label">{{ $t('dateOfBirth') }}<span class="red">*</span></span>
         <div>
-        <input class="input-text" ref="firstInput" type="date" min="1900-01-01"
+        <input class="input-text" ref="firstInput" type="date" min="1900-01-01" max='2023-01-01'
                v-model="onboardingData.contactInformation.birthdate"
                name=""
                @change="checkBirthdate"/>
@@ -18,13 +18,11 @@
       </div>
       <div class="form-item" style="margin-top: 0px" >
         <label ></label>
-        <h5 style="margin: 0px">Für Personen bis zum vollendeten 18. Lebensjahr gelten besondere Konditionen nach unseren
-<!--          <a href="https://a.storyblok.com/f/47294/x/ab97a83e24/gg_hausordnung.pdf"-->
-<!--            target="new">AGB.</a>-->
-          <nuxt-link
-              target="_blank"
-              to="/de/agb"
-          >AGB.</nuxt-link>
+        <h5 style="margin: 0px">HINWEIS: Das Mindestalter für eine Mitgliedschaft SMART 14+ bzw. DIGI 14+ liegt bei 14
+          Jahren. Für die Nutzung von METAL 18+ und GRAND 18+ als Mitglied musst du 18 Jahre alt sein. Weitere Infos >
+          <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>. TOO YOUNG? Klick dich in unsere <nuxt-link
+            target="_blank" to="/de/bildungswerkstatt">Bildungswerkstatt</nuxt-link> rein, da gibt's coole Formate und
+          Workshops für dich!
         </h5>
       </div>
       <div class="form-item">
@@ -149,10 +147,6 @@ export default {
       loading: false,
       birthdate: null,
       countries: null
-      //optionalInvoiceContactSelected: false
-      // companyCodeValid: false,
-      // company: null
-    //invoiceContact: {}
     }
   },
   async mounted () {
@@ -189,23 +183,22 @@ export default {
       return this.onboardingData?.contactInformation?.company?.metadata?.attendees_free_cost
     }
 
-    // user () {
-    //   if (this.$store.state.user) {
-    //     this.loadUserData()
-    //   }
-    //   return this.$store.state.user
-    // },
-    // invoice () {
-    //   return this.invoiceContact
-    // }
   },
   methods: {
     checkBirthdate () {
       //this.onboardingData.contactInformation.birthdate = null
       this.onboardingData.contactInformation.birthdateValid = false
       if (this.onboardingData.contactInformation.birthdate) {
+        const d = new Date(this.onboardingData.contactInformation.birthdate)
+        if (isNaN(d.getFullYear())) {
+          const day = this.onboardingData.contactInformation.birthdate.slice(-2)
+          const month = this.onboardingData.contactInformation.birthdate.slice(-5, -3)
+          const year = this.onboardingData.contactInformation.birthdate.slice(0, 4)
+          this.onboardingData.contactInformation.birthdate = year + '-' + month + '-' + day
+        }
         const birthDate = new Date(this.onboardingData.contactInformation.birthdate)
         const age = this.calculateAge(birthDate)
+        this.onboardingData.contactInformation.age = age
         if (age >= 14) {
           //this.onboardingData.contactInformation.birthdate = this.birthdate
           this.onboardingData.contactInformation.birthdateValid = true
@@ -219,12 +212,19 @@ export default {
       return Math.floor(difference / 31557600000)
     },
 
-    checkCompanyCode () {
+    async checkCompanyCode () {
       this.loading = true
-      const data = {
+      let payload = {
         companyCode: this.onboardingData.contactInformation.companyCode
       }
-      return this.$store.dispatch('checkCompanyCode', data).then((r) => {
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      payload = { ...payload, ...captchaData }
+      return this.$store.dispatch('checkCompanyCode', payload).then((r) => {
         // this.mailCheck = true
         this.onboardingData.contactInformation.companyCodeValid = true
         this.onboardingData.contactInformation.company = r
@@ -233,26 +233,31 @@ export default {
         this.onboardingData.contactInformation.companyCodeValid = false
         this.onboardingData.contactInformation.company = null
         this.loading = false
-        const errorMsg = e?.response?.data?.msg
+        const errorStatus = e?.response?.status
         if (e.error) {
           this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
         }
-        if (errorMsg) {
-          switch (errorMsg) {
-            case 'code_invalid':
+        if (errorStatus) {
+          switch (errorStatus) {
+            case 401:
               this.$toast.show('Dieser Firmencode existiert nicht.', {
                 theme: 'bubble'
               })
               break
+            case 429:
+              this.$toast.show('Überprüfung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
+                theme: 'bubble'
+              })
+              break
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten: ', e.code, {
+              this.$toast.show('Ein Fehler ist aufgetreten. ', e, {
                 theme: 'bubble'
               })
               break
           }
-          //this.mailCheck = false
         }
       }
+
       )
     },
     cleanCompanyCode () {
@@ -298,24 +303,24 @@ export default {
   .checkbox-wrapper {
     padding-right: 20px;
     margin-right: 0;
+    padding: 3px;
     //margin-bottom: 0;
     display: flex;
     .checkbox {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      vertical-align: middle;
-      line-height: normal;
-      max-width: 30px;
+      max-width: 13px;
+      max-height: 13px;
+      margin-right: 5px;
+      margin-top: 3px;
     }
     .text {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
       font-weight: lighter;
       text-transform: none;
       font-size: .7em;
+      margin-top: 3px;
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
     }
   }
   input {

@@ -287,6 +287,19 @@ export default {
           }
         }
       }
+      .image {
+        align-items: flex-start !important;
+
+        &:hover {
+          .image-alt {
+            display: none !important;
+          }
+        }
+        .picture {
+          max-width: 60% !important;
+          height: auto !important;
+        }
+      }
     }
   }
 }

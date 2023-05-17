@@ -1,4 +1,4 @@
-import Vue from 'vue'
-import LetItSnow from 'vue-let-it-snow';
+//import Vue from 'vue'
+//import LetItSnow from 'vue-let-it-snow';
 
-Vue.use(LetItSnow);
+//Vue.use(LetItSnow);

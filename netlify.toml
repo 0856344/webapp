@@ -20,3 +20,10 @@
   command = "yarn run generate-staging && cp _branchdeploy_headers dist/_headers  && echo 'You are in STAGING context'"
 [context.staging.environment]
   NETLIFY_ENVIRONMENT = "staging"
+
+  # Specific branch context: all deploys from
+  # this specific branch will inherit these settings.
+  [context.develop] # “develop” is a branch name
+    command = "yarn run generate-develop && cp _branchdeploy_headers dist/_headers  && echo 'You are in DEVELOP context'"
+  [context.develop.environment]
+    NETLIFY_ENVIRONMENT = "develop"

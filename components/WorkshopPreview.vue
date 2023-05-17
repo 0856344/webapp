@@ -60,7 +60,7 @@ export default {
   methods: {
     async getPretixData () {
       if (this.story.content.pretix_shortform) {
-        const events = await this.$store.dispatch('getPretixEvents', this.story.content.pretix_shortform)
+        const events = await this.$store.dispatch('getPretixEventsForWorkshop', this.story.content.pretix_shortform)
         const info = events.pop().frontpage_text['de-informal']
         this.subtitle = info.split('\n')[0].slice(4)
         this.teaser = info.split('\n').splice(1).join('\n')

@@ -98,6 +98,13 @@ import PretixOceaneye from '../components/PretixOceaneye'
 import PretixCalendar from '../components/PretixCalendar'
 import TwoVideosColumn from '@/components/TwoVideosColumn'
 import DownloadCard from '../components/DownloadCard'
+import SingleImage from '@/components/SingleImage.vue'
+import LogoText from '@/components/LogoText.vue'
+import CreditPackage from '~/components/CreditPackage.vue'
+import FabmanCalendar from '@/components/calendar/FabmanCalendar.vue'
+import MachineCard from '@/components/machines/MachineCard.vue'
+import ButtonLink from '@/components/ButtonLink.vue'
+import FabmanMachine from '@/components/machines/FabmanMachine.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -201,3 +208,10 @@ Vue.component('pretix-oceaneye', PretixOceaneye)
 Vue.component('pretix-calendar', PretixCalendar)
 Vue.component('two-videos-column', TwoVideosColumn)
 Vue.component('download-card', DownloadCard)
+Vue.component('single-image', SingleImage)
+Vue.component('logo-text', LogoText)
+Vue.component('credit-package', CreditPackage)
+Vue.component('fabman-calendar', FabmanCalendar)
+Vue.component('machine-card', MachineCard)
+Vue.component('button-link', ButtonLink)
+Vue.component('fabman-machine', FabmanMachine)

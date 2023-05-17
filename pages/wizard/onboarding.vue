@@ -119,7 +119,7 @@ export default {
       onboardingData: {
         //image: null,
         image64: null,
-        //imageUrl: null,
+        imageUrl: null,
         userInformation: {
           firstName: null,
           lastName: null,
@@ -132,6 +132,7 @@ export default {
         contactInformation: {
           birthdate: null,
           birthdateValid: false,
+          age: null,
           name: null,
           address: null,
           zip: null,
@@ -157,8 +158,11 @@ export default {
           membership: null,
           sepaMandat: false,
           agb: false,
+          accountOwner: null,
+          accountOwnerLegalAge: false,
           privacyPolicy: false,
-          ibanIsValid: false
+          ibanIsValid: false,
+          startDate: new Date().toISOString().split('T')[0]
         },
         profile: {
           address: null,
@@ -191,6 +195,7 @@ export default {
           const data = this.onboardingData
           const requiredKeys = ['birthdate', 'address', 'zip', 'city', 'country']
           const requiredKeysInvoiceContact = ['firstName', 'lastName', 'address', 'zip', 'city', 'country']
+          if (data.contactInformation.country === 'XX') return true
           const allInvoiceContactFieldsSet = (!requiredKeysInvoiceContact.filter(k => !data.billingInformation[k]).length)
           // if another invoice contact (checkbox) is selected, then the additional fields are required to proceed
           if (data.contactInformation.hasBillingAddress && !allInvoiceContactFieldsSet) {
@@ -211,13 +216,13 @@ export default {
           }
           // if company & no free cost
           if (membershipType === MemberType.corporate) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid) {
+            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner) {
               return false
             }
           }
           // if no company member
           if (membershipType === MemberType.member) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.membership) {
+            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner && data.payment.membership && data.payment.startDate) {
               return false
             }
           }
@@ -279,6 +284,13 @@ export default {
         case 'contact':
           this.loadNextPage()
           this.saveOnboardingData()
+          // set account owner default name
+          if (this.onboardingData.contactInformation.hasBillingAddress) {
+            this.onboardingData.payment.accountOwner = this.onboardingData.billingInformation.firstName + ' ' + this.onboardingData.billingInformation.lastName
+          } else {
+            this.onboardingData.payment.accountOwner = this.onboardingData.userInformation.firstName + ' ' + this.onboardingData.userInformation.lastName
+          }
+
           break
         case 'image':
           this.loadNextPage()
@@ -323,7 +335,7 @@ export default {
     async checkLoginDataAndProceed () {
       this.loadingEmail = true
       this.loadingCheckEmailStatus = 'Prüfe E-Mail Adresse...'
-      const data = {
+      let payload = {
         email: this.onboardingData.userInformation.email,
         password: this.onboardingData.userInformation.password,
         user_metadata: {
@@ -331,7 +343,14 @@ export default {
           lastName: this.onboardingData.userInformation.lastName
         }
       }
-      this.$store.dispatch('checkLoginData', data).then((r) => {
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      payload = { ...payload, ...captchaData }
+      this.$store.dispatch('checkLoginData', payload).then((r) => {
         this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar'
         return new Promise(resolve => {
           setTimeout(() => {
@@ -345,19 +364,24 @@ export default {
         .catch((e) => {
           this.loadingEmail = false
           this.mailCheck = false
-          const errorMsg = e?.response?.data?.msg
+          const errorStatus = e?.response?.status
           if (e.error) {
             this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
           }
-          if (errorMsg) {
-            switch (errorMsg) {
-              case 'user_exists':
-                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits', {
+          if (errorStatus) {
+            switch (errorStatus) {
+              case 401:
+                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits.', {
+                  theme: 'bubble'
+                })
+                break
+              case 429:
+                this.$toast.show('E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
                   theme: 'bubble'
                 })
                 break
               default:
-                this.$toast.show('Ein Fehler ist aufgetreten: ', e.code, {
+                this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
                   theme: 'bubble'
                 })
                 break
@@ -369,7 +393,7 @@ export default {
     },
     async submit () {
       const memberType = this.getMemberType()
-      // STEP1: create FABMAN Member
+      // build onboarding requests
       let memberDataBasic = {
         // basicData = data for the new fabman user, that is needed for any membership type
         emailAddress: this.onboardingData.userInformation.email,
@@ -418,10 +442,10 @@ export default {
             }
           }
           extendMemberDataIban = {
-            iban: this.onboardingData.payment.iban
+            iban: this.onboardingData.payment.iban,
+            accountOwner: this.onboardingData.payment.accountOwner
           }
           if (this.onboardingData.contactInformation.hasBillingAddress) {
-            // 'billingCompany', 'billingAddress', 'billingAddress2', 'billingRegion', 'billingInvoiceText', 'billingEmailAddress' unused
             extendMemberDataBillingAddress = {
               billingFirstName: this.onboardingData.billingInformation.firstName,
               billingLastName: this.onboardingData.billingInformation.lastName,
@@ -437,10 +461,10 @@ export default {
         case MemberType.member:
           //console.log('MemberType: member or corporate (no free cost)')
           extendMemberDataIban = {
-            iban: this.onboardingData.payment.iban
+            iban: this.onboardingData.payment.iban,
+            accountOwner: this.onboardingData.payment.accountOwner
           }
           if (this.onboardingData.contactInformation.hasBillingAddress) {
-            // 'billingCompany', 'billingAddress', 'billingAddress2', 'billingRegion', 'billingInvoiceText', 'billingEmailAddress' unused
             extendMemberDataBillingAddress = {
               billingFirstName: this.onboardingData.billingInformation.firstName,
               billingLastName: this.onboardingData.billingInformation.lastName,
@@ -455,95 +479,75 @@ export default {
           break
       }
       //console.log('memberData: ', memberData)
-      this.loading = true
+      // bundle package (membership) information
+      let packageData = null
+      // private member
+      if (memberType === MemberType.member) {
+        packageData = {
+          packageId: this.onboardingData.payment.membership.id,
+          startDate: this.onboardingData.payment.startDate
+        }
+      } else {
+        // company member
+        packageData = {
+          packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id
+        }
+      }
+      // add package information to memberdata
+      memberData = { ...memberData, packageData }
+      // get captcha token
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // add captcha token to memberData
+      memberData = { ...memberData, ...captchaData }
 
-      //1) create Fabman member
+      // add image data to memberData
+      const imageData = {
+        dataUrl: this.onboardingData.image64
+      }
+      memberData = { ...memberData, imageData }
+      this.loading = true
+      //  create Fabman member and set membership
       this.$store.dispatch('createMember', memberData).then((r) => {
-        //console.log('RESULT FABMAN CREATE: ', r)
-        // eslint-disable-next-line camelcase
-        const fabman_id = r.id
-        // eslint-disable-next-line camelcase
-        //const fabman_memberNumber = r.memberNumber
-        let packageData = null
-        if (memberType === MemberType.member) {
-          packageData = {
-            memberId: r.id,
-            id: this.onboardingData.payment.membership.id
-          }
-        } else {
-          packageData = {
-            memberId: r.id,
-            id: this.onboardingData.contactInformation.company.metadata.attendees_package_id
+        // register Auth0
+        const registerAuth0Data = {
+          email: this.onboardingData.userInformation.email,
+          password: this.onboardingData.userInformation.password,
+          user_metadata: {
+            firstName: this.onboardingData.userInformation.firstName,
+            lastName: this.onboardingData.userInformation.lastName,
+            address: this.onboardingData.contactInformation.address,
+            city: this.onboardingData.contactInformation.city,
+            zip: this.onboardingData.contactInformation.zip
           }
         }
-        //console.log('packageData: ', packageData)
-        // 2) set membership
-        this.$store.dispatch('setPackageOnboarding', packageData).then((r) => {
-          //console.log('RESULT SET PACKAGE: ', r)
-          if (this.onboardingData.payment.bookStorage && memberType === MemberType.member) {
-            const storage = JSON.parse(JSON.stringify(this.onboardingData.payment.bookStorage))
-            storage.forEach(storage => {
-              //console.log('STORAGE: ', storage)
-              const storagePackageData = {
-                memberId: fabman_id,
-                id: storage.id
-              }
-              // 3) set storage packages
-              this.$store.dispatch('setPackageOnboarding', storagePackageData).then((r) => {
-                //console.log('STORAGE FABMAN CREATE: ', r)
-              })
-            })
-          }
-          // 4) upload Image
-          if (this.onboardingData.image64) {
-            const uploadImageRequest = {
-              memberId: fabman_id.toString(),
-              dataUrl: this.onboardingData.image64
-            }
-            this.$store.dispatch('uploadImage', uploadImageRequest).then((r) => {})
-          }
-          // 5) register Auth0
-          const registerAuth0Data = {
-            email: this.onboardingData.userInformation.email,
-            password: this.onboardingData.userInformation.password,
-            user_metadata: {
-              firstName: this.onboardingData.userInformation.firstName,
-              lastName: this.onboardingData.userInformation.lastName,
-              address: this.onboardingData.contactInformation.address,
-              city: this.onboardingData.contactInformation.city,
-              zip: this.onboardingData.contactInformation.zip
-            }
-          }
-          this.$store.dispatch('registerUser', registerAuth0Data).then((r) => {
-            // TODO remove or use loading madness
-            this.loadNextPage()
-            this.loading = false
-            this.$store.dispatch('setSidebar', 'register-success')
-          }).catch((e) => {
-            this.loading = false
-            if (e.error) {
-              this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-              return
-            }
-            if (e.code) {
-              switch (e.code) {
-                case 'user_exists':
-                  this.errorMessage = 'Ein User mit dieser Email Adresse existiert bereits'
-                  break
-                case 'invalid_password':
-                  this.errorMessage = 'Das Passwort ist zu schwach.'
-                  this.errorDescription = e.policy
-                  break
-                default:
-                  this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.code + '"'
-                  break
-              }
-            }
-          })
+        this.$store.dispatch('registerUser', registerAuth0Data).then((r) => {
+          this.loadNextPage()
+          this.loading = false
+          this.$store.dispatch('setSidebar', 'register-success')
         }).catch((e) => {
-          this.$toast.show('Ein Fehler beim Abschließen der Mitgliedschaft ist aufgetreten ', e.code, {
-            theme: 'bubble'
-          })
+          this.loading = false
+          if (e.error) {
+            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
+            return
+          }
+          if (e.code) {
+            switch (e.code) {
+              case 'user_exists':
+                this.errorMessage = 'Ein User mit dieser Email Adresse existiert bereits'
+                break
+              case 'invalid_password':
+                this.errorMessage = 'Das Passwort ist zu schwach.'
+                this.errorDescription = e.policy
+                break
+              default:
+                this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.code + '"'
+                break
+            }
+          }
         })
       })
         .catch((e) => {

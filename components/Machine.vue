@@ -13,18 +13,16 @@
               alt=""
           >
         </div>
-        <div class="description text">
+        <div class="description text" v-if="!this.machines">
           <markdown :value="machine.details"/>
+        </div>
+        <div class="description text" v-if="this.machines">
+          <markdown :value="machine.details + machineCosts"/>
         </div>
       </div>
     </div>
     <div class="body">
       <div class="inner-body">
-        <!--
-        <div class="description">
-          <markdown :value="machine.description"></markdown>
-        </div>
-        -->
         <div
             v-if="hasUser"
             class="machine-list"
@@ -40,7 +38,7 @@
                 class="status"
                 :name="m.name"
             />
-            <machine-calendar :id="m.fabmanId"/>
+            <machine-calendar :resource="m.fabmanId"/>
           </div>
         </div>
         <div
@@ -85,9 +83,9 @@
 
 <script>
 import MachineStatus from '@/components/MachineStatus'
-import MachineCalendar from '@/components/MachineCalendar'
+import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
 import MachineHeader from '@/components/MachineHeader'
-import { getMetaTagsForPage } from '../services/MetaDataService'
+import { getMetaTagsForPage } from '@/services/MetaDataService'
 
 export default {
   components: {
@@ -96,9 +94,35 @@ export default {
     MachineCalendar
   },
   props: ['story'],
+  data () {
+    return {
+      machines: []
+    }
+  },
   computed: {
     machine () {
       return this.story.content
+    },
+    machineCosts () {
+      // Maschinen werden momentan via Fabman ID aus Storyblok identifiziert
+      // Im 1755 Fabman Account unterscheiden sich die IDs zum Produktivsystem - daher werden die Kosten in der lokalen Entwicklung nicht angezeigt
+      // Es sollte stattdessen eine "shortform" wie bei den Mitgliedschaften verwendet werden
+
+        const priceHeader = '\n\n**KOSTEN:** '
+        let priceText = ''
+        for (const machineItem of this.machines) {
+          if (machineItem?.pricePerTimeBusy && machineItem?.pricePerTimeBusySeconds && machineItem?.pricePerTimeBusy !== '0.00') {
+            priceText = priceText + '\n\n'
+            priceText = priceText + machineItem.name + ': ' + '**' + (Number(machineItem.pricePerTimeBusy * 10).toFixed(0)) + ' Credits pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
+            priceText = priceText + '<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' + machineItem.pricePerTimeBusy + ' € pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)*</sub> '
+            priceText = priceText + '\n\n' + '---' + '\n\n'
+          }
+        }
+        if (priceText !== '') {
+          return priceHeader + '\n\n' + '---' + '\n\n' + priceText
+        } else {
+          return ''
+        }
     },
     tags () {
       return this.story.tag_list
@@ -113,6 +137,12 @@ export default {
       return {
         items: this.machine.images
       }
+    }
+  },
+  async mounted () {
+    for (const machineItem of this.machine.machine_status_items) {
+      const machineResource = await this.$store.dispatch('getResource', machineItem.fabmanId)
+      this.machines.push(machineResource)
     }
   },
   head () {
@@ -220,8 +250,14 @@ export default {
 
         .machine-list-warning {
           max-width: 400px;
-          padding: 10px;
-          background-color: $color-yellow;
+          padding: 20px 50px;
+          background-color: $color-orange;
+          color: white;
+          border-radius: 10px;
+          text-align: center;
+          -webkit-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
+          -moz-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
+          box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
         }
       }
     }

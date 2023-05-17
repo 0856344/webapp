@@ -24,9 +24,10 @@ export default {
     display: flex;
     line-height: 1.5;
     font-size: 1.1rem;
-    @include media-breakpoint-down(sm) {
-      font-size: 1rem;
-      line-height: 1.4;
+    @include media-breakpoint-down(md) {
+      margin: 3% 15% 10%;
+      font-size: 0.9em;
+      line-height: 1.6;
     }
   }
 }

@@ -26,17 +26,26 @@
           <div class="info">
             <markdown :value="blok.info" />
           </div>
-          <div class="contact-details">
-            <contact-preview
-                v-for="p in person"
-                :id="p"
-                :key="p"
-            />
-            <contact-preview
-                v-for="p in member"
-                :id="p"
-                :key="p._uid"
-            />
+          <div v-if="person.length === 1 && !member"  class="contact-details">
+            <div >
+              <single-contact-preview :id="person[0]" :single_member_text="singleMemberText"/>
+            </div>
+          </div>
+          <div  v-else class="contact-details">
+            <div v-if="person && person.length > 0" class="double-contact">
+              <contact-preview
+                  v-for="p in person"
+                  :id="p"
+                  :key="p"
+              />
+            </div>
+            <div v-if="member" class="double-contact">
+              <contact-preview
+                  v-for="m in member"
+                  :id="m"
+                  :key="m._uid"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -44,17 +53,26 @@
 </template>
 
 <script>
+import SingleContactPreview from '@/components/SingleContactPreview.vue'
+
 export default {
+  components: { SingleContactPreview },
   props: ['blok'],
   computed: {
     person () {
-      return this.blok.contact
+      if (this.blok.contact != null) {
+        return this.blok.contact
+      }
+      return null
     },
     member () {
       if (this.blok.member != null) {
         return this.blok.member
       }
       return null
+    },
+    singleMemberText () {
+      return this.blok.single_member_text
     }
   }
 }
@@ -67,8 +85,13 @@ export default {
   flex-direction: row;
   flex: 1;
   justify-content: center;
-  margin: 2rem 0 8rem 0;
-
+  margin: 2rem 0 6rem 0;
+  .double-contact{
+    display: flex;
+    @include media-breakpoint-down(md) {
+      flex-flow:column;
+    }
+  }
   .teaser-content {
     max-width: 100%;
     position: relative;
@@ -154,28 +177,33 @@ export default {
   }
 }
 @include media-breakpoint-down(md) {
-  .contact-block {
-    .info {
-      line-height: 1.2;
-      font-size: 1.1em;
+  .contact-person {
+    margin: 2rem 0 2rem 0;
 
-    }
-    .contact-details {
-      flex-flow: column;
+    .contact-block {
+      .info {
+        line-height: 1.2;
+        font-size: 1.1em;
 
-      .contact-image {
-        height: 20vh;
+      }
+
+      .contact-details {
+        flex-flow: column;
+
+        .contact-image {
+          height: 20vh;
+        }
       }
     }
   }
 }
 @include media-breakpoint-down(xs) {
   .contact-block {
-    .info {
-      line-height: 1.2;
-      font-size: 0.9em;
+      .info {
+        line-height: 1.2;
+        font-size: 0.9em;
 
+      }
     }
   }
-}
 </style>

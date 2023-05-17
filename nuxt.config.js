@@ -1,4 +1,5 @@
 const axios = require('axios')
+// TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
 const storyblokToken = '1IsgW07t4t5sm0UzdHAD6gtt'
 const googleId = 'UA-202640934-1'
 
@@ -11,20 +12,20 @@ module.exports = {
         name: 'DE',
         file: 'de.json',
         path: ''
-      },
-      {
-        code: 'en',
-        iso: 'en-US',
-        name: 'EN',
-        file: 'en.json',
-        path: 'en'
-      }
+      }//,
+      // {
+      //   code: 'en',
+      //   iso: 'en-US',
+      //   name: 'EN',
+      //   file: 'en.json',
+      //   path: 'en'
+      // }
     ],
     defaultLocale: 'de',
     lazy: true,
     langDir: '~/locales/',
     vueI18n: {
-      fallbackLocale: 'en'
+      fallbackLocale: 'de'
     }
   },
   robots: [
@@ -54,6 +55,12 @@ module.exports = {
       pathRewrite: { '^/.netlify/functions': '' }
     }
   },
+  buildModules: [
+    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
+    '@nuxtjs/proxy',
+    ['@nuxtjs/google-analytics'],
+    ['@nuxtjs/style-resources']
+  ],
   /**
    * Importing scss
    * @see https://dev.to/nbhankes/using-sass-in-nuxt-js-4595
@@ -63,18 +70,14 @@ module.exports = {
     'swiper/dist/css/swiper.css',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  buildModules: [
-    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
-    '@nuxtjs/proxy',
-    ['@nuxtjs/google-analytics'],
-    ['@nuxtjs/style-resources']
-  ],
   styleResources: {
     scss: [
-      '@/assets/scss/styles.scss'
+      '@/assets/scss/variables.scss',
+      '@/assets/scss/mixins.scss'
     ]
   },
   modules: [
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/sentry',
     '@nuxtjs/toast',
     '@nuxtjs/eslint-module',
@@ -97,7 +100,7 @@ module.exports = {
     '~/plugins/libs',
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
-    '~/plugins/snow.js',
+    //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
   ],
   purgeCSS: {
@@ -161,6 +164,19 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    postcss: {
+      plugins: {
+        // Removed calc because its conflict with postcss8 + swiperjs
+        cssnano: {
+          preset: [
+            'default',
+            {
+              calc: false
+            }
+          ]
+        }
+      }
+    },
     transpile: [/^vue2-google-maps($|\/)/]
   },
   googleAnalytics: {

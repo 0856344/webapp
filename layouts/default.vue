@@ -13,16 +13,14 @@
       <div v-if="this.$route.path ==='/de/datenschutzerklaerung' || !modalVisible">
       <div class="main-body">
         <main id="main" role="main">
-        <nuxt/>
+          <div><nuxt/></div>
         </main>
       </div>
     </div>
-      <bottom-footer/>
-      <sidebar />
-      <notifications position="bottom right" />
-      <!--
-        <breadcrumbs />
-      -->
+      <div><bottom-footer/></div>
+      <div><sidebar /></div>
+      <div><notifications position="bottom right" /></div>
+<!--      <div><breadcrumbs /></div>-->
     </div>
   </div>
 </template>

@@ -10,8 +10,11 @@
     v-else-if="link.linktype == 'url' && link.cached_url !== ''"
     :href="link.cached_url"
     class="link"
-  ><slot /></a>
-  <span v-else><slot /></span>
+    target="_blank"
+  ><slot />
+  </a>
+  <span v-else><slot />
+  </span>
 </template>
 
 <script>
@@ -20,4 +23,5 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+</style>

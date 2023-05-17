@@ -11,3 +11,8 @@ dist
 
 # Local Netlify folder
 .netlify
+.output
+
+# HTTPS Proxy certificates
+localhost.pem
+localhost-key.pem

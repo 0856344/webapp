@@ -289,6 +289,7 @@ export default {
         padding: 12px 15px;
         button {
           font-weight: bold;
+          font-size: 0.9em;
           line-height: 1em;
           padding: 10px;
           outline: none;
@@ -317,6 +318,7 @@ export default {
     a {
       padding: 20px;
       display: block;
+      min-width: max-content;
       img {
         height: 1.1em;
       }
@@ -373,7 +375,7 @@ export default {
     }
   }
   .main-nav-items {
-    flex-grow: 1;
+    //flex-grow: 1;
   }
   .house-nav-items {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='270' height='100'><path fill='white' d='M101.424.285L0 47.777v51.938h270V46.47L101.424.285'></path></svg>");
@@ -384,6 +386,7 @@ export default {
     align-items: flex-end;
     justify-content: space-around;
     padding: 0 3vw;
+    margin-top: 1em;
     .item {
       flex-grow: 1;
       flex-basis: 100%;

@@ -58,26 +58,13 @@
         />
       </div>
       <div
-        v-if="!hasUser"
+        v-if="!isAuthenticated"
         class="login-register-info"
       >
-<!--        <p>{{ $t( "alreadyRegistered" ) }}<span @click="login"> LOGIN </span>{{ $t( "startMembership" ) }}</p>-->
-<!--        <p>{{ $t( "firstTime" ) }}</p>-->
         <p>Registriere dich jetzt und werde Mitglied</p>
         <div class="register-button">
           <button @click="register">
             Jetzt Mitglied werden
-<!--            {{ $t( "registerNow" ) }}-->
-          </button>
-        </div>
-      </div>
-      <div
-        v-if="hasUser && !isMember"
-        class="login-register-info"
-      >
-        <div class="register-button">
-          <button @click="$router.push('/wizard/onboarding')">
-            {{ $t( "joinNow" ) }}
           </button>
         </div>
       </div>
@@ -96,6 +83,9 @@ export default {
   computed: {
     hasUser () {
       return !!this.$store.state.user
+    },
+    isAuthenticated () {
+      return !!this.$store.state.auth
     },
     isMember () {
       return this.$store.state.user.profile.state === 'active'

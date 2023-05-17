@@ -12,7 +12,7 @@
           class="swiper-slide"
           :style="{ 'background-image': 'url(' + $resizeImage(s.image, '1600x0') + ')' }"
         >
-          <sb-link :link="s.link">
+          <sb-link :link="s.link" >
             <div class="wrapper">
               <span lang="de-AT" class="title" v-if="s.title">{{s.title}}</span>
               <span class="teaser" v-if="s.teaser">{{s.teaser}}</span>

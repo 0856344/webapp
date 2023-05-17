@@ -84,6 +84,9 @@ export default {
 .image-slideshow {
   color: $color-blue;
   margin-top: 5rem;
+  @include media-breakpoint-down(md){
+    margin-top: 2rem;
+  }
   .text {
     @include margin-page-middle();
     font-size: 1.8rem;
