@@ -5,14 +5,14 @@
       <TextInput :label="$t('firstName')" v-model="member.firstName" :disabled="true" :isContact="true" />
       <TextInput :label="$t('lastName')" v-model="member.lastName" :disabled="true" :isContact="true" />
       <TextInput :label="$t('address')" v-model="member.address" :isContact="true" />
-      <TextInput :label="$t('zipCode')" v-model="member.zipCode" :isContact="true" />
+      <TextInput :label="$t('zipCode')" v-model="member.zip" :isContact="true" />
       <TextInput :label="$t('city')" v-model="member.city" :isContact="true" />
       <div class="grid items-baseline grid-flow-row gap-2 sm:py-2 sm:h-8 sm:grid-cols-contact ">
         <label class="block text-xs font-bold uppercase sm:text-end" for="country-input">
           {{ $t('country') }}
         </label>
         <select id="country-input" v-model="member.countryCode"
-          class="self-end h-full min-w-full px-2 border-2 border-white rounded-sm">
+          class="self-end px-2 border-2 border-white rounded-sm">
           <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
@@ -23,7 +23,7 @@
         <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
           Rechnungsadresse
         </label>
-        <div class="flex items-end h-full gap-2">
+        <div class="flex items-end gap-2">
           <input id="checkbox" class="w-4 h-4 ml-px" type="checkbox" :checked="member.hasBillingAddress"
             v-model="member.hasBillingAddress">
           <div class="text-md">weicht von Kontaktadresse ab</div>
@@ -37,7 +37,7 @@
         :isContact="true" />
       <TextInput v-if="member.hasBillingAddress" :label="$t('address')" v-model="member.billingAddress"
         :isContact="true" />
-      <TextInput v-if="member.hasBillingAddress" :label="$t('zipCode')" v-model="member.billingZipCode"
+      <TextInput v-if="member.hasBillingAddress" :label="$t('zipCode')" v-model="member.billingZip"
         :isContact="true" />
       <TextInput v-if="member.hasBillingAddress" :label="$t('city')" v-model="member.billingCity" :isContact="true" />
       <div v-if="member.hasBillingAddress"
@@ -46,7 +46,7 @@
           {{ $t('country') }}
         </label>
         <select id="country-input" v-model="member.billingCountryCode"
-          class="self-end h-full px-2 border-2 border-white rounded-sm min-w-fit">
+          class="self-end px-2 border-2 border-white rounded-sm">
           <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
@@ -71,12 +71,12 @@
       <div v-if="!ibanIsValid && paymentMethod.iban" class="text-xs text-orange">
         IBAN ist ungültig
       </div>
-      <TextInput :label="'Kontoinhaber*In'" v-model="paymentMethod.accountOwnerName" :isContact="true" />
+      <TextInput :label="'Kontoinhaber:in'" v-model="paymentMethod.accountOwnerName" :isContact="true" />
       <div class="grid items-baseline grid-flow-row gap-2 grow sm:py-2 sm:grid-cols-contact">
         <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
           SEPA MANDAT
         </label>
-        <div class="flex items-start h-full gap-2">
+        <div class="flex items-start gap-2">
           <input id="checkbox-sepa" class="w-4 h-4 ml-px" type="checkbox" :checked="sepaMandat" v-model="sepaMandat">
           <div class="text-xs">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels
             SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein

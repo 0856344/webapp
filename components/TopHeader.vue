@@ -318,6 +318,7 @@ export default {
     a {
       padding: 20px;
       display: block;
+      min-width: max-content;
       img {
         height: 1.1em;
       }

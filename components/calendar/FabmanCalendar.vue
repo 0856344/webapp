@@ -1,7 +1,9 @@
 <template>
-    <div v-editable="blok" class="fabman-calendar">
-        <p>UNDER CONSTRUCTION</p>
-        <machine-calendar :space="this.blok.space"></machine-calendar>
+    <div v-editable="blok">
+        <!-- TODO -->
+        <div class="fabman-calendar">
+            <machine-calendar :space="this.blok.space" :resource="4049"></machine-calendar>
+        </div>
     </div>
 </template>
 
@@ -10,18 +12,15 @@ import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
 
 export default {
   components: { MachineCalendar },
-  props: ['blok'],
-  created () {
-    console.log('My new block created')
-  },
-  mounted () {
-    console.log('blok', this.blok)
-    console.log('space', this.blok.space)
-    console.log('resource', this.blok.resource)
-  }
+  props: ['blok']
 }
 </script>
 
 <style lang="scss" scoped>
-
+.fabman-calendar {
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
+  background-color: white;
+}
 </style>
