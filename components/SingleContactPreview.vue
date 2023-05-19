@@ -58,7 +58,6 @@ export default {
   },
   computed: {
     maker () {
-      console.log('maker', this.story.content)
       return this.story.content
     },
     makerlink () {

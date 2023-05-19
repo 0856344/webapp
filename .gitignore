@@ -13,4 +13,8 @@ dist
 .netlify
 .output
 
-*.pem
+
+# HTTPS Proxy certificates
+localhost.pem
+localhost-key.pem
+

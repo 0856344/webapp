@@ -111,6 +111,8 @@ import MemberShipGridSG from '@/components/MemberShipGridSG.vue'
 import SliderContainer from '@/components/SliderContainer.vue'
 import SliderSlide from '@/components/SliderSlide.vue'
 
+import FabmanMachine from '@/components/machines/FabmanMachine.vue'
+
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
 Vue.component('general-header', GeneralHeader)
@@ -224,3 +226,5 @@ Vue.component('membership-plan-sg', MemberShipPlanSG)
 Vue.component('membership-grid-sg', MemberShipGridSG)
 Vue.component('slider-container', SliderContainer)
 Vue.component('slider-slide', SliderSlide)
+
+Vue.component('fabman-machine', FabmanMachine)
