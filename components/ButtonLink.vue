@@ -1,13 +1,17 @@
 <template>
-  <div class="flex w-full justify-center">
+  <div class="w-full" :class="[{ 'flex w-full justify-center': !hasProse && !hasHeader }, { 'grid grid-cols-2 mx': hasProse }]">
+    <div v-if="hasProse" class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
+      <h2>{{ blok.prose_header }}</h2>
+      <div v-html="transformedProse"></div>
+    </div>
     <button
-        class="text-white mx-2 rounded-sm ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
-        v-bind:class="buildClassString"
-        v-on:click="route(blok.url)">
-        {{ blok.text }}
+      class="text-white mx-2 justify-self-center rounded-sm ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
+      v-bind:class="buildClassString" v-on:click="route(blok.url)">
+      {{ blok.text }}
     </button>
   </div>
-    </template>
+</template>
+
 
 <script>
 export default {
@@ -24,6 +28,49 @@ export default {
         classes.push('text-3xl', 'py-4', 'px-16', 'mt-4')
       }
       return classes.join(' ')
+    },
+    hasProse () {
+      return this.blok.prose_text
+    },
+    transformedProse () {
+      console.log(JSON.parse(JSON.stringify(this.blok.prose_text)))
+      //const data = JSON.parse(this.blok.prose_text)
+      let html = ''
+
+      this.blok.prose_text.content.forEach((item) => {
+        if (item.type === 'paragraph') {
+          let paragraph = '<p>'
+
+          item.content.forEach((content) => {
+            let text = content.text
+
+            if (content.marks) {
+              content.marks.forEach((mark) => {
+                switch (mark.type) {
+                  case 'bold':
+                    text = `<strong>${text}</strong>`
+                    break
+                  case 'italic':
+                    text = `<em>${text}</em>`
+                    break
+                  case 'link':
+                    text = `<a href="${mark.attrs.href}" target="${mark.attrs.target}">${text}</a>`
+                    break
+                  default:
+                    break
+                }
+              })
+            }
+
+            paragraph += `${text} `
+          })
+
+          paragraph += '</p>'
+          html += paragraph
+        }
+      })
+
+      return html
     }
   },
   methods: {
