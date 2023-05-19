@@ -969,6 +969,17 @@ const createStore = () => {
         }).catch((res) => {
           this.$sentry.captureException(res)
         })
+      },
+      getDataSource ({ state }, source) {
+        return this.$storyapi.get('/cdn/datasource_entries', {
+          datasource: source,
+          cv: state.cacheVersion
+        })
+          .then((res) => {
+            return res.data
+          }).catch((res) => {
+            this.$sentry.captureException(res)
+          })
       }
     }
   })
