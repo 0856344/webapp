@@ -26,22 +26,24 @@
           <div class="info">
             <markdown :value="blok.info" />
           </div>
-          <div v-if="person.length === 1"  class="contact-details">
+          <div v-if="person.length === 1 && !member"  class="contact-details">
             <div >
               <single-contact-preview :id="person[0]" :single_member_text="singleMemberText"/>
             </div>
           </div>
           <div  v-else class="contact-details">
-            <div class="double-contact">
+            <div v-if="person && person.length > 0" class="double-contact">
               <contact-preview
                   v-for="p in person"
                   :id="p"
                   :key="p"
               />
+            </div>
+            <div v-if="member" class="double-contact">
               <contact-preview
-                  v-for="p in member"
-                  :id="p"
-                  :key="p._uid"
+                  v-for="m in member"
+                  :id="m"
+                  :key="m._uid"
               />
             </div>
           </div>
@@ -58,8 +60,10 @@ export default {
   props: ['blok'],
   computed: {
     person () {
-      //console.log('blok', this.blok)
-      return this.blok.contact
+      if (this.blok.contact != null) {
+        return this.blok.contact
+      }
+      return null
     },
     member () {
       if (this.blok.member != null) {
@@ -68,7 +72,6 @@ export default {
       return null
     },
     singleMemberText () {
-      //console.log('blok', this.blok)
       return this.blok.single_member_text
     }
   }

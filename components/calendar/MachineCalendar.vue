@@ -63,7 +63,7 @@ export default {
       //this.resource = 3136 //TODO for debugging - remove!
       if (this.space === 'smartgarage') {
         // TODO
-        console.log('SPACE FOUND - booking calender', this.space)
+        //console.log('SPACE FOUND - booking calender', this.space)
         //this.getBookingByMethod('getBookingsBySpace', this.space)
         this.getBookingByMethod('getBookingsByResource', 4049)
       } else if (this.resource) {
@@ -75,9 +75,12 @@ export default {
       this.$store.dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
-              //success
+            console.log('error', data)
           } else {
-            this.bookings = Object.assign([], data)
+            const bookings = Object.assign([], data)
+            this.bookings = bookings.filter(function (booking) {
+              return booking.state && (booking.state !== 'cancelled')
+            })
           }
         }).catch((error) => {
           console.log(error.response.status, error.response.data.error)
