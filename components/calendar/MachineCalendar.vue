@@ -8,6 +8,8 @@
         <vue-cal
                 xsmall
                 style="height: 50vh;"
+                xsmall
+                style="height: 50vh;"
                 class="vuecal--blue-theme"
                 default-view="week"
                 :events="events"
@@ -15,7 +17,10 @@
                 locale="de"
                 :hide-weekdays="[]"
                 :time-from="7 * 60"
+                :hide-weekdays="[]"
+                :time-from="7 * 60"
                 :time-to="20 * 60"
+                :time-step="60"
                 :time-step="60"
                 :disable-views="['years']"
         />
