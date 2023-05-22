@@ -54,10 +54,15 @@
 
 <script>
 import { unzip } from 'lodash'
-const axios = require('axios')
+import SliderContainer from '@/components/SliderContainer.vue'
+import SliderSlide from '@/components/SliderSlide.vue'
 
 export default {
   props: ['blok'],
+  components: {
+    SliderContainer,
+    SliderSlide
+  },
   /* created () {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
