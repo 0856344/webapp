@@ -217,8 +217,7 @@ Vue.component('credit-package', CreditPackage)
 Vue.component('fabman-calendar', FabmanCalendar)
 Vue.component('machine-card', MachineCard)
 Vue.component('button-link', ButtonLink)
+Vue.component('fabman-machine', FabmanMachine)
 
 Vue.component('membership-plan-sg', MemberShipPlanSG)
 Vue.component('membership-grid-sg', MemberShipGridSG)
-
-Vue.component('fabman-machine', FabmanMachine)

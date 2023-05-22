@@ -14,7 +14,11 @@
           >
         </div>
         <div class="description text" v-if="!this.machines">
+        <div class="description text" v-if="!this.machines">
           <markdown :value="machine.details"/>
+        </div>
+        <div class="description text" v-if="this.machines">
+          <markdown :value="machine.details + machineCosts"/>
         </div>
         <div class="description text" v-if="this.machines">
           <markdown :value="machine.details + machineCosts"/>
