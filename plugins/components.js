@@ -104,7 +104,7 @@ import CreditPackage from '~/components/CreditPackage.vue'
 import FabmanCalendar from '@/components/calendar/FabmanCalendar.vue'
 import MachineCard from '@/components/machines/MachineCard.vue'
 import ButtonLink from '@/components/ButtonLink.vue'
-import FabmanMachine from '@/components/FabmanMachine.vue'
+import FabmanMachine from '@/components/machines/FabmanMachine.vue'
 
 import MemberShipPlanSG from '@/components/MemberShipPlanSG.vue'
 import MemberShipGridSG from '@/components/MemberShipGridSG.vue'
