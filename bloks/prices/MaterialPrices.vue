@@ -6,56 +6,53 @@
         <div v-if="this.materials && this.materials.length > 0">
             <accordion theme="primary">
                 <div slot="header">{{ $t('materials') }}</div>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis dolore dolorum eius eos est et eum,
-                explicabo ipsam magni minima necessitatibus nobis obcaecati pariatur, provident quia rerum sed
-                temporibus velit?
-            </accordion>
-            <div class="machine-filters">
-                <div class="search-bar">
-                    <input type="text" :placeholder="[[ $t('search') ]]" v-model="search" name="" id="">
-                    <font-awesome-icon class="icon" icon="search"/>
-                </div>
-            </div>
-            <div class="material-prices-list">
-                <div class="body content-card">
-                    <div>
-                        <span class="department">{{ $t('materials') }}</span>
+                <div class="machine-filters">
+                    <div class="search-bar">
+                        <input type="text" :placeholder="[[ $t('search') ]]" v-model="search" name="" id="">
+                        <font-awesome-icon class="icon" icon="search"/>
                     </div>
-                    <div class="material-header">
-                        <div class="header">
-                            <div class="title">
-                                {{ $t('name') }}
-                            </div>
-                            <div class="title">
-                                {{ $t('priceIn') }}
+                </div>
+                <div class="material-prices-list">
+                    <div class="body content-card">
+                        <div>
+                            <span class="department">{{ $t('materials') }}</span>
+                        </div>
+                        <div class="material-header">
+                            <div class="header">
+                                <div class="title">
+                                    {{ $t('name') }}
+                                </div>
+                                <div class="title">
+                                    {{ $t('priceIn') }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="material-prices">
-                        <div
-                                v-for="material in resultQuery" :key="material.id"
-                                class="material-price"
-                        >
-                            <div class="info-row">
-                                <div class="info-block">
-                                    <div class="col info">
-                                        {{ material.external_name }}
-                                    </div>
-                                    <div class="col info">
-                                        {{ formatPrice(material) }}
+                        <div class="material-prices">
+                            <div
+                                    v-for="material in resultQuery" :key="material.id"
+                                    class="material-price"
+                            >
+                                <div class="info-row">
+                                    <div class="info-block">
+                                        <div class="col info">
+                                            {{ material.external_name }}
+                                        </div>
+                                        <div class="col info">
+                                            {{ formatPrice(material) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="tax">
-                {{ $t('tax') }}
-            </div>
+                <div class="tax">
+                    {{ $t('tax') }}
+                </div>
+            </accordion>
         </div>
         <div v-else>
-            <big-loading-spinner />
+            <big-loading-spinner/>
         </div>
     </section>
 </template>
