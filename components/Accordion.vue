@@ -29,7 +29,7 @@ export default {
 <template>
     <div class="accordion" :class="theme">
         <div class="header" @click="toggle">
-            <slot name="header">sdfa</slot>
+            <slot name="header"></slot>
             <!-- TODO - fix arrow rotation -->
             <i id="accordionIcon" class="fa fa-2x fa-angle-down header-icon" :class="{ 'rotate': show }"></i>
         </div>
@@ -71,11 +71,11 @@ export default {
     position: absolute;
     top: 8px;
     right: 18px;
-    transition-duration: 0.3s;
+    transition-duration: 0.5s;
 
     &.rotate {
       transform: rotate(180deg);
-      transition-duration: 0.3s;
+      transition-duration: 0.5s;
     }
   }
 
@@ -87,7 +87,7 @@ export default {
     border-top: 0;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
-    transition: 150ms ease-out;
+    transition: 0.5s ease-out;
   }
 
   .body-inner {
