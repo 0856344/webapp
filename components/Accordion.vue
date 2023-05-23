@@ -14,7 +14,7 @@ export default {
       el.style.height = '0'
     },
     enter: function (el) {
-      el.style.height = el.scrollHeight + 'px'
+      el.style.height = el.scrollHeight + 10 + 'px'
     },
     beforeLeave: function (el) {
       el.style.height = el.scrollHeight + 'px'
@@ -27,14 +27,15 @@ export default {
 </script>
 
 <template>
-    <div class="accordion" v-bind:class="theme">
-        <div class="header" v-on:click="toggle">
-            <slot name="header">HINT</slot>
-            <i class="fa fa-2x fa-angle-down header-icon" v-bind:class="{ rotate: show }"></i>
+    <div class="accordion" :class="theme">
+        <div class="header" @click="toggle">
+            <slot name="header">sdfa</slot>
+            <!-- TODO - fix arrow rotation -->
+            <i id="accordionIcon" class="fa fa-2x fa-angle-down header-icon" :class="{ 'rotate': show }"></i>
         </div>
         <transition name="accordion"
-                    v-on:before-enter="beforeEnter" v-on:enter="enter"
-                    v-on:before-leave="beforeLeave" v-on:leave="leave">
+                    @before-enter="beforeEnter" @enter="enter"
+                    @before-leave="beforeLeave" @leave="leave">
             <div class="body" v-show="show">
                 <div class="body-inner">
                     <slot></slot>
@@ -46,56 +47,68 @@ export default {
 
 <style scoped lang="scss">
 .accordion {
-    max-width: 400px;
-    margin-bottom: 20px;
-    background-color: #ec5366;
-    border-radius: 6px;
-}
+  -webkit-box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+  margin-bottom: 20px;
+  background-color: $color-primary;
+  border-radius: 6px;
+  font-weight: bold;
 
-.accordion .header {
-    height: 40px;
+  .header {
+    text-transform: uppercase;
+    height: 50px;
     line-height: 40px;
-    padding: 0 40px 0 8px;
+    padding: 6px 40px 0 15px;
     position: relative;
     color: #fff;
     cursor: pointer;
-}
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
 
-.accordion .header-icon {
+  .header-icon {
     position: absolute;
-    top: 5px;
-    right: 8px;
-    transform: rotate(0deg);
+    top: 8px;
+    right: 18px;
     transition-duration: 0.3s;
-}
 
-.accordion .body {
+    &.rotate {
+      transform: rotate(180deg);
+      transition-duration: 0.3s;
+    }
+  }
+
+  .body {
     /*   display: none; */
     overflow: hidden;
     background-color: #fff;
-    border: 10px solid #ec5366;
+    border: 2px solid white;
     border-top: 0;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
     transition: 150ms ease-out;
-}
+  }
 
-.accordion .body-inner {
+  .body-inner {
     padding: 8px;
     overflow-wrap: break-word;
-    /*   white-space: pre-wrap; */
-}
+  }
 
-.accordion .header-icon.rotate {
-    transform: rotate(180deg);
-    transition-duration: 0.3s;
-}
+  .primary {
+    background-color: $color-primary;
 
-.accordion.purple {
-    background-color: #8c618d;
-}
+    &.body {
+      border-color: $color-primary;
+    }
+  }
 
-.accordion.purple .body {
-    border-color: #8c618d;
+  .secondary {
+    background-color: $color-secondary;
+
+    &.body {
+      border-color: $color-secondary;
+    }
+  }
 }
 </style>
