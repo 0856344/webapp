@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import SingleContactPreview from '@/components/SingleContactPreview.vue'
+import SingleContactPreview from '@/bloks/person/SingleContactPreview.vue'
 
 export default {
   components: { SingleContactPreview },

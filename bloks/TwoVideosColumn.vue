@@ -97,7 +97,7 @@ export default {
 }
 .row {
   display: flex;
-  flex-direction: row; //default
+  flex-direction: row; //_default
   @include media-breakpoint-down(sm) {
     flex-direction: column;
   }

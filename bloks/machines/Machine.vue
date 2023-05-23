@@ -82,9 +82,9 @@
 </template>
 
 <script>
-import MachineStatus from '@/components/MachineStatus'
-import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
-import MachineHeader from '@/components/MachineHeader'
+import MachineStatus from '@/bloks/machines/MachineStatus.vue'
+import MachineCalendar from '@/bloks/calendar/MachineCalendar.vue'
+import MachineHeader from '@/bloks/machines/MachineHeader.vue'
 import { getMetaTagsForPage } from '@/services/MetaDataService'
 
 export default {

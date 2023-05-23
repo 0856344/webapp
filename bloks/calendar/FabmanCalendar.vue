@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import MachineCalendar from '@/components/calendar/MachineCalendar.vue'
+import MachineCalendar from '@/bloks/calendar/MachineCalendar.vue'
 
 export default {
   components: { MachineCalendar },

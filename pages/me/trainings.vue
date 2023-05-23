@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Course from '@/components/Course'
+import Course from '@/bloks/Course.vue'
 
 export default {
   components: {

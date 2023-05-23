@@ -233,7 +233,7 @@
 <!--  sepa: 2,-->
 <!--  credits: 3-->
 <!--}-->
-<!--export default {-->
+<!--export _default {-->
 <!--  scrollToTop: true,-->
 <!--  name: 'BuyWorkshop',-->
 <!--  props: {},-->
@@ -333,7 +333,7 @@
 <!--                throw new Error('No payrexx redirect_link returned!')-->
 <!--              }-->
 <!--              break-->
-<!--            default:-->
+<!--            _default:-->
 <!--              this.step = 4-->
 <!--              this.getWorkshop()-->
 <!--              this.reloadKey++-->

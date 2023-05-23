@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import TextInput from './TextInput.vue'
+import TextInput from './_default/TextInput.vue'
 
 export default {
   props: ['blok'],

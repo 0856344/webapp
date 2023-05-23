@@ -76,7 +76,7 @@
 
 <script>
 import storyblokLivePreview from '@/mixins/storyblokLivePreview'
-import VotingButton from '../../../components/VotingButton'
+import VotingButton from '../../../bloks/VotingButton.vue'
 import VueMarkdown from 'vue-markdown'
 import { getMetaTagsForPage } from '@/services/MetaDataService'
 

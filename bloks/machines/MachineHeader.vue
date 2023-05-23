@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import MachineStatus from '@/components/MachineStatus'
+import MachineStatus from '@/bloks/machines/MachineStatus.vue'
 
 export default {
   components: {

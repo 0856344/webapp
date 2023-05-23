@@ -8,23 +8,6 @@
       src="~/assets/img/map.png"
       alt=""
     >
-    <!--
-    <GmapMap
-      :center="{lat: Number(blok.lat), lng: Number(blok.lon) }"
-      :zoom="Number(blok.zoom)"
-      class="gmaps"
-      :options="options"
-    >
-      <GmapMarker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="center=m.position"
-      />
-    </GmapMap>
-    -->
   </div>
 </template>
 

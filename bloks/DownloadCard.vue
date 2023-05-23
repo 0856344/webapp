@@ -27,16 +27,6 @@
 <script>
 export default {
   props: ['blok'],
-  /*  computed: {
-    filename () {
-      const tokens = this.blok.file.split('/')
-      return tokens[tokens.length - 1]
-    },
-    extension () {
-      const tokens = this.blok.file.split('.')
-      return tokens[tokens.length - 1]
-    }
-  },*/
   created () {
   },
   methods: {

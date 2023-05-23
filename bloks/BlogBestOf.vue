@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import BlogItem from './BlogItem'
+import BlogItem from './BlogItem.vue'
 export default {
   components: {
     BlogItem

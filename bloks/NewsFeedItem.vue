@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import VotingButton from './VotingButton'
+import VotingButton from './VotingButton.vue'
 export default {
   components: { VotingButton },
   props: {

@@ -54,8 +54,8 @@
 
 <script>
 import { unzip } from 'lodash'
-import SliderContainer from '@/components/SliderContainer.vue'
-import SliderSlide from '@/components/SliderSlide.vue'
+import SliderContainer from '@/bloks/SliderContainer.vue'
+import SliderSlide from '@/bloks/SliderSlide.vue'
 
 export default {
   props: ['blok'],

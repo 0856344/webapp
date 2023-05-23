@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import BlogBestOf from './BlogBestOf'
+import BlogBestOf from './BlogBestOf.vue'
 import { getMetaTagsForPage } from '@/services/MetaDataService'
 export default {
   components: {

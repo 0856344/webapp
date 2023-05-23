@@ -47,7 +47,7 @@
 
 <script>
 import storyblokLivePreview from '@/mixins/storyblokLivePreview'
-import Checkbox from '~/components/Checkbox.vue'
+import Checkbox from '@/components/Checkbox.vue'
 
 export default {
   components: {

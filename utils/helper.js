@@ -28,5 +28,9 @@ export const helpers = {
     }
     iban = iban.replace(/\s/g, '') // Remove spaces
     return IBAN.isValid(iban)
-  }
+  },
+  getFabmanCredits:
+    (machine) => {
+      return 0
+    }
 }

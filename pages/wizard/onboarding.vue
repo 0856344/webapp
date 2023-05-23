@@ -284,7 +284,7 @@ export default {
         case 'contact':
           this.loadNextPage()
           this.saveOnboardingData()
-          // set account owner default name
+          // set account owner _default name
           if (this.onboardingData.contactInformation.hasBillingAddress) {
             this.onboardingData.payment.accountOwner = this.onboardingData.billingInformation.firstName + ' ' + this.onboardingData.billingInformation.lastName
           } else {

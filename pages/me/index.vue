@@ -108,7 +108,7 @@
 
 <script>
 import { helpers } from '../../utils/helper'
-import TextInput from '../../components/TextInput.vue'
+import TextInput from '../../bloks/_default/TextInput.vue'
 
 export default {
   middleware: 'authenticated',

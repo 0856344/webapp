@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import MenuLink from '~/components/MenuLink'
+import MenuLink from '@/bloks/MenuLink.vue'
 
 export default {
   middleware: 'authenticated',
