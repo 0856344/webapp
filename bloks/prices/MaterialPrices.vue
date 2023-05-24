@@ -3,7 +3,7 @@
             v-editable="blok"
             class="material-prices"
     >
-        <div v-if="this.materials && this.materials.length > 0">
+        <div v-if="isLoading">
             <accordion theme="primary">
                 <div slot="header">{{ $t('materials') }}</div>
                 <div class="machine-filters">
@@ -68,6 +68,9 @@ export default {
     }
   },
   computed: {
+    isLoading () {
+      return this.materials && this.materials.length > 0
+    },
     resultQuery () {
       if (this.search) {
         return this.materials.filter((m) => {
@@ -107,6 +110,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '/assets/scss/styles';
+
+.content-card:hover {
+    box-shadow: none;
+}
 
 .machine-filters {
   .search-bar {
@@ -160,7 +167,7 @@ export default {
   z-index: 1;
   margin-bottom: 3%;
   width: 100%;
-  padding: 5%;
+  padding: 2%;
 
   .department {
     font-family: $font-mono;

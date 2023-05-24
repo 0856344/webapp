@@ -91,8 +91,9 @@ export default {
   }
 
   .body-inner {
-    padding: 8px;
+    padding: 3% 2%;
     overflow-wrap: break-word;
+      height: 100%;
   }
 
   .primary {
