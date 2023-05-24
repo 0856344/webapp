@@ -75,8 +75,8 @@ import RecoverForm from '@/bloks/RecoverForm.vue'
 import RecoverSuccessForm from '@/bloks/RecoverSuccessForm.vue'
 import StoryBlokLink from '@/bloks/StoryBlokLink.vue'
 
-import MainNavItem from '@/bloks/MainNavItem.vue'
-import MainNavMobileItem from '@/bloks/MainNavMobileItem.vue'
+import MainNavItem from '@/components/MainNavItem.vue'
+import MainNavMobileItem from '@/components/MainNavMobileItem.vue'
 
 import LevelSlider from '@/bloks/LevelSlider.vue'
 import LevelItem from '@/bloks/LevelItem.vue'
