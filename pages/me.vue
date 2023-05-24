@@ -127,16 +127,41 @@ export default {
     padding: 0;
   }
 
+  .menuLink {
+    @include media-breakpoint-down(sm) {
+      justify-content: center;
+      border-bottom: 2px solid #696969;
+    }
+  }
+
   .tab-section {
     display: flex;
     @include media-breakpoint-down(sm) {
-      display: block;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
     .tab-section-menu {
       padding-top: 20px;
       width: 240px;
       flex: 1;
+
+      @include media-breakpoint-down(sm) {
+        padding: 0;
+        margin-bottom: 100px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+
+        a {
+          text-align: center;
+        }
+      }
 
       .submenu {
         padding-left: 2.5em;

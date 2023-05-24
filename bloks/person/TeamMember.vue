@@ -57,9 +57,6 @@ export default {
       imgHover: false
     }
   },
-  mounted () {
-    console.log('mounted team', this.blok)
-  },
   computed: {
     showAltImg () {
       return !!this.imgHover
@@ -77,13 +74,14 @@ export default {
 
 <style lang="scss">
 ol {
-    list-style: auto;
-    margin: 10px 0 10px 40px;
+  list-style: auto;
+  margin: 10px 0 10px 40px;
 
-    li {
-        margin: 10px 0 10px 0;
-    }
+  li {
+    margin: 10px 0 10px 0;
+  }
 }
+
 .member-page {
   @include margin-page-wide();
   min-height: 150px;

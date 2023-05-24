@@ -1,26 +1,16 @@
 <template>
-  <section class="oceaneye-overview" v-if="calendar || (blok && blok.pretix_shortform)">
-    <div
-        class="pretix-oceaneye"
-    >
+  <section class="pretix-calender-overview" v-if="calendar || (blok && blok.pretix_shortform)">
+    <div class="pretix-calendar">
       <link rel="stylesheet" type="text/css" href="https://buchung.grandgarage.eu/oceanEye/widget/v1.css">
       <script type="text/javascript" src="https://buchung.grandgarage.eu/widget/v1.de-informal.js" async></script>
       <div class="container">
-        <div
-            class="col-start"
-        >
-         <h2
-              v-if="blok && blok.headline"
-              class="headline"
-          >
+        <div class="col-start">
+         <h2 v-if="blok && blok.headline" class="headline">
             <markdown :value="blok.headline" />
           </h2>
         </div>
        <div class="col-end" v-if="blok && blok.text">
-          <p
-              v-if="blok.text"
-              class="text"
-          >
+          <p v-if="blok.text" class="text">
             <markdown :value="blok.text" />
           </p>
         </div>
@@ -73,10 +63,10 @@ export default {
 
  }
 
-.pretix-widget-event-list-entry pretix-widget-event-availability-red pretix-widget-event-availability-over{
+.pretix-widget-event-list-entry .pretix-widget-event-availability-red .pretix-widget-event-availability-over{
   color: white;
 }
-.oceaneye-overview {
+.pretix-calender-overview {
   background-color: white;
   margin-bottom: 5%;
   .pretix-widget-event-description{
@@ -210,9 +200,11 @@ export default {
       padding: 10px;
     }
 
-    .pretix-widget .pretix-widget-loading svg {
-      top: Min(40%);
-      position: center;
+    .pretix-widget .pretix-widget-loading {
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
     }
     .pretix-widget-primary-color {
       fill: black;
