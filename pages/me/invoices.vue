@@ -12,7 +12,7 @@
                         <th class="activity-date">Datum</th>
                         <th class="activity-amount">Betrag</th>
                         <th class="activity-description">Buchung</th>
-                        <th></th>
+                        <th class="activity-status"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -22,9 +22,9 @@
                             {{ Number(activity.price * (-1)).toFixed(2).replace('.', ',') }} €
                         </td>
                         <td class="activity-description">{{ activity.description }}</td>
-                        <td></td>
+                        <td class="activity-status"></td>
                     </tr>
-                    <tr style="border-top: 2px solid #333;">
+                    <tr class="activity-total">
                         <td></td>
                         <td></td>
                         <td class="result"><b>{{ totalResult > 0 ? 'Gesamt:' : 'Guthaben:' }}</b></td>
@@ -202,5 +202,13 @@ export default {
 <style lang="scss" scoped>
 .invoice {
   margin: 10% 0;
+}
+.activity-total {
+    border-top: 2px solid #333;
+
+    @include media-breakpoint-down(sm) {
+
+    }
+
 }
 </style>
