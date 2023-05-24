@@ -206,14 +206,15 @@ export default {
 <style lang="scss" scoped>
 
 .workshop-list-item {
+  max-height: 700px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  overflow: hidden;
+  overflow: scroll;
   color: #000;
   display: flex;
   margin-bottom: 25px;
   justify-content: center;
-  flex-flow: column;
+  flex-flow: wrap;
 
   &.slim {
     margin-bottom: 0;
