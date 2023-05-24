@@ -5,12 +5,13 @@ import Vue from 'vue'
  */
 import Markdown from '@/components/Markdown.vue'
 import Loading from '@/components/Loading.vue'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import LoadingSpinner from '~/components/Spinners/LoadingSpinner.vue'
 import Checkbox from '@/components/Checkbox.vue'
 import CookieManager from '@/components/CookieManager.vue'
 import Map from '@/components/Map.vue'
 import Accordion from '@/components/Accordion.vue'
-import BigLoadingSpinner from '@/components/BigLoadingSpinner.vue'
+import BigLoadingSpinner from '~/components/Spinners/BigLoadingSpinner.vue'
+import LoadingSpinnerInline from '~/components/Spinners/LoadingSpinnerInline.vue'
 
 /**
  * STORYBLOK COMPONENTS
@@ -100,7 +101,7 @@ import MaterialPrices from '../bloks/prices/MaterialPrices.vue'
 import PressGallery from '../bloks/PressGallery.vue'
 import ContactPerson from '../bloks/person/ContactPerson.vue'
 import ContactPreview from '../bloks/person/ContactPreview.vue'
-import PretixOceaneye from '../bloks/PretixOceaneye.vue'
+//import PretixOceaneye from '../bloks/PretixOceaneye.vue'
 import PretixCalendar from '../bloks/calendar/PretixCalendar.vue'
 import TwoVideosColumn from '@/bloks/TwoVideosColumn.vue'
 import DownloadCard from '../bloks/DownloadCard.vue'
@@ -212,7 +213,7 @@ Vue.component('team-image-slider', TeamImageSlider)
 Vue.component('press-gallery', PressGallery)
 Vue.component('contact-person', ContactPerson)
 Vue.component('contact-preview', ContactPreview)
-Vue.component('pretix-oceaneye', PretixOceaneye)
+//Vue.component('pretix-oceaneye', PretixOceaneye)
 Vue.component('pretix-calendar', PretixCalendar)
 Vue.component('two-videos-column', TwoVideosColumn)
 Vue.component('download-card', DownloadCard)
@@ -228,3 +229,4 @@ Vue.component('membership-plan-sg', MembershipPlanSG)
 Vue.component('membership-grid-sg', MembershipGridSG)
 Vue.component('accordion', Accordion)
 Vue.component('big-loading-spinner', BigLoadingSpinner)
+Vue.component('loading-spinner-inline', LoadingSpinnerInline)

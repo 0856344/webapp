@@ -56,21 +56,7 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
-@import '../assets/scss/styles.scss';
-
-body {
-  background-color: $color-bright-bg;
-  width: 100%;
-  overflow-x: hidden;
-  font-family: $font-primary;
-  line-height: 1;
-  font-size: 18px;
-  color: #000;
-  margin: 0;
-  padding: 0;
-}
 
 .main-body {
   max-width: 1264px;
