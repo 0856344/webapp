@@ -1,77 +1,70 @@
 <template>
-  <div
-    v-editable="blok"
-    class="member-page"
-    @touchstart="touch"
-  >
-    <a
-      ref="hidden"
-      href="#"
-      display="none"
-    />
-    <div class="header">
-      <div class="image">
-        <img
-          v-if="blok.image"
-          class="picture"
-          :src="$resizeImage(blok.image, '700x700')"
-          :alt="blok.name + ', ' + blok.title"
-        >
-        <img
-          v-if="blok.image_alt"
-          class="picture image-alt"
-          :src="$resizeImage(blok.image_alt, '700x700')"
-          :alt="blok.name + ', ' + blok.title"
-        >
-      </div>
-      <div class="info">
-        <div class="short-info">
-          <div class="name-contact">
-            <div class="name">
-              {{ blok.name }}
-            </div>
-          </div>
-          <div class="title-contact-options">
-            <div class="title">
-              {{ blok.title }}
-            </div>
-            <div class="contact-options">
-              <a
-                  v-if="blok.email"
-                  class="option-email"
-                  :href="'mailto:'+blok.email"
-              >
+    <div v-editable="blok" class="member-page" @touchstart="touch">
+        <a ref="hidden" href="#" display="none"/>
+        <div class="header">
+            <div class="image" @mouseover="imgHover = true" @mouseleave="imgHover = false">
                 <img
-                    class="icon"
-                    src="~/assets/img/icons/envelope.svg"
-                    alt=""
+                        v-if="!showAltImg"
+                        class="picture"
+                        :src="$resizeImage(blok.image, '700x700')"
+                        :alt="blok.name + ', ' + blok.title"
                 >
-                <div class="text">{{ blok.email }}</div>
-              </a>
+                <img
+                        v-else
+                        class="picture"
+                        :src="$resizeImage(blok.image_alt, '700x700')"
+                        :alt="blok.name + ', ' + blok.title"
+                >
             </div>
-          </div>
+            <div class="info">
+                <div class="short-info">
+                    <div class="name-contact">
+                        <div class="name">{{ blok.name }}</div>
+                    </div>
+                    <div class="title-contact-options">
+                        <div class="title">{{ blok.title }}</div>
+                        <div class="contact-options">
+                            <a v-if="blok.email" class="option-email" :href="'mailto:'+blok.email">
+                                <img class="icon" src="@/assets/img/icons/envelope.svg" alt="">
+                                <div class="text">{{ blok.email }}</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="body">
+            <div class="future-slogan">
+                <div class="first">
+                    {{ $t('theFuture') }}
+                </div>
+                <div class="second">
+                    {{ $t('belongs') }}{{ blok.future }}<span v-if="!blok.future"> {{ $t('toUsAll') }}</span>
+                </div>
+            </div>
+            <div class="description">
+                <markdown :value="blok.description"/>
+            </div>
+        </div>
     </div>
-    <div class="body">
-      <div class="future-slogan">
-        <div class="first">
-          {{ $t('theFuture') }}
-        </div>
-        <div class="second">
-          {{ $t('belongs') }}{{ blok.future }}<span v-if="!blok.future"> {{ $t('toUsAll') }}</span>
-        </div>
-      </div>
-      <div class="description">
-        <markdown :value="blok.description" />
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
 export default {
   props: ['blok'],
+  data () {
+    return {
+      imgHover: false
+    }
+  },
+  mounted () {
+    console.log('mounted team', this.blok)
+  },
+  computed: {
+    showAltImg () {
+      return !!this.imgHover
+    }
+  },
   methods: {
     touch (e) {
       if (e.target.localName !== 'img') {
@@ -83,12 +76,21 @@ export default {
 </script>
 
 <style lang="scss">
+ol {
+    list-style: auto;
+    margin: 10px 0 10px 40px;
 
+    li {
+        margin: 10px 0 10px 0;
+    }
+}
 .member-page {
   @include margin-page-wide();
   min-height: 150px;
+
   .header {
     display: flex;
+
     .image {
       position: relative;
       flex-grow: 1;
@@ -96,23 +98,17 @@ export default {
       margin-right: 2%;
       margin-top: 6em;
       text-align: right;
-      &:hover {
-        .image-alt {
-          display: inline;
-        }
+
+      .image-first {
+        z-index: 98;
       }
-      .image-alt {
-        display: none;
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 99;
-      }
+
       .picture {
         width: 100%;
         max-width: 70%;
       }
     }
+
     .info {
       display: flex;
       flex-direction: column;
@@ -120,11 +116,13 @@ export default {
       width: 50%;
       margin-left: 2%;
       margin-top: 2rem;
+
       .short-info {
         display: flex;
         flex-grow: 1;
         flex-direction: column;
         justify-content: flex-start;
+
         .name-contact {
           padding-bottom: 1rem;
           border-bottom: .4rem solid black;
@@ -134,6 +132,7 @@ export default {
           flex-direction: column-reverse;
           align-items: flex-end;
           justify-content: space-between;
+
           .name {
             font-family: $font-secondary;
             font-size: 2.5rem;
@@ -141,6 +140,7 @@ export default {
             line-height: 1.2;
           }
         }
+
         .title-contact-options {
           display: flex;
           flex-direction: row;
@@ -169,6 +169,7 @@ export default {
             }
           }
         }
+
         .title {
           font-family: $font-mono;
           font-size: 1rem;
@@ -178,8 +179,10 @@ export default {
       }
     }
   }
+
   .body {
     padding: 100px 0;
+
     .future-slogan {
       transform: rotate(-5deg);
       font-size: 2rem;
@@ -190,15 +193,18 @@ export default {
       min-width: 15em;
       margin-left: 12%;
       margin-bottom: 9%;
+
       .first {
         font-weight: bold;
         text-transform: uppercase;
         margin-bottom: .2em;
       }
+
       .second {
         font-family: $font-secondary;
       }
     }
+
     .description {
       margin: 0 20% 0 30%;
     }
@@ -210,16 +216,20 @@ export default {
         .short-info {
           .name-contact {
             flex-direction: column-reverse;
+
             .name {
               align-self: flex-start;
               font-size: 2.5em;
             }
           }
+
           .title-contact-options {
             flex-direction: column;
+
             .title {
               margin-bottom: 1em;
             }
+
             .contact-options {
               flex-direction: initial;
             }
@@ -232,9 +242,11 @@ export default {
   @include media-breakpoint-down(sm) {
     .header {
       flex-direction: column;
+
       .info {
         width: 100%;
         margin: 0;
+
         .short-info {
           .name-contact {
             .name {
@@ -242,6 +254,7 @@ export default {
           }
         }
       }
+
       .image {
         width: 400px;
         max-width: 100%;
@@ -249,27 +262,16 @@ export default {
         justify-content: center;
         align-self: center;
         margin-bottom: 2em;
-
-        &:hover {
-          .image-alt {
-            display: inline;
-          }
-        }
-        .image-alt {
-          display: none;
-          position: absolute;
-          top: 0;
-          right: auto;
-          z-index: 99;
-        }
       }
     }
     .body {
       padding: 50px 0;
+
       .future-slogan {
         margin-left: 2%;
         margin-bottom: 20%;
       }
+
       .description {
         margin: 0;
       }
@@ -290,11 +292,6 @@ export default {
       .image {
         align-items: flex-start !important;
 
-        &:hover {
-          .image-alt {
-            display: none !important;
-          }
-        }
         .picture {
           max-width: 60% !important;
           height: auto !important;
