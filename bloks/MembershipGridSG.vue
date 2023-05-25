@@ -1,8 +1,8 @@
 <template>
   <div v-editable="blok" class="">
-    <div class="">
-      <div class="lg:grid lg:grid-flow-col lg:auto-cols-max lg:gap-4 lg:w-full overflow-x-hidden flex justify-center p-4 lg:p-2">
-        <div v-if="!isMobile" class="grid grid-rows-plan w-72 h-screen">
+    <div class="h-screen">
+      <div class="lg:grid lg:grid-flow-col lg:auto-cols-max lg:gap-4 lg:w-full h-3/4 overflow-x-hidden flex justify-center p-4 lg:p-2">
+        <div v-if="!isMobile" class="grid grid-rows-plan w-72">
           <div class="bg-transparent rounded-t-lg text-yellow inline-flex justify-center items-center gap-4"></div>
           <div v-for="item in featureStrings" :key="item._uid"
             class="px-2 py-1 text-sm inline-flex items-center border-b-2 border-b-gray-900 hyphens-auto">
@@ -32,7 +32,7 @@
           <div class="absolute left-0 w-12 h-full bg-gradient-to-r from-gray-100"></div>
           <div class="absolute right-0 w-12 h-full bg-gradient-to-l from-gray-100"></div>
           <slider-slide v-for="(blok, index) in blok.columns" :key="blok.uid" >
-            <component :is="blok.component" :blok="blok" :strings="featureStrings" :isMobile="isMobile" :class="[{'ml-12' : index === 0},{'mr-12' : index === numberColumns-1}]"/>
+            <component :is="blok.component" :blok="blok" :strings="featureStrings" :comingSoon="comingSoon" :isMobile="isMobile" :class="[{'ml-12' : index === 0},{'mr-12' : index === numberColumns-1}]"/>
           </slider-slide>
         </slider-container>
         <!-- <div class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth lg:overflow-visible w-72 lg:w-auto lg:contents h-screen">
@@ -54,6 +54,7 @@
 
 <script>
 import { unzip } from 'lodash'
+import axios from 'axios'
 import SliderContainer from '@/bloks/SliderContainer.vue'
 import SliderSlide from '@/bloks/SliderSlide.vue'
 
@@ -63,20 +64,6 @@ export default {
     SliderContainer,
     SliderSlide
   },
-  /* created () {
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          this.currentSlide = parseInt(entry.target.id.replace('slide', ''))
-          console.log(this.currentSlide)
-        }
-      })
-    }, {
-      root: document.querySelector('.carousel'),
-      rootMargin: '0px',
-      threshold: 0.5
-    })
-  }, */
   mounted () {
     this.setIsMobile()
     window.addEventListener('resize', this.setIsMobile)
@@ -90,25 +77,26 @@ export default {
       breakpoint: '',
       isMobile: false,
       currentSlide: 0,
-      observer: null
+      observer: null,
+      comingSoon: ['desk', 'reservation']
     }
   },
-  async asyncData (context) {
+  /*   async asyncData (context) {
+    console.log('asyncData')
     const response = await context.store.dispatch('getDataSource', 'member-features').then(data => {
-      return data.stories
-    })
-    //const response = await axios.get(`https://api.storyblok.com/v1/cdn/datasource_entries?datasource=member-features&token=${process.env.NUXT_ENV_STORYBLOK_TOKEN}`)
-    this.featureArray = response.data.datasource_entries.map((entry) => [entry.name, entry.value])
-    console.log(this.featureArray)
-  },
-  /*   async fetch() {
-    const response = await context.store.dispatch('getDataSource', 'member-features').then(data => {
+      console.log('async', data)
       return data.stories
     })
     //const response = await axios.get(`https://api.storyblok.com/v1/cdn/datasource_entries?datasource=member-features&token=${process.env.NUXT_ENV_STORYBLOK_TOKEN}`)
     this.featureArray = response.data.datasource_entries.map((entry) => [entry.name, entry.value])
     console.log(this.featureArray)
   }, */
+  async fetch () {
+    //const response = await this.$store.dispatch('getDataSource', 'member-features')
+    const response = await axios.get('https://api.storyblok.com/v1/cdn/datasource_entries?datasource=member-features&token=1IsgW07t4t5sm0UzdHAD6gtt')
+    this.featureArray = response.data.datasource_entries.map((entry) => [entry.name, entry.value])
+    console.log('featarray', this.featureArray)
+  },
   computed: {
     hasUser () {
       return !!this.$store.state.user
