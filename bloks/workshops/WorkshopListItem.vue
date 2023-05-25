@@ -209,13 +209,12 @@ export default {
   max-height: 700px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  overflow: scroll;
   color: #000;
   display: flex;
   margin-bottom: 25px;
   justify-content: center;
   flex-flow: wrap;
-
+  overflow:hidden;
   &.slim {
     margin-bottom: 0;
 
@@ -228,9 +227,9 @@ export default {
     }
   }
 
-  @include media-breakpoint-down(md) {
+  /* @include media-breakpoint-down(sm) {
     flex-direction: column;
-  }
+  } */
 
   .image {
     width: 100%;
@@ -263,6 +262,7 @@ export default {
     flex-direction: column;
     background-color: #FFF;
     padding: 1.8rem;
+    width: 100%;
 
     .icon {
       position: absolute;
@@ -383,15 +383,12 @@ export default {
 
 .workshop-dates {
   margin-top: 20px;
+  overflow:scroll;
+  max-height: 6.5em;
 
   .workshop-date {
     &:nth-child(odd) {
       background-color: rgba(242, 243, 238, 0.9);
-    }
-
-    @include media-breakpoint-down(xs) {
-      border: .11em solid #f2f3ee;
-      padding: 7px;
     }
 
     &.soldOut {
