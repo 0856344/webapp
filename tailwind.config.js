@@ -1,6 +1,24 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
 module.exports = {
   content: ['./bloks/**/*.vue', './components/**/*.vue', './layouts/**/*.vue', './pages/**/*.vue', './plugins/**/*.js'],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        // adds utility classes for vertical text
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/writing-mode
+        '.horizontal-writing-tb': { writingMode: 'horizontal-tb' },
+        '.vertical-writing-rl': { writingMode: 'vertical-rl' },
+        '.vertical-writing-lr': { writingMode: 'vertical-lr' },
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/text-orientation
+        '.orientation-mixed': { textOrientation: 'mixed' },
+        '.orientation-upright': { textOrientation: 'upright' },
+        '.orientation-sideways-right': { textOrientation: 'sideways-right' },
+        '.orientation-sideways': { textOrientation: 'sideways' },
+        '.orientation-glyph': { textOrientation: 'use-glyph-orientation' }
+      })
+    })
+  ],
   theme: {
     screens: {
       xs: '360px',

@@ -114,6 +114,7 @@ import ButtonLink from '@/bloks/_default/ButtonLink.vue'
 import FabmanMachine from '@/bloks/machines/FabmanMachine.vue'
 import MembershipPlanSG from '@/bloks/MembershipPlanSG.vue'
 import MembershipGridSG from '@/bloks/MembershipGridSG.vue'
+import MembershipAddons from '@/bloks/MembershipAddons.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -230,3 +231,4 @@ Vue.component('membership-grid-sg', MembershipGridSG)
 Vue.component('accordion', Accordion)
 Vue.component('big-loading-spinner', BigLoadingSpinner)
 Vue.component('loading-spinner-inline', LoadingSpinnerInline)
+Vue.component('membership-addons', MembershipAddons)
