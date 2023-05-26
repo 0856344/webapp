@@ -61,7 +61,6 @@ module.exports = {
   },
   buildModules: [
     ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
-    ['@storyblok/nuxt-2/module', { accessToken: storyblokToken, apiOptions: { cache: { type: 'memory' } } }],
     '@nuxtjs/proxy',
     ['@nuxtjs/google-analytics'],
     ['@nuxtjs/style-resources']
