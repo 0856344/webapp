@@ -1,3 +1,4 @@
+import { join } from 'path'
 const axios = require('axios')
 // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
 const storyblokToken = '1IsgW07t4t5sm0UzdHAD6gtt'
@@ -168,19 +169,16 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    /* postcss: {
-      plugins: {
-        // Removed calc because its conflict with postcss8 + swiperjs
-/*         cssnano: {
-          preset: [
-            'default',
-            {
-              calc: false
-            }
-          ]
-        } */
+    postcss: {
+      postcssOptions: {
+        plugins: {
+          tailwindcss: join(__dirname, 'tailwind.config.js'),
+          cssnano: {
+            calc: false
+          }
+        }
       }
-    }, */
+    },
     transpile: [/^vue2-google-maps($|\/)/]
   },
   googleAnalytics: {
