@@ -1,3 +1,4 @@
+import { join } from 'path'
 const axios = require('axios')
 // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
 const storyblokToken = '1IsgW07t4t5sm0UzdHAD6gtt'
@@ -60,6 +61,7 @@ module.exports = {
   },
   buildModules: [
     ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
+    ['@storyblok/nuxt-2/module', { accessToken: storyblokToken, apiOptions: { cache: { type: 'memory' } } }],
     '@nuxtjs/proxy',
     ['@nuxtjs/google-analytics'],
     ['@nuxtjs/style-resources']
