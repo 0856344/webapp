@@ -61,7 +61,6 @@ module.exports = {
   },
   buildModules: [
     ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
-    ['@storyblok/nuxt-2/module', { accessToken: storyblokToken, apiOptions: { cache: { type: 'memory' } } }],
     '@nuxtjs/proxy',
     ['@nuxtjs/google-analytics'],
     ['@nuxtjs/style-resources']
@@ -173,7 +172,6 @@ module.exports = {
     postcss: {
       postcssOptions: {
         plugins: {
-          tailwindcss: join(__dirname, 'tailwind.config.js'),
           cssnano: {
             calc: false
           }
@@ -185,7 +183,6 @@ module.exports = {
   googleAnalytics: {
     id: googleId,
     disabled: () => {
-      // eslint-disable-next-line no-unused-vars
       const hasAcceptedAnalyticsCookie = localStorage.getItem('hasAcceptedAnalyticsCookie')
       if (hasAcceptedAnalyticsCookie === 'true') {
         return false
