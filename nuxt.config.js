@@ -171,14 +171,14 @@ module.exports = {
     postcss: {
       plugins: {
         // Removed calc because its conflict with postcss8 + swiperjs
-        cssnano: {
+/*         cssnano: {
           preset: [
             'default',
             {
               calc: false
             }
           ]
-        }
+        } */
       }
     },
     transpile: [/^vue2-google-maps($|\/)/]
