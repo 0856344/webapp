@@ -22,5 +22,15 @@ export default {
   justify-content: center;
   margin: 50px 0;
   background-color: white;
+
+  .machine-calendar {
+    width: 80%;
+
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+      margin-left: 4%;
+      margin-right: 4%;
+    }
+  }
 }
 </style>

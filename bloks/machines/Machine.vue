@@ -242,6 +242,12 @@ export default {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
+        background-color: white;
+
+        @include media-breakpoint-down(sm) {
+          margin-left: 4%;
+          margin-right: 4%;
+        }
 
         .machine-item {
           max-width: 750px;
