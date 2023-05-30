@@ -168,9 +168,9 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    optimizeCSS: true,
     postcss: {
       plugins: {
-        // Removed calc because its conflict with postcss8 + swiperjs
         cssnano: {
           preset: [
             'default',
