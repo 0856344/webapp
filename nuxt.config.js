@@ -170,13 +170,11 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    
     transpile: [/^vue2-google-maps($|\/)/]
   },
   googleAnalytics: {
     id: googleId,
     disabled: () => {
-      // eslint-disable-next-line no-unused-vars
       const hasAcceptedAnalyticsCookie = localStorage.getItem('hasAcceptedAnalyticsCookie')
       if (hasAcceptedAnalyticsCookie === 'true') {
         return false
