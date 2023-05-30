@@ -44,25 +44,30 @@ const origin = tmpOrigin
 console.log('## Origin: ' + origin)
 
 // TODO: a hell more of exception handling and general hardening
+// TODO - @see https://grandgarage.atlassian.net/browse/HP-317
 exports.handler = function (event, context, callback) {
+  //console.log('####event', event)
   let token = null
   if (event.headers.cookie) {
     const parsed = cookieparser.parse(event.headers.cookie)
+    //console.log('###parsed Cookie', parsed)
     try {
       token = parsed.jwt
     } catch (err) {
-      console.log(err)
+      console.log('Unauthorized. Invalid Token', err)
       return callback(null, {
         statusCode: 401,
-        body: 'Unauthorized'
+        body: 'Unauthorized. Invalid Token'
       })
     }
+  } else {
+    console.log('Unauthorized. No cookie found.')
   }
 
   if (!token) {
     return callback(null, {
       statusCode: 401,
-      body: 'Unauthorized'
+      body: 'Unauthorized. No Token given.'
     })
   }
 

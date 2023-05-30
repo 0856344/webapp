@@ -188,6 +188,7 @@ const createStore = () => {
         })
       },
       //@deprecated
+      // TODO - remove if deprecated
       // getUserMetadata ({ state }) {
       //   const id = state.member.id
       //   return connector.get(`v1/fabman/members/${id}/metadata`).then((r) => {
@@ -244,6 +245,7 @@ const createStore = () => {
         return connector.post('/member/workshopStorno', data)
       },
       //@deprecated
+      // TODO - remove if deprecated
       // async getCredits ({ state }) {
       //   const res = await connector.get('/v1/members/getCredits')
       //   return res.data
@@ -257,6 +259,7 @@ const createStore = () => {
         return axios.post(connectorBaseUrl + '/payrexx/checkout', data)
       },
       // old version
+      // TODO - remove if deprecated
       // async redeemGiftCard ({ state }, data) {
       //   const res = await connector.post('/gift-cards/redeem', data)
       //   return res.data
@@ -313,6 +316,7 @@ const createStore = () => {
         return res.data
       },
       // TODO delete (package set in create member, security fix)
+      // TODO - remove if deprecated
       // async setPackageOnboarding ({ state }, data) {
       //   const id = data.memberId
       //   //const req = data.req
@@ -425,6 +429,7 @@ const createStore = () => {
         return r.data
       },
       getFabman ({ state, commit }) {
+        // TODO - delete if deprecated
         return axios.get(`${origin}/.netlify/functions/getFabman`).then((r) => {
           commit('setFabman', r.data)
         }).catch((err) => {
@@ -432,6 +437,7 @@ const createStore = () => {
         })
       },
       updateUser ({ state, commit, dispatch }, data) {
+        // TODO - delete if deprecated
         return axios.post(`${origin}/.netlify/functions/updateUser`, data).then((r) => {
           const patch = { profile: r.data }
           const user = Object.assign(state.user, patch)
@@ -460,8 +466,9 @@ const createStore = () => {
         })
       },
       getUser ({ state, commit, dispatch }) {
-        return axios.get(`${origin}/.netlify/functions/getUser`).then((r) => {
-          dispatch('getMemberByEmail', { email: r.data }).then((response) => {
+        // TODO - @see https://grandgarage.atlassian.net/browse/HP-317
+        return axios.get(`${origin}/.netlify/functions/getUser`).then((netlifyResponse) => {
+          dispatch('getMemberByEmail', { email: netlifyResponse.data }).then((response) => {
             const profile = response
             //console.log(response)
             const user = {
@@ -563,6 +570,7 @@ const createStore = () => {
         })
       },
       // @deprecated
+      // TODO - delete if deprecated
       async startOnboarding ({ commit }, data) {
         const res = await connector.post('/member/startOnboarding', data)
         return res.data
