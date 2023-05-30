@@ -113,7 +113,6 @@ export default {
     @include media-breakpoint-down(sm) {
         padding: 0;
     }
-
     .vuecal {
         @include media-breakpoint-down(sm) {
             height: 75vh !important;

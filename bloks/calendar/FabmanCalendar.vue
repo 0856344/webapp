@@ -25,7 +25,6 @@ export default {
 
   .machine-calendar {
     width: 80%;
-
     @include media-breakpoint-down(sm) {
       width: 100%;
       margin-left: 4%;
