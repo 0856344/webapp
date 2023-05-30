@@ -172,7 +172,6 @@ module.exports = {
     postcss: {
       postcssOptions: {
         plugins: {
-          tailwindcss: join(__dirname, 'tailwind.config.js'),
           cssnano: {
             calc: false
           }
@@ -184,7 +183,6 @@ module.exports = {
   googleAnalytics: {
     id: googleId,
     disabled: () => {
-      // eslint-disable-next-line no-unused-vars
       const hasAcceptedAnalyticsCookie = localStorage.getItem('hasAcceptedAnalyticsCookie')
       if (hasAcceptedAnalyticsCookie === 'true') {
         return false
