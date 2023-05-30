@@ -231,8 +231,9 @@ export default {
       }
     }
     .image {
-      max-width: 100%;
-      max-height: 50vh;
+      width: 100%;
+      height: 14em;
+      object-fit: cover;
     }
   }
   @media (min-width: $mobile-large) {
