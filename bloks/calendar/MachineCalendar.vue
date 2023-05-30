@@ -109,7 +109,15 @@ export default {
 .machine-calendar {
   background-color: white;
   padding: 50px 0;
-  width: 50em;
+
+    @include media-breakpoint-down(sm) {
+        padding: 0;
+    }
+    .vuecal {
+        @include media-breakpoint-down(sm) {
+            height: 75vh !important;
+        }
+    }
 }
 
 .w-100 {
