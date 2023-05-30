@@ -61,6 +61,7 @@ module.exports = {
   },
   buildModules: [
     ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/proxy',
     ['@nuxtjs/google-analytics'],
     ['@nuxtjs/style-resources']
@@ -169,15 +170,6 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    postcss: {
-      postcssOptions: {
-        plugins: {
-          cssnano: {
-            calc: false
-          }
-        }
-      }
-    },
     transpile: [/^vue2-google-maps($|\/)/]
   },
   googleAnalytics: {
