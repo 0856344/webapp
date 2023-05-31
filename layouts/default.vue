@@ -21,7 +21,7 @@
 
 <script>
 import TopHeader from '@/bloks/TopHeader.vue'
-import BottomFooter from '@/bloks/_default/BottomFooter.vue'
+import BottomFooter from '@/bloks/basic/BottomFooter.vue'
 import Sidebar from '@/components/Sidebar.vue'
 import CookieManager from '../components/CookieManager.vue'
 
