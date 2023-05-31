@@ -1,8 +1,6 @@
 import Vue from 'vue'
 
-/**
- * VUE COMPONENTS
- */
+// VUE COMPONENTS
 import Markdown from '@/components/Markdown.vue'
 import Loading from '@/components/Loading.vue'
 import LoadingSpinner from '~/components/Spinners/LoadingSpinner.vue'
@@ -13,9 +11,7 @@ import Accordion from '@/components/Accordion.vue'
 import BigLoadingSpinner from '~/components/Spinners/BigLoadingSpinner.vue'
 import LoadingSpinnerInline from '~/components/Spinners/LoadingSpinnerInline.vue'
 
-/**
- * STORYBLOK COMPONENTS
- */
+// STORYBLOK COMPONENTS
 import Page from '@/bloks/Page.vue'
 import Teaser from '@/bloks/Teaser.vue'
 import GeneralHeader from '@/bloks/GeneralHeader.vue'
@@ -27,7 +23,7 @@ import Feature from '@/bloks/Feature.vue'
 import SitemapItem from '@/bloks/SitemapItem.vue'
 import FAQBlock from '@/bloks/FAQBlock.vue'
 import FAQItem from '@/bloks/FAQItem.vue'
-import DownloadItem from '@/bloks/_default/DownloadItem.vue'
+import DownloadItem from '@/bloks/basic/DownloadItem.vue'
 import LocationDescription from '@/bloks/LocationDescription.vue'
 import FeedbackForm from '@/bloks/FeedbackForm.vue'
 
@@ -36,9 +32,9 @@ import TeamMemberPreview from '@/bloks/person/TeamMemberPreview.vue'
 import Mainstage from '@/bloks/Mainstage.vue'
 import MembershipGrid from '@/bloks/MembershipGrid.vue'
 import MembershipPlan from '@/bloks/MembershipPlan.vue'
-import CenteredText from '@/bloks/_default/CenteredText.vue'
+import CenteredText from '@/bloks/basic/CenteredText.vue'
 import ContactInfo from '@/bloks/person/ContactInfo.vue'
-import InfoBox from '@/bloks/_default/InfoBox.vue'
+import InfoBox from '@/bloks/basic/InfoBox.vue'
 import NewsFeedItem from '@/bloks/NewsFeedItem.vue'
 import WorkshopBestOf from '@/bloks/workshops/WorkshopBestOf.vue'
 import WorkshopPreview from '@/bloks/workshops/WorkshopPreview.vue'
@@ -63,8 +59,8 @@ import ImageGallery from '@/bloks/ImageGallery.vue'
 import ImageSlideshow from '@/bloks/ImageSlideshow.vue'
 import ImageSlideshowBlue from '@/bloks/ImageSlideshowBlue.vue'
 import SpotlightSlider from '@/bloks/SpotlightSlider.vue'
-import TextImage from '@/bloks/_default/TextImage.vue'
-import Text from '@/bloks/_default/Text.vue'
+import TextImage from '@/bloks/basic/TextImage.vue'
+import Text from '@/bloks/basic/Text.vue'
 import Video from '@/bloks/Video.vue'
 import LinksSlideshow from '../bloks/LinksSlideshow.vue'
 
@@ -110,11 +106,12 @@ import LogoText from '@/bloks/LogoText.vue'
 import CreditPackage from '@/bloks/CreditPackage.vue'
 import FabmanCalendar from '@/bloks/calendar/FabmanCalendar.vue'
 import MachineCard from '@/bloks/machines/MachineCard.vue'
-import ButtonLink from '@/bloks/_default/ButtonLink.vue'
+import ButtonLink from '@/bloks/basic/ButtonLink.vue'
 import FabmanMachine from '@/bloks/machines/FabmanMachine.vue'
 import MembershipPlanSG from '@/bloks/MembershipPlanSG.vue'
 import MembershipGridSG from '@/bloks/MembershipGridSG.vue'
 import MembershipAddons from '@/bloks/MembershipAddons.vue'
+import Spacer from '@/bloks/basic/Spacer.vue'
 
 Vue.component('material-prices', MaterialPrices)
 Vue.component('page', Page)
@@ -232,3 +229,4 @@ Vue.component('accordion', Accordion)
 Vue.component('big-loading-spinner', BigLoadingSpinner)
 Vue.component('loading-spinner-inline', LoadingSpinnerInline)
 Vue.component('membership-addons', MembershipAddons)
+Vue.component('spacer', Spacer)

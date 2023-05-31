@@ -96,8 +96,16 @@ export default {
 }
 
 .image-slideshow {
+  // TODO: Fix mobile view
   color: $color-blue;
   margin-top: 2rem;
+  @include media-breakpoint-down(sm){
+    height: 10em;
+    padding-bottom: 0;
+  }
+  @include media-breakpoint-down(md){
+    height: 18em;
+  }
   .text {
     @include margin-page-middle();
     padding: 5rem 0 4rem;

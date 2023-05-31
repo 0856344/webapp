@@ -50,7 +50,6 @@ export default {
   -webkit-box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
   font-family: inherit;
-  margin-bottom: 20px;
   background-color: $color-primary;
   border-radius: 6px;
   font-weight: bold;
