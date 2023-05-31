@@ -70,7 +70,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// TODO: Fix mobile view
 .image-slideshow-blue {
   position: relative; // needed for z-index (blue dashed stripe)
   padding: 30px;
@@ -81,7 +80,7 @@ export default {
     font-size: 1.8rem;
     @include media-breakpoint-down(md) {
       font-size: 1.2rem;
-      padding: 2vh 4vw;
+      //padding: 2vh 4vw;
     }
     font-family: $font-secondary;
     line-height: 1.4;
@@ -122,11 +121,10 @@ export default {
       }
     }
     @include media-breakpoint-down(sm){
-      height: 10em;
-      padding-bottom: 0;
-    }
-    @include media-breakpoint-down(md){
-      height: 18em;
+      height: 13em;
+      padding: 0;
+      width: 100%;
+      margin: 0 auto;
     }
   }
   .swiper-button-prev,
