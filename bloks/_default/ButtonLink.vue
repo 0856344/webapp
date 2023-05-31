@@ -1,14 +1,20 @@
 <template>
-  <div class="w-full" :class="[{ 'flex w-full justify-center': !hasProse && !hasHeader }, { 'grid grid-cols-2 mx': hasProse }]">
-    <div v-if="hasProse" class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
-      <h2>{{ blok.prose_header }}</h2>
-      <div v-html="transformedProse"></div>
+  <div
+    v-if="(!blok.conditional || blok.conditional && blok.condition === 'authenticated' && !!this.$store.state.auth || blok.conditional && blok.condition == 'notAuthenticated' && !(!!this.$store.state.auth))">
+    <div class="w-2/3"
+      :class="[{ 'flex w-full justify-center': !hasProse && !hasHeader }, { 'grid grid-cols-2 mx': hasProse }]">
+      <div v-if="hasProse" class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
+        <h2>{{ blok.prose_header }}</h2>
+        <div v-html="$transformRichText(blok.prose_text)"></div>
+      </div>
+      <div class="flex items-center justify-center">
+        <button
+          class="text-white mx-2 justify-self-center rounded-sm ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
+          v-bind:class="buildClassString" v-on:click="route(blok.url)">
+          {{ blok.text }}
+        </button>
+      </div>
     </div>
-    <button
-      class="text-white mx-2 justify-self-center rounded-sm ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
-      v-bind:class="buildClassString" v-on:click="route(blok.url)">
-      {{ blok.text }}
-    </button>
   </div>
 </template>
 
@@ -29,47 +35,7 @@ export default {
       return classes.join(' ')
     },
     hasProse () {
-      return this.blok.prose_text
-    },
-    transformedProse () {
-      console.log(JSON.parse(JSON.stringify(this.blok.prose_text)))
-      //const data = JSON.parse(this.blok.prose_text)
-      let html = ''
-
-      this.blok.prose_text.content.forEach((item) => {
-        if (item.type === 'paragraph') {
-          let paragraph = '<p>'
-
-          item.content.forEach((content) => {
-            let text = content.text
-
-            if (content.marks) {
-              content.marks.forEach((mark) => {
-                switch (mark.type) {
-                  case 'bold':
-                    text = `<strong>${text}</strong>`
-                    break
-                  case 'italic':
-                    text = `<em>${text}</em>`
-                    break
-                  case 'link':
-                    text = `<a href="${mark.attrs.href}" target="${mark.attrs.target}">${text}</a>`
-                    break
-                  default:
-                    break
-                }
-              })
-            }
-
-            paragraph += `${text} `
-          })
-
-          paragraph += '</p>'
-          html += paragraph
-        }
-      })
-
-      return html
+      return !!this.blok.prose_text
     }
   },
   methods: {
