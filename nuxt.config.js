@@ -104,6 +104,7 @@ module.exports = {
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
     '~/plugins/getActiveBreakpoint.client.js',
+    '~/plugins/transformRichText.js',
     '~/plugins/preview.client.js',
     //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
