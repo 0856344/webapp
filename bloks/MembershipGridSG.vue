@@ -29,8 +29,8 @@
           </div>
         </div> -->
         <slider-container :class="'lg:overflow-visible w-96 lg:w-full lg:contents relative'">
-          <div class="absolute left-0 w-12 h-full bg-gradient-to-r from-gray-100"></div>
-          <div class="absolute right-0 w-12 h-full bg-gradient-to-l from-gray-100"></div>
+          <div class="absolute left-0 w-12 h-full gradient-r"></div>
+          <div class="absolute right-0 w-12 h-full gradient-l"></div>
           <slider-slide v-for="(blok, index) in blok.columns" :key="blok.uid" >
             <component :is="blok.component" :blok="blok" :strings="featureStrings" :comingSoon="comingSoon" :isMobile="isMobile" :class="[{'ml-12' : index === 0},{'mr-12' : index === numberColumns-1}]"/>
           </slider-slide>
@@ -156,3 +156,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/*workaround for tailwind nuxt bug
+replaces classes "bg-gradient-to-r from-gray-100"*/ 
+.gradient-l{
+  background-image: linear-gradient(to left, #f2f3ee,hsla(72,17%,94%,0));
+}
+
+.gradient-r{
+  background-image: linear-gradient(to right, #f2f3ee,hsla(72,17%,94%,0));
+}
+
+</style>
