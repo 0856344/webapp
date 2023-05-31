@@ -76,17 +76,14 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .swiper-wrapper {
    align-items: center;
 }
 
 .image-slideshow {
+  margin: 2em 0;
   color: $color-blue;
-  margin-top: 5rem;
-  @include media-breakpoint-down(md){
-    margin-top: 2rem;
-  }
   .text {
     @include margin-page-middle();
     font-size: 1.8rem;
@@ -98,22 +95,24 @@ export default {
     }
   }
   .swiper-container {
-    height: 25em;
+    height: 22em;
+    width: 100%;
     .swiper-slide {
       display: block;
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       @include media-breakpoint-down(xs){
-        height: 180px !important;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto;
         display: block;
-        width: 100% !important;
       }
     }
+    @include media-breakpoint-down(sm){
+      height: 10em;
+      padding-bottom: 0;
+    }
     @include media-breakpoint-down(md){
-      height: 15em;
+      height: 18em;
     }
   }
   .swiper-button-prev,

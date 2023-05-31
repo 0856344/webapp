@@ -68,7 +68,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 .image-slideshow-blue {
   position: relative; // needed for z-index (blue dashed stripe)
@@ -107,7 +107,8 @@ export default {
   }
   .swiper-container {
     margin-top: 3%;
-    height: 25em;
+    width: 100%;
+    height: 22em;
     padding-bottom: 60px;
     .swiper-slide {
       display: block;
@@ -115,15 +116,16 @@ export default {
       background-position: center;
       background-repeat: no-repeat;
       @include media-breakpoint-down(xs){
-        height: 180px !important;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto;
         display: block;
-        width: 100% !important;
       }
     }
+    @include media-breakpoint-down(sm){
+      height: 10em;
+      padding-bottom: 0;
+    }
     @include media-breakpoint-down(md){
-      height: 15em;
+      height: 18em;
     }
   }
   .swiper-button-prev,
@@ -133,7 +135,6 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
-    //margin-top: -50px;
   }
 }
 </style>
