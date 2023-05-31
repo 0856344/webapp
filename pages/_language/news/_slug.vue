@@ -244,13 +244,6 @@ export default {
     margin-top: 15%;
     font-size: 18px;
   }
-  /*  @include margin-page-wide();
-    @include media-breakpoint-up(md) {
-      margin: 0 100px;
-    }
-    @include media-breakpoint-down(xs) {
-      margin-top: 40px;
-    }*/
 }
 
 .social-media-link {
@@ -301,15 +294,6 @@ export default {
   }
   @include media-breakpoint-down(xs) {
     font-size: 1.4rem;
-  }
-}
-
-.image-slideshow {
-  padding-left: 5vw;
-  padding-right: 5vw;
-  margin-top: 3vh;
-  @include media-breakpoint-down(xs) {
-    padding: 5vw;
   }
 }
 

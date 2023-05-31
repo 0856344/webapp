@@ -1,9 +1,9 @@
 <template>
     <section
             v-editable="blok"
-            class="material-prices"
+            class="material-prices flex justify-center bg-white"
     >
-        <div v-if="isLoading">
+        <div v-if="isLoading" class="inner-content w-11/12">
             <accordion theme="primary">
                 <div slot="header">{{ $t('materials') }}</div>
                 <div class="machine-filters">
@@ -112,7 +112,7 @@ export default {
 @import '/assets/scss/styles';
 
 .content-card:hover {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .machine-filters {
@@ -177,61 +177,72 @@ export default {
     text-transform: uppercase;
     color: $color-blue;
   }
+}
 
-  .material-header {
+.material-header {
     margin-top: 20px;
 
     .header {
+        line-height: 1.6;
+        font-family: $font-mono;
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: flex;
+
+        .title {
+            flex: 1;
+            flex-direction: row;
+            display: flex;
+        }
+    }
+}
+
+.material-prices {
+    padding: 20px 0;
+
+  @include media-breakpoint-down(md) {
+    padding: 0 4% 100px 4%;
+    background-color: transparent;
+  }
+
+  .inner-content {
+    @include media-breakpoint-down(md) {
+      width: 100%;
+    }
+  }
+
+  .material-price {
+    &:nth-child(odd) {
+      background-color: rgba(242, 243, 238, 0.9);
+    }
+
+    padding: 10px;
+    @include media-breakpoint-down(xs) {
+      border: .11em solid #f2f3ee;
+      padding: 7px;
+    }
+
+    .info-row {
+      @include media-breakpoint-down(md) {
+        flex-direction: column;
+      }
       line-height: 1.6;
       font-family: $font-mono;
       font-size: 0.9rem;
-      font-weight: bold;
+      margin: -8px;
       display: flex;
 
-      .title {
+      .info-block {
         flex: 1;
         flex-direction: row;
         display: flex;
       }
-    }
-  }
 
-  .material-prices {
-    margin-top: 20px;
+      .col {
+        padding: 8px;
+        margin-right: 10px;
+        width: 50%;
 
-    .material-price {
-      &:nth-child(odd) {
-        background-color: rgba(242, 243, 238, 0.9);
-      }
-
-      padding: 10px;
-      @include media-breakpoint-down(xs) {
-        border: .11em solid #f2f3ee;
-        padding: 7px;
-      }
-
-      .info-row {
-        @include media-breakpoint-down(md) {
-          flex-direction: column;
-        }
-        line-height: 1.6;
-        font-family: $font-mono;
-        font-size: 0.9rem;
-        margin: -8px;
-        display: flex;
-
-        .info-block {
-          flex: 1;
-          flex-direction: row;
-          display: flex;
-        }
-
-        .col {
-          padding: 8px;
-          margin-right: 10px;
-          width: 50%;
-
-        }
       }
     }
   }
