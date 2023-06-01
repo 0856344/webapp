@@ -31,7 +31,7 @@ module.exports = {
   robots: [
     {
       UserAgent: '*',
-      Disallow: '/lukas-thauerboeck'
+      Disallow: ['/lukas-thauerboeck', '/de/testpage']
     }
   ],
   /*
@@ -47,7 +47,10 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
       { rel: 'icon', type: 'image/x-icon', href: '/gg-logo.svg' }
-    ]
+    ],
+    htmlAttrs: {
+      lang: 'de'
+    }
   },
   proxy: {
     '/.netlify': {
@@ -80,7 +83,7 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/sentry',
     '@nuxtjs/toast',
-    '@nuxtjs/eslint-module',
+    //'@nuxtjs/eslint-module',
     '@nuxtjs/robots',
     'nuxt-i18n'
   ],
@@ -100,6 +103,9 @@ module.exports = {
     '~/plugins/libs',
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
+    '~/plugins/getActiveBreakpoint.client.js',
+    '~/plugins/transformRichText.js',
+    '~/plugins/preview.client.js',
     //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
   ],
@@ -109,8 +115,9 @@ module.exports = {
   router: {
     middleware: 'router'
   },
+  target: 'static',
   generate: {
-    target: 'static',
+    //target: 'static',
     routes: function (callback) {
       const token = storyblokToken
       const perPage = 100
@@ -165,15 +172,11 @@ module.exports = {
    */
   build: {
     postcss: {
-      plugins: {
-        // Removed calc because its conflict with postcss8 + swiperjs
-        cssnano: {
-          preset: [
-            'default',
-            {
-              calc: false
-            }
-          ]
+      postcssOptions: {
+        plugins: {
+          cssnano: {
+            calc: false
+          }
         }
       }
     },

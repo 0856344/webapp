@@ -107,8 +107,8 @@
 </template>
 
 <script>
-import { helpers } from '../../utils/helper'
-import TextInput from '../../components/TextInput.vue'
+import { helper } from '@/plugins/helper'
+import TextInput from '../../bloks/basic/TextInput.vue'
 
 export default {
   middleware: 'authenticated',
@@ -197,7 +197,7 @@ export default {
     validateIban () {
       if (this.paymentMethod.iban) {
         this.ibanIsValid = true
-        if (helpers.validateIban(this.paymentMethod.iban)) {
+        if (helper.validateIban(this.paymentMethod.iban)) {
           return true
         }
       }

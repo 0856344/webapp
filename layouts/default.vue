@@ -1,10 +1,5 @@
 <template>
   <div style="overflow: hidden">
-<!--        <Modal v-if="modalVisible" @close="modalVisible = false" title="Covid Info" icon="exclamation-triangle">
-      Momentan findet der Memberbetrieb nur eingeschränkt und
-      unter Einhaltung der erforderlichen COVID-Schutzmaßnahmen statt.
-      Klick <NuxtLink to="de/covid">hier</NuxtLink> um alle aktuellen Infos und Maßnahmen nachzulesen.<br>#staysafe
-    </Modal>-->
     <CookieManager v-if="modalVisible" @close="modalVisible = false" icon="exclamation-triangle">
     </CookieManager>
     <div class="login-spacer" v-if="isAuthenticated"></div>
@@ -20,16 +15,15 @@
       <div><bottom-footer/></div>
       <div><sidebar /></div>
       <div><notifications position="bottom right" /></div>
-<!--      <div><breadcrumbs /></div>-->
     </div>
   </div>
 </template>
 
 <script>
-import TopHeader from '~/components/TopHeader.vue'
-import BottomFooter from '~/components/BottomFooter.vue'
-import Sidebar from '~/components/Sidebar.vue'
-import CookieManager from '../components/CookieManager'
+import TopHeader from '@/bloks/TopHeader.vue'
+import BottomFooter from '@/bloks/basic/BottomFooter.vue'
+import Sidebar from '@/components/Sidebar.vue'
+import CookieManager from '../components/CookieManager.vue'
 
 export default {
   data: () => ({
@@ -62,21 +56,7 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
-@import '../assets/scss/styles.scss';
-
-body {
-  background-color: $color-bright-bg;
-  width: 100%;
-  overflow-x: hidden;
-  font-family: $font-primary;
-  line-height: 1;
-  font-size: 18px;
-  color: #000;
-  margin: 0;
-  padding: 0;
-}
 
 .main-body {
   max-width: 1264px;

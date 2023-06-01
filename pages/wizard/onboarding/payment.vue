@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import { helpers } from '../../../utils/helper'
+import { helper } from '@/plugins/helper'
 
 export default {
   props: {
@@ -289,7 +289,7 @@ export default {
     validateIban () {
       if (this.onboardingData?.payment?.iban) {
         this.onboardingData.payment.ibanIsValid = true
-        if (helpers.validateIban(this.onboardingData?.payment?.iban)) {
+        if (helper.validateIban(this.onboardingData?.payment?.iban)) {
           return true
         }
       }

@@ -49,10 +49,7 @@ export default {
     display: flex;
     text-transform: uppercase;
     color: #000;
-    padding-top: 35px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom:20px;
+    padding: 35px 20px 20px;
     text-decoration: none;
     font-weight: bold;
     font-size: 0.9rem;

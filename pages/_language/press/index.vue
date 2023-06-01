@@ -42,7 +42,7 @@
 <script>
 
 import storyblokLivePreview from '@/mixins/storyblokLivePreview'
-import ItemSlideShow from '../../../components/PressPostSlideShow'
+import ItemSlideShow from '../../../bloks/PressPostSlideShow.vue'
 export default {
   components: { ItemSlideShow },
   mixins: [storyblokLivePreview],

@@ -11,7 +11,7 @@ It includes a memberportal for the services at Grand Garage, a makerspace in Lin
 
 | Platform  | Description / Link                                                                                                 |
 |-----------|--------------------------------------------------------------------------------------------------------------------|
-| NuxtJs    | a higher-level framework of the JS-framework [vuejs](https://vuejs.org/) / [official website](https://nuxtjs.org/) 
+| NuxtJs    | a higher-level framework of the JS-framework [vuejs](https://vuejs.org/) / [official website](https://nuxtjs.org/) |
 | Storyblok | a modern headless CMS / [official website](www.storyblok.com)                                                      |
 | Netlify   | a build and deployment platform / [official website](https://www.netlify.com/with/vue/)                            |
  
@@ -36,6 +36,10 @@ To support https on localhost, follow these steps:
     mkcert -install
     mkcert localhost
     ```
+   
+#### FAQ
+##### Request failed to proxy: ECONNREFUSED
+Make sure you use a supported NodeJS Version in all of your Terminal sessions. Node Version can be switches by using [NVM](https://github.com/nvm-sh/nvm).
 
 ## Start
 ```

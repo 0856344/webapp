@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import Checkbox from '~/components/Checkbox.vue'
+import Checkbox from '@/components/Checkbox.vue'
 
 export default {
   components: {
@@ -112,8 +112,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '/assets/scss/styles.scss';
-
 .machine-overview {
   .loading {
     position: absolute;

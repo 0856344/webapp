@@ -19,6 +19,7 @@ module.exports = {
     'vue/no-side-effects-in-computed-properties': 1,
     'no-unused-vars': 1,
     'spaced-comment': 0,
+    'no-trailing-spaces': 0,
     'indent': 1,
     'padded-blocks': 1
   }

@@ -1,87 +1,83 @@
 <template>
-  <div>
-    <section>
-      <h2>Offene Buchungen</h2>
-      <loading-spinner
-        v-if="!activities"
-        color="#333"
-      />
-      <div
-        v-if="activities"
-      >
-        <div v-if="activities.length === 0"><p>Keine Buchungen vorhanden.</p></div>
-        <div class="table" v-if="activities.length > 0">
-          <div class="table-header">
-            <div class="header-items">
-              <div class="header-item activity-date">Datum</div>
-              <div class="header-item activity-amount">Betrag</div>
-              <div class="header-item activity-description">Buchung</div>
+    <div>
+        <section>
+            <div class="flex items-center mb-1">
+                <h2 class="m-0 mr-1 text-2xl">Offene Buchungen</h2>
+                <loading-spinner-inline v-if="loadingActivities"/>
             </div>
-          </div>
-          <div class="table-content">
-            <div
-                v-for="activity of activities"
-                :key="activity.id"
-                class="table-row">
-              <div class="table-data">{{ new Date(activity.date).toLocaleDateString('de-AT') }}</div>
-              <div class="table-data activity-amount" :style="{color: activity.price > 0 ? 'red' : 'green'}">{{Number(activity.price * (-1)).toFixed(2).replace('.', ',')}} €</div>
-              <div class="table-data activity-description">{{activity.description}}</div>
+            <div v-if="activities">
+                <table v-if="activities.length > 0" class="member-portal-table table-auto">
+                    <thead>
+                    <tr>
+                        <th class="activity-date">Datum</th>
+                        <th class="activity-amount">Betrag</th>
+                        <th class="activity-description">Buchung</th>
+                        <th class="activity-status"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="activity of activities" :key="activity.id">
+                        <td class="activity-date">{{ new Date(activity.date).toLocaleDateString('de-AT') }}</td>
+                        <td class="activity-amount" :style="{color: activity.price > 0 ? 'red' : 'green'}">
+                            {{ Number(activity.price * (-1)).toFixed(2).replace('.', ',') }} €
+                        </td>
+                        <td class="activity-description">{{ activity.description }}</td>
+                        <td class="activity-status"></td>
+                    </tr>
+                    <tr class="activity-total">
+                        <td></td>
+                        <td></td>
+                        <td class="result"><b>{{ totalResult > 0 ? 'Gesamt:' : 'Guthaben:' }}</b></td>
+                        <td class="total" :style="{color: totalResult > 0 ? 'red' : 'green'}">
+                            {{ (Number(totalResult * (-1)).toFixed(2).replace('.', ',')) }} €
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div v-else><p>Keine Buchungen vorhanden.</p></div>
+            </div>
+        </section>
 
+        <section class="invoice">
+            <div class="flex items-center mb-1">
+                <h2 class="m-0 mr-1 text-2xl">Rechnungen</h2>
+                <loading-spinner-inline v-if="loadingInvoices"/>
             </div>
-          </div>
-          <div class="table-content">
-            <div class="table-row end">
-              <div class="table-data result">{{totalResult > 0 ? 'Kosten:' : 'Guthaben:'}}</div>
-              <div class="table-data total" :style="{color: totalResult > 0 ? 'red' : 'green'}">{{(Number(totalResult * (-1)).toFixed(2).replace('.', ','))}} €</div>
+            <div v-if="invoices">
+                <table v-if="invoices.length > 0" class="member-portal-table table-auto">
+                    <thead>
+                    <tr>
+                        <th class="invoice-date">Datum</th>
+                        <th class="invoice-number">Rechnung</th>
+                        <th class="invoice-amount">Betrag</th>
+                        <th class="invoice-status">Status</th>
+                        <th class="invoice-download"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="invoice of invoices" :key="invoice.id">
+                        <td class="invoice-date">{{ new Date(invoice.date).toLocaleDateString('de-AT') }}</td>
+                        <td class="invoice-number">{{ invoice.number }}</td>
+                        <td class="invoice-amount">{{ invoice.total.replace('.', ',') }} €</td>
+                        <td class="invoice-status">
+                            <div v-if="invoice.state" class="bubble" :class="getInvoiceStateClass(invoice)">
+                                {{ getInvoiceStateText(invoice) }}
+                            </div>
+                        </td>
+                        <td @click="getPdf(invoice)" class="invoice-download">
+                            <div class="text-center">
+                                <loading-spinner v-if="loadingPdf" color="#333"
+                                                 class="pdf-loading-spinner flex text-center justify-center items-center"/>
+                                <font-awesome-icon v-else icon="download" class="clickable-icon"/>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div v-else><p>Keine Rechnungen vorhanden.</p></div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="invoice">
-      <h2>Rechnungen</h2>
-      <loading-spinner
-          v-if="!invoices"
-          color="#333"
-      />
-      <div
-          v-if="invoices"
-      >
-        <div v-if="invoices.length === 0"><p>Keine Rechnungen vorhanden.</p></div>
-        <div class="table" v-if="invoices.length > 0">
-          <div class="table-header">
-            <div class="header-items">
-              <div class="header-item invoice-date">Datum</div>
-              <div class="header-item invoice-number">Rechnung</div>
-              <div class="header-item invoice-amount">Betrag</div>
-              <div class="header-item invoice-status">Status</div>
-            </div>
-          </div>
-          <div class="table-content">
-            <div
-                v-for="invoice of invoices"
-                :key="invoice.id"
-                class="table-row">
-              <div class="table-data invoice-date">{{ new Date(invoice.date).toLocaleDateString('de-AT') }}</div>
-              <div class="table-data invoice-number">{{invoice.number}}</div>
-              <div class="table-data invoice-amount">{{invoice.total.replace('.', ',')}} €</div>
-              <div class="table-data invoice-status">
-                <span :class="[['paid'].includes(invoice.state) ? 'bubble grey' : 'noStatus']">Bezahlt</span>
-                <span :class="[['unpaid'].includes(invoice.state) ? 'bubble yellow' : 'noStatus']">Offen</span>
-                <span :class="[['cancelled'].includes(invoice.state) ? 'bubble red' : 'noStatus']">Storno</span>
-              </div>
-              <div
-                  class="table-data icon"
-                  @click="getPdf(invoice)"
-              >
-                <font-awesome-icon icon="download"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+        </section>
+    </div>
 </template>
 <script>
 export default {
@@ -89,17 +85,49 @@ export default {
   middleware: 'authenticated',
   data () {
     return {
+      loadingInvoices: false,
+      loadingActivities: false,
+      loadingPdf: false,
       invoices: null,
       activities: null,
       highlightedId: null
     }
   },
   async mounted () {
-    this.invoices = await this.$store.dispatch('getInvoices')
     this.getQuery(this.$route.query)
-    this.activities = await this.$store.dispatch('getActivities')
+
+    // Load invoices
+    this.loadingInvoices = true
+    await this.$store.dispatch('getInvoices')
+      .then((res) => {
+        this.invoices = res
+        console.log('invoices', res)
+      })
+      .catch((error) => {
+        console.log('Error! Could not load invoices', error)
+      })
+      .finally(() => {
+        this.loadingInvoices = false
+      })
+
+    // Load activities
+    this.loadingActivities = true
+    await this.$store.dispatch('getActivities')
+      .then((res) => {
+        this.activities = res
+        console.log('activities', res)
+      })
+      .catch((error) => {
+        console.log('Error! Could not load activities', error)
+      })
+      .finally(() => {
+        this.loadingActivities = false
+      })
   },
   computed: {
+    isLoading () {
+      return this.loadingInvoices || this.loadingActivities || this.loadingPdf
+    },
     totalResult () {
       let total = 0
       for (const item in this.activities) {
@@ -109,12 +137,37 @@ export default {
     }
   },
   methods: {
+    getInvoiceStateClass (invoice) {
+      switch (invoice.state) {
+        case 'paid':
+          return 'grey'
+        case 'unpaid':
+          return 'yellow'
+        case 'cancelled':
+          return 'red'
+        default:
+          return 'bubble grey'
+      }
+    },
+    getInvoiceStateText (invoice) {
+      switch (invoice.state) {
+        case 'paid':
+          return 'Bezahlt'
+        case 'unpaid':
+          return 'Offen'
+        case 'cancelled':
+          return 'Storno'
+        default:
+          return ''
+      }
+    },
     getQuery (to) {
       if (Object.prototype.hasOwnProperty.call(to, 'id')) {
         this.highlightedId = to.id
       }
     },
     async getPdf (invoice) {
+      this.loadingPdf = true
       await this.$store.dispatch('getPDF', invoice.id)
         .then((res) => {
           const binary = atob(res.pdf.replace(/\s/g, ''))
@@ -124,7 +177,7 @@ export default {
           for (let i = 0; i < len; i++) {
             view[i] = binary.charCodeAt(i)
           }
-          const blob = new Blob([view], { type: 'application/pdf' })
+          const blob = new Blob([view], {type: 'application/pdf'})
           const link = document.createElement('a')
           link.target = '_blank'
           link.download = `Rechnung_${invoice.number}.pdf`
@@ -138,6 +191,9 @@ export default {
             className: 'badToast'
           })
         })
+        .finally(() => {
+          this.loadingPdf = false
+        })
     }
   }
 
@@ -147,216 +203,12 @@ export default {
 .invoice {
   margin: 10% 0;
 }
-.table {
-  margin: 0;
-  .table-header {
-    display: flex;
-    background-color: black;
-    color: white;
-    padding: 0.75rem 1.25rem;
-    font-size: 1rem;
-    text-transform: uppercase;
-    line-height: 1.25rem;
-    letter-spacing: 0.05em;
-    font-weight: 600;
+.activity-total {
+    border-top: 2px solid #333;
 
-    .header-items {
-      display: flex;
-      flex-grow: 1;
+    @include media-breakpoint-down(sm) {
 
-      .header-item {
-        width: 22.5%;
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-      .activity-description {
-        width: 50%;
-      }
-      .invoice-status {
-        margin-left: 2%;
-      }
-    }
-  }
-
-  .table-content {
-    list-style: none;
-    background-color: white;
-    color: black;
-    font-size: 0.9rem;
-    line-height: 1.25rem;
-    letter-spacing: 0.05em;
-    font-weight: 500;
-
-    .table-row {
-      display: flex;
-      flex-grow: 1;
-      padding: 0.75rem 1.25rem;
-      border-width: thin;
-      border-style: solid;
-      border-color: #e2e8f0;
-
-      .table-data {
-        width: 22.5%;
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-      .activity-description {
-        width: 50%;
-      }
-      .result {
-        width: 77.5%;
-        text-align: right;
-      }
-      .total {
-        width: 17.5%;
-        text-align: right;
-      }
-      .bubble {
-        color: white;
-        position: absolute;
-        width: 90px;
-        height: 25px;
-        border-radius: 100px;
-        text-align: center;
-        font-weight: 600;
-        padding-top: 2px;
-        margin-bottom: 10px;
-      }
-      .grey {
-        background: grey;
-      }
-      .red {
-        background: red;
-      }
-      .yellow {
-        background: #ECAB6D;
-      }
-      .noStatus {
-        display: none;
-      }
-      .icon {
-        display: flex;
-        align-items: center;
-        color: grey;
-        width: 10%;
-      }
-      .icon:hover {
-        cursor: pointer;
-        color: black;
-      }
-    }
-    .end {
-      border-top-style: solid;
-      border-top-color: black;
-      border-top-width: medium;
-    }
-  }
-  .activity-amount {
-    text-align: right;
-    order: 999;
-  }
-}
-//Mobile
-@include media-breakpoint-down(xs) {
-  .table {
-    margin-left: -8%;
-    margin-right: -8%;
-    .table-header {
-      padding: 0.75rem 0;
-      font-size: 0.8rem;
-      line-height: 1.25rem;
-
-      .header-items {
-        display: flex;
-        flex-grow: 1;
-        flex-wrap: wrap;
-
-        .header-item {
-          width: 50%;
-          padding-left: 0.5rem;
-          padding-right: 0.5rem;
-        }
-        .activity-amount {
-          text-align: right;
-        }
-
-        .activity-description {
-          width: 100%;
-          order: 999;
-        }
-        .invoice-date {
-          order: 1;
-        }
-        .invoice-amount {
-          order: 2;
-          text-align: right;
-        }
-        .invoice-number {
-          order: 3;
-        }
-        .invoice-status {
-          order: 4;
-          text-align: right;
-          margin-left: 0;
-        }
-      }
     }
 
-    .table-content {
-      font-size: 0.8rem;
-      font-weight: 500;
-      .table-row {
-        padding: 0.75rem 0;
-        display: flex;
-        flex-wrap: wrap;
-        .table-data {
-          width: 50%;
-          padding-left: 0.5rem;
-          padding-right: 0.5rem;
-        }
-        .activity-description {
-          width: 100%;
-          order: 999;
-        }
-        .activity-amount {
-          text-align: right;
-        }
-        .invoice-date {
-          order: 1;
-        }
-        .invoice-amount {
-          order: 2;
-          text-align: right;
-        }
-        .invoice-number {
-          order: 3;
-        }
-        .invoice-status {
-          order: 4;
-          text-align: right;
-        }
-        .result {
-          width: 78%;
-          text-align: right;
-        }
-        .total {
-          width: 22%;
-          text-align: right;
-        }
-        .bubble {
-          width: 60px;
-          position: relative;
-          padding: 2px 5px;
-        }
-        .icon {
-          display: flex;
-          align-items: end;
-          color: grey;
-          width: 7%;
-          order: 5;
-        }
-      }
-    }
-  }
 }
 </style>

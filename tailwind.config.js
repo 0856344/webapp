@@ -1,6 +1,24 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
 module.exports = {
-  content: [],
+  content: ['./bloks/**/*.vue', './components/**/*.vue', './layouts/**/*.vue', './pages/**/*.vue', './plugins/**/*.js'],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        // adds utility classes for vertical text
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/writing-mode
+        '.horizontal-writing-tb': { writingMode: 'horizontal-tb' },
+        '.vertical-writing-rl': { writingMode: 'vertical-rl' },
+        '.vertical-writing-lr': { writingMode: 'vertical-lr' },
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/text-orientation
+        '.orientation-mixed': { textOrientation: 'mixed' },
+        '.orientation-upright': { textOrientation: 'upright' },
+        '.orientation-sideways-right': { textOrientation: 'sideways-right' },
+        '.orientation-sideways': { textOrientation: 'sideways' },
+        '.orientation-glyph': { textOrientation: 'use-glyph-orientation' }
+      })
+    })
+  ],
   theme: {
     screens: {
       xs: '360px',
@@ -49,7 +67,8 @@ module.exports = {
         700: '#7d7d7d',
         800: '#6c6c6c',
         900: '#2d2d2d'
-      }
+      },
+      transparent: 'transparent'
     },
     fontFamily: {
       sans: ['IBM Plex Sans Condensed', 'sans-serif'],
@@ -59,8 +78,24 @@ module.exports = {
     extend: {
       gridTemplateColumns: {
         contact: '28% 72%'
+      },
+      gridTemplateRows: {
+        plan: '3em repeat(auto-fill, minmax(5em, 1fr))',
+        'plan-mobile': '3em repeat(auto-fill, minmax(4em, 1fr))'
+      },
+      height: {
+        'screen-1/2': '50vh',
+        'screen-1/3': '33.3vh',
+        'screen-2/3': '66.6vh',
+        'screen-1/4': '25vh',
+        'screen-3/4': '75vh',
+        'screen-1/7': '14.2vh',
+        'screen-2/7': '28.4vh',
+        'screen-3/7': '42.6vh',
+        'screen-4/7': '56.8vh',
+        'screen-5/7': '71vh',
+        'screen-6/7': '85.2vh'
       }
     }
-  },
-  plugins: []
+  }
 }
