@@ -8,12 +8,12 @@
 export default ({ app }, inject) => {
   inject('transformRichText', (richTextObject) => {
     let html = ''
-    console.log(JSON.parse(JSON.stringify(richTextObject)))
-    richTextObject.content.forEach((item) => {
+
+    richTextObject?.content?.forEach((item) => {
       if (item.type === 'paragraph') {
         let paragraph = '<p>'
 
-        item.content.forEach((content) => {
+        item?.content?.forEach((content) => {
           let text = content.text
 
           if (content.marks) {
