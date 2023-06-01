@@ -1,16 +1,15 @@
 <template>
-  <div
+  <div class="flex justify-center w-full"
     v-if="(!blok.conditional || blok.conditional && blok.condition === 'authenticated' && !!this.$store.state.auth || blok.conditional && blok.condition == 'notAuthenticated' && !(!!this.$store.state.auth))">
-    <div class="w-2/3"
-      :class="[{ 'flex w-full justify-center': !hasProse && !hasHeader }, { 'grid grid-cols-2 mx': hasProse }]">
-      <div v-if="hasProse" class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl">
-        <h2>{{ blok.prose_header }}</h2>
-        <div v-html="$transformRichText(blok.prose_text)"></div>
+    <div class="max-w-prose w-2/3 flex-col px-2 pb-2 lg:pb-0 bg-white rounded-xl" :class="[{ 'flex gap-2 lg:gap-8': hasProse }, {'lg:flex-row' : !hasTextAbove}]">
+      <div v-if="hasProse" class="basis-1/2" :class="[{'lg:order-last':hasTextRight}]">
+        <h2  v-if="hasHeader">{{ blok.prose_header }}</h2>
+        <div v-html=" $transformRichText(blok.prose_text) "></div>
       </div>
-      <div class="flex items-center justify-center">
+      <div class="flex items-center justify-center basis-1/2">
         <button
-          class="text-white mx-2 justify-self-center rounded-sm ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
-          v-bind:class="buildClassString" v-on:click="route(blok.url)">
+          class="mx-2 text-white rounded-sm justify-self-center ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
+          v-bind:class=" buildClassString" v-on:click="route(blok.url)">
           {{ blok.text }}
         </button>
       </div>
@@ -20,6 +19,9 @@
 
 <script>
 export default {
+
+  //:class="[{ 'flex w-full justify-center': !hasProse && !hasHeader }, { 'grid grid-cols-2 mx': hasProse }]
+
   props: ['blok'],
   computed: {
     buildClassString () {
@@ -36,6 +38,15 @@ export default {
     },
     hasProse () {
       return !!this.blok.prose_text
+    },
+    hasHeader () {
+      return !!this.blok.prose_header
+    },
+    hasTextRight () {
+      return this.blok.layout === 'text_right'
+    },
+    hasTextAbove () {
+      return this.blok.layout === 'text_top'
     }
   },
   methods: {
