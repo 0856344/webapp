@@ -1,8 +1,9 @@
 <template>
     <div v-editable="blok" class="mt-4">
-      <div class="flex justify-center h-screen p-4 overflow-x-hidden lg:grid lg:grid-flow-col lg:auto-cols-max lg:gap-2 lg:w-full lg:p-2 lg:h-screen-6/7">
-        <div v-if="!isMobile" class="grid grid-rows-plan w-60">
-          <div class="inline-flex items-center justify-center md:gap-2 lg:gap-4 bg-transparent rounded-t-lg text-yellow"></div>
+      <div class="flex justify-center p-4 overflow-x-hidden lg:grid lg:grid-flow-col lg:auto-cols-max lg:w-full lg:p-2 lg:h-[56rem]">
+        <div v-if="!isMobile" class="grid grid-rows-plan w-60 xl:w-72">
+          <!---First DIV acts as placeholder for missing header row-->
+          <div class="">&nbsp;</div>
           <div v-for="item in featureStrings" :key="item._uid"
             class="inline-flex items-center px-2 py-1 text-sm border-b-2 border-b-gray-900 hyphens-auto">
             {{ item }}
@@ -13,11 +14,11 @@
           <div class="inline-flex items-center justify-center gap-2 text-gray-900 bg-transparent rounded-b-lg">
           </div>
         </div>
-        <slider-container :class="'lg:overflow-visible w-96 lg:w-full lg:contents relative'">
+        <slider-container :class="'lg:overflow-auto w-96 lg:w-full lg:contents relative'">
           <div v-if="isMobile" class="absolute left-0 w-12 h-full gradient-r"></div>
           <div v-if="isMobile" class="absolute right-0 w-12 h-full gradient-l"></div>
           <slider-slide v-for="(blok, index) in blok.columns" :key="blok.uid" >
-            <component :is="blok.component" :blok="blok" :strings="featureStrings" :comingSoon="comingSoon" :isMobile="isMobile" :class="[{'ml-12' : index === 0},{'mr-12' : index === numberColumns-1}]"/>
+            <component :is="blok.component" :blok="blok" :strings="featureStrings" :comingSoon="comingSoon" :isMobile="isMobile" :class="[{'lg:ml-2 ml-12' : index === 0},{'lg:mr-0 mr-12' : index === numberColumns-1}]"/>
           </slider-slide>
         </slider-container>
       </div>
@@ -90,8 +91,8 @@ export default {
     },
     setIsMobile () {
       const breakpoint = this.$getActiveBreakpoint()
-      console.log(breakpoint)
-      this.isMobile = breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md'
+      //assume smallest breakpoint when no breakpoint is returned
+      this.isMobile = breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md' || breakpoint === null
     }
   }
 }
