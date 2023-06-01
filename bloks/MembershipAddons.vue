@@ -1,7 +1,7 @@
 <template>
-  <div v-editable="blok" class="flex flex-col items-center">
+  <div v-editable="blok" class="flex flex-col items-center mx-2 mt-2">
   <div class="grid grid-cols-3 lg:grid-cols-[4em_repeat(3,_1fr)] rounded-lg border border-gray-900 max-w-prose" >
-    <div class="lg:row-span-full lg:col-span-1 col-span-full inline-flex justify-center items-center lg:orientation-sideways lg:vertical-writing-rl bg-gray-900 text-yellow text-2xl uppercase">Add-Ons</div>
+    <div class="lg:row-span-full lg:col-span-1 rounded-t-lg lg:rounded-r-none lg:rounded-l-lg col-span-full inline-flex justify-center items-center lg:orientation-sideways lg:vertical-writing-rl bg-gray-900 text-yellow text-2xl uppercase">Add-Ons</div>
     <div class="border-r border-gray-900 text-sm lg:text-base">
       <div class="p-2 lg:h-8 h-12">zusätzliche Credits</div>
       <div class="p-2 lg:h-8 h-12">Lagerplatz Box</div>
