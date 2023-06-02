@@ -1,7 +1,7 @@
 <template>
     <div v-editable="blok" class="mt-4">
-      <div class="flex justify-center p-4 overflow-x-hidden lg:grid lg:grid-flow-col lg:auto-cols-max lg:w-full lg:p-2 lg:h-screen-6/7">
-        <div v-if="!isMobile" class="grid grid-rows-plan w-56 xl:w-72">
+      <div class="flex justify-center p-4 overflow-x-hidden lg:grid lg:grid-flow-col lg:auto-cols-max lg:w-full lg:p-2 lg:h-[56rem]">
+        <div v-if="!isMobile" class="grid grid-rows-plan w-60 xl:w-72">
           <!---First DIV acts as placeholder for missing header row-->
           <div class="">&nbsp;</div>
           <div v-for="item in featureStrings" :key="item._uid"
@@ -14,7 +14,7 @@
           <div class="inline-flex items-center justify-center gap-2 text-gray-900 bg-transparent rounded-b-lg">
           </div>
         </div>
-        <slider-container :class="'lg:overflow-visible w-96 lg:w-full lg:contents relative'">
+        <slider-container :class="'lg:overflow-auto w-96 lg:w-full lg:contents relative'">
           <div v-if="isMobile" class="absolute left-0 w-12 h-full gradient-r"></div>
           <div v-if="isMobile" class="absolute right-0 w-12 h-full gradient-l"></div>
           <slider-slide v-for="(blok, index) in blok.columns" :key="blok.uid" >
