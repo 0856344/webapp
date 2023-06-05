@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center w-full"
     v-if="(!blok.conditional || blok.conditional && blok.condition === 'authenticated' && !!this.$store.state.auth || blok.conditional && blok.condition == 'notAuthenticated' && !(!!this.$store.state.auth))">
-    <div class="max-w-prose lg:w-2/3 w-full mx-2 flex-col px-2 pb-2"
+    <div class="max-w-prose lg:w-2/3 w-full m-2 flex-col px-2 pb-2"
       :class="[{ 'flex gap-2 lg:gap-8 bg-white rounded-xl': hasProse }, { 'lg:flex-row': !hasTextAbove }]">
       <div v-if="hasProse" class="basis-1/2" :class="[{ 'lg:order-last': hasTextRight }]">
         <h2 v-if="hasHeader">{{ blok.prose_header }}</h2>
