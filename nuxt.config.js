@@ -172,11 +172,15 @@ module.exports = {
    */
   build: {
     postcss: {
-      postcssOptions: {
-        plugins: {
-          cssnano: {
-            calc: false
-          }
+      plugins: {
+        // Removed calc because its conflict with postcss8 + swiperjs
+        cssnano: {
+          preset: [
+            'default',
+            {
+              calc: false
+            }
+          ]
         }
       }
     },

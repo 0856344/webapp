@@ -109,7 +109,7 @@ import MachineCard from '@/bloks/machines/MachineCard.vue'
 import ButtonLink from '@/bloks/basic/ButtonLink.vue'
 import FabmanMachine from '@/bloks/machines/FabmanMachine.vue'
 import MembershipPlanSG from '@/bloks/MembershipPlanSG.vue'
-import MembershipGridSG from '@/bloks/MembershipGridSG.vue'
+import MembershipTable from '@/bloks/MembershipTable.vue'
 import MembershipAddons from '@/bloks/MembershipAddons.vue'
 import Spacer from '@/bloks/basic/Spacer.vue'
 
@@ -224,7 +224,7 @@ Vue.component('button-link', ButtonLink)
 Vue.component('fabman-machine', FabmanMachine)
 
 Vue.component('membership-plan-sg', MembershipPlanSG)
-Vue.component('membership-grid-sg', MembershipGridSG)
+Vue.component('membership-table', MembershipTable)
 Vue.component('accordion', Accordion)
 Vue.component('big-loading-spinner', BigLoadingSpinner)
 Vue.component('loading-spinner-inline', LoadingSpinnerInline)

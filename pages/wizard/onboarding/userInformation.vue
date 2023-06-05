@@ -1,64 +1,47 @@
 <template>
   <div class="section">
-      <h3 style="margin-top: 40px;">Willkommen in der GRAND GARAGE!</h3>
-      <p>Wir freuen uns darauf, dass du Mitglied in unserer Innovationswerkstatt wirst.</p>
-      <p>{{ $t('beforeYouCanStart') }}</p>
+    <h3 style="margin-top: 40px;">Willkommen in der GRAND GARAGE!</h3>
+    <p>Wir freuen uns darauf, dass du Mitglied in unserer Innovationswerkstatt wirst.</p>
+    <p>{{ $t('beforeYouCanStart') }}</p>
     <form class="form">
       <div class="form-item">
         <span class="label">{{ $t('firstName') }}<span class="red">*</span></span>
-        <input class="input-text"  ref="firstInput" type="text" v-model="onboardingData.userInformation.firstName"/>
+        <input class="input-text" ref="firstInput" type="text" v-model="onboardingData.userInformation.firstName" />
       </div>
       <div class="form-item">
         <span class="label">{{ $t('lastName') }}<span class="red">*</span></span>
-        <input class="input-text" type="text" v-model="onboardingData.userInformation.lastName"/>
+        <input class="input-text" type="text" v-model="onboardingData.userInformation.lastName" />
       </div>
       <div class="form-item">
         <span class="label">{{ $t('gender') }}<span class="red">*</span></span>
         <select class="input-select" v-model="onboardingData.userInformation.gender">
-          <option :key="gender.id" :value="gender.internalName" v-for="gender in genders">{{gender.displayName}}</option>
+          <option :key="gender.id" :value="gender.internalName" v-for="gender in genders">{{ gender.displayName }}
+          </option>
         </select>
       </div>
       <div class="form-item">
         <span class="label">{{ $t('email') }}<span class="red">*</span></span>
-        <input class="input-text" type="text" v-model="onboardingData.userInformation.email" @input="checkMail"/>
+        <input class="input-text" type="text" v-model="onboardingData.userInformation.email" @input="checkMail" />
       </div>
 
       <div class="form-item">
         <span class="label">{{ $t('password') }}</span>
         <div class="password-wrapper">
-          <input
-              v-model="password"
-              :class="{ red: invalidFields.includes('password') }"
-              type="password"
-              placeholder=""
-              @input="checkPassword"
-          >
-          <div
-              v-if="!passwordValid"
-              class="form-item password-status"
-          />
+          <input v-model="password" :class="{ red: invalidFields.includes('password') }" type="password" placeholder=""
+            @input="checkPassword">
+          <div v-if="!passwordValid" class="form-item password-status" />
         </div>
       </div>
       <div class="form-item">
         <span class="label">{{ $t('reenterPassword') }}</span>
         <div class="password-wrapper">
-        <input
-            v-model="passwordRepeat"
-            type="password"
-            placeholder=""
-        >
+          <input v-model="passwordRepeat" type="password" placeholder="">
 
-        <div class="password-error">
-          <span
-              v-if="!passwordRepeatIsEqual"
-              class="bad"
-          >{{ $t('passwordsDoNotMatch') }} </span>
-          <br>
-          <span
-              v-if="passwordTooShort"
-              class="bad"
-          >{{$t('passwordTooShort') }} </span>
-        </div>
+          <div class="password-error">
+            <span v-if="!passwordRepeatIsEqual" class="bad">{{ $t('passwordsDoNotMatch') }} </span>
+            <br>
+            <span v-if="passwordTooShort" class="bad">{{ $t('passwordTooShort') }} </span>
+          </div>
         </div>
       </div>
     </form>
@@ -96,8 +79,14 @@ export default {
       emailInvalid: false
     }
   },
-  mounted () {
-    //window.scrollTo(0, 0)
+  async mounted () {
+    if (this.$route.query.plan) {
+      const availablePackages = await this.$store.dispatch('getPackages')
+      const memberPackage = availablePackages.find(p => p.name === decodeURIComponent(this.$route.query.plan).toUpperCase())
+      if (memberPackage !== undefined) { 
+        this.onboardingData.payment.membership = memberPackage 
+      }
+    }
     this.$refs.firstInput.focus()
   },
   computed: {
@@ -148,9 +137,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .form {
   margin-left: -6em;
+
   @include media-breakpoint-down(md) {
     margin-left: 0em;
   }
@@ -165,37 +154,47 @@ export default {
     outline: none;
     flex-grow: 1;
     padding: 5px 10px;
+
     @include media-breakpoint-down(xs) {
       margin: 1vh 0;
     }
+
     background: #fff;
     border: 1px solid #fff;
     width: 100%;
+
     &:focus {
       border-color: $color-orange;
     }
   }
+
   .label {
     font-weight: bold;
     text-transform: uppercase;
     font-size: .7em;
   }
+
   input {
     outline: none;
     flex-grow: 1;
     padding: 5px 10px;
+
     @include media-breakpoint-down(xs) {
       margin: 1vh 0;
     }
+
     background: #fff;
     border: 1px solid #fff;
     width: 100%;
+
     &:focus {
       border-color: $color-orange;
     }
   }
+
   .password-wrapper {
     position: relative;
+
     .password-status {
       position: absolute;
       right: 10px;
@@ -208,14 +207,17 @@ export default {
       border-radius: 50%
     }
   }
+
   .password-error {
     grid-column: 2;
   }
+
   &.button-row {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 80px; // fix for some strange ios safari error
   }
+
   button {
     background-color: $color-orange;
     color: #FFF;
@@ -223,30 +225,36 @@ export default {
     padding: 7px 13px 9px;
     line-height: 1;
     outline: none;
+
     &:focus {
       background-color: lighten($color-orange, 10);
     }
+
     &:disabled {
       background-color: #AAA;
       border-color: #999;
       cursor: not-allowed;
     }
   }
+
   .bad {
     color: $color-orange;
     font-size: .7em;
     font-weight: bold;
   }
 }
+
 .checkbox-item {
   padding: 8px 0;
   display: flex;
+
   .checkbox-wrapper {
     padding-right: .5em;
     outline: none;
     user-select: none;
     max-width: 180px;
   }
+
   label {
     user-select: none;
     flex: 1;
@@ -256,27 +264,35 @@ export default {
     font-weight: 700;
   }
 }
+
 .disclaimer {
   color: #333;
+
   a {
     color: $color-orange;
     padding: 0 3px;
   }
 }
+
 .error-message {
   color: red;
+
   .policy {
     font-size: 0.8em;
     color: #333;
-    > ul {
+
+    >ul {
       list-style-type: circle;
       padding: 0 0 0 1em;
-      > li {
+
+      >li {
         margin: .4em 0 0 0;
-        > ul {
+
+        >ul {
           padding: 0 0 0 1em;
           list-style-type: circle;
-          > li {
+
+          >li {
             margin: .4em 0 0 0;
           }
         }
@@ -288,5 +304,4 @@ export default {
 .red {
   border-color: red !important;
 }
-
 </style>

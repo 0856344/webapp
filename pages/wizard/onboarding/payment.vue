@@ -37,25 +37,6 @@
           Workshops für dich!
         </h5>
       </div>
-      <!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
-      <!--      <div class="form-item">-->
-      <!--        <span class="label" >Ermäßigung vorhanden?</span>-->
-      <!--        <div class="checkbox-wrapper">-->
-      <!--          <input class="checkbox" type="checkbox"-->
-      <!--                 :checked="discounted"-->
-      <!--                 v-model="discounted" >-->
-      <!--          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      <div class="form-item">-->
-      <!--        <span class="label" >Jährliche Abbuchung?</span>-->
-      <!--        <div class="checkbox-wrapper">-->
-      <!--          <input class="checkbox" type="checkbox"-->
-      <!--                 :checked="yearly"-->
-      <!--                 v-model="yearly" >-->
-      <!--          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>-->
-      <!--        </div>-->
-      <!--      </div>-->
       <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
       <div v-if="!this.onboardingData.contactInformation.company">
         <div class="form-item" v-if="this.selectedMembership">
@@ -230,9 +211,6 @@ export default {
           console.error('no notes (storage, visible) for package: ', p)
           return false
         }
-        if (!p.notes) {
-          return false
-        }
         if (!p.notes.is_storage_box && p.notes.shop_visible) {
           this.availableMemberships.push(p)
         }
@@ -241,7 +219,12 @@ export default {
       )
       this.sortByKey(this.availableMemberships, 'recurringFee')
       this.loading = false
-      this.selectedMembership = this.availableMemberships[0]
+      //if membership is preselected, select it, else select first available membership package
+      if (this.onboardingData.payment.membership) {
+        this.selectedMembership = this.availableMemberships.find((m) => m.id === this.onboardingData.payment.membership.id)
+      } else {
+        this.selectedMembership = this.availableMemberships[0]
+      }
     })
   },
   beforeRouteEnter (to, from, next) {

@@ -1,7 +1,15 @@
 <template>
     <div class="">
-    <div class="flex gap-4 lg:gap-2 lg:overflow-x-visible overflow-x-auto snap-x snap-mandatory scroll-smooth">
+    <div id="slidecontainer" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth lg:gap-0 lg:contents">
         <slot></slot>
     </div>
 </div>
 </template>
+
+<style>
+#slidecontainer::-webkit-scrollbar { width: 0 !important }
+
+#slidecontainer { overflow: -moz-scrollbars-none; }
+
+#slidecontainer { -ms-overflow-style: none; }
+</style>
