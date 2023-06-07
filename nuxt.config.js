@@ -115,7 +115,7 @@ module.exports = {
   router: {
     middleware: 'router'
   },
-  target: 'static',
+  //target: 'static',
   generate: {
     //target: 'static',
     routes: function (callback) {
