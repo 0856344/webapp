@@ -984,6 +984,7 @@ const createStore = () => {
           cv: state.cacheVersion
         })
           .then((res) => {
+            console.log('getDataSource', res)
             return res.data
           }).catch((res) => {
             this.$sentry.captureException(res)
