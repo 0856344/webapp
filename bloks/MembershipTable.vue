@@ -1,6 +1,6 @@
 <template>
   <div v-editable="blok" class="mt-6">
-    <div id="plans" class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 lg:h-[58rem] py-8 px-4">
+    <div id="plans" class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 lg:h-[58rem] py-4 mb-2 lg:py-8 px-4">
       <div v-if="!isMobile" class="grid grid-rows-plan">
         <!---First DIV acts as placeholder for missing header row-->
         <div class="">&nbsp;</div>
