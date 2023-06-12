@@ -104,7 +104,6 @@ module.exports = {
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
     '~/plugins/getActiveBreakpoint.client.js',
-    '~/plugins/transformRichText.js',
     '~/plugins/preview.client.js',
     //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
@@ -115,7 +114,7 @@ module.exports = {
   router: {
     middleware: 'router'
   },
-  target: 'static',
+  //target: 'static',
   generate: {
     //target: 'static',
     routes: function (callback) {
@@ -171,12 +170,16 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    optimizeCSS: true,
     postcss: {
-      postcssOptions: {
-        plugins: {
-          cssnano: {
-            calc: false
-          }
+      plugins: {
+        cssnano: {
+          preset: [
+            'default',
+            {
+              calc: false
+            }
+          ]
         }
       }
     },
