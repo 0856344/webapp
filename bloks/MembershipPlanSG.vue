@@ -5,17 +5,17 @@
     v-on:mouseenter="toggleHighlight"
     v-on:mouseleave="toggleHighlight"
     @click="selectPlan">
-    <div class="inline-flex items-center justify-center gap-4 bg-gray-900 rounded-t-lg text-yellow border-x-2 border-t-2"
-      :class="[{ 'border-x-gray-900 border-t-gray-900 lg:border-x-white lg:border-t-white': selected }, { 'border-x-gray-900 border-t-gray-900': !selected }]">
+    <div class="inline-flex items-center justify-center gap-4 bg-gray-900 rounded-t-lg border-x-2 border-t-2"
+      :class="[{ 'border-x-gray-900 border-t-gray-900 text-yellow': selected }, { 'border-x-gray-900 border-t-gray-900 text-white': !selected }]">
       <h2 class="uppercase transition-transform duration-300" :class="{'group-hover:scale-110': !selected}">
         {{ blok.name }}
       </h2>
-      <div class="flex items-center justify-center w-8 h-8 text-gray-900 rounded-full bg-yellow transition-transform duration-300 " :class="{'group-hover:-rotate-12':!selected}">{{ `${blok.age_limit}+`
+      <div class="flex items-center justify-center w-8 h-8 text-gray-900 rounded-full transition-transform duration-300 text-black" :class="[{'group-hover:-rotate-12 bg-white':!selected}, {'bg-yellow':selected}]">{{ `${blok.age_limit}+`
       }}</div>
     </div>
     <div v-for="item in features" :key="item._uid"
-      class="inline-flex items-center justify-center px-2 py-1 text-sm text-center border-b-2 border-x-2 hyphens-auto transition duration-300"
-      :class="[{ 'bg-yellow border-x-white border-b-white': selected }, { 'bg-gray-100 group-hover:bg-white border-x-gray-900 border-b-gray-900': !selected }]">
+      class="inline-flex items-center justify-center px-2 py-1 text-sm text-center border-b-2 border-x-2 hyphens-auto transition duration-300 border-x-gray-900 border-b-gray-900"
+      :class="[{ 'bg-white': selected }, { 'bg-gray-100 group-hover:bg-white': !selected }]">
       <div v-if="!isMobile">
         <font-awesome-icon v-if="item != ''" :icon="['fas', 'check']" class="text-3xl" />
         <span v-else class="text-6xl text-gray-300 transition duration-300" :class="{ 'text-white': selected }">×</span>
@@ -25,14 +25,14 @@
       </div>
     </div>
     <div
-      class="inline-flex flex-col items-center justify-center px-2 py-1 text-sm text-center border-b-2 border-x-2 transition duration-300"
-      :class="[{ 'bg-yellow border-x-white border-b-white': selected }, { 'bg-gray-100 group-hover:bg-white border-x-gray-900 border-b-gray-900': !selected }]">
+    class="inline-flex flex-col items-center justify-center px-2 py-1 text-sm text-center border-b-2 border-x-2 hyphens-auto transition duration-300 border-x-gray-900 border-b-gray-900"
+      :class="[{ 'bg-white': selected }, { 'bg-gray-100 group-hover:bg-white': !selected }]">
       <span class="text-xl font-bold">{{ blok.credits }} Credits</span>
       <span v-if="isMobile">{{ $t('creditsDescription') }}</span>
     </div>
     <div
-      class="inline-flex items-center justify-center gap-2 px-2 text-gray-900 border-b-2 rounded-b-lg border-x-2 transition duration-300"
-      :class="[{ 'bg-blue text-white border-white': selected }, { 'bg-yellow text-gray-900 border-gray-900': !selected }]">
+      class="inline-flex items-center justify-center gap-2 px-2 text-gray-900 border-b-2 rounded-b-lg border-x-2 transition duration-300  border-gray-900"
+      :class="[{ 'bg-yellow text-gray-900': selected }, { 'bg-blue text-white': !selected }]">
       <span class="text-2-xl">EUR</span>
       <h2 class="text-5xl leading-3 uppercase transition-transform duration-300" :class="{'group-hover:scale-110': !selected}">
         {{ `${blok.price},-` }}
