@@ -46,8 +46,8 @@
             <div v-if="!slim || i === 0" class="info-row">
               <div>
                 <div v-for="date in event.dates" :key="date.id" class="info-block">
-                    <div class="col info"><icon name="calendar" />{{ date.data }}</div>
-                    <div class="col info"><icon name="clock" />{{date.startTime }} bis {{ date.endTime }} Uhr</div>
+                    <div class="col info"><icon name="calendar" class="pr-2"/>{{ date.data }}</div>
+                    <div class="col info"><icon name="clock"  class="pr-2"/>{{date.startTime }} bis {{ date.endTime }} Uhr</div>
                 </div>
               </div>
             </div>
