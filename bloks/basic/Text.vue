@@ -1,12 +1,5 @@
 <template>
-  <div
-    v-editable="blok"
-    class="text-blok"
-  >
-    <div class="text">
-      <markdown :value="blok.text" />
-    </div>
-  </div>
+  <markdown :value="blok.text" class="px-4 py-2 lg:px-8 lg:leading-normal leading-relaxed lg:text-lg text-base"/>
 </template>
 
 <script>

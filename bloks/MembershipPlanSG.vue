@@ -1,16 +1,15 @@
 <template>
   <div v-editable="blok" :id="this.$vnode.key"
-    class="grid grid-rows-plan-mobile lg:grid-rows-plan w-72 transition lg:w-full duration-300 rounded-lg group self-center lg:self-auto"
+    class="grid grid-rows-plan-mobile lg:grid-rows-plan w-72 transition lg:w-full duration-300 rounded-lg group lg:self-auto "
     :class="[{ 'lg:shadow-md lg:shadow-blue-700 lg:scale-105 hover:cursor-pointer': selected }, { 'hover:cursor-cell': !selected }]" 
     v-on:mouseenter="toggleHighlight"
     v-on:mouseleave="toggleHighlight"
     @click="selectPlan">
-    <div class="inline-flex items-center justify-center gap-4 bg-gray-900 rounded-t-lg border-x-2 border-t-2"
-      :class="[{ 'border-x-gray-900 border-t-gray-900 text-yellow': selected }, { 'border-x-gray-900 border-t-gray-900 text-white': !selected }]">
+    <div class="inline-flex items-center justify-center gap-4 bg-gray-900 rounded-t-lg border-x-2 border-t-2 border-x-gray-900 border-t-gray-900 text-white">
       <h2 class="uppercase transition-transform duration-300" :class="{'group-hover:scale-110': !selected}">
         {{ blok.name }}
       </h2>
-      <div class="flex items-center justify-center w-8 h-8 text-gray-900 rounded-full transition-transform duration-300 text-black" :class="[{'group-hover:-rotate-12 bg-white':!selected}, {'bg-yellow':selected}]">{{ `${blok.age_limit}+`
+      <div class="flex items-center justify-center w-8 h-8 text-gray-900 rounded-full transition-transform duration-300 text- bg-white" :class="{'group-hover:-rotate-12 ':!selected}">{{ `${blok.age_limit}+`
       }}</div>
     </div>
     <div v-for="item in features" :key="item._uid"
@@ -32,7 +31,7 @@
     </div>
     <div
       class="inline-flex items-center justify-center gap-2 px-2 text-gray-900 border-b-2 rounded-b-lg border-x-2 transition duration-300  border-gray-900"
-      :class="[{ 'bg-yellow text-gray-900': selected }, { 'bg-blue text-white': !selected }]">
+      :class="[{ 'bg-orange text-white': selected }, { 'bg-yellow': !selected }]">
       <span class="text-2-xl">EUR</span>
       <h2 class="text-5xl leading-3 uppercase transition-transform duration-300" :class="{'group-hover:scale-110': !selected}">
         {{ `${blok.price},-` }}
