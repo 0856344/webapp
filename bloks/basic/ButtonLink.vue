@@ -1,8 +1,8 @@
 <template>
-  <div class="flex justify-center w-full"
+  <div class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 py-2 lg:py-4 bg-white"
     v-if="(!blok.conditional || blok.conditional && blok.condition === 'authenticated' && !!this.$store.state.auth || blok.conditional && blok.condition == 'notAuthenticated' && !(!!this.$store.state.auth))">
-    <div class="max-w-prose lg:w-2/3 w-full m-2 flex-col px-2 pb-2"
-      :class="[{ 'flex gap-2 lg:gap-8 bg-white rounded-xl': hasProse }, { 'lg:flex-row': !hasTextAbove }]">
+    <div class="w-full flex-col lg:col-start-2 lg:col-span-4"
+      :class="[{ 'flex gap-2 lg:gap-8 rounded-xl px-4 lg:px-0 max-w-prose lg:max-w-none': hasProse }, { 'lg:flex-row': !hasTextAbove }]">
       <div v-if="hasProse" class="basis-1/2" :class="[{ 'lg:order-last': hasTextRight }]">
         <h2 v-if="hasHeader">{{ blok.prose_header }}</h2>
         <markdown :value="blok.prose_text" />
@@ -26,10 +26,10 @@ export default {
   mounted () {
     this.$root.$on('plan-selected', data => {
       this.changeButtonAppearance({ 
-        text: `<span class="font-bold border-2 border-yellow text-yellow rounded-md px-1">${data.plan.toUpperCase()}</span><br>Mitglied werden`, 
-        color: 'blue' 
+        text: `<span class="font-bold border-2 border-gray-700 rounded-md px-1">${data.plan.toUpperCase()}</span><br>Gleich Paket aktivieren`, 
+        color: 'orange' 
       })
-      this.changebuttonTarget({ path: '/wizard/onboarding/userInformation', query: { plan: this.blok.name } })
+      this.changebuttonTarget({ path: '/wizard/onboarding/userInformation', query: { plan: data.plan } })
     })
   },
   data: function () {
