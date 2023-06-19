@@ -11201,6 +11201,11 @@ vue-search-input@^1.1.4:
   resolved "https://registry.yarnpkg.com/vue-search-input/-/vue-search-input-1.1.6.tgz#037b189238a898958c230f87f1f72fe94bb420fc"
   integrity sha512-7CQFmWJuObBR2EBsSgAJMhA1VSOik/7KJQnh2N61Ygd2gzhwL4SvYgHiDTMyTmvfmEj9NyjKC5hI7KmXMF89KA==
 
+vue-select@^3.20.2:
+  version "3.20.2"
+  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-3.20.2.tgz#eaa15012b032c154d4fb51ac82ebeda2beeae54b"
+  integrity sha512-ZSzIDzyYsWZULGUxVp1h6u3yi9IZQBWX8r6kSudUI/I5J1HQKpBjRntvkrg6pr87xmm16kdChvHCDN+W84vTKw==
+
 vue-server-renderer@^2.6.12:
   version "2.6.14"
   resolved "https://registry.yarnpkg.com/vue-server-renderer/-/vue-server-renderer-2.6.14.tgz#c8bffff152df6b47b858818ef8d524d2fc351654"

@@ -1,80 +1,54 @@
 <template>
-  <div
-      v-if="machine"
-      v-editable="machine"
-      class="machine-page"
-  >
-    <machine-header :story="story"/>
+  <div v-if="machine" v-editable="machine" class="machine-page">
+    <machine-header :story="story" />
     <div class="machine-teaser">
       <div class="body">
         <div class="image">
-          <img
-              :src="$resizeImage(machine.image, '700x0')"
-              alt=""
-          >
+          <img :src="$resizeImage(machine.image, '700x0')" alt="" />
         </div>
         <div class="description text" v-if="!this.machines">
-          <markdown :value="machine.details"/>
+          <markdown :value="machine.details" />
         </div>
         <div class="description text" v-if="this.machines">
-          <markdown :value="machine.details + machineCosts"/>
+          <markdown :value="machine.details + machineCosts" />
         </div>
       </div>
     </div>
     <div class="body">
       <div class="inner-body">
-        <div
-            v-if="hasUser"
-            class="machine-list"
-        >
+        <div v-if="hasUser" class="machine-list">
           <div
-              :key="m.id"
-              v-for="m in machine.machine_status_items"
-              class="machine-item"
+            :key="m.id"
+            v-for="m in machine.machine_status_items"
+            class="machine-item"
           >
             <machine-status
-                v-if="!singleMachine"
-                :id="m.fabmanId"
-                class="status"
-                :name="m.name"
+              v-if="!singleMachine"
+              :id="m.fabmanId"
+              class="status"
+              :name="m.name"
             />
-            <machine-calendar :resource="m.fabmanId"/>
+            <machine-calendar :resource="m.fabmanId" />
           </div>
         </div>
-        <div
-            v-else
-            class="machine-list"
-        >
+        <div v-else class="machine-list">
           <div class="machine-list-warning">
-            {{ $t( "machineViewRestriction" ) }}
+            {{ $t("machineViewRestriction") }}
           </div>
         </div>
       </div>
     </div>
     <div class="body">
-      <image-slideshow :blok="images"/>
+      <image-slideshow :blok="images" />
     </div>
-    <div
-        v-if="machine.links && machine.links.length > 0"
-        class="body"
-    >
-      <h3 class="blue">
-        Links
-      </h3>
+    <div v-if="machine.links && machine.links.length > 0" class="body">
+      <h3 class="blue">Links</h3>
       <ul class="link-list">
-        <li
-            v-for="(i, index) in machine.links"
-            :key="index"
-            class="link-item"
-        >
+        <li v-for="(i, index) in machine.links" :key="index" class="link-item">
           <div class="title">
             {{ i.title }}
           </div>
-          <a
-              class="url"
-              :href="i.url"
-              target="_blank"
-          >{{ i.url }}</a>
+          <a class="url" :href="i.url" target="_blank">{{ i.url }}</a>
         </li>
       </ul>
     </div>
@@ -82,77 +56,101 @@
 </template>
 
 <script>
-import MachineStatus from '@/bloks/machines/MachineStatus.vue'
-import MachineCalendar from '@/bloks/calendar/MachineCalendar.vue'
-import MachineHeader from '@/bloks/machines/MachineHeader.vue'
-import { getMetaTagsForPage } from '@/services/MetaDataService'
+import MachineStatus from "@/bloks/machines/MachineStatus.vue";
+import MachineCalendar from "@/components/MachineCalendar.vue";
+import MachineHeader from "@/bloks/machines/MachineHeader.vue";
+import { getMetaTagsForPage } from "@/services/MetaDataService";
 
 export default {
   components: {
     MachineHeader,
     MachineStatus,
-    MachineCalendar
+    MachineCalendar,
   },
-  props: ['story'],
-  data () {
+  props: ["story"],
+  data() {
     return {
-      machines: []
-    }
+      machines: [],
+    };
   },
   computed: {
-    machine () {
-      return this.story.content
+    machine() {
+      return this.story.content;
     },
-    machineCosts () {
+    machineCosts() {
       // Maschinen werden momentan via Fabman ID aus Storyblok identifiziert
       // Im 1755 Fabman Account unterscheiden sich die IDs zum Produktivsystem - daher werden die Kosten in der lokalen Entwicklung nicht angezeigt
       // Es sollte stattdessen eine "shortform" wie bei den Mitgliedschaften verwendet werden
 
-        const priceHeader = '\n\n**KOSTEN:** '
-        let priceText = ''
-        for (const machineItem of this.machines) {
-          if (machineItem?.pricePerTimeBusy && machineItem?.pricePerTimeBusySeconds && machineItem?.pricePerTimeBusy !== '0.00') {
-            priceText = priceText + '\n\n'
-            priceText = priceText + machineItem.name + ': ' + '**' + (Number(machineItem.pricePerTimeBusy * 10).toFixed(0)) + ' Credits pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)**'
-            priceText = priceText + '<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' + machineItem.pricePerTimeBusy + ' € pro ' + machineItem.pricePerTimeBusySeconds / 60 + ' Minute(n)*</sub> '
-            priceText = priceText + '\n\n' + '---' + '\n\n'
-          }
+      const priceHeader = "\n\n**KOSTEN:** ";
+      let priceText = "";
+      for (const machineItem of this.machines) {
+        if (
+          machineItem?.pricePerTimeBusy &&
+          machineItem?.pricePerTimeBusySeconds &&
+          machineItem?.pricePerTimeBusy !== "0.00"
+        ) {
+          priceText = priceText + "\n\n";
+          priceText =
+            priceText +
+            machineItem.name +
+            ": " +
+            "**" +
+            Number(machineItem.pricePerTimeBusy * 10).toFixed(0) +
+            " Credits pro " +
+            machineItem.pricePerTimeBusySeconds / 60 +
+            " Minute(n)**";
+          priceText =
+            priceText +
+            "<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten " +
+            machineItem.pricePerTimeBusy +
+            " € pro " +
+            machineItem.pricePerTimeBusySeconds / 60 +
+            " Minute(n)*</sub> ";
+          priceText = priceText + "\n\n" + "---" + "\n\n";
         }
-        if (priceText !== '') {
-          return priceHeader + '\n\n' + '---' + '\n\n' + priceText
-        } else {
-          return ''
-        }
-    },
-    tags () {
-      return this.story.tag_list
-    },
-    hasUser () {
-      return !!this.$store.state.user
-    },
-    singleMachine () {
-      return this.machine && this.machine.machine_status_items && this.machine.machine_status_items.length === 1
-    },
-    images () {
-      return {
-        items: this.machine.images
       }
-    }
+      if (priceText !== "") {
+        return priceHeader + "\n\n" + "---" + "\n\n" + priceText;
+      } else {
+        return "";
+      }
+    },
+    tags() {
+      return this.story.tag_list;
+    },
+    hasUser() {
+      return !!this.$store.state.user;
+    },
+    singleMachine() {
+      return (
+        this.machine &&
+        this.machine.machine_status_items &&
+        this.machine.machine_status_items.length === 1
+      );
+    },
+    images() {
+      return {
+        items: this.machine.images,
+      };
+    },
   },
-  async mounted () {
+  async mounted() {
     for (const machineItem of this.machine.machine_status_items) {
-      const machineResource = await this.$store.dispatch('getResource', machineItem.fabmanId)
-      this.machines.push(machineResource)
+      const machineResource = await this.$store.dispatch(
+        "getResource",
+        machineItem.fabmanId
+      );
+      this.machines.push(machineResource);
     }
   },
-  head () {
-    return getMetaTagsForPage(this.machine)
-  }
-}
+  head() {
+    return getMetaTagsForPage(this.machine);
+  },
+};
 </script>
 
 <style lang="scss">
-
 .machine-page {
   h3 {
     &.blue {
@@ -218,14 +216,14 @@ export default {
       @include media-breakpoint-up(sm) {
         font-size: 2.8em;
       }
-      letter-spacing: .03em;
+      letter-spacing: 0.03em;
       white-space: pre-wrap;
       line-height: 1.24;
       margin-bottom: 4vh;
     }
 
     .description {
-      font-size: .9rem;
+      font-size: 0.9rem;
       line-height: 2.2;
     }
 

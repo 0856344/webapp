@@ -61,6 +61,7 @@
     "vue-pure-lightbox": "^2.1.9",
     "vue-recaptcha-v3": "^1.9.0",
     "vue-search-input": "^1.1.4",
+    "vue-select": "^3.20.2",
     "vue2-collapse": "^1.0.15",
     "vue2-google-maps": "^0.10.7",
     "vuex-router-sync": "^5.0.0"

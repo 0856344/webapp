@@ -425,7 +425,7 @@ table {
       justify-content: center;
 
       th {
-        min-width: 100px;
+        min-width: $table-cell-min-width;
         justify-content: center;
         padding-left: 1rem;
         padding-right: 1rem;
@@ -451,7 +451,7 @@ table {
       border-color: #e2e8f0;
 
       td {
-        min-width: 100px;
+        min-width: $table-cell-min-width;
         justify-content: center;
         padding-left: 1rem;
         padding-right: 1rem;
