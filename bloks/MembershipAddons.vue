@@ -1,6 +1,6 @@
 <template>
   <div v-editable="blok"
-    class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 py-2 mb-2 lg:py-4 px-4">
+    class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 py-2 mb-4 lg:mb-8 px-4">
     <div class="grid lg:grid-cols-[4em_repeat(3,_1fr)] lg:col-start-2 lg:col-span-4 grid-cols-3 grid-rows-4 text-sm bg-white border-2 border-gray-900 rounded-lg lg:text-base">
       <div class="inline-flex items-center justify-center text-2xl text-white uppercase bg-gray-900 lg:row-span-full lg:col-span-1 col-span-full lg:orientation-sideways lg:vertical-writing-rl">Add-Ons</div>
       <div class=" p-1">zusätzliche Credits</div>

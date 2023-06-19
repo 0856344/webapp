@@ -9,7 +9,7 @@
       </div>
       <div class="flex items-center justify-center basis-1/2">
         <button
-          class="mx-2 text-white rounded-sm justify-self-center ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
+          class="m-2 text-white rounded-sm justify-self-center ring-2 cursor:pointer max-w-max hover:bg-gray-900 hover:ring-gray-300"
           v-bind:class="buildClassString" v-on:click="route(buttonTarget)" v-html="buttonText">
         </button>
       </div>
