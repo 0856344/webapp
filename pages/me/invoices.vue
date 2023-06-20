@@ -1,7 +1,7 @@
 <template>
     <div>
         <section>
-            <div class="flex-start items-center mb-1">
+            <div class="flex items-center mb-1">
                 <h2 class="m-0 mr-1 text-2xl">Offene Buchungen</h2>
                 <loading-spinner-inline v-if="loadingActivities"/>
             </div>

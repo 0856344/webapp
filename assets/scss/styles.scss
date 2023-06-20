@@ -422,7 +422,7 @@ table {
     tr {
       padding: 0.75rem 1.25rem;
       display: flex;
-      justify-content: center;
+      justify-content: start;
 
       th {
         min-width: 100px;
@@ -445,7 +445,7 @@ table {
     tr {
       display: flex;
       padding: 0.75rem 1.25rem;
-      justify-content: center;
+      justify-content: start;
       border-width: thin;
       border-style: solid;
       border-color: #e2e8f0;
