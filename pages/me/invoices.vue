@@ -1,12 +1,12 @@
 <template>
     <div>
         <section>
-            <div class="flex-start items-center mb-1">
+            <div class="flex items-center mb-1">
                 <h2 class="m-0 mr-1 text-2xl">Offene Buchungen</h2>
                 <loading-spinner-inline v-if="loadingActivities"/>
             </div>
             <div v-if="activities">
-                <table v-if="activities.length > 0" class="member-portal-table table-auto">
+                <table v-if="activities.length > 0" class="member-portal-table table-fixed">
                     <thead>
                     <tr>
                         <th class="activity-date">Datum</th>
