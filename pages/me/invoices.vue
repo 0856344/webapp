@@ -6,7 +6,7 @@
                 <loading-spinner-inline v-if="loadingActivities"/>
             </div>
             <div v-if="activities">
-                <table v-if="activities.length > 0" class="member-portal-table table-fixed">
+                <table v-if="activities.length > 0" class="member-portal-table table-auto">
                     <thead>
                     <tr>
                         <th class="activity-date">Datum</th>
