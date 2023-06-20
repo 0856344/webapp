@@ -81,7 +81,7 @@ module.exports = {
         'member-grid': 'minmax(12em, 1fr) repeat(4, 1fr)'
       },
       gridTemplateRows: {
-        plan: '3em repeat(auto-fill, minmax(5em, 1fr))',
+        plan: '3em repeat(auto-fill, minmax(5.2em, 1fr))',
         'plan-mobile': '3em repeat(auto-fill, minmax(4em, 1fr))'
       },
       height: {
