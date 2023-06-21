@@ -490,7 +490,8 @@ export default {
       } else {
         // company member
         packageData = {
-          packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id
+          packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id,
+          additionalPackages: this.onboardingData.contactInformation.company.metadata.additional_packages
         }
       }
       // add package information to memberdata
