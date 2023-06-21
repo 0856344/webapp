@@ -128,7 +128,7 @@ export default {
           return false
         }
         // only SmartGarage members have credit feature
-        if (notes?.shortform === 'SG' || notes?.shortform === 'SG+DT' || notes?.shortform === 'SG+ALL' || notes?.shortform === 'SG+MW') {
+        if (notes?.shortform === 'SG' || notes?.shortform === 'SG+DT' || notes?.shortform === 'SG+ALL' || notes?.shortform === 'SG+MW' || notes?.shortform === 'SG+ALL_EDU') {
           this.hasSmartGarage = true
         }
         return true
