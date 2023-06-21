@@ -53,7 +53,7 @@
 
       <p>Monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
       <p>Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die Freikontingente können nicht ins nächste Monat mitgenommen werden. Die zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.  Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.</p>
-      <p style="font-size: smaller">Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten, oder wechsle deine Mitgliedschaft, indem du ein Mail an den Frontdesk schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
+      <p style="font-size: smaller">Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten, oder wechsle deine Mitgliedschaft, indem du eine Mail an den Frontdesk schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
       <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
         <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
         <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort!</u></p>
@@ -65,7 +65,7 @@
       <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
         <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
-        <p style="font-size: smaller"><u>Hinweis: Derzeit können Credits nur für Arbeitszeit an den Maschinen genutzt werden.</u></p>
+        <p style="font-size: smaller"><u>Hinweis: Credits können für die Arbeitszeit an den Maschinen genutzt werden.</u></p>
       </div>
     </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
