@@ -800,7 +800,7 @@ const createStore = () => {
           return res.data.story
         })
         if (!workshop) {
-          console.log('workshop not found: ', workshop)
+          console.error('workshop not found: ', workshop)
         }
         const dates = await this.$storyapi.get('cdn/stories', {
           filter_query: {

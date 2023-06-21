@@ -25,9 +25,6 @@
 export default {
   props: ['blok'],
   mounted () {
-    this.$nextTick(() => {
-      console.log('addon', this.blok.subtext)
-    })
   },
   computed: {
   },
