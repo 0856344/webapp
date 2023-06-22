@@ -30,46 +30,46 @@
 </template>
 
 <script>
-import { unzip } from "lodash";
-import SliderContainer from "@/bloks/SliderContainer.vue";
-import SliderSlide from "@/bloks/SliderSlide.vue";
+import { unzip } from 'lodash'
+import SliderContainer from '@/bloks/SliderContainer.vue'
+import SliderSlide from '@/bloks/SliderSlide.vue'
 
 export default {
-  props: ["blok"],
+  props: ['blok'],
   components: {
     SliderContainer,
     SliderSlide
   },
-  mounted() {
-    this.setIsMobile();
-    window.addEventListener("resize", this.setIsMobile);
+  mounted () {
+    this.setIsMobile()
+    window.addEventListener('resize', this.setIsMobile)
   },
-  unmounted() {
-    window.removeEventListener("resize", this.setIsMobile);
+  unmounted () {
+    window.removeEventListener('resize', this.setIsMobile)
   },
-  data() {
+  data () {
     return {
       featureArray: [],
-      breakpoint: "",
+      breakpoint: '',
       isMobile: false,
       //keys of features that will be marked as "coming soon"
-      comingSoon: ["desk", "reservation"]
-    };
+      comingSoon: ['desk', 'reservation']
+    }
   },
   //get the array of feature description string values from the datasource
   //(blok only contains the feature keys)
-  async fetch() {
+  async fetch () {
     try {
       const response = await this.$store.dispatch(
-        "getDataSource",
-        "member-features"
-      );
+        'getDataSource',
+        'member-features'
+      )
       this.featureArray = response.datasource_entries.map((entry) => [
         entry.name,
         entry.value
-      ]);
+      ])
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   },
   computed: {
@@ -78,30 +78,30 @@ export default {
      * feature names as keys and the feature values as values from 
      * the featureArray.
      */
-    featureStrings() {
-      const obj = {};
-      const unzipped = unzip(this.featureArray);
+    featureStrings () {
+      const obj = {}
+      const unzipped = unzip(this.featureArray)
       unzipped[0]?.forEach((entry, index) => {
-        obj[entry] = unzipped[1][index];
-      });
-      return obj;
+        obj[entry] = unzipped[1][index]
+      })
+      return obj
     },
-    numberColumns() {
-      return this.blok.columns.length;
+    numberColumns () {
+      return this.blok.columns.length
     }
   },
   methods: {
-    setIsMobile() {
-      const breakpoint = this.$getActiveBreakpoint();
+    setIsMobile () {
+      const breakpoint = this.$getActiveBreakpoint()
       //assume smallest breakpoint when no breakpoint is returned
       this.isMobile =
-        breakpoint === "xs" ||
-        breakpoint === "sm" ||
-        breakpoint === "md" ||
-        breakpoint === null;
+        breakpoint === 'xs' ||
+        breakpoint === 'sm' ||
+        breakpoint === 'md' ||
+        breakpoint === null
     }
   }
-};
+}
 </script>
 
 <style scoped>
