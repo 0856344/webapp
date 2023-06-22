@@ -574,6 +574,18 @@ const createStore = () => {
           return result.data
         })
       },
+      async getChargeableMachines ({ state }, id) {
+        const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
+        const cMachines = result.data.filter((machine) => { return (machine.pricePerTimeBusy > 0) })
+        return cMachines
+      },
+      async getMachinePrices ({ state }, id) {
+        const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
+        const cMachines = result.data
+          .filter((machine) => { return (machine.pricePerTimeBusy > 0) })
+          .map((machine) => { return { id: machine.id, name: machine.name, price: machine.pricePerTimeBusy, seconds: machine.pricePerTimeBusySeconds } })
+        return cMachines
+      },
       // @deprecated
       // TODO - delete if deprecated
       async startOnboarding ({ commit }, data) {

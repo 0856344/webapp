@@ -1,34 +1,37 @@
 <template>
-  <section v-editable="blok" class="material-prices flex justify-center bg-white">
+  <div class="flex">
     <table>
-      <tr>
-        <th>{{ $t('name') }}</th>
-        <th>{{ $t('priceIn') }}</th>
-      </tr>
-      <tr v-for="material in queryResult" :key="material.id">
-        <td>{{ material.external_name }}</td>
-        <td>{{ formatPrice(material) }}</td>
-      </tr>
+      <thead>
+        <tr>
+          <th>Machine</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="machine in filteredMachines" :key="machine.id">
+          <td>{{ machine.name }}</td>
+          <td>{{ formatPrice(machine) }}</td>
+        </tr>
+      </tbody>
     </table>
-
-  </section>
+  </div>
 </template>
 
 <script>
 export default {
   props: ['blok'],
   middleware: 'authenticated',
-  data () {
+  data() {
     return {
       machines: [],
       search: ''
     }
   },
   computed: {
-    isLoading () {
+    isLoading() {
       return this.materials && this.materials.length > 0
     },
-    resultQuery () {
+    resultQuery() {
       if (this.search) {
         return this.materials.filter((m) => {
           return m.internal_name.toLowerCase().includes(this.search.toLowerCase())
@@ -36,31 +39,43 @@ export default {
       } else {
         return this.materials
       }
+    },
+    filteredMachines() {
+      return this.machines
+        .map((m) => { m.name = m.name.includes('#') ? m.name.split('#')[0] : m.name })
+      //remove duplicate objects from array
+      /*         .filter((m, index, self) =>
+                index == self.findIndex((t) => (
+                  t.name == m.name
+                ))
+              ) */
     }
   },
   methods: {
-    formatPrice ($material) {
-      const price = $material.price
-      if (typeof price === 'string' || price instanceof String) {
-        return price
-      } else {
-        return Number(price).toFixed(2).replace('.', ',').toString() + ' / ' + $material.unit_name
-      }
+    formatPrice(machine) {
+      if (machine === undefined) return
+      const price = machine.price
+      const minutes = machine.seconds / 60;
+      const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min';
+      return `${price} € / ${(minutes < 60 && minutes > 1) ? minutes : ''} ${timeUnit}`
     }
   },
-  async mounted () {
-    this.machines = await this.$store.dispatch('getMachines')
-    let materials = Object.assign([], this.materials)
-    materials = materials.sort(function (a, b) {
-      if (a.external_name > b.external_name) {
-        return 1
-      } else if (a.external_name < b.external_name) {
-        return -1
-      } else {
-        return 0
-      }
-    })
-    this.materials = materials
+  async mounted() {
+    this.machines = await this.$store.dispatch('getMachinePrices')
+
+    console.log(JSON.parse(JSON.stringify(this.machines)))
+    //remove duplicates from array
+    /*     let materials = Object.assign([], this.materials)
+        materials = materials.sort(function (a, b) {
+          if (a.external_name > b.external_name) {
+            return 1
+          } else if (a.external_name < b.external_name) {
+            return -1
+          } else {
+            return 0
+          }
+        })
+        this.materials = materials */
   }
 }
 </script>
