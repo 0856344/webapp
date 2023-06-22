@@ -49,8 +49,6 @@ export default {
       featureArray: [],
       breakpoint: '',
       isMobile: false,
-      currentSlide: 0,
-      observer: null,
       comingSoon: ['desk', 'reservation']
     }
   },
@@ -59,15 +57,6 @@ export default {
     this.featureArray = response.datasource_entries.map((entry) => [entry.name, entry.value])
   },
   computed: {
-    hasUser () {
-      return !!this.$store.state.user
-    },
-    isAuthenticated () {
-      return !!this.$store.state.auth
-    },
-    isMember () {
-      return this.$store.state.user.profile.state === 'active'
-    },
     /**
      * This is a computed property that extracts an object with the feature names as keys and the feature values as values from the featureArray.
      */
@@ -84,12 +73,6 @@ export default {
     }
   },
   methods: {
-    register () {
-      this.$router.push('/wizard/onboarding/userInformation')
-    },
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
-    },
     setIsMobile () {
       const breakpoint = this.$getActiveBreakpoint()
       //assume smallest breakpoint when no breakpoint is returned
