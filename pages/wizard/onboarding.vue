@@ -491,7 +491,7 @@ export default {
         // company member
         packageData = {
           packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id,
-          additionalPackages: this.onboardingData.contactInformation.company.metadata.additional_packages
+          attendeesPackages: this.onboardingData.contactInformation.company.metadata.attendees_packages
         }
       }
       // add package information to memberdata
