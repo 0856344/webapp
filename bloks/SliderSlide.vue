@@ -1,5 +1,5 @@
 <template>
-    <div class="snap-center shrink-0 flex justify-center" v-bind:id="id">
+    <div class="snap-center shrink-0 flex justify-center lg:contents" v-bind:id="id">
         <slot></slot>
     </div>
 </template>

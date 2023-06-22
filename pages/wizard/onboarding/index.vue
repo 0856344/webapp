@@ -58,7 +58,7 @@ export default {
       loading: false
     }
   },
-  async mounted () {
+  mounted () {
     window.scrollTo(0, 0)
   },
   created () {
