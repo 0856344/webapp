@@ -168,7 +168,6 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    optimizeCSS: true,
     postcss: {
       postcssOptions: {
         plugins: {

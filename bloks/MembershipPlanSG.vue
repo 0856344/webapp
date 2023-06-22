@@ -58,7 +58,7 @@
         {{ `${blok.price},-` }}
       </h2>
       <span class="text-2-xl">pro Monat</span>
-    </div>
+  </div>
   </div>
 </template>
 
@@ -74,7 +74,7 @@ export default {
       }
     })
   },
-  data () {
+  data() {
     return {
       highlighted: false,
       selected: false,
