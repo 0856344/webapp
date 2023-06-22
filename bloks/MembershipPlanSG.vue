@@ -55,35 +55,33 @@
       <span class="text-2-xl">EUR</span>
       <h2 class="text-5xl leading-3 uppercase transition-transform duration-300"
         :class="{ 'group-hover:scale-110': !selected }">
-      <h2 class="text-5xl leading-3 uppercase transition-transform duration-300"
-        :class="{ 'group-hover:scale-110': !selected }">
         {{ `${blok.price},-` }}
       </h2>
       <span class="text-2-xl">pro Monat</span>
-  </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["blok", "strings", "isMobile", "comingSoon"],
-  mounted() {
+  props: ['blok', 'strings', 'isMobile', 'comingSoon'],
+  mounted () {
     //we emit a custom event to notify the button component that a plan has been selected
-    this.$root.$on("plan-selected", (data) => {
+    this.$root.$on('plan-selected', (data) => {
       if (data.plan !== this.blok.name) {
-        this.selected = false;
-        this.highlighted = false;
+        this.selected = false
+        this.highlighted = false
       }
-    });
+    })
   },
-  data() {
+  data () {
     return {
       highlighted: false,
       selected: false,
       //this is a little bit hacky but implementing the coming
       //soon feature would be a lot more complicated on mobile
-      comingSoonPrefix: "[CS]"
-    };
+      comingSoonPrefix: '[CS]'
+    }
   },
   computed: {
     /**
@@ -94,7 +92,8 @@ export default {
      * or 'Coming Soon' if the value is found and the key is in this.comingSoon
      * @returns {Array} features
      */
-    features() {
+
+    features () {
       const features = Object.entries(this.strings).map(([key, value]) => {
         if (
           this.blok.features.includes(value) &&
@@ -102,34 +101,33 @@ export default {
         ) {
           if (!this.isMobile) {
             //in the desktop view we want to show "coming soon"
-            return "Coming Soon";
+            return 'Coming Soon'
           } else {
             //in the mobile view we add a prefix to the string that will be removed later
-            return this.comingSoonPrefix + value;
+            return this.comingSoonPrefix + value
           }
         }
-        return this.blok.features.includes(value) ? value : "";
-      });
+        return this.blok.features.includes(value) ? value : ''
+      })
       //we don't want to show empty grid rows in the mobile view
       if (this.isMobile) {
-        return features.filter((feature) => feature !== "");
+        return features.filter((feature) => feature !== '')
       }
-      return features;
+      return features
     }
   },
   methods: {
-    selectPlan() {
-    selectPlan() {
+    selectPlan () {
       if (this.selected) {
         this.$router.push({
-          path: "/wizard/onboarding/userInformation",
+          path: '/wizard/onboarding/userInformation',
           query: { plan: this.blok.name }
-        });
+        })
       } else {
-        this.selected = true;
-        this.$root.$emit("plan-selected", { plan: this.blok.name });
+        this.selected = true
+        this.$root.$emit('plan-selected', { plan: this.blok.name })
       }
     }
   }
-};
+}
 </script>
