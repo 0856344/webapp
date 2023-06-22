@@ -984,7 +984,7 @@ const createStore = () => {
         })
       },
       getDataSource ({ state }, source) {
-        return this.$storyapi.get('/cdn/datasource_entries', {
+        return this.$storyapi.get('cdn/datasource_entries', {
           datasource: source,
           cv: state.cacheVersion
         })

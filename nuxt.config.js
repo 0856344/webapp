@@ -104,6 +104,7 @@ module.exports = {
     '~/plugins/routersync',
     '~/plugins/fontawesome.js',
     '~/plugins/getActiveBreakpoint.client.js',
+    '~/plugins/preview.client.js',
     //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false }
   ],
@@ -113,8 +114,9 @@ module.exports = {
   router: {
     middleware: 'router'
   },
+  //target: 'static',
   generate: {
-    target: 'static',
+    //target: 'static',
     routes: function (callback) {
       const token = storyblokToken
       const perPage = 100
@@ -168,9 +170,9 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    optimizeCSS: true,
     postcss: {
       plugins: {
-        // Removed calc because its conflict with postcss8 + swiperjs
         cssnano: {
           preset: [
             'default',
