@@ -19,9 +19,6 @@
 
 <script>
 export default {
-
-  //:class="[{ 'flex w-full justify-center': !hasProse && !hasHeader }, { 'grid grid-cols-2 mx': hasProse }]
-
   props: ['blok'],
   mounted () {
     this.$root.$on('plan-selected', data => {
