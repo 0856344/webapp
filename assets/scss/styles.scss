@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   background-color: $color-bright-bg;
   width: 100%;
@@ -221,6 +225,7 @@ ul {
 .gg-card:hover img:not(:hover) {
   filter: invert(1);
 }
+
 
 
 // Buttons

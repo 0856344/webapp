@@ -168,6 +168,7 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    optimizeCSS: true,
     postcss: {
       plugins: {
         // Removed calc because its conflict with postcss8 + swiperjs
@@ -178,7 +179,9 @@ module.exports = {
               calc: false
             }
           ]
-        }
+        },
+        tailwindcss: {},
+        autoprefixer: {}
       }
     },
     transpile: [/^vue2-google-maps($|\/)/]
