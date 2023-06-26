@@ -94,6 +94,7 @@ import PressPost from '../bloks/PressPost.vue'
 import GiftPage from '../bloks/GiftPage.vue'
 import TeamImageSlider from '../bloks/TeamImageSlider.vue'
 import MaterialPrices from '../bloks/prices/MaterialPrices.vue'
+import MachinePrices from '../bloks/prices/MachinePrices.vue'
 import PressGallery from '../bloks/PressGallery.vue'
 import ContactPerson from '../bloks/person/ContactPerson.vue'
 import ContactPreview from '../bloks/person/ContactPreview.vue'
@@ -114,6 +115,7 @@ import MembershipAddons from '@/bloks/MembershipAddons.vue'
 import Spacer from '@/bloks/basic/Spacer.vue'
 
 Vue.component('material-prices', MaterialPrices)
+Vue.component('machine-prices', MachinePrices)
 Vue.component('page', Page)
 Vue.component('general-header', GeneralHeader)
 Vue.component('teaser', Teaser)

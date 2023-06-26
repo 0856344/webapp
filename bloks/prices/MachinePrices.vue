@@ -1,60 +1,17 @@
 <template>
-    <section
-            v-editable="blok"
-            class="material-prices flex justify-center bg-white"
-    >
-        <div v-if="isLoading" class="inner-content w-11/12">
-            <accordion theme="primary">
-                <div slot="header">{{ $t('materials') }}</div>
-                <div class="machine-filters">
-                    <div class="search-bar">
-                        <input type="text" :placeholder="[[ $t('search') ]]" v-model="search" name="" id="">
-                        <font-awesome-icon class="icon" icon="search"/>
-                    </div>
-                </div>
-                <div class="material-prices-list">
-                    <div class="body content-card">
-                        <div>
-                            <span class="department">{{ $t('materials') }}</span>
-                        </div>
-                        <div class="material-header">
-                            <div class="header">
-                                <div class="title">
-                                    {{ $t('name') }}
-                                </div>
-                                <div class="title">
-                                    {{ $t('priceIn') }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="material-prices">
-                            <div
-                                    v-for="material in resultQuery" :key="material.id"
-                                    class="material-price"
-                            >
-                                <div class="info-row">
-                                    <div class="info-block">
-                                        <div class="col info">
-                                            {{ material.external_name }}
-                                        </div>
-                                        <div class="col info">
-                                            {{ formatPrice(material) }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tax">
-                    {{ $t('tax') }}
-                </div>
-            </accordion>
-        </div>
-        <div v-else>
-            <big-loading-spinner/>
-        </div>
-    </section>
+  <section v-editable="blok" class="material-prices flex justify-center bg-white">
+    <table>
+      <tr>
+        <th>{{ $t('name') }}</th>
+        <th>{{ $t('priceIn') }}</th>
+      </tr>
+      <tr v-for="material in queryResult" :key="material.id">
+        <td>{{ material.external_name }}</td>
+        <td>{{ formatPrice(material) }}</td>
+      </tr>
+    </table>
+
+  </section>
 </template>
 
 <script>
@@ -63,7 +20,7 @@ export default {
   middleware: 'authenticated',
   data () {
     return {
-      materials: [],
+      machines: [],
       search: ''
     }
   },
@@ -82,17 +39,17 @@ export default {
     }
   },
   methods: {
-    formatPrice (material) {
-      const price = material.price
+    formatPrice ($material) {
+      const price = $material.price
       if (typeof price === 'string' || price instanceof String) {
         return price
       } else {
-        return Number(price).toFixed(2).replace('.', ',') + ' / ' + material.unit_name
+        return Number(price).toFixed(2).replace('.', ',').toString() + ' / ' + $material.unit_name
       }
     }
   },
   async mounted () {
-    this.materials = await this.$store.dispatch('getMaterials')
+    this.machines = await this.$store.dispatch('getMachines')
     let materials = Object.assign([], this.materials)
     materials = materials.sort(function (a, b) {
       if (a.external_name > b.external_name) {
@@ -180,25 +137,25 @@ export default {
 }
 
 .material-header {
-    margin-top: 20px;
+  margin-top: 20px;
 
-    .header {
-        line-height: 1.6;
-        font-family: $font-mono;
-        font-size: 0.9rem;
-        font-weight: bold;
-        display: flex;
+  .header {
+    line-height: 1.6;
+    font-family: $font-mono;
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
 
-        .title {
-            flex: 1;
-            flex-direction: row;
-            display: flex;
-        }
+    .title {
+      flex: 1;
+      flex-direction: row;
+      display: flex;
     }
+  }
 }
 
 .material-prices {
-    padding: 20px 0;
+  padding: 20px 0;
 
   @include media-breakpoint-down(md) {
     padding: 0 4% 100px 4%;
@@ -217,6 +174,7 @@ export default {
     }
 
     padding: 10px;
+
     @include media-breakpoint-down(xs) {
       border: .11em solid #f2f3ee;
       padding: 7px;
@@ -226,6 +184,7 @@ export default {
       @include media-breakpoint-down(md) {
         flex-direction: column;
       }
+
       line-height: 1.6;
       font-family: $font-mono;
       font-size: 0.9rem;
