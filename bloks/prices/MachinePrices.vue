@@ -10,7 +10,7 @@
       <tbody>
         <tr v-for="machine in filteredMachines" :key="machine.id">
           <td>{{ machine.name }}</td>
-          <td>{{ formatPrice(machine) }}</td>
+          <td class="table font-mono text-right" v-html="formatPriceHTML(machine)"></td>
         </tr>
       </tbody>
     </table>
@@ -21,17 +21,17 @@
 export default {
   props: ['blok'],
   middleware: 'authenticated',
-  data() {
+  data () {
     return {
       machines: [],
       search: ''
     }
   },
   computed: {
-    isLoading() {
+    isLoading () {
       return this.materials && this.materials.length > 0
     },
-    resultQuery() {
+    resultQuery () {
       if (this.search) {
         return this.materials.filter((m) => {
           return m.internal_name.toLowerCase().includes(this.search.toLowerCase())
@@ -40,27 +40,45 @@ export default {
         return this.materials
       }
     },
-    filteredMachines() {
+    filteredMachines () {
       return this.machines
-        .map((m) => { m.name = m.name.includes('#') ? m.name.split('#')[0] : m.name })
-      //remove duplicate objects from array
-      /*         .filter((m, index, self) =>
-                index == self.findIndex((t) => (
-                  t.name == m.name
-                ))
-              ) */
+        .map((m) => {
+          let name = m.name
+          if (name.includes('#')) {
+            name = name.split('#')[0]
+          }
+          return { ...m, name }
+        })
+        //remove duplicate objects from array
+        .filter((m, index, self) =>
+          index === self.findIndex((t) => (
+            t.name === m.name
+          ))
+        )
     }
   },
   methods: {
-    formatPrice(machine) {
+    formatPrice (machine) {
       if (machine === undefined) return
       const price = machine.price
-      const minutes = machine.seconds / 60;
-      const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min';
+      const minutes = machine.seconds / 60
+      const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
       return `${price} € / ${(minutes < 60 && minutes > 1) ? minutes : ''} ${timeUnit}`
+    },
+    formatPriceHTML (machine) {
+      if (machine === undefined) return
+      const price = machine.price
+      const whole = Math.floor(price).toString()
+      const decimal = ((price - whole) * 100).toFixed(0)
+      //const minutes = machine.seconds / 60
+      //const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
+      return `<span class="table-row" aria-label=${price}>
+                <span class="table-cell">${whole.length === 1 ? '&nbsp;' + whole : whole}</span>.
+                <span class="table-cell text-left">${decimal.length === 1 ? decimal + '0' : decimal}</span>
+              </span>`
     }
   },
-  async mounted() {
+  async mounted () {
     this.machines = await this.$store.dispatch('getMachinePrices')
 
     console.log(JSON.parse(JSON.stringify(this.machines)))
