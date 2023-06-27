@@ -1,19 +1,26 @@
 <template>
-  <div class="flex">
-    <table>
-      <thead>
-        <tr>
-          <th>Machine</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="machine in filteredMachines" :key="machine.id">
-          <td>{{ machine.name }}</td>
-          <td class="table font-mono text-right" v-html="formatPriceHTML(machine)"></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="bg-white px-8">
+    <div class="rounded-md flex flex-col shadow-md  w-full">
+      <div class="bg-blue-500 text-white w-full rounded-t-md p-4">
+        <h1 class="text-xl font-bold uppercase">Maschinen</h1>
+      </div>
+      <table class="m-8 w-full box-border">
+        <thead @click="toggleCollapse">
+          <tr class="w-full">
+            <th class="text-left w-3/5">{{ $t('name') }}</th>
+            <th class="text-left w-2/5">{{ $t('priceIn') }}</th>
+          </tr>
+        </thead>
+        <transition name="accordion">
+          <tbody v-if="!isCollapsed">
+            <tr v-for="machine in filteredMachines" :key="machine.id" class="odd:bg-gray-200">
+              <td class="text-left">{{ machine.name }}</td>
+              <td class="table font-mono text-right text-base" v-html="formatPriceHTML(machine)"></td>
+            </tr>
+          </tbody>
+        </transition>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -24,7 +31,9 @@ export default {
   data () {
     return {
       machines: [],
-      search: ''
+      search: '',
+      isCollapsed: false
+
     }
   },
   computed: {
@@ -76,7 +85,11 @@ export default {
                 <span class="table-cell">${whole.length === 1 ? '&nbsp;' + whole : whole}</span>.
                 <span class="table-cell text-left">${decimal.length === 1 ? decimal + '0' : decimal}</span>
               </span>`
+    },
+    toggleCollapse () {
+      this.isCollapsed = !this.isCollapsed
     }
+
   },
   async mounted () {
     this.machines = await this.$store.dispatch('getMachinePrices')
@@ -98,149 +111,14 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import '/assets/scss/styles';
-
-.content-card:hover {
-  box-shadow: none;
+<style scoped>
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: all 0.3s ease;
 }
 
-.machine-filters {
-  .search-bar {
-    display: flex;
-    position: relative;
-    @include margin-page-wide();
-    padding-bottom: 5vh;
-
-    input[type=text] {
-      width: 100%;
-      padding: 15px;
-      margin: 4px;
-      box-sizing: border-box;
-      padding-left: 60px;
-      font-family: $font-secondary;
-      border: none;
-      border-radius: 10px;
-      -webkit-box-shadow: 7px 7px 6px -2px rgba(0, 0, 0, 0.08);
-      box-shadow: 7px 7px 6px -2px rgba(0, 0, 0, 0.08);
-      font-size: 1.1rem;
-
-      &:hover {
-        -webkit-box-shadow: 7px 7px 6px -2px rgba(0, 0, 0, 0.12);
-        box-shadow: 7px 7px 6px -2px rgba(0, 0, 0, 0.12);
-      }
-    }
-
-    input[type=button] {
-      font-size: 1.1rem;
-      margin-left: 10px;
-      text-transform: uppercase;
-      background-color: transparent;
-      border: none;
-      font-weight: bold;
-      color: $color-orange;
-      outline: none;
-    }
-
-    .icon {
-      left: 13px;
-      top: 9px;
-      padding: 10px 10px;
-      color: $color-orange;
-      position: absolute;
-    }
-  }
-}
-
-.body {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 3%;
-  width: 100%;
-  padding: 2%;
-
-  .department {
-    font-family: $font-mono;
-    font-size: 1.5rem;
-    font-weight: bold;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: $color-blue;
-  }
-}
-
-.material-header {
-  margin-top: 20px;
-
-  .header {
-    line-height: 1.6;
-    font-family: $font-mono;
-    font-size: 0.9rem;
-    font-weight: bold;
-    display: flex;
-
-    .title {
-      flex: 1;
-      flex-direction: row;
-      display: flex;
-    }
-  }
-}
-
-.material-prices {
-  padding: 20px 0;
-
-  @include media-breakpoint-down(md) {
-    padding: 0 4% 100px 4%;
-    background-color: transparent;
-  }
-
-  .inner-content {
-    @include media-breakpoint-down(md) {
-      width: 100%;
-    }
-  }
-
-  .material-price {
-    &:nth-child(odd) {
-      background-color: rgba(242, 243, 238, 0.9);
-    }
-
-    padding: 10px;
-
-    @include media-breakpoint-down(xs) {
-      border: .11em solid #f2f3ee;
-      padding: 7px;
-    }
-
-    .info-row {
-      @include media-breakpoint-down(md) {
-        flex-direction: column;
-      }
-
-      line-height: 1.6;
-      font-family: $font-mono;
-      font-size: 0.9rem;
-      margin: -8px;
-      display: flex;
-
-      .info-block {
-        flex: 1;
-        flex-direction: row;
-        display: flex;
-      }
-
-      .col {
-        padding: 8px;
-        margin-right: 10px;
-        width: 50%;
-
-      }
-    }
-  }
-}
-
-.tax {
-  margin-left: 30px;
-}
-</style>
+.accordion-enter,
+.accordion-leave-to {
+  transform: scaleY(0);
+  transform-origin: top;
+}</style>
