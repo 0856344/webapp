@@ -58,6 +58,7 @@ export default {
     padding-top: 20vh;
     text-align: center;
     svg {
+      display: inline-block;
       animation: spin 4s infinite linear;
     }
   }

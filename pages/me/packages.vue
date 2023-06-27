@@ -118,17 +118,18 @@ export default {
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
       this.membership = this.memberPackages.filter((p) => {
-        const notes = p._embedded.package.notes
-        if (notes?.shortform === 'DISCOUNT') {
+        //console.log('package: ', p._embedded.package.metadata)
+        const metadata = p._embedded.package.metadata
+        if (metadata?.shortform === 'DISCOUNT') {
           this.discount = p
           this.hasDiscount = true
         }
         // filter only membership from memberPackages - precondition: one member has one membership
-        if (notes.is_storage_box || notes?.shortform === 'DISCOUNT' || notes?.shortform === '500_CREDITS' || notes?.shortform === '500_CREDITS_DISCOUNTED') {
+        if (metadata.is_storage_box || metadata?.shortform === 'DISCOUNT' || metadata?.shortform === '500_CREDITS' || metadata?.shortform === '500_CREDITS_DISCOUNTED') {
           return false
         }
         // only SmartGarage members have credit feature
-        if (notes?.shortform === 'SG' || notes?.shortform === 'SG+DT' || notes?.shortform === 'SG+ALL' || notes?.shortform === 'SG+MW' || notes?.shortform === 'SG+ALL_EDU') {
+        if (metadata?.shortform === 'SG' || metadata?.shortform === 'SG+DT' || metadata?.shortform === 'SG+ALL' || metadata?.shortform === 'SG+MW' || metadata?.shortform === 'SG+ALL_EDU') {
           this.hasSmartGarage = true
         }
         return true
@@ -136,8 +137,8 @@ export default {
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
-        const notes = p._embedded.package.notes
-        return notes.is_storage_box
+        const metadata = p._embedded.package.metadata
+        return metadata.is_storage_box
       })
       this.loading = false
 
@@ -165,7 +166,7 @@ export default {
         this.$store.dispatch('getMemberCredits', this.$store.state.member.id).then((response) => {
           this.memberCredits = response
         }).catch(err => {
-          console.log(err)
+          console.error(err)
         })
       }, 30000)
     },
