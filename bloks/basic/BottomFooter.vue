@@ -14,13 +14,13 @@
           {{ $t('innovationFactory') }}
         </div>
         <div class="col logos">
-          <marquee :duration="Number(50)">
+          <marquee :duration="Number(marqueeDuration)">
             <div
               v-for="(logo) in logos"
               :key="logo._uid"
               class="logo"
             >
-              <img :src="$resizeImage(logo.image, '200x0')">
+              <img :src="$resizeImage(logo.image, `${logoWidth}x0`)">
             </div>
           </marquee>
         </div>
@@ -141,12 +141,17 @@ export default {
       subscribed: false,
       form: {
         email: ''
-      }
+      },
+      logoWidth: 200
     }
   },
   computed: {
     logos () {
       return this.shuffle(this.$store.state.settings.footer_logos)
+    },
+    marqueeDuration () {
+      // velocity is 100px/s
+      return this.logos.length * this.logoWidth / 100
     }
   },
   methods: {

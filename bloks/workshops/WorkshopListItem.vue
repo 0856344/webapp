@@ -1,14 +1,8 @@
 <template>
   <nuxt-link :to="'/' + blok.full_slug">
-    <div
-        class="workshop-list-item"
-        :class="{ slim: slim }"
-    >
+    <div class="workshop-list-item" :class="{ slim: slim }">
       <div class="image">
-        <img
-            :src="$resizeImage(blok.content.image, '400x280')"
-            alt=""
-        >
+        <img :src="$resizeImage(blok.content.image, '400x280')" alt="">
       </div>
       <div class="body">
         <div class="category">
@@ -37,80 +31,28 @@
         <div class="title">
           {{ content.title }}
         </div>
-        <div
-            v-if="!slim"
-            class="teaser"
-        >
-          <markdown
-              :value="teaserText"
-              class="info-text"
-          />
+        <div v-if="!slim" class="teaser">
+          <markdown :value="teaserText" class="info-text"/>
         </div>
         <div class="trainer">
           {{ content.trainer }}
         </div>
-        <div
-            v-if="content.members_only"
-            class="member"
-        >
+        <div v-if="content.members_only" class="member">
           <icon name="user"/>
           <span>{{ $t('membersOnly') }}</span>
         </div>
-        <div class="workshop-dates"
-             :key="this.eventDates.length">
-          <div
-              v-for="event in eventDates" :key="event.id"
-              class="workshop-date"
-          >
-            <div
-                v-if="!slim || i === 0"
-                class="info-row"
-            >
+        <div class="workshop-dates" :key="this.eventDates.length">
+          <div v-for="event in eventDates" :key="event.id" class="workshop-date">
+            <div v-if="!slim || i === 0" class="info-row">
               <div>
-                <div v-for="d in event.dates" :key="d.id" class="info-block">
-                    <div class="col info">
-                      <icon name="calendar" />
-                      {{ d.data }}
-                    </div>
-                    <div class="col info">
-                      <icon name="clock" />
-                      {{d.startTime }}
-                      bis
-                      {{ d.endTime }}
-                      Uhr
-                    </div>
-
-                    <!--                    <div >
-                                          <br>
-                                          <font-awesome-icon class="grey" icon="plus"/>
-                                        </div>-->
+                <div v-for="date in event.dates" :key="date.id" class="info-block">
+                    <div class="col info"><icon name="calendar" class="pr-2"/>{{ date.data }}</div>
+                    <div class="col info"><icon name="clock"  class="pr-2"/>{{date.startTime }} bis {{ date.endTime }} Uhr</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-<!--
-        <div class="workshop-dates">
-          <div class="workshop-date"
-          >
-            <div
-                v-if="!slim || i === 0"
-                class="info-row"
-            >
-              <div class="info-block">
-                <div class="col info">
-                  <icon name="calendar"/>
-                  {{ this.nextEvent.data }}
-                  <icon name="clock"/>
-                  {{ this.nextEvent.startTime }}
-                  bis
-                  {{ this.nextEvent.endTime }} Uhr
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
--->
         <div class="icon">
           <icon :name="blok.content.category"/>
         </div>
@@ -124,6 +66,9 @@ import moment from 'moment'
 
 export default {
   props: ['blok', 'slim', 'pretix'],
+  mounted () {
+    this.formatEventDates()
+  },
   data () {
     return {
       events: null,
@@ -160,45 +105,23 @@ export default {
     }
   },
   methods: {
-    /*   async getPretixData () {
-      if (this.content.pretix_shortform) {
-        const events = await this.$store.dispatch('getPretixEvents', this.content.pretix_shortform)
-        this.events = events
-        console.log(this.events
-        )
-        this.formatEventDates()
-        this.getWorkshopInformation()
-      }
-    },
-    getWorkshopInformation () {
-      if (this.events && this.events.length > 0) {
-        const lastEvent = this.events.pop().frontpage_text
-        this.teaser = lastEvent['de-informal']
-      }
-    },*/
     formatEventDates () {
-      //console.log(this.pretixInfoArray)
       this.pretix.forEach((item) => {
         if (item.date_from !== null && moment(item.date_from).isAfter(moment())) {
           const startDate = moment(item.date_from)
           const endDate = moment(item.date_to)
           const eventList = []
-          if (startDate.isSame(endDate, 'day')) {
-            eventList.push({
-              data: startDate.locale('de').format('L'),
-              startTime: startDate.format('HH:mm'),
-              endTime: endDate.format('HH:mm')
-            })
-          }
+          eventList.push({
+            data: startDate.locale('de').format('L'),
+            startTime: startDate.format('HH:mm'),
+            endTime: endDate.format('HH:mm')
+          })
           this.eventDates.push({
             dates: eventList
           })
         }
       })
     }
-  },
-  mounted () {
-    this.formatEventDates()
   }
 }
 </script>

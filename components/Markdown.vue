@@ -12,7 +12,6 @@ export default {
   props: ['value'],
   computed: {
     renderedMarkdown () {
-      console.log(this.value)
       return marked(this.value)
     }
   }

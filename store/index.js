@@ -569,6 +569,11 @@ const createStore = () => {
           return result.data
         })
       },
+      getMachines ({ state }, id) {
+        return axios.get(connectorBaseUrl + '/v1/fabman/resources').then((result) => {
+          return result.data
+        })
+      },
       // @deprecated
       // TODO - delete if deprecated
       async startOnboarding ({ commit }, data) {

@@ -24,15 +24,13 @@
         </div>
         <div class="switch-button">
           <input class="switch-button-checkbox" type="checkbox" v-model="isCalendar">
-          <label class="switch-button-label" for=""><span class="switch-button-label-span"> {{ $t('details') }}
-</span></label>
+          <label class="switch-button-label" for="">
+            <span class="switch-button-label-span"> {{ $t('details') }}</span>
+          </label>
         </div>
       </div>
     </div>
     <div v-show="!isCalendar" >
-<!--      <div class="search">
-        <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
-      </div>-->
       <div class="workshop-list-wrapper" :key="this.filter">
         <div v-if="filteredWorkshops && filteredWorkshops.length > 0" class="workshop-list">
           <transition-group name="list">
@@ -59,11 +57,6 @@
               ></workshop-list-item>
             </transition-group>
           </div>
-<!--          <div >
-            <div class="workshop-list-none">
-              <code> {{ $t('noSearchResults') }}</code>
-            </div>
-          </div>-->
         </div>
       </div>
     </div>
@@ -146,6 +139,17 @@ export default {
     search () {
       this.noResults = false
       this.updateSearch()
+    }
+  },
+  computed: {
+    filters () {
+      return {
+        filter_query: {
+          component: {
+            in: 'workshop'
+          }
+        }
+      }
     }
   },
   methods: {
@@ -239,17 +243,6 @@ export default {
     },
     calenderDisplayOnChange ($displayType) {
       return $displayType
-    }
-  },
-  computed: {
-    filters () {
-      return {
-        filter_query: {
-          component: {
-            in: 'workshop'
-          }
-        }
-      }
     }
   },
   async asyncData  (context) {
