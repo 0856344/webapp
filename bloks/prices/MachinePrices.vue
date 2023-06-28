@@ -4,22 +4,22 @@
       <div class="bg-blue-500 text-white w-full rounded-t-md p-4">
         <h1 class="text-xl font-bold uppercase">Maschinen</h1>
       </div>
-      <table class="m-8 w-full box-border">
-        <thead @click="toggleCollapse">
-          <tr class="w-full">
-            <th class="text-left w-3/5">{{ $t('name') }}</th>
-            <th class="text-left w-2/5">{{ $t('priceIn') }}</th>
-          </tr>
-        </thead>
-        <transition name="accordion">
+      <accordion>
+        <table class="m-8 w-full box-border">
+          <thead @click="toggleCollapse">
+            <tr class="w-full">
+              <th class="text-left w-3/5">{{ $t('name') }}</th>
+              <th class="text-left w-2/5">{{ $t('priceIn') }}</th>
+            </tr>
+          </thead>
           <tbody v-if="!isCollapsed">
             <tr v-for="machine in filteredMachines" :key="machine.id" class="odd:bg-gray-200">
               <td class="text-left">{{ machine.name }}</td>
               <td class="table font-mono text-right text-base" v-html="formatPriceHTML(machine)"></td>
             </tr>
           </tbody>
-        </transition>
-      </table>
+        </table>
+      </accordion>
     </div>
   </div>
 </template>
@@ -121,4 +121,5 @@ export default {
 .accordion-leave-to {
   transform: scaleY(0);
   transform-origin: top;
-}</style>
+}
+</style>
