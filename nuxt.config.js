@@ -170,18 +170,20 @@ module.exports = {
   build: {
     optimizeCSS: true,
     postcss: {
-      plugins: {
-        // Removed calc because its conflict with postcss8 + swiperjs
-        cssnano: {
-          preset: [
-            'default',
-            {
-              calc: false
-            }
-          ]
-        },
-        tailwindcss: {},
-        autoprefixer: {}
+      postcssOptions: {
+        plugins: {
+          tailwindcss: {},
+          autoprefixer: {},
+          // Removed calc because its conflict with postcss8 + swiperjs
+          cssnano: {
+            preset: [
+              'default',
+              {
+                calc: false
+              }
+            ]
+          }
+        }
       }
     },
     transpile: [/^vue2-google-maps($|\/)/]

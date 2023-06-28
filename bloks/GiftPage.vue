@@ -563,7 +563,7 @@ h2 {
     .bottom {
       height: 45%;
       background: white;
-      align-self: end;
+      align-self: flex-end;
       width: inherit;
       border-bottom-right-radius: 13px;
       border-bottom-left-radius: 13px;
