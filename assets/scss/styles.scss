@@ -427,7 +427,7 @@ table {
     tr {
       padding: 0.75rem 1.25rem;
       display: flex;
-      justify-content: start;
+      justify-content: flex-start;
 
       th {
         min-width: 100px;
@@ -450,7 +450,7 @@ table {
     tr {
       display: flex;
       padding: 0.75rem 1.25rem;
-      justify-content: start;
+      justify-content: flex-start;
       border-width: thin;
       border-style: solid;
       border-color: #e2e8f0;
@@ -637,14 +637,14 @@ table {
           order: 4;
           text-align: right;
           display: flex;
-          justify-content: end;
+          justify-content: flex-end;
         }
 
         .invoice-download {
           order: 6;
           text-align: right;
           display: flex;
-          justify-content: end;
+          justify-content: flex-end;
           @include media-breakpoint-down(sm) {
             width: 100%;
           }
@@ -675,7 +675,7 @@ table {
 
         .icon {
           display: flex;
-          align-items: end;
+          align-items: flex-end;
           color: grey;
           width: 7%;
           order: 5;
