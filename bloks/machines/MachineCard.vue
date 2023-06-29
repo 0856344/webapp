@@ -20,9 +20,7 @@ export default {
   components: {},
   props: ['blok'],
   mounted () {
-    console.log('blok', this.blok)
     this.machines = this.blok.machines
-    console.log('this.machines', this.machines)
   },
   data () {
     return {
