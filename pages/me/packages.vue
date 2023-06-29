@@ -67,7 +67,7 @@
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
 
 
-    <fieldset v-if="hasSmartGarage">
+    <fieldset>
       <legend>Lager</legend>
       <div>  <loading-spinner v-if="loadingAvailableStorage" color="#333"/></div>
       <div v-if="!loadingAvailableStorage && availableStorage && availableStorage.length > 0 && membership &&membership.length > 0" >
