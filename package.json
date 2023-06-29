@@ -76,7 +76,6 @@
     "@nuxtjs/fontawesome": "^1.1.2",
     "@nuxtjs/style-resources": "^1.2.1",
     "@nuxtjs/tailwindcss": "^6.6.6",
-    "@vue/runtime-dom": "^3.3.4",
     "eslint": "^7.30.0",
     "eslint-plugin-promise": "^5.1.0",
     "netlify-lambda": "^1.6.3",
