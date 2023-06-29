@@ -22,12 +22,7 @@
 
 <script>
 export default {
-  props: ['blok'],
-  methods: {
-    scrollToPagePart (to) {
-      console.log('reached')
-    }
-  }
+  props: ['blok']
 }
 </script>
 
