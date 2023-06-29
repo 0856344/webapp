@@ -315,6 +315,11 @@ const createStore = () => {
         const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
         return res.data
       },
+      async cancelPackage ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.put(`v1/fabman/members/${id}/packages/${data.id}`, data)
+        return res.data
+      },
       // TODO delete (package set in create member, security fix)
       // TODO - remove if deprecated
       // async setPackageOnboarding ({ state }, data) {
@@ -326,11 +331,6 @@ const createStore = () => {
       async uploadImage ({ state }, data) {
         const res = await connector.post('v1/files/image', data)
         //console.log(res)
-        return res.data
-      },
-      async cancelPackage ({ state }, memberPackageId, data) {
-        const id = state.member.id
-        const res = await connector.put(`v1/fabman/members/${id}/packages/${memberPackageId}`, data)
         return res.data
       },
       async getPaymentMethod ({ state }) {

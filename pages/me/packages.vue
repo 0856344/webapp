@@ -4,12 +4,8 @@
     <br>
     <fieldset>
       <legend>Mitgliedschaft</legend>
-        <div>  <loading-spinner
-            v-if="!(memberPackages && memberStorage)"
-            color="#333"
-        />
-        </div>
-      <div v-if="membership">
+        <div>  <loading-spinner v-if="loading" color="#333"/></div>
+      <div v-if="!loading && membership">
         <div
             v-for="userPackage of membership"
             :key="userPackage.id">
@@ -69,18 +65,24 @@
       </div>
     </fieldset>
     <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-<!--  <div v-if="availableStorage && membership.length > 0" >-->
-<!--    <h2>Lager buchen</h2>-->
-<!--    <div-->
-<!--        v-for="userPackage of availableStorage"-->
-<!--        :key="userPackage.id">-->
-<!--      <package v-on:reload="reload"-->
-<!--          :user-package="userPackage"-->
-<!--          :storage=true-->
-<!--          :booked=false-->
-<!--      />-->
-<!--    </div>-->
-<!--  </div>-->
+
+
+    <fieldset v-if="hasSmartGarage">
+      <legend>Lager</legend>
+      <div>  <loading-spinner v-if="loadingAvailableStorage" color="#333"/></div>
+      <div v-if="!loadingAvailableStorage && availableStorage && availableStorage.length > 0 && membership &&membership.length > 0" >
+        <div
+            v-for="userPackage of availableStorage"
+            :key="userPackage.id">
+          <package v-on:reload="reload"
+              :user-package="userPackage"
+              :storage=true
+              :booked=false
+          />
+        </div>
+      </div>
+    </fieldset>
+
   </div>
  </template>
 
@@ -99,8 +101,9 @@ export default {
       hasDiscount: false,
       // only SmartGarage members have credit feature
       hasSmartGarage: false,
-      loading: false
-      //availableStorage: null
+      loading: false,
+      availableStorage: null,
+      loadingAvailableStorage: false
     }
   },
   async mounted () {
@@ -112,6 +115,7 @@ export default {
     },
     async reload () {
       this.loading = true
+      this.loadingAvailableStorage = true
       await this.loadCreditStatus()
       this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
@@ -140,24 +144,24 @@ export default {
         const metadata = p._embedded.package.metadata
         return metadata.is_storage_box
       })
-      this.loading = false
-
       //all packages available for booking (Verkauf wurde ausgesetzt)
-      // this.packages = await this.$store.dispatch('getPackages')
-      // // filter already booked storages
-      // this.availableStorage = this.packages.filter((p) => {
-      //   for (const s of this.memberStorage) {
-      //     if (s.package === p.id) {
-      //       return false
-      //     }
-      //   }
-      //   //handle packages with no notes available for storage & visibility or malformed format
-      //   if (!p.notes) {
-      //     console.error('no notes (storage, visible) for package: ', p)
-      //     return false
-      //   }
-      //   return p.notes.is_storage_box && p.notes.shop_visible
-      // })
+      this.packages = await this.$store.dispatch('getPackages')
+      // filter already booked storages
+      this.availableStorage = this.packages.filter((p) => {
+        for (const s of this.memberStorage) {
+          if (s.package === p.id) {
+            return false
+          }
+        }
+        //handle packages with no notes available for storage & visibility or malformed format
+        if (!p.metadata) {
+          console.error('no notes (storage, visible) for package: ', p)
+          return false
+        }
+        this.loading = false
+        this.loadingAvailableStorage = false
+        return p.metadata.is_storage_box && p.metadata.shop_visible
+      })
     },
     async loadCreditStatus () {
       this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
