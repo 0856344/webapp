@@ -56,9 +56,6 @@ export default {
     }
   },
   methods: {
-    setLanguage (to) {
-      console.log(to)
-    }
   }
 }
 

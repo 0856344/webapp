@@ -75,7 +75,7 @@ export default {
       this.$store.dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
-            console.log('error', data)
+            console.error('error', data)
           } else {
             const bookings = Object.assign([], data)
             this.bookings = bookings.filter(function (booking) {
@@ -83,7 +83,7 @@ export default {
             })
           }
         }).catch((error) => {
-          console.log(error.response.status, error.response.data.error)
+          console.error(error.response.status, error.response.data.error)
           this.$sentry.captureException(new Error(error))
         })
         .finally(() => {
