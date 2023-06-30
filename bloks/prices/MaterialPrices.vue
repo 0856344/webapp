@@ -18,7 +18,17 @@ export default {
   },
   computed: {
     priceList () {
-      return { title: this.$t('materials'), items: this.materials.map((m) => { return { name: m.external_name, price: m.price, unit: m.unit_name } }) }
+      return { 
+        title: this.$t('materials'),
+        billedInCredits: false,
+        items: this.materials.map((m) => { 
+          return { 
+            name: m.external_name, 
+            price: m.price, 
+            unit: m.unit_name 
+          } 
+        }) 
+      }
     }
   },
   async mounted () {

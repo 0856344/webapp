@@ -36,6 +36,7 @@ export default {
     priceList () {
       return { 
         title: this.$t('machines'), 
+        billedInCredits: true,
         items: this.filteredMachines.map((m) => {
           const minutes = m.seconds / 60
           const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
@@ -46,33 +47,6 @@ export default {
   },
   async mounted () {
     this.machines = await this.$store.dispatch('getMachinePrices')
-
-    console.log(JSON.parse(JSON.stringify(this.machines)))
-    //remove duplicates from array
-    /*     let materials = Object.assign([], this.materials)
-        materials = materials.sort(function (a, b) {
-          if (a.external_name > b.external_name) {
-            return 1
-          } else if (a.external_name < b.external_name) {
-            return -1
-          } else {
-            return 0
-          }
-        })
-        this.materials = materials */
   }
 }
 </script>
-
-<style scoped>
-.accordion-enter-active,
-.accordion-leave-active {
-  transition: all 0.3s ease;
-}
-
-.accordion-enter,
-.accordion-leave-to {
-  transform: scaleY(0);
-  transform-origin: top;
-}
-</style>
