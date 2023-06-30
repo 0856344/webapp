@@ -67,7 +67,7 @@ export default {
               })
             }
           }).catch((error) => {
-            console.log(error.response.status, error.response.data.error)
+            console.error(error.response.status, error.response.data.error)
             this.$sentry.captureException(new Error(error))
             this.$toast.show(error.response.data.msg, {
               className: 'badToast'
