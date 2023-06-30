@@ -87,7 +87,6 @@ export default {
       if (item === undefined) return
       if (this.priceList.billedInCredits) {
         const price = Math.ceil(item.price * 10).toString()
-        //return `${Math.ceil(item.price * 10).toFixed(0)} / ${item.unit}`
         return `<span class="table-row" aria-label=${price}>
                 <span class="table-cell">${this.padString(price)}</span>
                 <span>&nbsp;/ ${item.unit}</span>
@@ -96,8 +95,6 @@ export default {
         const price = item.price
         const whole = Math.floor(price).toString()
         const decimal = ((price - whole) * 100).toFixed(0)
-        //const minutes = machine.seconds / 60
-        //const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
         return `<span class="table-row" aria-label=${price}>
                 <span class="table-cell">${this.padString(whole)}</span>.
                 <span class="table-cell text-left">${decimal.length === 1 ? decimal + '0' : decimal}</span>

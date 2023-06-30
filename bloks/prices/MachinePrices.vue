@@ -47,18 +47,6 @@ export default {
   },
   async mounted () {
     this.machines = await this.$store.dispatch('getMachinePrices')
-    //remove duplicates from array
-    /*     let materials = Object.assign([], this.materials)
-        materials = materials.sort(function (a, b) {
-          if (a.external_name > b.external_name) {
-            return 1
-          } else if (a.external_name < b.external_name) {
-            return -1
-          } else {
-            return 0
-          }
-        })
-        this.materials = materials */
   }
 }
 </script>
