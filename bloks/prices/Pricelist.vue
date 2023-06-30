@@ -2,7 +2,7 @@
   <section
     class="lg:pt-5 lg:pb-5 lg:px-0 pt-0 px-1 pb-24 flex justify-center bg-transparent lg:bg-white">
     <div v-if="isLoading" class="inner-content w-11/12">
-      <accordion theme="primary">
+      <accordion>
         <div slot="header">{{ priceList.title }}</div>
           <div class="relative flex pb-4">
             <input type="text" :placeholder="[[$t('search')]]" v-model="search" name="" id=""
@@ -14,7 +14,7 @@
             <thead class="">
               <tr class="w-full">
                 <th class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-3/5 w-1/2 border-t border-l bg-gray-900 rounded-tl-md">{{ $t('name') }}</th>
-                <th class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-2/5 w-1/2 border-t border-r bg-gray-900 rounded-tr-md">{{ $t('priceIn') }}</th>
+                <th class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-2/5 w-1/2 border-t border-r bg-gray-900 rounded-tr-md">{{ priceList.billedInCredits ? $t('credits') : $t('priceIn') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -53,9 +53,16 @@ export default {
       const items = this.priceList.items
       let longestLength = 0
       items.forEach((item) => {
-        const whole = Math.floor(item.price).toString()
-        if (whole.length > longestLength) {
-          longestLength = whole.length
+        if (this.priceList.billedInCredits) {
+          const price = Math.ceil(item.price * 10)
+          if (price.toString().length > longestLength) {
+            longestLength = price.toString().length
+          } 
+        } else {
+          const whole = Math.floor(item.price).toString()
+          if (whole.length > longestLength) {
+            longestLength = whole.length
+          }
         }
       })
       return longestLength
@@ -78,18 +85,26 @@ export default {
     },
     formatPriceHTML (item) {
       if (item === undefined) return
-      const price = item.price
-      const whole = Math.floor(price).toString()
-      const decimal = ((price - whole) * 100).toFixed(0)
-      //const minutes = machine.seconds / 60
-      //const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
-      return `<span class="table-row" aria-label=${price}>
+      if (this.priceList.billedInCredits) {
+        const price = Math.ceil(item.price * 10).toString()
+        //return `${Math.ceil(item.price * 10).toFixed(0)} / ${item.unit}`
+        return `<span class="table-row" aria-label=${price}>
+                <span class="table-cell">${this.padString(price)}</span>
+                <span>&nbsp;/ ${item.unit}</span>
+              </span>`
+      } else {
+        const price = item.price
+        const whole = Math.floor(price).toString()
+        const decimal = ((price - whole) * 100).toFixed(0)
+        //const minutes = machine.seconds / 60
+        //const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
+        return `<span class="table-row" aria-label=${price}>
                 <span class="table-cell">${this.padString(whole)}</span>.
                 <span class="table-cell text-left">${decimal.length === 1 ? decimal + '0' : decimal}</span>
                 <span>&nbsp;/ ${item.unit}</span>
               </span>`
+      }
     },
-  
     padString (str) {
       let paddedString = str
       for (let i = 0; i < this.longestLength - str.length; i++) {
