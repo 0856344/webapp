@@ -583,7 +583,7 @@ const createStore = () => {
         const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
         const cMachines = result.data
           .filter((machine) => { 
-            return (machine.pricePerTimeBusy > 0) 
+            return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList)
           })
           .map((machine) => { return { id: machine.id, name: machine.name, price: machine.pricePerTimeBusy, seconds: machine.pricePerTimeBusySeconds } })
         return cMachines
