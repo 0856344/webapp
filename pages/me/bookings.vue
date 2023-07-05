@@ -77,17 +77,13 @@
               placeholder="Maschine wählen"
             >
             </v-select>
-            <span
-              id="v-step-2"
-              class="v-step-3 v-step-4"
-              v-if="selectedMachine"
-            >
+            <span id="v-step-2" class="v-step-3" v-if="selectedMachine">
               <machine-calendar
                 class="pt-6"
                 :resource="this.selectedMachine.id"
               ></machine-calendar>
             </span>
-            <button class="input-button-primary" @click="saveEvents">
+            <button class="input-button-primary v-step-4" @click="saveEvents">
               <font-awesome-icon icon="floppy-disk" />
               Bestätigen
             </button>
