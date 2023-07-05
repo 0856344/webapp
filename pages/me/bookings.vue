@@ -52,8 +52,8 @@
             <label
               >Maschine<small v-if="machines && machines.length > 0">
                 ({{ machines.length }})&nbsp;</small
-              ></label
-            >
+              >
+            </label>
             <v-select
               :loading="loadingMachines"
               :options="machines"
@@ -155,6 +155,7 @@ export default {
         .dispatch("getBookingsByMember", memberId)
         .then((res) => {
           this.bookings = res;
+          console.log(res);
         })
         .catch((error) => {
           console.log("Error! Could not load bookings", error);
