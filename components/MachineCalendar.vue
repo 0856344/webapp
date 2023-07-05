@@ -1,34 +1,36 @@
 <template>
-  <div v-if="isLoading" class="loading-background">
-    <div
-      class="flex w-100 justify-content-center justify-center items-center text-center"
-    >
-      <div class="spinner-ring"></div>
+  <div>
+    <div v-if="isLoading" class="loading-background">
+      <div
+        class="flex w-100 justify-content-center justify-center items-center text-center"
+      >
+        <div class="spinner-ring"></div>
+      </div>
     </div>
-  </div>
-  <div v-else class="machine-calendar">
-    <vue-cal
-      ref="vuecal"
-      xsmall
-      editable-events
-      @event-drag-create="onEventDragCreate"
-      :snap-to-time="15"
-      @view-change="viewUpdated"
-      @event-change="eventChanged"
-      @event-create="eventCreated"
-      @event-drop="eventDropped"
-      style="height: 50vh"
-      class="vuecal--blue-theme"
-      default-view="week"
-      :events="events"
-      events-count-on-year-view
-      locale="de"
-      :hide-weekdays="[]"
-      :time-from="7 * 60"
-      :time-to="20 * 60"
-      :time-step="60"
-      :disable-views="['years']"
-    />
+    <div v-else class="machine-calendar">
+      <vue-cal
+        ref="vuecal"
+        xsmall
+        editable-events
+        @event-drag-create="onEventDragCreate"
+        :snap-to-time="15"
+        @view-change="viewUpdated"
+        @event-change="eventChanged"
+        @event-create="eventCreated"
+        @event-drop="eventDropped"
+        style="height: 50vh"
+        class="vuecal--blue-theme"
+        default-view="week"
+        :events="events"
+        events-count-on-year-view
+        locale="de"
+        :hide-weekdays="[]"
+        :time-from="7 * 60"
+        :time-to="20 * 60"
+        :time-step="60"
+        :disable-views="['years']"
+      />
+    </div>
   </div>
 </template>
 
@@ -36,14 +38,17 @@
 import moment from "moment";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
+import Alert from "@/components/Alert.vue";
 
 export default {
-  components: { VueCal },
+  components: { Alert, VueCal },
   props: ["resource", "space"],
   data() {
     return {
       isLoading: false,
       bookings: null,
+      newBookings: [],
+      showNotice: true,
     };
   },
   computed: {
@@ -66,8 +71,13 @@ export default {
     await this.getBookings();
   },
   methods: {
-    onEventDragCreate() {
-      console.log("onEventDragCreate");
+    onEventDragCreate(booking) {
+      const bookingObj = {
+        fromDateTime: booking.start,
+        untilDateTime: booking.end,
+      };
+      this.newBookings.push(booking);
+      console.log("onEventDragCreate", bookingObj);
     },
     viewUpdated() {
       console.log("viewUpdated");
@@ -133,11 +143,11 @@ export default {
 
 .machine-calendar {
   background-color: white;
-  padding: 50px 0;
 
   @include media-breakpoint-down(sm) {
     padding: 0;
   }
+
   .vuecal {
     @include media-breakpoint-down(sm) {
       height: 75vh !important;

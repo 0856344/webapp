@@ -8,8 +8,10 @@ import Checkbox from "@/components/Checkbox.vue";
 import CookieManager from "@/components/CookieManager.vue";
 import Map from "@/components/Map.vue";
 import Accordion from "@/components/Accordion.vue";
+import Alert from "@/components/Alert.vue";
 import BigLoadingSpinner from "~/components/Spinners/BigLoadingSpinner.vue";
 import LoadingSpinnerInline from "~/components/Spinners/LoadingSpinnerInline.vue";
+import VueTour from "vue-tour";
 
 // STORYBLOK COMPONENTS
 import Page from "@/bloks/Page.vue";
@@ -224,6 +226,8 @@ Vue.component("fabman-machine", FabmanMachine);
 Vue.component("membership-plan-sg", MembershipPlanSG);
 Vue.component("membership-grid-sg", MembershipGridSG);
 Vue.component("accordion", Accordion);
+Vue.component("alert", Alert);
 Vue.component("big-loading-spinner", BigLoadingSpinner);
 Vue.component("loading-spinner-inline", LoadingSpinnerInline);
 Vue.component("spacer", Spacer);
+Vue.component("vue-tour", VueTour);
