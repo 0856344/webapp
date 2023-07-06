@@ -1,6 +1,11 @@
 <template>
   <div>
     <section>
+      <modal :show-modal="modalOpen">
+        <h2>Modal Content</h2>
+        <p>This is the content of the modal.</p>
+        <button @click="closeModal">Close Modal</button>
+      </modal>
       <v-tour name="myTour" :steps="steps"></v-tour>
       <div class="flex items-center mb-1">
         <h2 class="m-0 mr-1 text-2xl">
@@ -83,10 +88,21 @@
                 :resource="this.selectedMachine.id"
               ></machine-calendar>
             </span>
-            <button class="input-button-primary v-step-4" @click="saveEvents">
-              <font-awesome-icon icon="floppy-disk" />
-              Bestätigen
-            </button>
+            <div class="flex justify-end">
+              <button class="input-button-primary v-step-4" @click="openModal">
+                <svg
+                  class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 448 512"
+                >
+                  <path
+                    d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+                  />
+                </svg>
+                {{ $t("confirm") }}
+              </button>
+            </div>
           </div>
         </div>
       </fieldset>
@@ -102,15 +118,17 @@ import "vue-select/dist/vue-select.css";
 import MachineCalendar from "@/components/MachineCalendar.vue";
 import VueTour from "vue-tour";
 import "vue-tour/dist/vue-tour.css";
+import Modal from "@/components/Modals/Modal.vue";
 Vue.use(VueTour);
 
 export default {
   name: "bookings",
   middleware: "authenticated",
   // eslint-disable-next-line vue/no-unused-components
-  components: { MachineCalendar, vSelect, VueTour },
+  components: { MachineCalendar, vSelect, VueTour, Modal },
   data() {
     return {
+      modalOpen: false,
       loadingMachines: false,
       loadingBookings: false,
       machines: [],
@@ -173,6 +191,16 @@ export default {
     },
   },
   methods: {
+    openModal() {
+      this.modalOpen = true;
+      console.log("show modal");
+    },
+    confirmModal() {
+      this.saveEvents();
+    },
+    closeModal() {
+      this.modalOpen = false;
+    },
     saveEvents() {
       alert("Event saved!");
     },

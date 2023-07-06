@@ -12,6 +12,7 @@ import Alert from "@/components/Alert.vue";
 import BigLoadingSpinner from "~/components/Spinners/BigLoadingSpinner.vue";
 import LoadingSpinnerInline from "~/components/Spinners/LoadingSpinnerInline.vue";
 import VueTour from "vue-tour";
+import Modal from "@/components/Modals/Modal.vue";
 
 // STORYBLOK COMPONENTS
 import Page from "@/bloks/Page.vue";
@@ -231,3 +232,4 @@ Vue.component("big-loading-spinner", BigLoadingSpinner);
 Vue.component("loading-spinner-inline", LoadingSpinnerInline);
 Vue.component("spacer", Spacer);
 Vue.component("vue-tour", VueTour);
+Vue.component("modal", Modal);
