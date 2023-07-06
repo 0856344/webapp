@@ -700,14 +700,14 @@ table {
           order: 4;
           text-align: right;
           display: flex;
-          justify-content: end;
+          justify-content: flex-end;
         }
 
         .invoice-download {
           order: 6;
           text-align: right;
           display: flex;
-          justify-content: end;
+          justify-content: flex-end;
           @include media-breakpoint-down(sm) {
             width: 100%;
           }
@@ -738,7 +738,7 @@ table {
 
         .icon {
           display: flex;
-          align-items: end;
+          align-items: flex-end;
           color: grey;
           width: 7%;
           order: 5;
@@ -790,4 +790,17 @@ table {
 
 .shadow-inner {
   box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05)
+}
+
+// Animations
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-transition {
+  -webkit-animation: fadein 500ms; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 500ms; /* Firefox < 16 */
+  -ms-animation: fadein 500ms; /* Internet Explorer */
+  -o-animation: fadein 500ms; /* Opera < 12.1 */
+  animation: fadein 500ms;
 }
