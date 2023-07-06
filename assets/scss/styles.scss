@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  a {
+    @apply text-orange;
+  }
+}
+
 body {
   background-color: $color-bright-bg;
   width: 100%;
