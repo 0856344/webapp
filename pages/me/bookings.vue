@@ -1,10 +1,15 @@
 <template>
   <div>
     <section>
-      <modal :show-modal="modalOpen">
-        <h2>Modal Content</h2>
-        <p>This is the content of the modal.</p>
-        <button @click="closeModal">Close Modal</button>
+      <modal
+        :show="modalOpen"
+        :header-text="'Buchung bestätigen?'"
+        :content-text="'Sollen die eingetragenen Termine verbindlich eingetragen werden?'"
+        :submit-text="'Speichern'"
+        :loading="isLoading"
+        @close="closeModal"
+        @confirm="confirmModal"
+      >
       </modal>
       <v-tour name="myTour" :steps="steps"></v-tour>
       <div class="flex items-center mb-1">
@@ -89,7 +94,10 @@
               ></machine-calendar>
             </span>
             <div class="flex justify-end">
-              <button class="input-button-primary v-step-4" @click="openModal">
+              <button
+                class="input-button-primary v-step-4 shadow-md"
+                @click="openModal"
+              >
                 <svg
                   class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
                   xmlns="http://www.w3.org/2000/svg"
@@ -140,30 +148,35 @@ export default {
           content:
             "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
           offset: -300,
+          background: "#000",
         },
         {
           target: "#v-step-1",
           content:
             "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
           offset: -300,
+          background: "#000",
         },
         {
           target: "#v-step-2",
           content:
             "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.",
           offset: -300,
+          background: "#000",
         },
         {
           target: ".v-step-3",
           content:
             "<b>Reservierung löschen</b> <br><hr class='m-1'>Halte die Maustaste gedrückt, um einen, noch nicht bestätigten, Termin wieder zu entfernen.",
           offset: -300,
+          background: "#000",
         },
         {
           target: ".v-step-4",
           content:
             "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
           offset: -300,
+          background: "#000",
         },
       ],
     };
@@ -275,5 +288,8 @@ export default {
 
 .icon-button:hover {
   fill: $color-orange;
+}
+.v-step {
+  background: black !important;
 }
 </style>

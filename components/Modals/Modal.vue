@@ -1,70 +1,68 @@
 <template>
   <transition name="fade">
-    <div class="modal" v-show="showModal">
-      <div class="modal-content">
-        <slot></slot>
-      </div>
-    </div>
+    <div class="modal" v-show="show" @click.stop>
+      <div
+        class="modal-content relative mx-auto z-20 max-w-xl bg-white rounded-lg shadow-lg overflow-hidden fade-transition text-left"
+      >
+        <h3
+          v-text="headerText"
+          class="uppercase tracking-wide font-bold text-sm border-b border-gray-100 py-4 px-8 bg-gray-100"
+        />
 
-    <Modal
-      :show="showModal"
-      class="modal bg-white rounded-lg shadow-lg overflow-hidden fade-transition text-left"
-      @click="handleClose"
-    >
-      <div>
-        <ModalHeader v-text="headerText" class="bg-gray-100 dark:bg-gray-700" />
-
-        <ModalContent style="min-height: 100px">
-          <p class="dark:text-white text-md">
+        <div class="py-3 px-8" style="min-height: 100px">
+          <p class="text-sm">
             {{ contentText }}
           </p>
-        </ModalContent>
+        </div>
 
-        <ModalFooter>
+        <div class="bg-gray-100 px-6 py-3 flex text-sm">
           <div class="flex items-start ml-auto">
-            <CancelButton
-              component="button"
-              type="button"
-              dusk="cancel-action-button"
-              class="ml-auto mr-3"
+            <button
               @click="handleClose"
-            />
-
-            <LoadingButton
-              ref="submitButton"
-              type="submit"
-              @click="handleConfirm"
-              :loading="loading"
+              class="input-button-white mr-1 shadow-md"
             >
-              {{ submitText }}
-            </LoadingButton>
+              Abbrechen
+            </button>
+
+            <button
+              class="input-button-primary shadow-md"
+              :class="{
+                'bg-gray-500 cursor-not-allowed': loading,
+                'bg-blue-500': !loading,
+              }"
+              :disabled="loading"
+              @click="handleConfirm"
+            >
+              <span v-if="loading" class="animate-spin mr-2">
+                <loading-spinner class="loading-spinner ml-05" />
+                &#9696;
+              </span>
+              <span>{{ loading ? "Loading..." : submitText }}</span>
+            </button>
           </div>
-        </ModalFooter>
+        </div>
       </div>
-    </Modal>
+    </div>
   </transition>
 </template>
 
 <script>
+import loadingSpinner from "@/components/Spinners/LoadingSpinner.vue";
+
 export default {
   name: "GeneralModal",
+  components: { loadingSpinner },
   props: {
-    showModal: Boolean,
+    show: Boolean,
     headerText: String,
     contentText: String,
     submitText: String,
     loading: Boolean,
   },
-  watch: {
-    errorMsg(value) {
-      console.log("errorMsg", value);
-    },
-  },
   methods: {
     handleClose() {
       this.$emit("close");
     },
-
     handleConfirm() {
       this.$emit("confirm");
     },
@@ -74,6 +72,9 @@ export default {
 
 <style scoped lang="scss">
 .modal {
+  z-index: 1001;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -83,11 +84,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 4px;
+  font-size: 21px;
+  margin-top: 25px;
+  text-align: center;
 }
 </style>
