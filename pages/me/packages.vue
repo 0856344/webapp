@@ -133,7 +133,7 @@ export default {
           return false
         }
         // only SmartGarage members have credit feature
-        if (metadata?.shortform === 'SG' || metadata?.shortform === 'SG+DT' || metadata?.shortform === 'SG+ALL' || metadata?.shortform === 'SG+MW' || metadata?.shortform === 'SG+ALL_EDU') {
+        if (metadata?.allow_credits) {
           this.hasSmartGarage = true
         }
         return true
