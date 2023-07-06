@@ -124,7 +124,7 @@ export default {
             this.link_item.push('//img2.' + item)
             //console.log(this.link_item)
           }).catch((err) => {
-            console.log(err)
+            console.error(err)
           })
         }
         if (this.type === 'workshops') {
@@ -138,7 +138,7 @@ export default {
             this.link_item.push('//img2.' + item)
             // console.log(this.link_item)
           }).catch((err) => {
-            console.log(err)
+            console.error(err)
           })
         }
       }

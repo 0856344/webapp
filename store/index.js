@@ -333,6 +333,11 @@ const createStore = () => {
         );
         return res.data;
       },
+      async cancelPackage ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.put(`v1/fabman/members/${id}/packages/${data.id}`, data)
+        return res.data
+      },
       // TODO delete (package set in create member, security fix)
       // TODO - remove if deprecated
       // async setPackageOnboarding ({ state }, data) {
@@ -344,15 +349,7 @@ const createStore = () => {
       async uploadImage({ state }, data) {
         const res = await connector.post("v1/files/image", data);
         //console.log(res)
-        return res.data;
-      },
-      async cancelPackage({ state }, memberPackageId, data) {
-        const id = state.member.id;
-        const res = await connector.put(
-          `v1/fabman/members/${id}/packages/${memberPackageId}`,
-          data
-        );
-        return res.data;
+        return res.data
       },
       async getPaymentMethod({ state }) {
         const id = state.member.id;
@@ -623,6 +620,20 @@ const createStore = () => {
           .then((result) => {
             return result.data;
           });
+      },
+      async getChargeableMachines ({ state }, id) {
+        const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
+        const cMachines = result.data.filter((machine) => { return (machine.pricePerTimeBusy > 0) })
+        return cMachines
+      },
+      async getMachinePrices ({ state }, id) {
+        const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
+        const cMachines = result.data
+          .filter((machine) => {
+            return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList)
+          })
+          .map((machine) => { return { id: machine.id, name: machine.name, price: machine.pricePerTimeBusy, seconds: machine.pricePerTimeBusySeconds } })
+        return cMachines
       },
       // @deprecated
       // TODO - delete if deprecated
@@ -898,7 +909,7 @@ const createStore = () => {
             return res.data.story;
           });
         if (!workshop) {
-          console.log("workshop not found: ", workshop);
+          console.error('workshop not found: ', workshop)
         }
         const dates = await this.$storyapi
           .get("cdn/stories", {
@@ -1122,12 +1133,11 @@ const createStore = () => {
             this.$sentry.captureException(res);
           });
       },
-      getDataSource({ state }, source) {
-        return this.$storyapi
-          .get("/cdn/datasource_entries", {
-            datasource: source,
-            cv: state.cacheVersion,
-          })
+      getDataSource ({ state }, source) {
+        return this.$storyapi.get('cdn/datasource_entries', {
+          datasource: source,
+          cv: state.cacheVersion
+        })
           .then((res) => {
             return res.data;
           })

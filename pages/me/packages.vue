@@ -1,22 +1,15 @@
 <template>
-  <div>
-    <section>
-      <div class="flex items-center mb-1">
-        <h2 class="m-0 mr-1 text-2xl">{{ $t("membershipAndCredits") }}</h2>
-      </div>
-      <br />
-      <fieldset>
-        <legend>Mitgliedschaft</legend>
-        <div>
-          <loading-spinner
-            v-if="!(memberPackages && memberStorage)"
-            color="#333"
-          />
-        </div>
-        <div v-if="membership">
-          <div v-for="userPackage of membership" :key="userPackage.id">
-            <package
-              v-on:reload="reload"
+  <div class="section">
+    <h2>{{ $t('membership') }} & Credits</h2>
+    <br>
+    <fieldset>
+      <legend>Mitgliedschaft</legend>
+        <div>  <loading-spinner v-if="loading" color="#333"/></div>
+      <div v-if="!loading && membership">
+        <div
+            v-for="userPackage of membership"
+            :key="userPackage.id">
+          <package v-on:reload="reload"
               :user-package="userPackage"
               :storage="false"
             />
@@ -63,68 +56,42 @@
           <!--        </transition>-->
         </div>
 
-        <p>
-          Monatliches Kontingent:
-          <strong> {{ this.getMonthlyCredits() }} Credits</strong>
-        </p>
-        <p>
-          Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat.
-          Die Freikontingente können nicht ins nächste Monat mitgenommen werden.
-          Die zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze
-          hinweg erhalten. Weitere Infos >
-          <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.
-        </p>
-        <p style="font-size: smaller">
-          Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten,
-          oder wechsle deine Mitgliedschaft, indem du ein Mail an den Frontdesk
-          schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
-        </p>
-        <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
-          <p>
-            <strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist
-            gültig bis:
-            <strong>
-              <span style="color: green"
-                >{{ formatDate(discount.untilDate) }}.</span
-              >
-            </strong>
-          </p>
-          <p style="font-size: smaller">
-            <u
-              >Läuft deine Ermäßigung bald ab? Dann verlängere sie beim
-              Frontdesk vorort!</u
-            >
-          </p>
+      <p>Monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
+      <p>Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die Freikontingente können nicht ins nächste Monat mitgenommen werden. Die zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.  Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.</p>
+      <p style="font-size: smaller">Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten, oder wechsle deine Mitgliedschaft, indem du eine Mail an den Frontdesk schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
+      <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
+        <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
+        <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort!</u></p>
+      </div>
+      <div> <loading-spinner v-if="loading" color="#333"/>  </div>
+    </fieldset>
+    <fieldset v-if="hasSmartGarage">
+      <legend style="margin-bottom: 20px">Credits kaufen</legend>
+      <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
+      <div style="margin-bottom: 20px" v-if="memberPackages">
+        <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
+        <p style="font-size: smaller"><u>Hinweis: Credits können für die Arbeitszeit an den Maschinen genutzt werden.</u></p>
+      </div>
+    </fieldset>
+    <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
+
+
+    <fieldset>
+      <legend>Lager</legend>
+      <div>  <loading-spinner v-if="loadingAvailableStorage" color="#333"/></div>
+      <div v-if="!loadingAvailableStorage && availableStorage && availableStorage.length > 0 && membership &&membership.length > 0" >
+        <div
+            v-for="userPackage of availableStorage"
+            :key="userPackage.id">
+          <package v-on:reload="reload"
+              :user-package="userPackage"
+              :storage=true
+              :booked=false
+          />
         </div>
-        <div><loading-spinner v-if="loading" color="#333" /></div>
-      </fieldset>
-      <fieldset v-if="hasSmartGarage">
-        <legend style="margin-bottom: 20px">Credits kaufen</legend>
-        <div><loading-spinner v-if="!memberPackages" color="#333" /></div>
-        <div style="margin-bottom: 20px" v-if="memberPackages">
-          <credit-package v-on:reload="reload" :hasDiscount="hasDiscount" />
-          <p style="font-size: smaller">
-            <u
-              >Hinweis: Derzeit können Credits nur für Arbeitszeit an den
-              Maschinen genutzt werden.</u
-            >
-          </p>
-        </div>
-      </fieldset>
-      <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-      <!--  <div v-if="availableStorage && membership.length > 0" >-->
-      <!--    <h2>Lager buchen</h2>-->
-      <!--    <div-->
-      <!--        v-for="userPackage of availableStorage"-->
-      <!--        :key="userPackage.id">-->
-      <!--      <package v-on:reload="reload"-->
-      <!--          :user-package="userPackage"-->
-      <!--          :storage=true-->
-      <!--          :booked=false-->
-      <!--      />-->
-      <!--    </div>-->
-      <!--  </div>-->
-    </section>
+      </div>
+    </fieldset>
+
   </div>
 </template>
 
@@ -143,8 +110,9 @@ export default {
       // only SmartGarage members have credit feature
       hasSmartGarage: false,
       loading: false,
-      //availableStorage: null
-    };
+      availableStorage: null,
+      loadingAvailableStorage: false
+    }
   },
   async mounted() {
     await this.reload();
@@ -153,66 +121,55 @@ export default {
     formatDate(date) {
       return new Date(date).toLocaleDateString("de-at");
     },
-    async reload() {
-      this.loading = true;
-      await this.loadCreditStatus();
-      this.memberPackages = await this.$store.dispatch(
-        "getMemberPackages",
-        this.$store.state.member.id
-      );
+    async reload () {
+      this.loading = true
+      this.loadingAvailableStorage = true
+      await this.loadCreditStatus()
+      this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
       this.membership = this.memberPackages.filter((p) => {
-        const notes = p._embedded.package.notes;
-        if (notes?.shortform === "DISCOUNT") {
-          this.discount = p;
-          this.hasDiscount = true;
+        //console.log('package: ', p._embedded.package.metadata)
+        const metadata = p._embedded.package.metadata
+        if (metadata?.shortform === 'DISCOUNT') {
+          this.discount = p
+          this.hasDiscount = true
         }
         // filter only membership from memberPackages - precondition: one member has one membership
-        if (
-          notes.is_storage_box ||
-          notes?.shortform === "DISCOUNT" ||
-          notes?.shortform === "500_CREDITS" ||
-          notes?.shortform === "500_CREDITS_DISCOUNTED"
-        ) {
-          return false;
+        if (metadata.is_storage_box || metadata?.shortform === 'DISCOUNT' || metadata?.shortform === '500_CREDITS' || metadata?.shortform === '500_CREDITS_DISCOUNTED') {
+          return false
         }
         // only SmartGarage members have credit feature
-        if (
-          notes?.shortform === "SG" ||
-          notes?.shortform === "SG+DT" ||
-          notes?.shortform === "SG+ALL" ||
-          notes?.shortform === "SG+MW"
-        ) {
-          this.hasSmartGarage = true;
+        if (metadata?.allow_credits) {
+          this.hasSmartGarage = true
         }
         return true;
       });
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
-        const notes = p._embedded.package.notes;
-        return notes.is_storage_box;
-      });
-      this.loading = false;
-
+        const metadata = p._embedded.package.metadata
+        return metadata.is_storage_box
+      })
       //all packages available for booking (Verkauf wurde ausgesetzt)
-      // this.packages = await this.$store.dispatch('getPackages')
-      // // filter already booked storages
-      // this.availableStorage = this.packages.filter((p) => {
-      //   for (const s of this.memberStorage) {
-      //     if (s.package === p.id) {
-      //       return false
-      //     }
-      //   }
-      //   //handle packages with no notes available for storage & visibility or malformed format
-      //   if (!p.notes) {
-      //     console.error('no notes (storage, visible) for package: ', p)
-      //     return false
-      //   }
-      //   return p.notes.is_storage_box && p.notes.shop_visible
-      // })
+      this.packages = await this.$store.dispatch('getPackages')
+      // filter already booked storages
+      this.availableStorage = this.packages.filter((p) => {
+        for (const s of this.memberStorage) {
+          if (s.package === p.id) {
+            return false
+          }
+        }
+        //handle packages with no notes available for storage & visibility or malformed format
+        if (!p.metadata) {
+          console.error('no notes (storage, visible) for package: ', p)
+          return false
+        }
+        this.loading = false
+        this.loadingAvailableStorage = false
+        return p.metadata.is_storage_box && p.metadata.shop_visible
+      })
     },
     async loadCreditStatus() {
       this.memberCredits = await this.$store.dispatch(
@@ -221,15 +178,12 @@ export default {
       );
       // update credits status every 30 seconds
       setInterval(() => {
-        this.$store
-          .dispatch("getMemberCredits", this.$store.state.member.id)
-          .then((response) => {
-            this.memberCredits = response;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }, 30000);
+        this.$store.dispatch('getMemberCredits', this.$store.state.member.id).then((response) => {
+          this.memberCredits = response
+        }).catch(err => {
+          console.error(err)
+        })
+      }, 30000)
     },
     getAllCredits() {
       let creditSum = 0;

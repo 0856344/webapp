@@ -142,11 +142,10 @@ export default {
     await this.$store
       .dispatch("getInvoices")
       .then((res) => {
-        this.invoices = res;
-        console.log("invoices", res);
+        this.invoices = res
       })
       .catch((error) => {
-        console.log("Error! Could not load invoices", error);
+        console.error('Error! Could not load invoices', error)
       })
       .finally(() => {
         this.loadingInvoices = false;
@@ -157,11 +156,10 @@ export default {
     await this.$store
       .dispatch("getActivities")
       .then((res) => {
-        this.activities = res;
-        console.log("activities", res);
+        this.activities = res
       })
       .catch((error) => {
-        console.log("Error! Could not load activities", error);
+        console.error('Error! Could not load activities', error)
       })
       .finally(() => {
         this.loadingActivities = false;
@@ -221,19 +219,19 @@ export default {
           for (let i = 0; i < len; i++) {
             view[i] = binary.charCodeAt(i);
           }
-          const blob = new Blob([view], { type: "application/pdf" });
-          const link = document.createElement("a");
-          link.target = "_blank";
-          link.download = `Rechnung_${invoice.number}.pdf`;
-          link.href = URL.createObjectURL(blob);
-          link.click();
+          const blob = new Blob([view], { type: 'application/pdf' })
+          const link = document.createElement('a')
+          link.target = '_blank'
+          link.download = `Rechnung_${invoice.number}.pdf`
+          link.href = URL.createObjectURL(blob)
+          link.click()
         })
         .catch((error) => {
-          console.log(error.response.status, error.response.msg);
-          this.$sentry.captureException(new Error(error));
-          this.$toast.show("Die Rechnung konnte nicht geladen werden", {
-            className: "badToast",
-          });
+          console.error(error.response.status, error.response.msg)
+          this.$sentry.captureException(new Error(error))
+          this.$toast.show('Die Rechnung konnte nicht geladen werden', {
+            className: 'badToast'
+          })
         })
         .finally(() => {
           this.loadingPdf = false;

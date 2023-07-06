@@ -19,13 +19,8 @@
 export default {
   components: {},
   props: ['blok'],
-  created () {
-    console.log('Machine card created')
-  },
   mounted () {
-    console.log('blok', this.blok)
     this.machines = this.blok.machines
-    console.log('this.machines', this.machines)
   },
   data () {
     return {

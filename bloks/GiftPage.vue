@@ -26,19 +26,20 @@
           <markdown :value="blok.Title" />
         </div>
         <div class="items">
-          <section class="display-item">
-            <div class="top">
-              <div class="top-image" :style="{ 'background-image': 'url(' + $resizeImage(blok.imageBuy, '1500x1500') + ')' }"></div>
-            </div>
-            <div class="bottom">
-              <div class="bottom-text">
-                {{ $t('buyGiftCard') }}
-              </div>
-              <a href="https://grandgarage.firstvoucher.com/wertgutschein-fuer-die-grand-garage-m73245" target="_blank" class="buy-redeem-button">
-                {{ $t('buy') }}
-              </a>
-            </div>
-          </section>
+<!--          Gutscheinkauf wurde am 30.6 auf Anforderung der GF ausgesetzt-->
+<!--          <section class="display-item">-->
+<!--            <div class="top">-->
+<!--              <div class="top-image" :style="{ 'background-image': 'url(' + $resizeImage(blok.imageBuy, '1500x1500') + ')' }"></div>-->
+<!--            </div>-->
+<!--            <div class="bottom">-->
+<!--              <div class="bottom-text">-->
+<!--                {{ $t('buyGiftCard') }}-->
+<!--              </div>-->
+<!--              <a href="https://grandgarage.firstvoucher.com/wertgutschein-fuer-die-grand-garage-m73245" target="_blank" class="buy-redeem-button">-->
+<!--                {{ $t('buy') }}-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </section>-->
           <div class="spacer"></div>
           <br>
           <section class="display-item">
@@ -563,7 +564,7 @@ h2 {
     .bottom {
       height: 45%;
       background: white;
-      align-self: end;
+      align-self: flex-end;
       width: inherit;
       border-bottom-right-radius: 13px;
       border-bottom-left-radius: 13px;

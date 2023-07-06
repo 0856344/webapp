@@ -8,6 +8,7 @@
     "generate": "NUXT_ENV_ENVIRONMENT=production nuxt generate",
     "generate-develop": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://develop.connector.grandgarage.eu nuxt generate",
     "generate-staging": "NUXT_ENV_ENVIRONMENT=staging NUXT_ENV_CONNECTOR_URL=https://staging.connector.grandgarage.eu nuxt generate",
+    "preview": "NUXT_ENV_ENVIRONMENT=production nuxt start",
     "lambda-local": "NETLIFY_ENVIRONMENT=develop AUTH0_URL_DEVELOP=https://gg-develop.eu.auth0.com ORIGIN_DEVELOP=https://localhost:3000 netlify-lambda serve lambda",
     "lambda-develop": "NETLIFY_ENVIRONMENT=develop AUTH0_URL_DEVELOP=https://gg-develop.eu.auth0.com ORIGIN_DEVELOP=https://develop.grandgarage.eu  netlify-lambda serve lambda",
     "lambda-staging": "NETLIFY_ENVIRONMENT=staging AUTH0_URL_STAGING=https://gg-staging.eu.auth0.com ORIGIN_STAGING=https://staging.grandgarage.eu netlify-lambda serve lambda",
@@ -66,6 +67,10 @@
     "vue2-collapse": "^1.0.15",
     "vue2-google-maps": "^0.10.7",
     "vuex-router-sync": "^5.0.0"
+  },
+  "resolutions": {
+    "cssnano": "^5.1.12",
+    "postcss": "^8.2.14"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.2",

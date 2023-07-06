@@ -189,7 +189,7 @@ export default {
     .button {
       //justify-content: flex-end;
       //display: flex;
-      align-self: end;
+      align-self: flex-end;
       height: 30px;
       cursor: pointer;
       //margin-top: 7%;

@@ -21,7 +21,7 @@
         <span class="label">MITGLIEDSCHAFT für Jugendliche</span>
         <select class="input-select" v-model="selectedMembership">
           <option v-for="membership in availableMemberships" :value="membership" v-bind:key="membership.id"
-            :disabled="(membership.notes.shortform === 'SG+MW') || (membership.notes.shortform === 'SG+ALL')">
+            :disabled="(membership.metadata.shortform === 'SG+MW') || (membership.metadata.shortform === 'SG+ALL')">
             {{ membership.name }}
           </option>
         </select>
@@ -37,25 +37,6 @@
           Workshops für dich!
         </h5>
       </div>
-      <!--      Jährliche Buchungen und Auswahl von Ermäßigungen fallen mit Eröffnung der Smart Garage weg-->
-      <!--      <div class="form-item">-->
-      <!--        <span class="label" >Ermäßigung vorhanden?</span>-->
-      <!--        <div class="checkbox-wrapper">-->
-      <!--          <input class="checkbox" type="checkbox"-->
-      <!--                 :checked="discounted"-->
-      <!--                 v-model="discounted" >-->
-      <!--          <p class="text" style="max-width: 600px">Personen, mit einer gültigen Ermäßigung (...), haben Anspruch auf einen Rabatt.</p>-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      <div class="form-item">-->
-      <!--        <span class="label" >Jährliche Abbuchung?</span>-->
-      <!--        <div class="checkbox-wrapper">-->
-      <!--          <input class="checkbox" type="checkbox"-->
-      <!--                 :checked="yearly"-->
-      <!--                 v-model="yearly" >-->
-      <!--          <p class="text" style="max-width: 600px">Eine jährliche Mitgliedschaft ist um zwei Monatsbeiträge vergünstigt.</p>-->
-      <!--        </div>-->
-      <!--      </div>-->
       <div v-if="this.onboardingData.contactInformation.company" style="margin-top: 40px"> </div>
       <div v-if="!this.onboardingData.contactInformation.company">
         <div class="form-item" v-if="this.selectedMembership">
@@ -225,23 +206,25 @@ export default {
       this.packages = r
       // filter already booked storages
       this.availableStorage = this.packages.filter((p) => {
-        //handle packages with no notes available for storage & visibility or malformed format
-        if (!p.notes) {
-          console.error('no notes (storage, visible) for package: ', p)
+        //handle packages with no metadata available for storage & visibility or malformed format
+        if (!p.metadata) {
+          console.error('no metadata (storage, visible) for package: ', p)
           return false
         }
-        if (!p.notes) {
-          return false
-        }
-        if (!p.notes.is_storage_box && p.notes.shop_visible) {
+        if (!p.metadata.is_storage_box && p.metadata.shop_visible) {
           this.availableMemberships.push(p)
         }
-        return p.notes.is_storage_box && p.notes.shop_visible
+        return p.metadata.is_storage_box && p.metadata.shop_visible
       }
       )
       this.sortByKey(this.availableMemberships, 'recurringFee')
       this.loading = false
-      this.selectedMembership = this.availableMemberships[0]
+      //if membership is preselected, select it, else select first available membership package
+      if (this.onboardingData.payment.membership) {
+        this.selectedMembership = this.availableMemberships.find((m) => m.id === this.onboardingData.payment.membership.id)
+      } else {
+        this.selectedMembership = this.availableMemberships[0]
+      }
     })
   },
   beforeRouteEnter (to, from, next) {
@@ -303,7 +286,7 @@ export default {
 
     getMembershipCredits () {
       let membership = null
-      switch (this.selectedMembership.notes.shortform) {
+      switch (this.selectedMembership.metadata.shortform) {
         case 'SG': membership = this.getMembershipByShortform('SG')
           break
         case 'SG+MW': membership = this.getMembershipByShortform('SG+MW')
@@ -341,8 +324,8 @@ export default {
 
     getMembershipByShortform (shortform) {
       const ms = this.availableMemberships.filter((m) => {
-        //handle packages with no notes available for storage & visibility or malformed format
-        if (m.notes.shortform === shortform) {
+        //handle packages with no metadata available for storage & visibility or malformed format
+        if (m.metadata.shortform === shortform) {
           return true
         } else return false
       })[0]

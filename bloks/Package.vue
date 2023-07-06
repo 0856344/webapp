@@ -11,9 +11,9 @@
 <!--            {{ this.getMembershipName() }}-->
 
           </div>
-<!--          <div v-if="this.userPackage.name" class="interval">-->
-<!--            {{ this.userPackage.name }}-->
-<!--          </div>-->
+          <div v-if="this.userPackage.name" class="interval">
+            {{ this.userPackage.name }}
+          </div>
         </div>
         <div class="package">
           <div class="package-date" v-if="this.userPackage.fromDate">
@@ -34,36 +34,39 @@
               {{ 'kündigen' }}
               </div>
           </div>
-          <div class="button-row">
-            <div v-if="storage && booked && !untilDate && cancelPackageDialog">
-              <div class="button-dialog-no" @click="closeCancelPackageDialog()">
-                <div>
-                  {{ 'abbrechen' }}
+          <div class="button-dialog-container"> <loading-spinner style="margin-top: 7%" v-if="packageLoading" color="#333"/></div>
+          <div v-if="!packageLoading">
+            <div class="button-row">
+              <div v-if="storage && booked && !untilDate && cancelPackageDialog">
+                <div class="button-dialog-no" @click="closeCancelPackageDialog()">
+                  <div>
+                    {{ 'abbrechen' }}
+                  </div>
                 </div>
-              </div>
-              <div class="button-dialog-yes" @click="cancelStorage(userPackage.id)">
-                <div>
-                  {{ 'bestätigen' }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-if="storage && !booked && !setPackageDialog" class="button" @click="showSetPackageDialog()">
-            <div class="button-text">
-              {{ 'buchen' }}
-            </div>
-          </div>
-          <div class="button-row">
-            <div v-if="storage && !booked && setPackageDialog">
-              <div class="button-dialog-no" @click="closeSetPackageDialog()">
-                <div>
-                  {{ 'abbrechen' }}
-                </div>
-              </div>
-              <div class="button-dialog-yes" @click=setPackage(userPackage.id)>
+                <div class="button-dialog-yes" @click="cancelStorage(userPackage.id)">
                   <div>
                     {{ 'bestätigen' }}
                   </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="storage && !booked && !setPackageDialog" class="button" @click="showSetPackageDialog()">
+              <div class="button-text">
+                {{ 'buchen' }}
+              </div>
+            </div>
+            <div class="button-row">
+              <div v-if="storage && !booked && setPackageDialog">
+                <div class="button-dialog-no" @click="closeSetPackageDialog()">
+                  <div>
+                    {{ 'abbrechen' }}
+                  </div>
+                </div>
+                <div class="button-dialog-yes" @click=setPackage(userPackage.id)>
+                    <div>
+                      {{ 'bestätigen' }}
+                    </div>
+                </div>
               </div>
             </div>
           </div>
@@ -80,7 +83,8 @@ export default {
   data () {
     return {
       setPackageDialog: false,
-      cancelPackageDialog: false
+      cancelPackageDialog: false,
+      packageLoading: false
       // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
       // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
       // membershipList: [
@@ -111,14 +115,27 @@ export default {
   methods: {
     async setPackage (id) {
       this.setPackageDialog = true
-      await this.$store.dispatch('setPackage', { id: id })
+      this.packageLoading = true
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // connector will double-check if discount is valid
+      let payload = { id: id }
+      // add captcha token to payload
+      payload = { ...payload, ...captchaData }
+      await this.$store.dispatch('setPackage', payload)
         .then((response) => {
+          this.packageLoading = false
+          this.closeSetPackageDialog()
           this.$toast.show('Buchung wurde erfolgreich durchgeführt', {
             className: 'goodToast'
           })
           this.$emit('reload')
         })
         .catch((error) => {
+          this.packageLoading = false
           switch (error.response.status) {
             case 404:
               this.$toast.show('Lagerort bereits ausgebucht!', {
@@ -157,14 +174,28 @@ export default {
     },
 
     async cancelStorage (memberPackageId) {
-      await this.$store.dispatch('cancelPackage', memberPackageId, { id: memberPackageId })
+      this.packageLoading = true
+      await this.$recaptchaLoaded()
+      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token
+      }
+      // connector will double-check if discount is valid
+      let payload = { id: memberPackageId }
+      // add captcha token to payload
+      payload = { ...payload, ...captchaData }
+      await this.$store.dispatch('cancelPackage', payload)
         .then((response) => {
+          this.packageLoading = false
+          this.closeCancelPackageDialog()
           this.$toast.show('Kündigung wurde erfolgreich durchgeführt', {
             className: 'goodToast'
           })
           this.$emit('reload')
         })
         .catch((error) => {
+          this.packageLoading = false
+          this.closeCancelPackageDialog()
           switch (error.response.status) {
             default:
               this.$toast.show('Ein Fehler ist aufgetreten', {

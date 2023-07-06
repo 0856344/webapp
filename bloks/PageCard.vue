@@ -47,7 +47,7 @@ export default {
   }
   .bottom {
     height: 45%;
-    align-self: end;
+    align-self: flex-end;
     width: inherit;
     border-bottom-right-radius: 13px;
     border-bottom-left-radius: 13px;

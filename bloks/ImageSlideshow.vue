@@ -1,34 +1,20 @@
 <template>
-  <div
-    v-editable="blok"
-    class="image-slideshow"
-  >
-    <div
-      v-if="blok.text"
-      class="text"
-    >
-      {{ blok.text }}
-    </div>
-    <div v-swiper:swiper="swiperOption">
-      <div
-        class="swiper-wrapper"
-        :class="{ center : length }"
-      >
-        <div
-          v-for="s in blok.items"
-          :key="s._uid"
-          class="swiper-slide"
-          :style="{ 'background-image': 'url(' + $resizeImage(s.image, '500x500') + ')' }"
-        />
+
+  <div v-editable="blok" class="image-slideshow" >
+    <div v-if="images && images.length > 0">
+      <div v-if="blok.text" class="text"> {{ blok.text }} </div>
+      <div v-swiper:swiper="swiperOption">
+        <div class="swiper-wrapper" :class="{ center : length }">
+          <div
+            v-for="s in blok.items"
+            :key="s._uid"
+            class="swiper-slide"
+            :style="{ 'background-image': 'url(' + $resizeImage(s.image, '500x500') + ')' }"
+          />
+        </div>
+        <div v-if="!length" class="swiper-button-next"/>
+        <div v-if="!length" class="swiper-button-prev"/>
       </div>
-      <div
-        v-if="!length"
-        class="swiper-button-next"
-      />
-      <div
-        v-if="!length"
-        class="swiper-button-prev"
-      />
     </div>
   </div>
 </template>
@@ -36,6 +22,14 @@
 <script>
 export default {
   props: ['blok'],
+  data () {
+    return {
+      images: null
+    }
+  },
+  mounted () {
+    this.images = this.blok.items
+  },
   computed: {
     swiperOption () {
       return {
