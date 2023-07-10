@@ -1,25 +1,25 @@
-import Vue from "vue";
-import moment from "moment";
-import IBAN from "iban";
+import Vue from 'vue';
+import moment from 'moment';
+import IBAN from 'iban';
 
 Vue.prototype.$resizeImage = function (str, param) {
   // ensure compatiblity with image-slideshow changes in storyblok (schema changes)
   if (str?.filename) {
-    return typeof str.filename === "undefined"
-      ? ""
-      : str.filename.replace(/a.storyblok.com/g, "img2.storyblok.com/" + param);
+    return typeof str.filename === 'undefined'
+      ? ''
+      : str.filename.replace(/a.storyblok.com/g, 'img2.storyblok.com/' + param);
   }
-  return typeof str === "undefined"
-    ? ""
-    : str.replace(/a.storyblok.com/g, "img2.storyblok.com/" + param);
+  return typeof str === 'undefined'
+    ? ''
+    : str.replace(/a.storyblok.com/g, 'img2.storyblok.com/' + param);
 };
 
-Vue.filter("date", function (value) {
-  return moment(value).format("DD.MM.YYYY");
+Vue.filter('date', function (value) {
+  return moment(value).format('DD.MM.YYYY');
 });
 
-Vue.filter("time", function (value) {
-  return moment(value).format("HH:mm");
+Vue.filter('time', function (value) {
+  return moment(value).format('HH:mm');
 });
 
 /**
@@ -27,23 +27,58 @@ Vue.filter("time", function (value) {
  * @param {string} str
  * @returns {string}
  */
-Vue.filter("capitalize", function (str) {
-  if (typeof str !== "string") {
-    return "";
+Vue.filter('capitalize', function (str) {
+  if (typeof str !== 'string') {
+    return '';
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
-Vue.filter("machinePricePerTimeText", function (machine) {
+Vue.filter('machinePricePerTimeText', function (machine) {
   return (
     this.machineCredits(machine) +
-    " Credits pro " +
+    ' Credits pro ' +
     this.machinePricePerTime(machine) +
-    " Minute(n)"
+    ' Minute(n)'
   );
 });
 
 export const helper = {
-  validateEmail: (email) => {
+  dateRangeOverlaps(aStart, aEnd, bStart, bEnd) {
+    if (aStart <= bStart && bStart <= aEnd) return true; // b starts in a
+    if (aStart <= bEnd && bEnd <= aEnd) return true; // b ends in a
+    if (bStart < aStart && aEnd < bEnd) return true; // a in b
+
+    // No overlapping found
+    return false;
+  },
+  multipleDateRangeOverlaps(timeEntries) {
+    let i = 0;
+    let j = 0;
+    const timeIntervals = timeEntries.filter(
+      (entry) =>
+        entry.from != null &&
+        entry.to != null &&
+        entry.from.length === 8 &&
+        entry.to.length === 8,
+    );
+
+    if (timeIntervals != null && timeIntervals.length > 1)
+      for (i = 0; i < timeIntervals.length - 1; i += 1) {
+        for (j = i + 1; j < timeIntervals.length; j += 1) {
+          if (
+            this.dateRangeOverlaps(
+              timeIntervals[i].from.getTime(),
+              timeIntervals[i].to.getTime(),
+              timeIntervals[j].from.getTime(),
+              timeIntervals[j].to.getTime(),
+            )
+          )
+            return true;
+        }
+      }
+    return false;
+  },
+  validateEmail(email) {
     if (!email) {
       return false;
     }
@@ -55,7 +90,7 @@ export const helper = {
     if (!iban) {
       return false;
     }
-    iban = iban.replace(/\s/g, ""); // Remove spaces
+    iban = iban.replace(/\s/g, ''); // Remove spaces
     return IBAN.isValid(iban);
   },
   getDifferenceInHours(fromDate, unitDate) {
@@ -106,61 +141,61 @@ export const helper = {
   },
   getDefaultDateFormat: (date) => {
     const d = new Date(date);
-    let month = "" + (d.getMonth() + 1);
-    let day = "" + d.getDate();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
     const year = d.getFullYear();
 
     if (month.length < 2) {
-      month = "0" + month;
+      month = '0' + month;
     }
     if (day.length < 2) {
-      day = "0" + day;
+      day = '0' + day;
     }
 
-    return [year, month, day].join("-");
+    return [year, month, day].join('-');
   },
   getGermanDateFormat: (date) => {
     const d = new Date(date);
-    let month = "" + (d.getMonth() + 1);
-    let day = "" + d.getDate();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
     const year = d.getFullYear();
 
     if (month.length < 2) {
-      month = "0" + month;
+      month = '0' + month;
     }
     if (day.length < 2) {
-      day = "0" + day;
+      day = '0' + day;
     }
 
-    return [day, month, year].join(".");
+    return [day, month, year].join('.');
   },
   getGermanDateTimeFormat: (date) => {
     const d = new Date(date);
-    let month = "" + (d.getMonth() + 1);
-    let day = "" + d.getDate();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
     const year = d.getFullYear();
     let hours = d.getHours();
     let minutes = d.getMinutes();
     let seconds = d.getSeconds();
 
     if (month.length < 2) {
-      month = "0" + month;
+      month = '0' + month;
     }
     if (day.length < 2) {
-      day = "0" + day;
+      day = '0' + day;
     }
     if (hours.length < 2) {
-      hours = "0" + hours;
+      hours = '0' + hours;
     }
     if (minutes.length < 2) {
-      minutes = "0" + minutes;
+      minutes = '0' + minutes;
     }
     if (seconds.length < 2) {
-      seconds = "0" + seconds;
+      seconds = '0' + seconds;
     }
 
     return (
-      [day, month, year].join(".") + " " + [hours, minutes, seconds].join(":")
+      [day, month, year].join('.') + ' ' + [hours, minutes, seconds].join(':')
     );
   },
 };

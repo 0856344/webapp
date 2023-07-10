@@ -20,6 +20,20 @@ body {
   padding: 0;
 }
 
+
+.list-none {
+  list-style-type: none;
+}
+
+.list-disc {
+  list-style-type: disc;
+}
+
+.list-decimal {
+  list-style-type: decimal;
+}
+
+
 .swiper-slide {
   display: none;
 }
@@ -160,7 +174,6 @@ ul {
 }
 
 
-
 // Buttons
 .input-button-primary:hover {
   background-color: black !important;
@@ -182,7 +195,7 @@ ul {
 
 
 .input-button-primary:disabled {
-  cursor: default;
+  cursor: not-allowed;
   background-color: grey;
   border: 1px solid darkgrey;
 }
@@ -192,6 +205,7 @@ ul {
   border: 1px solid black !important;
   color: white !important;
 }
+
 .input-button-secondary {
   cursor: pointer;
   background-color: $color-primary;
@@ -203,8 +217,9 @@ ul {
   align-self: center;
   margin-top: 20px;
 }
+
 .input-button-secondary:disabled {
-  cursor: default;
+  cursor: not-allowed;
   background-color: grey;
   border: 1px solid darkgrey;
 }
@@ -214,6 +229,7 @@ ul {
   border: 1px solid white !important;
   color: black !important;
 }
+
 .input-button-black {
   cursor: pointer;
   background-color: black;
@@ -225,16 +241,19 @@ ul {
   align-self: center;
   margin-top: 20px;
 }
+
 .input-button-black:disabled {
   cursor: default;
   background-color: grey;
   border: 1px solid darkgrey;
 }
+
 .input-button-white:hover {
   background-color: black !important;
   border: 1px solid black !important;
   color: white !important;
 }
+
 .input-button-white {
   cursor: pointer;
   background-color: white;
@@ -246,6 +265,7 @@ ul {
   align-self: center;
   margin-top: 20px;
 }
+
 .input-button-white:disabled {
   cursor: default;
   background-color: grey;
@@ -687,15 +707,17 @@ table {
 .bg-white {
   background-color: white;
 }
+
 .bg-black {
   background-color: black;
 }
+
 .bg-gray-100 {
   background-color: $color-gray-100;
 }
 
 .border-gray-100 {
-  border-color:$color-gray-100;
+  border-color: $color-gray-100;
 }
 
 // Shadows
@@ -732,6 +754,7 @@ table {
 .v-leave-active {
   transition: opacity 0.5s ease;
 }
+
 .fade-transition {
   -webkit-animation: fadein 500ms; /* Safari, Chrome and Opera > 12.1 */
   -moz-animation: fadein 500ms; /* Firefox < 16 */

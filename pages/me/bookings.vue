@@ -4,7 +4,8 @@
       <modal
         :show="modalOpen"
         :header-text="'Buchung bestätigen?'"
-        :content-text="'Sollen die eingetragenen Termine verbindlich eingetragen werden?'"
+        :content-text="'Sollen deine eingetragenen Termine verbindlich gespeichert werden?'"
+        :data="newBookings"
         :submit-text="'Speichern'"
         :loading="isLoading"
         @close="closeModal"
@@ -87,6 +88,11 @@
 
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
+        <Alert
+          :show="showInfoBox"
+          :message="infoBoxMsg"
+          :color="infoBoxColor"
+        ></Alert>
         <div>
           <div class="flex-1 mr-6 mb-4">
             <label
@@ -107,12 +113,14 @@
               <machine-calendar
                 class="pt-6"
                 :resource="this.selectedMachine.id"
+                @dateConflict="setDateConflict"
               ></machine-calendar>
             </span>
             <div v-if="selectedMachine" class="flex justify-end">
               <button
                 class="input-button-primary v-step-4 shadow-md"
                 @click="openModal"
+                :disabled="dateConflict"
               >
                 <svg
                   class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
@@ -143,13 +151,16 @@ import MachineCalendar from '@/components/MachineCalendar.vue';
 import VueTour from 'vue-tour';
 import 'vue-tour/dist/vue-tour.css';
 import Modal from '@/components/Modals/Modal.vue';
+import Alert from '@/components/Alert.vue';
+import moment from 'moment/moment';
+
 Vue.use(VueTour);
 
 export default {
   name: 'bookings',
   middleware: 'authenticated',
   // eslint-disable-next-line vue/no-unused-components
-  components: { MachineCalendar, vSelect, VueTour, Modal },
+  components: { MachineCalendar, vSelect, VueTour, Modal, Alert },
   data() {
     return {
       modalOpen: false,
@@ -197,6 +208,10 @@ export default {
       ],
       currentPage: 1,
       rowsPerPage: 8,
+      dateConflict: false,
+      showInfoBox: false,
+      infoBoxColor: '',
+      infoBoxMsg: 'lorema sfasf saf saf sadf saf ',
     };
   },
   watch: {
@@ -212,6 +227,25 @@ export default {
     await this.fetchBookings(this.member.id);
   },
   computed: {
+    newBookings() {
+      console.log('newBookings', this.$store.getters.getSelectedBookings);
+      const bookings = this.$store.getters.getSelectedBookings;
+      const readableBookings = bookings.slice();
+      readableBookings.map(function (booking) {
+        const fromDateTime = moment(booking.fromDateTime).format(
+          'DD.MM.YYYY HH:mm',
+        );
+        const untilDateTime = moment(booking.untilDateTime).format(
+          'DD.MM.YYYY HH:mm',
+        );
+        console.log('fromDateTime', fromDateTime);
+        console.log('untilDateTime', untilDateTime);
+        booking.value = fromDateTime + ' - ' + untilDateTime;
+        booking.key = 'Zeitraum';
+        return booking;
+      });
+      return readableBookings;
+    },
     isLoading() {
       return this.loadingBookings || this.loadingMachines;
     },
@@ -228,6 +262,20 @@ export default {
     },
   },
   methods: {
+    openInfoBox(msg, color = null) {
+      this.infoBoxColor = color;
+      this.infoBoxMsg = msg;
+      this.showInfoBox = true;
+    },
+    setDateConflict(msg) {
+      console.log('Date Conflict! show info box!');
+      this.dateConflict = true;
+      this.openInfoBox(msg, '#f55252fc');
+    },
+    // rememberBooking(event) {
+    //   console.log('new Booking!', event);
+    //   this.newBookings.push(event);
+    // },
     previousPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
@@ -240,7 +288,6 @@ export default {
     },
     openModal() {
       this.modalOpen = true;
-      console.log('show modal');
     },
     confirmModal() {
       this.saveEvents();
@@ -312,12 +359,15 @@ export default {
 button:disabled svg {
   color: grey;
 }
+
 .pagination-button {
   color: black;
 }
+
 .pagination-button:hover {
   color: $color-orange;
 }
+
 .machine-calendar {
   background-color: transparent;
 }
@@ -330,6 +380,7 @@ button:disabled svg {
 .icon-button:hover {
   fill: $color-orange;
 }
+
 .v-step {
   background: black !important;
 }

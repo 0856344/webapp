@@ -13,6 +13,14 @@
           <p class="text-sm">
             {{ contentText }}
           </p>
+          <ul
+            v-show="data.length > 0"
+            class="flex flex-col rounded data-field text-sm list-none text-left p-4"
+          >
+            <li v-for="item in data" :key="item.id" class="mb-2">
+              {{ item.value }}
+            </li>
+          </ul>
         </div>
 
         <div class="bg-gray-100 px-6 py-3 flex text-sm">
@@ -37,7 +45,7 @@
                 <loading-spinner class="loading-spinner ml-05" />
                 &#9696;
               </span>
-              <span>{{ loading ? "Loading..." : submitText }}</span>
+              <span>{{ loading ? 'Loading...' : submitText }}</span>
             </button>
           </div>
         </div>
@@ -47,10 +55,10 @@
 </template>
 
 <script>
-import loadingSpinner from "@/components/Spinners/LoadingSpinner.vue";
+import loadingSpinner from '@/components/Spinners/LoadingSpinner.vue';
 
 export default {
-  name: "GeneralModal",
+  name: 'GeneralModal',
   components: { loadingSpinner },
   props: {
     show: Boolean,
@@ -58,13 +66,14 @@ export default {
     contentText: String,
     submitText: String,
     loading: Boolean,
+    data: Array,
   },
   methods: {
     handleClose() {
-      this.$emit("close");
+      this.$emit('close');
     },
     handleConfirm() {
-      this.$emit("confirm");
+      this.$emit('confirm');
     },
   },
 };
@@ -91,5 +100,9 @@ export default {
   font-size: 21px;
   margin-top: 25px;
   text-align: center;
+}
+.data-field {
+  padding: 1em 1em 1em 2em;
+  background-color: #e8e8e8;
 }
 </style>

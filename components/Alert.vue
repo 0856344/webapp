@@ -1,13 +1,17 @@
 <template>
   <div v-show="show">
     <div
+      v-if="!closed"
       :style="{ backgroundColor: color }"
-      class="flex text-white justify-between align-middle border px-4 py-3 rounded relative mt-2 mb-2"
+      class="info-box flex text-white justify-between align-middle border px-4 py-3 rounded relative my-3"
       role="alert"
+      style="min-height: 60px"
     >
       <span>
-        <b>Holy smokes!</b>
-        <span class="block sm:inline">Something seriously bad happened.</span>
+        <span class="block sm:inline"
+          ><font-awesome-icon icon="info-circle"></font-awesome-icon>&nbsp;
+          {{ message }}</span
+        >
       </span>
       <span>
         <span class="close-button" @click="toggle">
@@ -25,31 +29,53 @@
         </span>
       </span>
     </div>
+    <div v-else-if="dismissible" class="my-3" style="transition: 0.3s">
+      <font-awesome-icon
+        class="clickable-icon"
+        icon="info-circle"
+        @click="toggle"
+      ></font-awesome-icon>
+    </div>
   </div>
 </template>
 <script>
 export default {
   props: {
     show: Boolean,
-    color: {
+    message: {
       type: String,
       required: true,
+    },
+    color: {
+      type: String,
+      default: '#72a4b2',
+    },
+    dismissible: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
     return {
-      // add data here
+      closed: false,
     };
   },
   methods: {
     toggle: function () {
-      this.show = !this.show;
+      this.closed = !this.closed;
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.info-box {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+  transition: 0.3s;
+}
+
 .close-button {
   color: white;
   fill: white;

@@ -11,15 +11,23 @@
       <vue-cal
         ref="vuecal"
         xsmall
-        editable-events
+        :editable-events="{
+          title: false,
+          drag: true,
+          resize: true,
+          delete: true,
+          create: true,
+        }"
+        :on-event-delete="onEventCreate"
         @event-drag-create="onEventDragCreate"
         :snap-to-time="15"
         @view-change="viewUpdated"
         @event-change="eventChanged"
         @event-create="eventCreated"
         @event-drop="eventDropped"
+        @event-delete="eventDeleted"
         style="height: 50vh"
-        class="vuecal--blue-theme"
+        class="vuecal--blue-theme vuecal--full-height-delete"
         default-view="week"
         :events="events"
         events-count-on-year-view
@@ -35,20 +43,20 @@
 </template>
 
 <script>
-import moment from "moment";
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
-import Alert from "@/components/Alert.vue";
+import moment from 'moment';
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
+import { helper } from '@/plugins/helper';
 
 export default {
-  components: { Alert, VueCal },
-  props: ["resource", "space"],
+  components: { VueCal },
+  props: ['resource', 'space'],
   data() {
     return {
       isLoading: false,
       bookings: null,
-      newBookings: [],
       showNotice: true,
+      selectedBookings: [],
     };
   },
   computed: {
@@ -58,10 +66,10 @@ export default {
     events() {
       return this.bookings.map((booking) => {
         return {
-          title: "reserviert",
-          class: "reserved",
-          start: moment(booking.fromDateTime).format("YYYY-MM-DD HH:mm"),
-          end: moment(booking.untilDateTime).format("YYYY-MM-DD HH:mm"),
+          title: 'reserviert',
+          class: 'reserved',
+          start: moment(booking.fromDateTime).format('YYYY-MM-DD HH:mm'),
+          end: moment(booking.untilDateTime).format('YYYY-MM-DD HH:mm'),
           background: true,
         };
       });
@@ -71,38 +79,110 @@ export default {
     await this.getBookings();
   },
   methods: {
-    onEventDragCreate(booking) {
-      const bookingObj = {
-        fromDateTime: booking.start,
-        untilDateTime: booking.end,
+    onEventCreate(event, deleteEventFunction) {
+      console.log('onEventDELETE');
+    },
+    mapBooking(calEvent) {
+      // Format a calendar event to a booking object
+      return {
+        id: calEvent._eid,
+        fromDateTime: calEvent.start,
+        untilDateTime: calEvent.end,
+        title: calEvent.title,
+        endTimeMinutes: calEvent.endTimeMinutes,
+        startTimeMinutes: calEvent.startTimeMinutes,
+        resource: this.resource,
       };
-      this.newBookings.push(booking);
-      console.log("onEventDragCreate", bookingObj);
+    },
+    onEventDragCreate(calEvent) {
+      this.saveBooking(calEvent);
+    },
+    saveBooking(calEvent) {
+      if (calEvent && calEvent._eid) {
+        const newBooking = this.mapBooking(calEvent);
+
+        this.bookings.forEach((booking) => {
+          if (this.dateOverlaps(booking, newBooking) === true) {
+            this.dateConflict();
+          }
+        });
+
+        // Check if object already exists, based on the ID, and replace it
+        const index = this.selectedBookings.findIndex(
+          (item) => item.id === newBooking.id,
+        );
+        if (index !== -1) {
+          // Replace the object at the found index with the new object
+          this.selectedBookings.splice(index, 1, newBooking);
+        } else {
+          // No object has been found
+          this.selectedBookings.push(newBooking);
+        }
+
+        this.storeBookings();
+      } else {
+        // Wrong event format
+        console.log('Wrong event format. Given: ' + typeof calEvent);
+      }
+    },
+    dateConflict() {
+      this.$emit('dateConflict', 'Datum überschneidet sich.');
+    },
+    storeBookings() {
+      // Save selected bookings in the global store
+      this.$store.commit('setSelectedBookings', this.selectedBookings);
     },
     viewUpdated() {
-      console.log("viewUpdated");
+      console.log('viewUpdated');
     },
-    eventChanged() {
-      console.log("eventChanged");
+    eventChanged(calEvent) {
+      // TODO
+      this.saveBooking(calEvent.event);
     },
-    eventDropped() {
-      console.log("eventDropped");
+    eventDropped(calEvent) {
+      // TODO
+      console.log('eventDropped', calEvent);
     },
-    eventCreated() {
-      console.log("eventCreated");
+    eventCreated(calEvent) {
+      console.log('eventCreated', calEvent);
+    },
+    eventDeleted(calEvent) {
+      const removedBooking = this.mapBooking(calEvent);
+      this.selectedBookings = this.selectedBookings.filter(function (booking) {
+        return booking.id !== removedBooking.id;
+      });
+
+      this.storeBookings();
+    },
+    dateOverlaps(newBooking, existingBooking) {
+      if (!newBooking || !existingBooking) {
+        return false;
+      }
+      const overlapping = helper.dateRangeOverlaps(
+        new Date(existingBooking.fromDateTime),
+        new Date(existingBooking.untilDateTime),
+        new Date(newBooking.fromDateTime),
+        new Date(newBooking.untilDateTime),
+      );
+
+      if (overlapping === true) {
+        console.log('Date conflict with ', existingBooking);
+      }
+
+      return overlapping;
     },
     async getBookings() {
       this.bookings = [];
       this.isLoading = true;
       //this.resource = 3136 //TODO for debugging - remove!
-      if (this.space === "smartgarage") {
+      if (this.space === 'smartgarage') {
         // TODO
         //console.log('SPACE FOUND - booking calender', this.space)
         //this.getBookingByMethod('getBookingsBySpace', this.space)
-        this.getBookingByMethod("getBookingsByResource", 4049);
+        this.getBookingByMethod('getBookingsByResource', 4049);
       } else if (this.resource) {
         //console.log('RESOURCE FOUND - booking calender', this.resource)
-        this.getBookingByMethod("getBookingsByResource", this.resource);
+        this.getBookingByMethod('getBookingsByResource', this.resource);
       }
     },
     getBookingByMethod(method, id) {
@@ -110,11 +190,11 @@ export default {
         .dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
-            console.log("error", data);
+            console.log('error', data);
           } else {
             const bookings = Object.assign([], data);
             this.bookings = bookings.filter(function (booking) {
-              return booking.state && booking.state !== "cancelled";
+              return booking.state && booking.state !== 'cancelled';
             });
           }
         })
@@ -166,9 +246,12 @@ export default {
 }
 
 .vuecal__event {
-  background-color: rgba(173, 216, 230, 0.5);
+  background-color: $color-primary;
+  color: white;
   box-sizing: border-box;
   padding: 5px;
+  opacity: 0.8;
+  font-weight: bold;
 
   &.lunch {
     background: repeating-linear-gradient(
@@ -208,7 +291,7 @@ export default {
 }
 
 .spinner-ring:after {
-  content: " ";
+  content: ' ';
   display: block;
   width: 64px;
   height: 64px;
