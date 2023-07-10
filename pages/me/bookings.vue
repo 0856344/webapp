@@ -14,7 +14,7 @@
       <v-tour name="myTour" :steps="steps"></v-tour>
       <div class="flex items-center mb-1">
         <h2 class="m-0 mr-2 text-2xl">
-          {{ $t("machineBookings") }}
+          {{ $t('machineBookings') }}
           <svg
             class="cursor-pointer icon-button inline-block fill-current w-5 h-5 ml-1"
             xmlns="http://www.w3.org/2000/svg"
@@ -30,9 +30,8 @@
         <loading-spinner-inline v-if="isLoading" />
       </div>
       <br />
-      <fieldset id="v-step-0">
+      <fieldset id="v-step-0" class="p-4">
         <legend>Deine Reservierungen</legend>
-        <button @click="startTour">Tour</button>
         <div v-if="bookings">
           <table
             v-if="bookings.length > 0"
@@ -46,23 +45,39 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="booking of bookings" :key="booking.id">
+              <tr v-for="booking of displayedBookings" :key="booking.id">
                 <td class="activity-date">
                   {{
-                    new Date(booking.fromDateTime).toLocaleDateString("de-AT")
+                    new Date(booking.fromDateTime).toLocaleDateString('de-AT')
                   }}
                 </td>
                 <td class="activity-date">
                   {{
                     durationAsString(
                       new Date(booking.fromDateTime),
-                      new Date(booking.untilDateTime)
+                      new Date(booking.untilDateTime),
                     )
                   }}
                 </td>
                 <td class="activity-description">{{ booking.resource }}</td>
               </tr>
             </tbody>
+            <div class="text-center bg-white py-2">
+              <button
+                class="pagination-button"
+                @click="previousPage"
+                :disabled="currentPage === 1"
+              >
+                <font-awesome-icon icon="arrow-circle-left" />
+              </button>
+              <button
+                class="pagination-button"
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+              >
+                <font-awesome-icon icon="arrow-circle-right" />
+              </button>
+            </div>
           </table>
           <div v-else><p>Keine Reservierungen vorhanden.</p></div>
         </div>
@@ -70,7 +85,7 @@
 
       <br />
 
-      <fieldset>
+      <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
         <div>
           <div class="flex-1 mr-6 mb-4">
@@ -109,7 +124,7 @@
                     d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
                   />
                 </svg>
-                {{ $t("confirm") }}
+                {{ $t('confirm') }}
               </button>
             </div>
           </div>
@@ -120,19 +135,19 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { helper } from "~/plugins/helper";
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
-import MachineCalendar from "@/components/MachineCalendar.vue";
-import VueTour from "vue-tour";
-import "vue-tour/dist/vue-tour.css";
-import Modal from "@/components/Modals/Modal.vue";
+import Vue from 'vue';
+import { helper } from '~/plugins/helper';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
+import MachineCalendar from '@/components/MachineCalendar.vue';
+import VueTour from 'vue-tour';
+import 'vue-tour/dist/vue-tour.css';
+import Modal from '@/components/Modals/Modal.vue';
 Vue.use(VueTour);
 
 export default {
-  name: "bookings",
-  middleware: "authenticated",
+  name: 'bookings',
+  middleware: 'authenticated',
   // eslint-disable-next-line vue/no-unused-components
   components: { MachineCalendar, vSelect, VueTour, Modal },
   data() {
@@ -145,51 +160,51 @@ export default {
       selectedMachine: null,
       steps: [
         {
-          target: "#v-step-0",
+          target: '#v-step-0',
           content:
             "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
           offset: -300,
-          background: "#000",
+          background: '#000',
         },
         {
-          target: "#v-step-1",
+          target: '#v-step-1',
           content:
             "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
           offset: -300,
-          background: "#000",
+          background: '#000',
         },
         {
-          target: "#v-step-2",
+          target: '#v-step-2',
           content:
             "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.",
           offset: -300,
-          background: "#000",
+          background: '#000',
         },
         {
-          target: ".v-step-3",
+          target: '.v-step-3',
           content:
             "<b>Reservierung löschen</b> <br><hr class='m-1'>Halte die Maustaste am gewünschten Zeitslot gedrückt, um einen Termin wieder zu entfernen.",
           offset: -300,
-          background: "#000",
+          background: '#000',
         },
         {
-          target: ".v-step-4",
+          target: '.v-step-4',
           content:
             "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
           offset: -300,
-          background: "#000",
+          background: '#000',
         },
       ],
+      currentPage: 1,
+      rowsPerPage: 8,
     };
   },
   watch: {
     selectedMachine(value) {
-      console.log("machine selected", value);
+      console.log('machine selected', value);
     },
   },
   async mounted() {
-    console.log("member", this.member);
-
     // Load machines
     await this.fetchMachines();
 
@@ -203,11 +218,29 @@ export default {
     member() {
       return this.$store.state.member;
     },
+    displayedBookings() {
+      const startIndex = (this.currentPage - 1) * this.rowsPerPage;
+      const endIndex = startIndex + this.rowsPerPage;
+      return this.bookings.slice(startIndex, endIndex);
+    },
+    totalPages() {
+      return Math.ceil(this.bookings.length / this.rowsPerPage);
+    },
   },
   methods: {
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
     openModal() {
       this.modalOpen = true;
-      console.log("show modal");
+      console.log('show modal');
     },
     confirmModal() {
       this.saveEvents();
@@ -216,12 +249,13 @@ export default {
       this.modalOpen = false;
     },
     saveEvents() {
-      alert("Event saved!");
+      alert('Event saved!');
+      this.closeModal();
     },
     startTour() {
       // Start introduction tour
       this.$tours.myTour.scrollToOptions = {
-        behavior: "instant",
+        behavior: 'instant',
       };
       this.$tours.myTour.start();
     },
@@ -230,19 +264,17 @@ export default {
     },
     durationAsString(fromDate, untilDate) {
       const hours = this.durationInHours(fromDate, untilDate);
-      return hours === 1 ? "eine Stunde" : hours + " Stunden";
+      return hours === 1 ? 'eine Stunde' : hours + ' Stunden';
     },
     async fetchMachines() {
       this.loadingMachines = true;
       await this.$store
-        .dispatch("getMachines")
+        .dispatch('getMachines')
         .then((res) => {
           // Filter non visible machines
           const filteredMachines = res.filter(function (machine) {
             return machine.visibleForMembers && machine.canBeBooked;
           });
-
-          console.log("machines size", filteredMachines.length);
 
           // Add dropdown label to machine
           filteredMachines.map(function (machine) {
@@ -250,10 +282,9 @@ export default {
             return machine;
           });
           this.machines = filteredMachines;
-          console.log("this.machines", this.machines);
         })
         .catch((error) => {
-          console.log("Error! Could not load machines", error);
+          console.log('Error! Could not load machines', error);
         })
         .finally(() => {
           this.loadingMachines = false;
@@ -262,13 +293,13 @@ export default {
     async fetchBookings(memberId) {
       this.loadingBookings = true;
       await this.$store
-        .dispatch("getBookingsByMember", memberId)
+        .dispatch('getBookingsByMember', memberId)
         .then((res) => {
           this.bookings = res;
-          console.log(res);
+          console.log('bookings', res);
         })
         .catch((error) => {
-          console.log("Error! Could not load bookings", error);
+          console.log('Error! Could not load bookings', error);
         })
         .finally(() => {
           this.loadingBookings = false;
@@ -278,6 +309,15 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+button:disabled svg {
+  color: grey;
+}
+.pagination-button {
+  color: black;
+}
+.pagination-button:hover {
+  color: $color-orange;
+}
 .machine-calendar {
   background-color: transparent;
 }

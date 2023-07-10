@@ -2,7 +2,7 @@
   <div>
     <section>
       <div class="flex items-center mb-1">
-        <h2 class="m-0 mr-1 text-2xl">{{ $t("openActivities") }}</h2>
+        <h2 class="m-0 mr-1 text-2xl">{{ $t('openActivities') }}</h2>
         <loading-spinner-inline v-if="isLoading" />
       </div>
       <div v-if="activities">
@@ -19,9 +19,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="activity of activities" :key="activity.id">
+            <tr v-for="activity of displayedActivities" :key="activity.id">
               <td class="activity-date">
-                {{ new Date(activity.date).toLocaleDateString("de-AT") }}
+                {{ new Date(activity.date).toLocaleDateString('de-AT') }}
               </td>
               <td
                 class="activity-amount"
@@ -30,7 +30,7 @@
                 {{
                   Number(activity.price * -1)
                     .toFixed(2)
-                    .replace(".", ",")
+                    .replace('.', ',')
                 }}
                 €
               </td>
@@ -41,7 +41,7 @@
               <td></td>
               <td></td>
               <td class="result">
-                <b>{{ totalResult > 0 ? "Gesamt:" : "Guthaben:" }}</b>
+                <b>{{ totalResult > 0 ? 'Gesamt:' : 'Guthaben:' }}</b>
               </td>
               <td
                 class="total"
@@ -50,12 +50,28 @@
                 {{
                   Number(totalResult * -1)
                     .toFixed(2)
-                    .replace(".", ",")
+                    .replace('.', ',')
                 }}
                 €
               </td>
             </tr>
           </tbody>
+          <div class="text-center bg-white py-2">
+            <button
+              class="pagination-button"
+              @click="previousActivityPage"
+              :disabled="currentActivityPage === 1"
+            >
+              <font-awesome-icon icon="arrow-circle-left" />
+            </button>
+            <button
+              class="pagination-button"
+              @click="nextActivityPage"
+              :disabled="currentActivityPage === totalActivityPages"
+            >
+              <font-awesome-icon icon="arrow-circle-right" />
+            </button>
+          </div>
         </table>
         <div v-else><p>Keine Buchungen vorhanden.</p></div>
       </div>
@@ -63,7 +79,7 @@
 
     <section class="invoice">
       <div class="flex items-center mb-1">
-        <h2 class="m-0 mr-1 text-2xl">{{ $t("invoices") }}</h2>
+        <h2 class="m-0 mr-1 text-2xl">{{ $t('invoices') }}</h2>
         <loading-spinner-inline v-if="loadingInvoices" />
       </div>
       <div v-if="invoices">
@@ -81,13 +97,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="invoice of invoices" :key="invoice.id">
+            <tr v-for="invoice of displayedInvoices" :key="invoice.id">
               <td class="invoice-date">
-                {{ new Date(invoice.date).toLocaleDateString("de-AT") }}
+                {{ new Date(invoice.date).toLocaleDateString('de-AT') }}
               </td>
               <td class="invoice-number">{{ invoice.number }}</td>
               <td class="invoice-amount">
-                {{ invoice.total.replace(".", ",") }} €
+                {{ invoice.total.replace('.', ',') }} €
               </td>
               <td class="invoice-status">
                 <div
@@ -114,6 +130,22 @@
               </td>
             </tr>
           </tbody>
+          <div class="text-center bg-white py-2">
+            <button
+              class="pagination-button"
+              @click="previousInvoicePage"
+              :disabled="currentInvoicePage === 1"
+            >
+              <font-awesome-icon icon="arrow-circle-left" />
+            </button>
+            <button
+              class="pagination-button"
+              @click="nextInvoicePage"
+              :disabled="currentInvoicePage === totalInvoicePages"
+            >
+              <font-awesome-icon icon="arrow-circle-right" />
+            </button>
+          </div>
         </table>
         <div v-else><p>Keine Rechnungen vorhanden.</p></div>
       </div>
@@ -122,8 +154,8 @@
 </template>
 <script>
 export default {
-  name: "Invoices",
-  middleware: "authenticated",
+  name: 'Invoices',
+  middleware: 'authenticated',
   data() {
     return {
       loadingInvoices: false,
@@ -132,6 +164,9 @@ export default {
       invoices: null,
       activities: null,
       highlightedId: null,
+      currentActivityPage: 1,
+      currentInvoicePage: 1,
+      rowsPerPage: 8,
     };
   },
   async mounted() {
@@ -140,12 +175,12 @@ export default {
     // Load invoices
     this.loadingInvoices = true;
     await this.$store
-      .dispatch("getInvoices")
+      .dispatch('getInvoices')
       .then((res) => {
-        this.invoices = res
+        this.invoices = res;
       })
       .catch((error) => {
-        console.error('Error! Could not load invoices', error)
+        console.error('Error! Could not load invoices', error);
       })
       .finally(() => {
         this.loadingInvoices = false;
@@ -154,12 +189,12 @@ export default {
     // Load activities
     this.loadingActivities = true;
     await this.$store
-      .dispatch("getActivities")
+      .dispatch('getActivities')
       .then((res) => {
-        this.activities = res
+        this.activities = res;
       })
       .catch((error) => {
-        console.error('Error! Could not load activities', error)
+        console.error('Error! Could not load activities', error);
       })
       .finally(() => {
         this.loadingActivities = false;
@@ -176,62 +211,98 @@ export default {
       }
       return total;
     },
+    displayedActivities() {
+      const startIndex = (this.currentActivityPage - 1) * this.rowsPerPage;
+      const endIndex = startIndex + this.rowsPerPage;
+      return this.activities.slice(startIndex, endIndex);
+    },
+    displayedInvoices() {
+      const startIndex = (this.currentInvoicePage - 1) * this.rowsPerPage;
+      const endIndex = startIndex + this.rowsPerPage;
+      return this.invoices.slice(startIndex, endIndex);
+    },
+    totalActivityPages() {
+      return Math.ceil(this.activities.length / this.rowsPerPage);
+    },
+    totalInvoicePages() {
+      return Math.ceil(this.invoices.length / this.rowsPerPage);
+    },
   },
   methods: {
+    previousActivityPage() {
+      if (this.currentActivityPage > 1) {
+        this.currentActivityPage--;
+      }
+    },
+    nextActivityPage() {
+      if (this.currentActivityPage < this.totalActivityPages) {
+        this.currentActivityPage++;
+      }
+    },
+    previousInvoicePage() {
+      if (this.currentInvoicePage > 1) {
+        this.currentInvoicePage--;
+      }
+    },
+    nextInvoicePage() {
+      if (this.currentInvoicePage < this.totalInvoicePages) {
+        this.currentInvoicePage++;
+      }
+    },
     getInvoiceStateClass(invoice) {
       switch (invoice.state) {
-        case "paid":
-          return "grey";
-        case "unpaid":
-          return "yellow";
-        case "cancelled":
-          return "red";
+        case 'paid':
+          return 'grey';
+        case 'unpaid':
+          return 'yellow';
+        case 'cancelled':
+          return 'red';
         default:
-          return "bubble grey";
+          return 'bubble grey';
       }
     },
     getInvoiceStateText(invoice) {
       switch (invoice.state) {
-        case "paid":
-          return "Bezahlt";
-        case "unpaid":
-          return "Offen";
-        case "cancelled":
-          return "Storno";
+        case 'paid':
+          return 'Bezahlt';
+        case 'unpaid':
+          return 'Offen';
+        case 'cancelled':
+          return 'Storno';
         default:
-          return "";
+          return '';
       }
     },
     getQuery(to) {
-      if (Object.prototype.hasOwnProperty.call(to, "id")) {
+      if (Object.prototype.hasOwnProperty.call(to, 'id')) {
         this.highlightedId = to.id;
       }
     },
     async getPdf(invoice) {
       this.loadingPdf = true;
       await this.$store
-        .dispatch("getPDF", invoice.id)
+        .dispatch('getPDF', invoice.id)
         .then((res) => {
-          const binary = atob(res.pdf.replace(/\s/g, ""));
+          const binary = atob(res.pdf.replace(/\s/g, ''));
           const len = binary.length;
           const buffer = new ArrayBuffer(len);
           const view = new Uint8Array(buffer);
           for (let i = 0; i < len; i++) {
             view[i] = binary.charCodeAt(i);
           }
-          const blob = new Blob([view], { type: 'application/pdf' })
-          const link = document.createElement('a')
-          link.target = '_blank'
-          link.download = `Rechnung_${invoice.number}.pdf`
-          link.href = URL.createObjectURL(blob)
-          link.click()
+          const blob = new Blob([view], { type: 'application/pdf' });
+          const link = document.createElement('a');
+          link.target = '_blank';
+          link.download = `Rechnung_${invoice.number}.pdf`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
         })
         .catch((error) => {
-          console.error(error.response.status, error.response.msg)
-          this.$sentry.captureException(new Error(error))
+          console.error(error.response.status, error.response.msg);
+          this.$sentry.captureException(new Error(error));
           this.$toast.show('Die Rechnung konnte nicht geladen werden', {
-            className: 'badToast'
-          })
+            className: 'badToast',
+          });
         })
         .finally(() => {
           this.loadingPdf = false;
@@ -241,6 +312,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+button:disabled svg {
+  color: grey;
+}
+.pagination-button {
+  color: black;
+}
+.pagination-button:hover {
+  color: $color-orange;
+}
 .invoice {
   margin: 10% 0;
 }
