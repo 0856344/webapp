@@ -1,5 +1,5 @@
 <template>
-  <section class="lg:pt-5 lg:pb-5 lg:px-0 pt-0 px-1 pb-24 flex justify-center bg-transparent lg:bg-white">
+  <section class="lg:pt-5 lg:pb-5 lg:px-0 pt-0 px-1 pb-24 flex justify-center bg-transparent">
     <div v-if="isLoading" class="inner-content w-11/12">
       <accordion>
         <div slot="header">{{ priceList.title }}</div>
