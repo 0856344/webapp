@@ -21,40 +21,27 @@
             <package
               v-on:reload="reload"
               :user-package="userPackage"
-              :storage="true"
-              :booked="true"
-            />
-          </div>
+              :storage=true
+              :booked=true
+          />
         </div>
-        <p>
-          Bei Änderungen deiner Mitgliedschaft kontaktiere bitte unseren
-          Frontdesk per Mail an
-          <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
-        </p>
-      </fieldset>
-      <fieldset v-if="hasSmartGarage">
-        <legend>Credits</legend>
-        <div style="margin-top: 20px; margin-bottom: 15px">
-          <span>Aktueller Status: </span>
-          <span v-if="this.getAllCredits() === 0">
-            <strong><span>0 Credits</span> </strong>
-          </span>
-          <span v-if="this.getAllCredits() !== 0">
-            <transition name="fade">
-              <span v-show="!loading"
-                ><strong>
-                  <span style="color: green"
-                    >{{ this.getAllCredits() }} Credits</span
-                  >
-                </strong></span
-              >
-            </transition>
-          </span>
-          <!--        <transition name="fade">-->
-
-          <!--          <p v-show="!loadingCredits">aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></p>-->
-          <!--        </transition>-->
-        </div>
+      </div>
+      <p>Bei Änderungen deiner Mitgliedschaft kontaktiere bitte unseren Frontdesk per Mail an
+        <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
+    </fieldset>
+    <fieldset v-if="hasSmartGarage">
+      <legend>Credits</legend>
+      <div style="margin-top: 20px; margin-bottom: 15px">
+        <span>Aktueller Status: </span>
+        <span v-if="this.getAllCredits() === 0">
+          <strong><span>0 Credits</span> </strong>
+        </span>
+        <span v-if="this.getAllCredits() !== 0">
+          <transition name="fade">
+            <span v-show="!loading"><strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></span>
+          </transition>
+        </span>
+      </div>
 
       <p>Monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
       <p>Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die Freikontingente können nicht ins nächste Monat mitgenommen werden. Die zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.  Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.</p>
@@ -73,8 +60,6 @@
         <p style="font-size: smaller"><u>Hinweis: Credits können für die Arbeitszeit an den Maschinen genutzt werden.</u></p>
       </div>
     </fieldset>
-    <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-
 
     <fieldset>
       <legend>Lager</legend>
@@ -144,8 +129,21 @@ export default {
         if (metadata?.allow_credits) {
           this.hasSmartGarage = true
         }
-        return true;
-      });
+        return true
+      })
+      // check if package has "is_membership_identifier" flag to identify the membership package
+      // (show only identified membership in that case)
+      // https://grandgarage.atlassian.net/browse/CON-443
+      let identifiedMembership = null
+      this.membership.forEach((p) => {
+        if (p?._embedded?.package?.metadata?.is_membership_identifier) {
+          identifiedMembership = p
+        }
+      })
+      if (identifiedMembership) {
+        this.membership = [];
+        this.membership.push(identifiedMembership)
+      }
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
@@ -196,17 +194,20 @@ export default {
       }
       return Number(creditSum * 10).toFixed(1);
     },
-    getMonthlyCredits() {
-      if (this?.membership) {
-        //console.log(this.membership[0])
-        let monthlyCredits = 0;
-        this.membership[0].credits.forEach((credit) => {
-          if (credit?.period === "month") {
-            monthlyCredits = parseFloat(credit.amount);
-          }
-        });
-        return monthlyCredits * 10;
-      }
+    getMonthlyCredits () {
+      // check all memberPackages for possible monthly credits
+      let monthlyCredits = 0
+      this.memberPackages.forEach((p) => {
+        if (p?.credits.length > 0) {
+          p.credits.forEach((credit) => {
+            if (credit?.period === 'month') {
+              monthlyCredits += parseFloat(credit.amount)
+            }
+          })
+
+        }
+      })
+      return monthlyCredits * 10
     },
     checkValue($value) {
       if (parseFloat($value) > this.deposit) {
