@@ -31,61 +31,6 @@
         <loading-spinner-inline v-if="isLoading" />
       </div>
       <br />
-      <fieldset id="v-step-0" class="p-4">
-        <legend>Deine Reservierungen</legend>
-        <div v-if="bookings">
-          <table
-            v-if="bookings.length > 0"
-            class="member-portal-table table-auto"
-          >
-            <thead>
-              <tr>
-                <th class="activity-date">Startzeit</th>
-                <th class="activity-amount">Dauer</th>
-                <th class="activity-description">Maschine</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="booking of displayedBookings" :key="booking.id">
-                <td class="activity-date">
-                  {{
-                    new Date(booking.fromDateTime).toLocaleDateString('de-AT')
-                  }}
-                </td>
-                <td class="activity-date">
-                  {{
-                    durationAsString(
-                      new Date(booking.fromDateTime),
-                      new Date(booking.untilDateTime),
-                    )
-                  }}
-                </td>
-                <td class="activity-description">{{ booking.resource }}</td>
-              </tr>
-            </tbody>
-            <div class="text-center bg-white py-2">
-              <button
-                class="pagination-button"
-                @click="previousPage"
-                :disabled="currentPage === 1"
-              >
-                <font-awesome-icon icon="arrow-circle-left" />
-              </button>
-              <button
-                class="pagination-button"
-                @click="nextPage"
-                :disabled="currentPage === totalPages"
-              >
-                <font-awesome-icon icon="arrow-circle-right" />
-              </button>
-            </div>
-          </table>
-          <div v-else><p>Keine Reservierungen vorhanden.</p></div>
-        </div>
-      </fieldset>
-
-      <br />
-
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
         <Alert
@@ -141,6 +86,61 @@
               </button>
             </div>
           </div>
+        </div>
+      </fieldset>
+
+      <br />
+
+      <fieldset id="v-step-0" class="p-4">
+        <legend>Deine Reservierungen</legend>
+        <div v-if="bookings">
+          <table
+            v-if="bookings.length > 0"
+            class="member-portal-table table-auto"
+          >
+            <thead>
+              <tr>
+                <th class="activity-date">Startzeit</th>
+                <th class="activity-amount">Dauer</th>
+                <th class="activity-description">Maschine</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="booking of displayedBookings" :key="booking.id">
+                <td class="activity-date">
+                  {{
+                    new Date(booking.fromDateTime).toLocaleDateString('de-AT')
+                  }}
+                </td>
+                <td class="activity-date">
+                  {{
+                    durationAsString(
+                      new Date(booking.fromDateTime),
+                      new Date(booking.untilDateTime),
+                    )
+                  }}
+                </td>
+                <td class="activity-description">{{ booking.resource }}</td>
+              </tr>
+            </tbody>
+            <div class="text-center bg-white py-2">
+              <button
+                class="pagination-button"
+                @click="previousPage"
+                :disabled="currentPage === 1"
+              >
+                <font-awesome-icon icon="arrow-circle-left" />
+              </button>
+              <button
+                class="pagination-button"
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+              >
+                <font-awesome-icon icon="arrow-circle-right" />
+              </button>
+            </div>
+          </table>
+          <div v-else><p>Keine Reservierungen vorhanden.</p></div>
         </div>
       </fieldset>
     </section>
