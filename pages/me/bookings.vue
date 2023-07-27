@@ -111,8 +111,10 @@
             </v-select>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
               <machine-calendar
+                ref="machineCalender"
                 class="pt-6"
                 :resource="this.selectedMachine.id"
+                :member="this.member"
                 @dateConflict="setDateConflict"
               ></machine-calendar>
             </span>
@@ -120,7 +122,10 @@
               <button
                 class="input-button-primary v-step-4 shadow-md"
                 @click="openModal"
-                :disabled="dateConflict"
+                :disabled="
+                  dateConflict ||
+                  this.$store.getters.getSelectedBookings.length <= 0
+                "
               >
                 <svg
                   class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
@@ -143,7 +148,7 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue, { ref } from 'vue';
 import { helper } from '~/plugins/helper';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
@@ -228,7 +233,6 @@ export default {
   },
   computed: {
     newBookings() {
-      console.log('newBookings', this.$store.getters.getSelectedBookings);
       const bookings = this.$store.getters.getSelectedBookings;
       const readableBookings = bookings.slice();
       readableBookings.map(function (booking) {
@@ -238,8 +242,6 @@ export default {
         const untilDateTime = moment(booking.untilDateTime).format(
           'DD.MM.YYYY HH:mm',
         );
-        console.log('fromDateTime', fromDateTime);
-        console.log('untilDateTime', untilDateTime);
         booking.value = fromDateTime + ' - ' + untilDateTime;
         booking.key = 'Zeitraum';
         return booking;
@@ -296,8 +298,16 @@ export default {
       this.modalOpen = false;
     },
     saveEvents() {
-      alert('Event saved!');
       this.closeModal();
+
+      // Call method in child component
+      const machineCalender = this.$refs.machineCalender;
+      if (
+        machineCalender &&
+        typeof machineCalender.writeBookingsToFabman === 'function'
+      ) {
+        machineCalender.writeBookingsToFabman();
+      }
     },
     startTour() {
       // Start introduction tour
@@ -337,13 +347,14 @@ export default {
           this.loadingMachines = false;
         });
     },
+
     async fetchBookings(memberId) {
       this.loadingBookings = true;
       await this.$store
         .dispatch('getBookingsByMember', memberId)
         .then((res) => {
           this.bookings = res;
-          console.log('bookings', res);
+          console.log('fetched bookings', res);
         })
         .catch((error) => {
           console.log('Error! Could not load bookings', error);

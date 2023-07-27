@@ -20,13 +20,13 @@
         }"
         :on-event-delete="onEventCreate"
         @event-drag-create="onEventDragCreate"
-        :snap-to-time="15"
+        :snap-to-time="60"
         @view-change="viewUpdated"
         @event-change="eventChanged"
         @event-create="eventCreated"
         @event-drop="eventDropped"
         @event-delete="eventDeleted"
-        style="height: 50vh"
+        style="height: 52vh"
         class="vuecal--blue-theme vuecal--full-height-delete"
         default-view="week"
         :events="events"
@@ -50,7 +50,7 @@ import { helper } from '@/plugins/helper';
 
 export default {
   components: { VueCal },
-  props: ['resource', 'space'],
+  props: ['resource', 'space', 'member'],
   data() {
     return {
       isLoading: false,
@@ -76,7 +76,7 @@ export default {
     },
   },
   async created() {
-    await this.getBookings();
+    await this.fetchBookings();
   },
   methods: {
     onEventCreate(event, deleteEventFunction) {
@@ -95,6 +95,7 @@ export default {
       };
     },
     onEventDragCreate(calEvent) {
+      console.log('onEventDragCreate');
       this.saveBooking(calEvent);
     },
     saveBooking(calEvent) {
@@ -119,25 +120,55 @@ export default {
           this.selectedBookings.push(newBooking);
         }
 
-        this.storeBookings();
+        this.storeBookings(this.selectedBookings);
+        console.log('booking stored', this.$store.getters.getSelectedBookings);
       } else {
         // Wrong event format
         console.log('Wrong event format. Given: ' + typeof calEvent);
       }
     },
     dateConflict() {
+      // TODO
+      console.log('DATE CONFLICT!');
       this.$emit('dateConflict', 'Datum überschneidet sich.');
     },
-    storeBookings() {
+    storeBookings(bookings) {
       // Save selected bookings in the global store
-      this.$store.commit('setSelectedBookings', this.selectedBookings);
+      this.$store.commit('setSelectedBookings', bookings);
+    },
+    writeBookingsToFabman() {
+      this.isLoading = true;
+      // Send POST request to fabman for each booking
+      this.$store.getters.getSelectedBookings.forEach((booking) => {
+        booking.member = String(this.member.id);
+        booking.resource = String(booking.resource);
+        console.log('booking', booking);
+        this.$store
+          .dispatch('createBooking', booking)
+          .then((data) => {
+            if (data.statusCode && data.statusCode >= 300) {
+              console.log('error', data);
+            }
+            console.log('Reservierungen wurden erstellt!');
+          })
+          .catch((error) => {
+            console.log(error.response.status, error.response.data.error);
+            this.$sentry.captureException(new Error(error));
+          })
+          .finally(() => {
+            this.isLoading = false;
+            this.$store.commit('resetBookings');
+            this.fetchBookings();
+          });
+      });
     },
     viewUpdated() {
       console.log('viewUpdated');
     },
     eventChanged(calEvent) {
       // TODO
-      this.saveBooking(calEvent.event);
+      console.log('eventChanged', calEvent);
+      //this.saveBooking(calEvent.event);
     },
     eventDropped(calEvent) {
       // TODO
@@ -171,7 +202,7 @@ export default {
 
       return overlapping;
     },
-    async getBookings() {
+    async fetchBookings() {
       this.bookings = [];
       this.isLoading = true;
       //this.resource = 3136 //TODO for debugging - remove!

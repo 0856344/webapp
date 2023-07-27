@@ -132,6 +132,9 @@ const createStore = () => {
       setSelectedBookings(state, bookings) {
         state.selectedBookings = bookings;
       },
+      resetBookings(state) {
+        state.selectedBookings = [];
+      },
       setAnalyticsCookie(state, data) {
         state.analyticsCookie = data;
       },
@@ -457,6 +460,11 @@ const createStore = () => {
         //TODO
         const r = await connector.get(`v1/fabman/bookings?space=${id}`);
         return r.data;
+      },
+      async createBooking({ commit }, data) {
+        console.log('createBooking', data);
+        const res = await connector.post('/v1/fabman/bookings/', data);
+        return res.data;
       },
       async getResource({ state }, id) {
         const r = await connector.get(`v1/fabman/resources/${id}`);
