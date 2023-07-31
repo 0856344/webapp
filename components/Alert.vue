@@ -1,0 +1,88 @@
+<template>
+  <div v-show="show">
+    <div
+      v-if="!closed"
+      :style="{ backgroundColor: color }"
+      class="info-box flex text-white justify-between align-middle border px-4 py-3 rounded relative my-3"
+      role="alert"
+      style="min-height: 60px"
+    >
+      <span>
+        <span class="block sm:inline"
+          ><font-awesome-icon icon="info-circle"></font-awesome-icon>&nbsp;
+          {{ message }}</span
+        >
+      </span>
+      <span>
+        <span class="close-button" @click="toggle">
+          <svg
+            class="fill-current h-6 w-6"
+            role="button"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <title>Close</title>
+            <path
+              d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+            />
+          </svg>
+        </span>
+      </span>
+    </div>
+    <div v-else-if="dismissible" class="my-3" style="transition: 0.3s">
+      <font-awesome-icon
+        class="clickable-icon"
+        icon="info-circle"
+        @click="toggle"
+      ></font-awesome-icon>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    show: Boolean,
+    message: {
+      type: String,
+      required: true,
+    },
+    color: {
+      type: String,
+      default: '#72a4b2',
+    },
+    dismissible: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      closed: false,
+    };
+  },
+  methods: {
+    toggle: function () {
+      this.closed = !this.closed;
+    },
+  },
+};
+</script>
+
+<style scoped lang="scss">
+.info-box {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+  transition: 0.3s;
+}
+
+.close-button {
+  color: white;
+  fill: white;
+}
+
+.close-button:hover {
+  color: $color-black;
+  fill: $color-black;
+}
+</style>

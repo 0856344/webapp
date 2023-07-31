@@ -4,7 +4,7 @@
 
 # GrandGarage - Website (nuxtJs)
 
-The Web application for [grandgarage.eu](https://grandgarage.eu/). <br> 
+The Web application for [grandgarage.eu](https://grandgarage.eu/). <br>
 It includes a memberportal for the services at Grand Garage, a makerspace in Linz, Austria.
 
 ## Tech Stack
@@ -14,14 +14,14 @@ It includes a memberportal for the services at Grand Garage, a makerspace in Lin
 | NuxtJs    | a higher-level framework of the JS-framework [vuejs](https://vuejs.org/) / [official website](https://nuxtjs.org/) |
 | Storyblok | a modern headless CMS / [official website](www.storyblok.com)                                                      |
 | Netlify   | a build and deployment platform / [official website](https://www.netlify.com/with/vue/)                            |
- 
+
 
 ## Requirements
-  | Tool     | Description / Link                                                    |
+| Tool     | Description / Link                                                    |
   |----------|-----------------------------------------------------------------------|
-  | NodeJS   | [NodeJs](https://nodejs.org/en)                                       |
-  | IDE      | [VS Code ](https://code.visualstudio.com/) with the [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) extension or WebStorm/[PHPStorm](https://www.jetbrains.com/phpstorm/)                                                                |
-  | Terminal | [VS Code's integrated terminal](https://code.visualstudio.com/docs/terminal/basics) or [PHPStorm terminal](https://www.jetbrains.com/help/phpstorm/terminal-emulator.html) |
+| NodeJS   | [NodeJs](https://nodejs.org/en)                                       |
+| IDE      | [VS Code ](https://code.visualstudio.com/) with the [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) extension or WebStorm/[PHPStorm](https://www.jetbrains.com/phpstorm/)                                                                |
+| Terminal | [VS Code's integrated terminal](https://code.visualstudio.com/docs/terminal/basics) or [PHPStorm terminal](https://www.jetbrains.com/help/phpstorm/terminal-emulator.html) |
 
 (see also [Nuxt - Get started](https://nuxtjs.org/docs/get-started/installation/))
 
@@ -36,10 +36,6 @@ To support https on localhost, follow these steps:
     mkcert -install
     mkcert localhost
     ```
-   
-#### FAQ
-##### Request failed to proxy: ECONNREFUSED
-Make sure you use a supported NodeJS Version in all of your Terminal sessions. Node Version can be switches by using [NVM](https://github.com/nvm-sh/nvm).
 
 ## Start
 ```
@@ -129,11 +125,19 @@ yarn run nuxt-production
 yarn run generate
 ```
 
-## Storyblok
-### FAQs
-#### How to connecte a Storyblok Component with the webapp?
+## FAQs
+### How to connecte a Storyblok Component with the webapp?
 Check how to connect Bloks [here](https://grandgarage.atlassian.net/wiki/spaces/ITINT/pages/2369486915/Neuen+Block+anlegen+v1).
 
+### Request failed to proxy: ECONNREFUSED
+Make sure you use a supported NodeJS Version in all of your Terminal sessions. Node Version can be switches by using [NVM](https://github.com/nvm-sh/nvm).
+
+### How to add fontawesome icons?
+
+
+
+
+## Architecture
 <br>
 <p align="center">
 <img src="./docs/graphs/architecture.svg" width="200">

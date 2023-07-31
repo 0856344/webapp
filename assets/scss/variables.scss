@@ -13,6 +13,7 @@ $color-yellow: #eae222;
 $color-blue-alt: #72A4B2;
 $color-red: #8F0E00;
 $color-black: #333;
+$color-gray-100: #e1e1e1;
 
 $color-bright-bg: #f2f3ee;
 
@@ -24,10 +25,13 @@ $menu-min-width: 860px;
 $mobile-small: 576px;
 $mobile-large: 992px;
 
+// Tables
+$table-cell-min-width: 150px;
+
 // wizard parameters
 $step-size: 30px;
 
-// Genral Layout Margins
+// General Layout Margins
 
 // "Desktop view"
 $margin-page-wide: 0 80px; // for layout-related images/areas etc (with enough space for vertical breadcrumb)

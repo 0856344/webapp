@@ -11,15 +11,15 @@
             :key="userPackage.id">
           <package v-on:reload="reload"
               :user-package="userPackage"
-              :storage=false />
+              :storage="false"
+            />
+          </div>
         </div>
-      </div>
 
-      <div v-if="memberStorage && memberStorage.length > 0" >
-        <div
-            v-for="userPackage of memberStorage"
-            :key="userPackage.id">
-          <package v-on:reload="reload"
+        <div v-if="memberStorage && memberStorage.length > 0">
+          <div v-for="userPackage of memberStorage" :key="userPackage.id">
+            <package
+              v-on:reload="reload"
               :user-package="userPackage"
               :storage=true
               :booked=true
@@ -78,13 +78,12 @@
     </fieldset>
 
   </div>
- </template>
+</template>
 
 <script>
-
 export default {
-  middleware: 'authenticated',
-  data () {
+  middleware: "authenticated",
+  data() {
     return {
       memberPackages: null,
       membership: null,
@@ -100,12 +99,12 @@ export default {
       loadingAvailableStorage: false
     }
   },
-  async mounted () {
-    await this.reload()
+  async mounted() {
+    await this.reload();
   },
   methods: {
-    formatDate (date) {
-      return new Date(date).toLocaleDateString('de-at')
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("de-at");
     },
     async reload () {
       this.loading = true
@@ -170,8 +169,11 @@ export default {
         return p.metadata.is_storage_box && p.metadata.shop_visible
       })
     },
-    async loadCreditStatus () {
-      this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
+    async loadCreditStatus() {
+      this.memberCredits = await this.$store.dispatch(
+        "getMemberCredits",
+        this.$store.state.member.id
+      );
       // update credits status every 30 seconds
       setInterval(() => {
         this.$store.dispatch('getMemberCredits', this.$store.state.member.id).then((response) => {
@@ -181,16 +183,16 @@ export default {
         })
       }, 30000)
     },
-    getAllCredits () {
-      let creditSum = 0
+    getAllCredits() {
+      let creditSum = 0;
       if (this.memberCredits) {
         this.memberCredits.forEach((credit) => {
           if (credit?.remainingAmount) {
-            creditSum += parseFloat(credit.remainingAmount)
+            creditSum += parseFloat(credit.remainingAmount);
           }
-        })
+        });
       }
-      return Number(creditSum * 10).toFixed(1)
+      return Number(creditSum * 10).toFixed(1);
     },
     getMonthlyCredits () {
       // check all memberPackages for possible monthly credits
@@ -207,35 +209,46 @@ export default {
       })
       return monthlyCredits * 10
     },
-    checkValue ($value) {
+    checkValue($value) {
       if (parseFloat($value) > this.deposit) {
-        this.redeemDeposit = this.deposit
+        this.redeemDeposit = this.deposit;
       }
       if (this.decimalCount($value) > 2) {
-        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2)
+        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2);
       }
-    }
+    },
   },
   computed: {
-    mail () {
-      const fullName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
-      const memberNumber = this.$store.state.user.profile.memberNumber
-      return 'mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: ' + fullName + ' ' + '(' + memberNumber + ')'
-    }
-  }
-}
+    mail() {
+      const fullName =
+        this.$store.state.user.profile.firstName +
+        " " +
+        this.$store.state.user.profile.lastName;
+      const memberNumber = this.$store.state.user.profile.memberNumber;
+      return (
+        "mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: " +
+        fullName +
+        " " +
+        "(" +
+        memberNumber +
+        ")"
+      );
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-  fieldset {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #000;
-  }
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
-  }
+fieldset {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #000;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>
