@@ -43,6 +43,14 @@ Vue.filter('machinePricePerTimeText', function (machine) {
 });
 
 export const helper = {
+  isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
+  },
+  isValidDate(date) {
+    return date instanceof Date && !isNaN(date);
+  },
   dateRangeOverlaps(aStart, aEnd, bStart, bEnd) {
     if (aStart <= bStart && bStart <= aEnd) return true; // b starts in a
     if (aStart <= bEnd && bEnd <= aEnd) return true; // b ends in a

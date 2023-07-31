@@ -2,7 +2,6 @@
   <div class="profile" v-if="user !== null && member !== null">
     <div class="header">
       <h1 class="name">{{ member.firstName }} {{ member.lastName }}</h1>
-      <!--<h1 class="name">{{ user.profile.firstName }} {{ user.profile.lastName }}</h1> -->
       <h2 style="display: none">STAGING</h2>
       <code class="number">#{{ member.memberNumber }}</code>
     </div>
@@ -12,17 +11,17 @@
       role="alert"
     >
       <font-awesome-icon icon="info-circle" />
-      {{ $t("openSafetyTraining") }}
+      {{ $t('openSafetyTraining') }}
     </div>
     <div class="tab-section">
       <div class="tab-section-menu">
-        <MenuLink to="/me/" icon="user">{{ $t("myProfile") }}</MenuLink>
+        <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
         <MenuLink to="/me/bookings/" icon="calendar">{{
-          $t("machineBooking")
+          $t('machineBooking')
         }}</MenuLink>
         <MenuLink v-if="isMember" to="/me/packages" icon="coins"
-          >{{ $t("membership") }} & Credits
-        </MenuLink>
+          >{{ $t('membership') }} & Credits</MenuLink
+        >
         <MenuLink
           to="/me/trainings"
           icon="graduation-cap"
@@ -33,14 +32,14 @@
             v-if="!hasCompletedRequiredCourses"
             icon="info-circle"
           />
-          {{ $t("trainings") }}
+          {{ $t('trainings') }}
         </MenuLink>
         <MenuLink to="/de/gutscheine" icon="money-bill">Gutscheine</MenuLink>
         <MenuLink
           :isActive="$route.name.includes('invoices')"
           to="/me/invoices"
           icon="file-invoice"
-          >{{ $t("invoices") }}
+          >{{ $t('invoices') }}
         </MenuLink>
       </div>
       <div class="tab-section-content">
@@ -48,28 +47,32 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    Deine Daten werden geladen. Bitte lade die Seite neu.
+    <big-loading-spinner></big-loading-spinner>
+  </div>
 </template>
 
 <script>
-import MenuLink from "@/bloks/MenuLink.vue";
+import MenuLink from '@/bloks/MenuLink.vue';
 
 export default {
-  middleware: "authenticated",
+  middleware: 'authenticated',
   components: { MenuLink },
   data() {
     return {
       hasCompletedOnboarding: false, // TODO: implement hasCompletedOnboarding function in connector
       hasCompletedRequiredCourses: true,
       test: null,
-      lastName: "",
+      lastName: '',
     };
   },
   created() {},
   async mounted() {
     //this.hasCompletedOnboarding = await this.$store.dispatch('hasCompletedOnboarding'
     this.hasCompletedRequiredCourses = await this.$store.dispatch(
-      "hasCompletedRequiredCourses",
-      this.$store.state.member.id
+      'hasCompletedRequiredCourses',
+      this.$store.state.member.id,
     );
   },
   methods: {
@@ -82,8 +85,8 @@ export default {
       // let data = this.$store.getters.getMemberCourseById(p);
     },
     logout() {
-      this.$store.dispatch("logout").then(() => {
-        this.$router.push("/");
+      this.$store.dispatch('logout').then(() => {
+        this.$router.push('/');
       });
     },
   },
@@ -96,7 +99,7 @@ export default {
     },
     isMember() {
       // TODO
-      return this.$store.state.user.profile.state === "active";
+      return this.$store.state.user.profile.state === 'active';
     },
   },
 };

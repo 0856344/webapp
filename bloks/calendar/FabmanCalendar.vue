@@ -2,20 +2,20 @@
   <div v-editable="blok">
     <!-- TODO -->
     <div class="fabman-calendar">
-      <machine-calendar
+      <booking-calendar
         :space="this.blok.space"
         :resource="4049"
-      ></machine-calendar>
+      ></booking-calendar>
     </div>
   </div>
 </template>
 
 <script>
-import MachineCalendar from "@/components/MachineCalendar.vue";
+import bookingCalendar from '@/components/calendar/BookingCalendar.vue';
 
 export default {
-  components: { MachineCalendar },
-  props: ["blok"],
+  components: { bookingCalendar },
+  props: ['blok'],
 };
 </script>
 
@@ -26,7 +26,7 @@ export default {
   margin: 50px 0;
   background-color: white;
 
-  .machine-calendar {
+  .booking-calendar {
     width: 80%;
     @include media-breakpoint-down(sm) {
       width: 100%;

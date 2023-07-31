@@ -3,16 +3,16 @@ import Vue from 'vue';
 // VUE COMPONENTS
 import Markdown from '@/components/Markdown.vue';
 import Loading from '@/components/Loading.vue';
-import LoadingSpinner from '~/components/Spinners/LoadingSpinner.vue';
+import LoadingSpinner from '@/components/spinners/LoadingSpinner.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import CookieManager from '@/components/CookieManager.vue';
 import Map from '@/components/Map.vue';
 import Accordion from '@/components/Accordion.vue';
 import Alert from '@/components/Alert.vue';
-import BigLoadingSpinner from '~/components/Spinners/BigLoadingSpinner.vue';
-import LoadingSpinnerInline from '~/components/Spinners/LoadingSpinnerInline.vue';
+import BigLoadingSpinner from '@/components/spinners/BigLoadingSpinner.vue';
+import LoadingSpinnerInline from '@/components/spinners/LoadingSpinnerInline.vue';
 import VueTour from 'vue-tour';
-import Modal from '@/components/Modals/Modal.vue';
+import Modal from '@/components/modals/Modal.vue';
 
 // STORYBLOK COMPONENTS
 import Page from '@/bloks/Page.vue';

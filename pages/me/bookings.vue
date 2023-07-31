@@ -33,11 +33,6 @@
       <br />
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
-        <Alert
-          :show="showInfoBox"
-          :message="infoBoxMsg"
-          :color="infoBoxColor"
-        ></Alert>
         <div>
           <div class="flex-1 mr-6 mb-4">
             <label
@@ -55,22 +50,19 @@
             >
             </v-select>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
-              <machine-calendar
+              <editable-booking-calendar
                 ref="machineCalender"
                 class="pt-6"
                 :resource="this.selectedMachine.id"
                 :member="this.member"
-                @dateConflict="setDateConflict"
-              ></machine-calendar>
+                @reload="fetchBookings(member.id)"
+              ></editable-booking-calendar>
             </span>
             <div v-if="selectedMachine" class="flex justify-end">
               <button
                 class="input-button-primary v-step-4 shadow-md"
                 @click="openModal"
-                :disabled="
-                  dateConflict ||
-                  this.$store.getters.getSelectedBookings.length <= 0
-                "
+                :disabled="this.$store.getters.getSelectedBookings.length <= 0"
               >
                 <svg
                   class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
@@ -93,6 +85,22 @@
 
       <fieldset id="v-step-0" class="p-4">
         <legend>Deine Reservierungen</legend>
+        <div class="flex justify-end pb-2">
+          <button @click="fetchBookings(member.id)" class="gg-button flex">
+            <svg
+              style="fill: white"
+              :class="{ 'spin-animation': loadingBookings }"
+              xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 512 512"
+            >
+              <path
+                d="M142.9 142.9c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5c0 0 0 0 0 0H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1C73.2 122 55.6 150.7 44.8 181.4c-5.9 16.7 2.9 34.9 19.5 40.8s34.9-2.9 40.8-19.5c7.7-21.8 20.2-42.3 37.8-59.8zM16 312v7.6 .7V440c0 9.7 5.8 18.5 14.8 22.2s19.3 1.7 26.2-5.2l41.6-41.6c87.6 86.5 228.7 86.2 315.8-1c24.4-24.4 42.1-53.1 52.9-83.7c5.9-16.7-2.9-34.9-19.5-40.8s-34.9 2.9-40.8 19.5c-7.7 21.8-20.2 42.3-37.8 59.8c-62.2 62.2-162.7 62.5-225.3 1L185 329c6.9-6.9 8.9-17.2 5.2-26.2s-12.5-14.8-22.2-14.8H48.4h-.7H40c-13.3 0-24 10.7-24 24z"
+              />
+            </svg>
+            <span class="pl-1">{{ $t('reload') }}</span>
+          </button>
+        </div>
         <div v-if="bookings">
           <table
             v-if="bookings.length > 0"
@@ -152,11 +160,10 @@ import Vue, { ref } from 'vue';
 import { helper } from '~/plugins/helper';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
-import MachineCalendar from '@/components/MachineCalendar.vue';
+import EditableBookingCalendar from '@/components/calendar/EditableBookingCalendar.vue';
 import VueTour from 'vue-tour';
 import 'vue-tour/dist/vue-tour.css';
-import Modal from '@/components/Modals/Modal.vue';
-import Alert from '@/components/Alert.vue';
+import Modal from '@/components/modals/Modal.vue';
 import moment from 'moment/moment';
 
 Vue.use(VueTour);
@@ -165,64 +172,31 @@ export default {
   name: 'bookings',
   middleware: 'authenticated',
   // eslint-disable-next-line vue/no-unused-components
-  components: { MachineCalendar, vSelect, VueTour, Modal, Alert },
+  components: { EditableBookingCalendar, vSelect, VueTour, Modal },
   data() {
     return {
+      isMobile: false,
       modalOpen: false,
       loadingMachines: false,
       loadingBookings: false,
       machines: [],
       bookings: [],
       selectedMachine: null,
-      steps: [
-        {
-          target: '#v-step-0',
-          content:
-            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '#v-step-1',
-          content:
-            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '#v-step-2',
-          content:
-            "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '.v-step-3',
-          content:
-            "<b>Reservierung löschen</b> <br><hr class='m-1'>Halte die Maustaste am gewünschten Zeitslot gedrückt, um einen Termin wieder zu entfernen.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '.v-step-4',
-          content:
-            "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
-          offset: -300,
-          background: '#000',
-        },
-      ],
+      steps: null,
       currentPage: 1,
       rowsPerPage: 8,
-      dateConflict: false,
-      showInfoBox: false,
-      infoBoxColor: '',
-      infoBoxMsg: 'lorema sfasf saf saf sadf saf ',
     };
   },
   watch: {
     selectedMachine(value) {
       console.log('machine selected', value);
     },
+  },
+  created() {
+    this.isMobile = helper.isMobile();
+    console.log('isMobile', this.isMobile);
+
+    this.steps = this.createTourText();
   },
   async mounted() {
     // Load machines
@@ -232,17 +206,24 @@ export default {
     await this.fetchBookings(this.member.id);
   },
   computed: {
+    tourStep2Text() {
+      return this.isMobile
+        ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Doppelklicke auf einen Zeitslot, um eine Buchung zu erstellen."
+        : "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.";
+    },
+    tourStep3Text() {
+      return this.isMobile
+        ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Halte eine Buchung gedrückt, um einen Termin wieder zu entfernen."
+        : "<b>Reservierung löschen</b> <br><hr class='m-1'>Halte die Maustaste am gewünschten Zeitslot gedrückt, um einen Termin wieder zu entfernen.";
+    },
     newBookings() {
       const bookings = this.$store.getters.getSelectedBookings;
       const readableBookings = bookings.slice();
       readableBookings.map(function (booking) {
-        const fromDateTime = moment(booking.fromDateTime).format(
-          'DD.MM.YYYY HH:mm',
-        );
-        const untilDateTime = moment(booking.untilDateTime).format(
-          'DD.MM.YYYY HH:mm',
-        );
-        booking.value = fromDateTime + ' - ' + untilDateTime;
+        const date = moment(booking.fromDateTime).format('DD.MM.YYYY');
+        const fromDateTime = moment(booking.fromDateTime).format('HH:mm');
+        const untilDateTime = moment(booking.untilDateTime).format('HH:mm');
+        booking.value = date + ': ' + fromDateTime + ' - ' + untilDateTime;
         booking.key = 'Zeitraum';
         return booking;
       });
@@ -264,20 +245,43 @@ export default {
     },
   },
   methods: {
-    openInfoBox(msg, color = null) {
-      this.infoBoxColor = color;
-      this.infoBoxMsg = msg;
-      this.showInfoBox = true;
+    createTourText() {
+      return [
+        {
+          target: '#v-step-0',
+          content:
+            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
+          offset: -300,
+          background: '#000',
+        },
+        {
+          target: '#v-step-1',
+          content:
+            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
+          offset: -300,
+          background: '#000',
+        },
+        {
+          target: '#v-step-2',
+          content: this.tourStep2Text,
+          offset: -100,
+          background: '#000',
+        },
+        {
+          target: '.v-step-3',
+          content: this.tourStep3Text,
+          offset: -100,
+          background: '#000',
+        },
+        {
+          target: '.v-step-4',
+          content:
+            "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
+          offset: -300,
+          background: '#000',
+        },
+      ];
     },
-    setDateConflict(msg) {
-      console.log('Date Conflict! show info box!');
-      this.dateConflict = true;
-      this.openInfoBox(msg, '#f55252fc');
-    },
-    // rememberBooking(event) {
-    //   console.log('new Booking!', event);
-    //   this.newBookings.push(event);
-    // },
     previousPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
@@ -349,6 +353,9 @@ export default {
     },
 
     async fetchBookings(memberId) {
+      if (!memberId) {
+        memberId = this.member.id;
+      }
       this.loadingBookings = true;
       await this.$store
         .dispatch('getBookingsByMember', memberId)
@@ -379,7 +386,7 @@ button:disabled svg {
   color: $color-orange;
 }
 
-.machine-calendar {
+.booking-calendar {
   background-color: transparent;
 }
 
@@ -394,5 +401,17 @@ button:disabled svg {
 
 .v-step {
   background: black !important;
+}
+.spin-animation {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

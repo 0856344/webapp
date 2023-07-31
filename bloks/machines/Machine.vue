@@ -28,12 +28,12 @@
               class="status"
               :name="m.name"
             />
-            <machine-calendar :resource="m.fabmanId" />
+            <booking-calendar :resource="m.fabmanId" />
           </div>
         </div>
         <div v-else class="machine-list">
           <div class="machine-list-warning">
-            {{ $t("machineViewRestriction") }}
+            {{ $t('machineViewRestriction') }}
           </div>
         </div>
       </div>
@@ -56,18 +56,18 @@
 </template>
 
 <script>
-import MachineStatus from "@/bloks/machines/MachineStatus.vue";
-import MachineCalendar from "@/components/MachineCalendar.vue";
-import MachineHeader from "@/bloks/machines/MachineHeader.vue";
-import { getMetaTagsForPage } from "@/services/MetaDataService";
+import MachineStatus from '@/bloks/machines/MachineStatus.vue';
+import BookingCalendar from '@/components/calendar/BookingCalendar.vue';
+import MachineHeader from '@/bloks/machines/MachineHeader.vue';
+import { getMetaTagsForPage } from '@/services/MetaDataService';
 
 export default {
   components: {
     MachineHeader,
     MachineStatus,
-    MachineCalendar,
+    BookingCalendar,
   },
-  props: ["story"],
+  props: ['story'],
   data() {
     return {
       machines: [],
@@ -82,38 +82,38 @@ export default {
       // Im 1755 Fabman Account unterscheiden sich die IDs zum Produktivsystem - daher werden die Kosten in der lokalen Entwicklung nicht angezeigt
       // Es sollte stattdessen eine "shortform" wie bei den Mitgliedschaften verwendet werden
 
-      const priceHeader = "\n\n**KOSTEN:** ";
-      let priceText = "";
+      const priceHeader = '\n\n**KOSTEN:** ';
+      let priceText = '';
       for (const machineItem of this.machines) {
         if (
           machineItem?.pricePerTimeBusy &&
           machineItem?.pricePerTimeBusySeconds &&
-          machineItem?.pricePerTimeBusy !== "0.00"
+          machineItem?.pricePerTimeBusy !== '0.00'
         ) {
-          priceText = priceText + "\n\n";
+          priceText = priceText + '\n\n';
           priceText =
             priceText +
             machineItem.name +
-            ": " +
-            "**" +
+            ': ' +
+            '**' +
             Number(machineItem.pricePerTimeBusy * 10).toFixed(0) +
-            " Credits pro " +
+            ' Credits pro ' +
             machineItem.pricePerTimeBusySeconds / 60 +
-            " Minute(n)**";
+            ' Minute(n)**';
           priceText =
             priceText +
-            "<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten " +
+            '<br><sub>*Sobald keine Credits mehr vorhanden sind, betragen die Maschinenkosten ' +
             machineItem.pricePerTimeBusy +
-            " € pro " +
+            ' € pro ' +
             machineItem.pricePerTimeBusySeconds / 60 +
-            " Minute(n)*</sub> ";
-          priceText = priceText + "\n\n" + "---" + "\n\n";
+            ' Minute(n)*</sub> ';
+          priceText = priceText + '\n\n' + '---' + '\n\n';
         }
       }
-      if (priceText !== "") {
-        return priceHeader + "\n\n" + "---" + "\n\n" + priceText;
+      if (priceText !== '') {
+        return priceHeader + '\n\n' + '---' + '\n\n' + priceText;
       } else {
-        return "";
+        return '';
       }
     },
     tags() {
@@ -138,8 +138,8 @@ export default {
   async mounted() {
     for (const machineItem of this.machine.machine_status_items) {
       const machineResource = await this.$store.dispatch(
-        "getResource",
-        machineItem.fabmanId
+        'getResource',
+        machineItem.fabmanId,
       );
       this.machines.push(machineResource);
     }

@@ -15,7 +15,7 @@
           </p>
           <ul
             v-show="data.length > 0"
-            class="flex flex-col rounded data-field text-sm list-none text-left p-4"
+            class="flex flex-col rounded data-field text-sm list-disc text-left p-4"
           >
             <li v-for="item in data" :key="item.id" class="mb-2">
               {{ item.value }}
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import loadingSpinner from '@/components/Spinners/LoadingSpinner.vue';
+import loadingSpinner from '@/components/spinners/LoadingSpinner.vue';
 
 export default {
   name: 'GeneralModal',

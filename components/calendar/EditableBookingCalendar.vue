@@ -1,7 +1,29 @@
 <template>
   <div>
     <div class="flex justify-end pb-2">
-      <button @click="resetBookings(true)" class="gg-button flex">
+      <button
+        v-if="this.selectedBookings.length > 0 || conflictedDate"
+        @click="resetBookings() && this.$emit('reload')"
+        class="gg-button flex"
+      >
+        <svg
+          style="fill: white"
+          :class="{ 'spin-animation': fetchingBookings }"
+          xmlns="http://www.w3.org/2000/svg"
+          height="1em"
+          viewBox="0 0 448 512"
+        >
+          <path
+            d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
+          />
+        </svg>
+        <span class="pl-1">{{ $t('reset') }}</span>
+      </button>
+      <button
+        v-else
+        @click="resetBookings(true) && this.$emit('reload')"
+        class="gg-button flex"
+      >
         <svg
           style="fill: white"
           :class="{ 'spin-animation': fetchingBookings }"
@@ -13,20 +35,56 @@
             d="M142.9 142.9c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8H463.5c0 0 0 0 0 0H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1C73.2 122 55.6 150.7 44.8 181.4c-5.9 16.7 2.9 34.9 19.5 40.8s34.9-2.9 40.8-19.5c7.7-21.8 20.2-42.3 37.8-59.8zM16 312v7.6 .7V440c0 9.7 5.8 18.5 14.8 22.2s19.3 1.7 26.2-5.2l41.6-41.6c87.6 86.5 228.7 86.2 315.8-1c24.4-24.4 42.1-53.1 52.9-83.7c5.9-16.7-2.9-34.9-19.5-40.8s-34.9 2.9-40.8 19.5c-7.7 21.8-20.2 42.3-37.8 59.8c-62.2 62.2-162.7 62.5-225.3 1L185 329c6.9-6.9 8.9-17.2 5.2-26.2s-12.5-14.8-22.2-14.8H48.4h-.7H40c-13.3 0-24 10.7-24 24z"
           />
         </svg>
-        <span class="pl-1">Reload</span>
+        <span class="pl-1">{{ $t('reload') }}</span>
       </button>
     </div>
     <div v-if="isLoading" class="loading-background">
       <div
         class="flex w-100 justify-content-center justify-center items-center text-center"
       >
-        <div class="spinner-ring"></div>
+        <big-loading-spinner />
       </div>
     </div>
-    <div v-else class="machine-calendar">
+    <div v-else class="booking-calendar">
       <vue-cal
+        v-if="isMobile"
+        ref="vuecal"
+        small
+        today-button
+        :editable-events="{
+          title: false,
+          drag: false,
+          resize: true,
+          delete: true,
+          create: true,
+        }"
+        :snap-to-time="60"
+        :drag-to-create-event="false"
+        :cell-click-hold="false"
+        @cell-dblclick="
+          $refs.vuecal.createEvent($event, 120, {
+            class: 'blue-event',
+          })
+        "
+        @event-create="onEventCreate"
+        @event-delete="eventDeleted"
+        style="height: 52vh"
+        class="vuecal--blue-theme vuecal--full-height-delete"
+        active-view="day"
+        :disable-views="['years', 'year', 'month', 'week']"
+        :events="events"
+        events-count-on-year-view
+        locale="de"
+        :hide-weekdays="[]"
+        :time-from="7 * 60"
+        :time-to="20 * 60"
+        :time-step="60"
+      />
+      <vue-cal
+        v-else
         ref="vuecal"
         xsmall
+        today-button
         :editable-events="{
           title: false,
           drag: true,
@@ -34,15 +92,12 @@
           delete: true,
           create: true,
         }"
-        :on-event-delete="onEventCreate"
         @event-drag-create="onEventDragCreate"
         :snap-to-time="60"
         @view-change="viewUpdated"
         @event-change="eventChanged"
-        @event-create="eventCreated"
-        @event-drop="eventDropped"
         @event-delete="eventDeleted"
-        style="height: 75vh"
+        style="height: 52vh"
         class="vuecal--blue-theme vuecal--full-height-delete"
         default-view="week"
         :events="events"
@@ -55,6 +110,11 @@
         :disable-views="['years']"
       />
     </div>
+    <Alert
+      :show="showInfoBox"
+      :message="infoBoxMsg"
+      :color="infoBoxColor"
+    ></Alert>
   </div>
 </template>
 
@@ -63,17 +123,23 @@ import moment from 'moment';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 import { helper } from '@/plugins/helper';
+import Alert from '@/components/Alert.vue';
 
 export default {
-  components: { VueCal },
+  components: { VueCal, Alert },
   props: ['resource', 'space', 'member'],
   data() {
     return {
+      isMobile: false,
       fetchingBookings: false,
       creatingBookings: false,
       bookings: null,
       showNotice: true,
       selectedBookings: [],
+      showInfoBox: false,
+      infoBoxColor: '',
+      infoBoxMsg: '',
+      conflictedDate: null,
     };
   },
   computed: {
@@ -88,6 +154,7 @@ export default {
           start: moment(booking.fromDateTime).format('YYYY-MM-DD HH:mm'),
           end: moment(booking.untilDateTime).format('YYYY-MM-DD HH:mm'),
           background: true,
+          state: 'reserved',
         };
       });
     },
@@ -96,11 +163,34 @@ export default {
     },
   },
   async created() {
+    this.isMobile = helper.isMobile();
     await this.fetchBookings();
   },
   methods: {
-    onEventCreate(event, deleteEventFunction) {
-      console.log('onEventDELETE');
+    viewUpdated() {
+      console.log('viewUpdated');
+    },
+    eventCreated(calEvent) {
+      console.log('eventCreated', calEvent);
+      this.saveBooking(calEvent);
+    },
+    eventDeleted(calEvent) {
+      this.removeBooking(calEvent);
+    },
+    eventChanged(calEvent) {
+      if (calEvent.originalEvent) {
+        // Replace new event with the old one
+        this.eventDeleted(calEvent.originalEvent);
+        this.saveBooking(calEvent.event);
+      }
+    },
+    onEventCreate(calEvent) {
+      console.log('onEventCreate', calEvent);
+      this.saveBooking(calEvent);
+    },
+    onEventDragCreate(calEvent) {
+      console.log('onEventDragCreate', calEvent);
+      this.saveBooking(calEvent);
     },
     mapBooking(calEvent) {
       // Format a calendar event to a booking object
@@ -111,50 +201,99 @@ export default {
         title: calEvent.title,
         endTimeMinutes: calEvent.endTimeMinutes,
         startTimeMinutes: calEvent.startTimeMinutes,
-        resource: this.resource,
+        resource: String(this.resource),
+        member: String(this.member.id),
+        state: calEvent.state ? calEvent.state : 'selected',
       };
     },
-    onEventDragCreate(calEvent) {
-      console.log('onEventDragCreate');
-      this.saveBooking(calEvent);
+    async fetchBookings() {
+      this.bookings = [];
+      this.fetchingBookings = true;
+      //this.resource = 3136 //TODO for debugging - remove!
+      if (this.space === 'smartgarage') {
+        // TODO
+        //console.log('SPACE FOUND - booking calender', this.space)
+        //this.getBookingByMethod('getBookingsBySpace', this.space)
+        this.getBookingByMethod('getBookingsByResource', 4049);
+      } else if (this.resource) {
+        //console.log('RESOURCE FOUND - booking calender', this.resource)
+        this.getBookingByMethod('getBookingsByResource', this.resource);
+      }
     },
     saveBooking(calEvent) {
       if (calEvent && calEvent._eid) {
         const newBooking = this.mapBooking(calEvent);
 
-        this.bookings.forEach((booking) => {
-          if (this.dateOverlaps(booking, newBooking) === true) {
-            this.dateConflict();
+        if (
+          helper.isValidDate(newBooking.fromDateTime) &&
+          helper.isValidDate(newBooking.untilDateTime)
+        ) {
+          this.bookings.forEach((booking) => {
+            if (this.dateOverlaps(booking, newBooking) === true) {
+              this.dateConflict();
+              this.conflictedDate = newBooking;
+            }
+          });
+
+          if (this.conflictedDate) {
+            // Do not save this booking
+            return false;
           }
-        });
+          // Check if object already exists, based on the ID, and replace it
+          const index = this.selectedBookings.findIndex(
+            (item) => item.id === newBooking.id,
+          );
+          if (index !== -1) {
+            // Replace the object at the found index with the new object
+            this.selectedBookings.splice(index, 1, newBooking);
+          } else {
+            // No object has been found
+            this.selectedBookings.push(newBooking);
+          }
 
-        // Check if object already exists, based on the ID, and replace it
-        const index = this.selectedBookings.findIndex(
-          (item) => item.id === newBooking.id,
-        );
-        if (index !== -1) {
-          // Replace the object at the found index with the new object
-          this.selectedBookings.splice(index, 1, newBooking);
+          this.storeBookings(this.selectedBookings);
+          console.log(
+            'booking stored',
+            this.$store.getters.getSelectedBookings,
+          );
         } else {
-          // No object has been found
-          this.selectedBookings.push(newBooking);
+          // Wrong date format
+          console.log(
+            'Wrong date format given.',
+            'FromDate' + newBooking.fromDateTime,
+            'UntilDate' + newBooking.untilDateTime,
+          );
         }
-
-        this.storeBookings(this.selectedBookings);
-        console.log('booking stored', this.$store.getters.getSelectedBookings);
       } else {
         // Wrong event format
         console.log('Wrong event format. Given: ' + typeof calEvent);
       }
     },
-    dateConflict() {
-      // TODO
-      console.log('DATE CONFLICT!');
-      this.$emit('dateConflict', 'Datum überschneidet sich.');
-    },
     storeBookings(bookings) {
       // Save selected bookings in the global store
+      if (!bookings) {
+        bookings = this.selectedBookings;
+      }
       this.$store.commit('setSelectedBookings', bookings);
+    },
+    removeBooking(calEvent) {
+      const removedBooking = this.mapBooking(calEvent);
+      this.selectedBookings = this.selectedBookings.filter(function (booking) {
+        return booking.id !== removedBooking.id;
+      });
+      this.storeBookings(this.selectedBookings);
+    },
+    resetBookings(reload = false) {
+      this.bookings = this.bookings.filter(function (booking) {
+        return booking.state !== 'selected';
+      });
+      this.selectedBookings = [];
+      this.$store.commit('resetBookings');
+      this.conflictedDate = null;
+      this.showInfoBox = false;
+      if (reload) {
+        this.fetchBookings();
+      }
     },
     writeBookingsToFabman() {
       this.creatingBookings = true;
@@ -179,70 +318,9 @@ export default {
             this.creatingBookings = false;
             this.resetBookings();
             this.fetchBookings();
+            this.$emit('reload');
           });
       });
-    },
-    resetBookings(reload = false) {
-      this.selectedBookings = [];
-      this.bookings = [];
-      this.$store.commit('resetBookings');
-      if (reload) {
-        this.fetchBookings();
-      }
-    },
-    viewUpdated() {
-      console.log('viewUpdated');
-    },
-    eventChanged(calEvent) {
-      // TODO
-      console.log('eventChanged', calEvent);
-      //this.saveBooking(calEvent.event);
-    },
-    eventDropped(calEvent) {
-      // TODO
-      console.log('eventDropped', calEvent);
-    },
-    eventCreated(calEvent) {
-      console.log('eventCreated', calEvent);
-    },
-    eventDeleted(calEvent) {
-      const removedBooking = this.mapBooking(calEvent);
-      this.selectedBookings = this.selectedBookings.filter(function (booking) {
-        return booking.id !== removedBooking.id;
-      });
-
-      this.storeBookings();
-    },
-    dateOverlaps(newBooking, existingBooking) {
-      if (!newBooking || !existingBooking) {
-        return false;
-      }
-      const overlapping = helper.dateRangeOverlaps(
-        new Date(existingBooking.fromDateTime),
-        new Date(existingBooking.untilDateTime),
-        new Date(newBooking.fromDateTime),
-        new Date(newBooking.untilDateTime),
-      );
-
-      if (overlapping === true) {
-        console.log('Date conflict with ', existingBooking);
-      }
-
-      return overlapping;
-    },
-    async fetchBookings() {
-      this.bookings = [];
-      this.fetchingBookings = true;
-      //this.resource = 3136 //TODO for debugging - remove!
-      if (this.space === 'smartgarage') {
-        // TODO
-        //console.log('SPACE FOUND - booking calender', this.space)
-        //this.getBookingByMethod('getBookingsBySpace', this.space)
-        this.getBookingByMethod('getBookingsByResource', 4049);
-      } else if (this.resource) {
-        //console.log('RESOURCE FOUND - booking calender', this.resource)
-        this.getBookingByMethod('getBookingsByResource', this.resource);
-      }
     },
     getBookingByMethod(method, id) {
       this.$store
@@ -265,6 +343,32 @@ export default {
           this.fetchingBookings = false;
         });
     },
+    dateOverlaps(newBooking, existingBooking) {
+      if (!newBooking || !existingBooking) {
+        return false;
+      }
+      const overlapping = helper.dateRangeOverlaps(
+        new Date(existingBooking.fromDateTime),
+        new Date(existingBooking.untilDateTime),
+        new Date(newBooking.fromDateTime),
+        new Date(newBooking.untilDateTime),
+      );
+
+      if (overlapping === true) {
+        console.log('Date conflict with ', existingBooking);
+      }
+
+      return overlapping;
+    },
+    openInfoBox(msg, color = null) {
+      this.infoBoxColor = color;
+      this.infoBoxMsg = msg;
+      this.showInfoBox = true;
+    },
+    dateConflict() {
+      const msg = 'Datum überschneidet sich.';
+      this.openInfoBox(msg, '#f55252fc');
+    },
   },
 };
 </script>
@@ -280,7 +384,18 @@ export default {
   justify-content: center;
 }
 
-.machine-calendar {
+@media screen and (max-width: 450px) {
+  .vuecal__title {
+    font-size: 0.5em;
+  }
+}
+.vuecal__today-btn {
+  font-size: 0.6em;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.booking-calendar {
   background-color: white;
 
   @include media-breakpoint-down(sm) {
@@ -365,33 +480,6 @@ export default {
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
-  }
-}
-
-/** @see https://loading.io/css/ */
-.spinner-ring {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-}
-
-.spinner-ring:after {
-  content: ' ';
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 6px solid #357f8e;
-  animation: spinner-ring 1.2s linear infinite;
-}
-
-@keyframes spinner-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
     transform: rotate(360deg);
   }
 }
