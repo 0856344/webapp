@@ -1,5 +1,11 @@
 <template>
   <div>
+    <Alert
+      :show="showGlobalInfoBox"
+      :message="globalBoxMsg"
+      :icon="globalBoxIcon"
+      :color="globalBoxColor"
+    ></Alert>
     <div class="flex justify-end pb-2">
       <button
         v-if="this.selectedBookings.length > 0 || invalidDate"
@@ -133,10 +139,14 @@ export default {
       bookings: null,
       showNotice: true,
       selectedBookings: [],
+      invalidDate: null,
       showInfoBox: false,
       infoBoxColor: '',
       infoBoxMsg: '',
-      invalidDate: null,
+      globalBoxIcon: 'info-circle',
+      globalBoxColor: '',
+      showGlobalInfoBox: false,
+      globalBoxMsg: '',
     };
   },
   computed: {
@@ -313,9 +323,22 @@ export default {
               console.log('error', data);
             }
             console.log('Reservierungen wurden erstellt!');
+            this.openGlobalInfoBox(
+              'Reservierung erfolgreich erstellt!',
+              '#29954f',
+              'check',
+              5000,
+            );
           })
           .catch((error) => {
-            console.log(error.response.status, error.response.data.error);
+            if (error.response.data.error) {
+              console.log(error.response.status, error.response.data.error);
+            } else {
+              console.log(error);
+            }
+            this.openGlobalInfoBox(
+              'Ups! Die Reservierung konnte leider nicht erstellt werden. Bitte wende dich an unseren Support.',
+            );
             this.$sentry.captureException(new Error(error));
           })
           .finally(() => {
@@ -368,6 +391,24 @@ export default {
       this.infoBoxColor = color;
       this.infoBoxMsg = msg;
       this.showInfoBox = true;
+    },
+    openGlobalInfoBox(
+      msg,
+      color = '#f55252fc',
+      icon = 'exclamation',
+      duration = 0,
+    ) {
+      this.globalBoxMsg = msg;
+      this.globalBoxColor = color;
+      this.globalBoxIcon = icon;
+      this.showGlobalInfoBox = true;
+
+      if (duration > 0) {
+        // Hide alert after duration (milliseconds)
+        setTimeout(() => {
+          this.showGlobalInfoBox = false;
+        }, duration);
+      }
     },
     dateConflict() {
       const msg = 'Datum überschneidet sich.';

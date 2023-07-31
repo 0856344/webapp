@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show">
+  <div v-show="show" class="fade-transition">
     <div
       v-if="!closed"
       :style="{ backgroundColor: color }"
@@ -9,7 +9,7 @@
     >
       <span>
         <span class="block sm:inline"
-          ><font-awesome-icon icon="info-circle"></font-awesome-icon>&nbsp;
+          ><font-awesome-icon :icon="icon"></font-awesome-icon>&nbsp;
           {{ message }}</span
         >
       </span>
@@ -53,6 +53,10 @@ export default {
     dismissible: {
       type: Boolean,
       default: true,
+    },
+    icon: {
+      type: String,
+      default: 'info-circle',
     },
   },
   data() {
