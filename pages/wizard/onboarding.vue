@@ -426,7 +426,7 @@ export default {
             paidForBy: this.onboardingData.contactInformation.company.id,
             space: this.onboardingData.contactInformation.company.metadata.attendees_space_id,
             metadata: {
-              corporateMemberId: this.onboardingData.contactInformation.company.id
+              corporateMemberId: this.onboardingData.contactInformation.company.id.toString()
             }
 
           }
@@ -438,7 +438,7 @@ export default {
             ...memberData,
             space: this.onboardingData.contactInformation.company.metadata.attendees_space_id,
             metadata: {
-              corporateMemberId: this.onboardingData.contactInformation.company.id
+              corporateMemberId: this.onboardingData.contactInformation.company.id.toString()
             }
           }
           extendMemberDataIban = {

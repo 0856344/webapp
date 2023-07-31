@@ -61,7 +61,7 @@ export default {
       padding: 25px 0 25px 20px;
       font-size: 0.85rem;
     }
-    &.nuxt-link-active {
+    &.nuxt-link-exact-active {
       position: relative;
       @media screen and (max-width: 920px) {
         > div {

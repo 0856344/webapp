@@ -165,10 +165,10 @@ export default {
       this.pretixWorkshops.forEach((item) => {
       })
     },
-
+    //TODO: use is_future parameter from pretix api
     addPretixToStoryblok () {
       this.workshops.forEach((item) => {
-        this.pretixWorkshops.forEach((pretixItem) => {
+        this.pretixWorkshops.forEach((pretixItem) => {  
           if (item.content.pretix_shortform && item.content.pretix_shortform === pretixItem[0].slug) {
             const lastItem = pretixItem[pretixItem.length - 1]
             const startDate = moment(lastItem.date_from)

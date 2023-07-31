@@ -1,38 +1,52 @@
 <template>
-  <div
-    v-editable="blok"
-    v-if="workshopInformation"
-    class="workshop-info"
-  >
+  <div v-editable="blok" v-if="workshopInformation" class="workshop-info">
     <div class="left-content">
-      <h2
-        v-if="subtitle"
-        class="headline"
-      >
+      <h2 v-if="subtitle" class="headline">
         {{ subtitle }}
       </h2>
     </div>
     <div class="right-content">
-      <markdown
-          :value="this.workShopInfo"
-          class="info-text"
-      />
-      <pretix-calendar :calendar="blok.pretix_shortform"/>
+      <markdown :value="this.workShopInfo" class="info-text" />
+      <div v-if="futureEvents && futureEvents.length > 0">
+        <pretix-calendar :calendar="blok.pretix_shortform" />
+      </div>
+      <div v-else class="w-full flex align-middle justify-center">
+        <div class="w-4/5 lg:w-1/2 rounded-md bg-white shadow-sm shadow-blue-700 m-4 py-1 px-2 text-center flex flex-col">
+        <p class="lg:text-xl text-lg font-bold font-mono text-white bg-blue my-2">
+          Danke für dein Interesse an diesem Workshop! </p>
+          <p class="text-lg lg:leading-relaxed leading-tight m-0 mb-2">Derzeit sind keine
+          Termine geplant. Melde dich bei unserem <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a> um auf dem Laufenden zu bleiben.
+        </p>
+      </div>
+      </div>
     </div>
     <div>
-      <component v-for="i in blok.contentBloks" :blok="i" :is="i.component" :key="i.uid" />
+      <component
+        v-for="i in blok.contentBloks"
+        :blok="i"
+        :is="i.component"
+        :key="i.uid"
+      />
     </div>
   </div>
 </template>
 
 <script>
-
 import { getMetaTagsForPage } from '@/services/MetaDataService'
 
 export default {
   props: ['blok', 'workshopInformation'],
   data () {
-    return {}
+    return {
+      futureEvents: []
+    }
+  },
+  created () {
+    this.$store
+      .dispatch('getFutureEvents', this.blok.pretix_shortform)
+      .then((res) => {
+        this.futureEvents = res
+      })
   },
   computed: {
     subtitle () {
@@ -57,7 +71,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .workshop-info {
   color: #000;
   display: flex;
@@ -97,7 +110,8 @@ export default {
         width: 90%;
       }
     }
-    .teaser, .info-text {
+    .teaser,
+    .info-text {
       font-weight: normal;
       font-family: $font-primary;
       line-height: 1.8;
@@ -105,7 +119,7 @@ export default {
       @include media-breakpoint-down(sm) {
         line-height: 1.7;
         font-size: 1rem;
-        margin: 0 0 0 5%
+        margin: 0 0 0 5%;
       }
     }
     .teaser {
@@ -119,7 +133,7 @@ export default {
         margin-left: 25%;
       }
       color: #fff;
-      padding: .7em .8em;
+      padding: 0.7em 0.8em;
       font-weight: 800;
     }
   }

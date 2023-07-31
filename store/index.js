@@ -413,7 +413,15 @@ const createStore = () => {
           return r.data;
         }
       },
-      saveQuiz({ state }, data) {
+      async getFutureEvents ({ state }, event) {
+        const r = await axios.get(`${baseUrl}/api/pretix/events/${event}`, { params: { is_future: true } })
+        if (r.status === 200) {
+          return r.data
+        } else {
+          return undefined
+        }
+      },
+      saveQuiz ({ state }, data) {
         return connector.post('/v1/courses/save-quiz', data).then((r) => {
           if (r.data.success) {
             return r.data.data;
