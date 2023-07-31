@@ -39,7 +39,7 @@ export default {
         billedInCredits: true,
         items: this.filteredMachines.map((m) => {
           const minutes = m.seconds / 60
-          const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : 'min'
+          const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : minutes < 1 ? 's' : 'min'
           return { name: m.name, price: m.price, unit: timeUnit } 
         }) 
       }

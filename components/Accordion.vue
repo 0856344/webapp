@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="shadow-gray-400 shadow-md bg-blue rounded-lg font-bold" :class="theme">
+  <div class="shadow-gray-400 shadow-md bg-blue rounded-lg font-bold">
     <div class="relative uppercase h-12 pt-2 pr-10 pl-4 text-white cursor-pointer font-bold text-xl" @click="toggle">
       <slot name="header"></slot>
       <span class="absolute top-2 right-4 transition-transform text-base" :class="{ 'rotate-180 -translate-y-1': show }">

@@ -4,12 +4,8 @@
     <br>
     <fieldset>
       <legend>Mitgliedschaft</legend>
-        <div>  <loading-spinner
-            v-if="!(memberPackages && memberStorage)"
-            color="#333"
-        />
-        </div>
-      <div v-if="membership">
+        <div>  <loading-spinner v-if="loading" color="#333"/></div>
+      <div v-if="!loading && membership">
         <div
             v-for="userPackage of membership"
             :key="userPackage.id">
@@ -45,10 +41,6 @@
             <span v-show="!loading"><strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></span>
           </transition>
         </span>
-<!--        <transition name="fade">-->
-
-<!--          <p v-show="!loadingCredits">aktueller Status: <strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></p>-->
-<!--        </transition>-->
       </div>
 
       <p>Monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
@@ -68,19 +60,23 @@
         <p style="font-size: smaller"><u>Hinweis: Credits können für die Arbeitszeit an den Maschinen genutzt werden.</u></p>
       </div>
     </fieldset>
-    <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
-<!--  <div v-if="availableStorage && membership.length > 0" >-->
-<!--    <h2>Lager buchen</h2>-->
-<!--    <div-->
-<!--        v-for="userPackage of availableStorage"-->
-<!--        :key="userPackage.id">-->
-<!--      <package v-on:reload="reload"-->
-<!--          :user-package="userPackage"-->
-<!--          :storage=true-->
-<!--          :booked=false-->
-<!--      />-->
-<!--    </div>-->
-<!--  </div>-->
+
+    <fieldset>
+      <legend>Lager</legend>
+      <div>  <loading-spinner v-if="loadingAvailableStorage" color="#333"/></div>
+      <div v-if="!loadingAvailableStorage && availableStorage && availableStorage.length > 0 && membership &&membership.length > 0" >
+        <div
+            v-for="userPackage of availableStorage"
+            :key="userPackage.id">
+          <package v-on:reload="reload"
+              :user-package="userPackage"
+              :storage=true
+              :booked=false
+          />
+        </div>
+      </div>
+    </fieldset>
+
   </div>
  </template>
 
@@ -99,8 +95,9 @@ export default {
       hasDiscount: false,
       // only SmartGarage members have credit feature
       hasSmartGarage: false,
-      loading: false
-      //availableStorage: null
+      loading: false,
+      availableStorage: null,
+      loadingAvailableStorage: false
     }
   },
   async mounted () {
@@ -112,6 +109,7 @@ export default {
     },
     async reload () {
       this.loading = true
+      this.loadingAvailableStorage = true
       await this.loadCreditStatus()
       this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
 
@@ -134,30 +132,43 @@ export default {
         }
         return true
       })
+      // check if package has "is_membership_identifier" flag to identify the membership package
+      // (show only identified membership in that case)
+      // https://grandgarage.atlassian.net/browse/CON-443
+      let identifiedMembership = null
+      this.membership.forEach((p) => {
+        if (p?._embedded?.package?.metadata?.is_membership_identifier) {
+          identifiedMembership = p
+        }
+      })
+      if (identifiedMembership) {
+        this.membership = [];
+        this.membership.push(identifiedMembership)
+      }
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
         const metadata = p._embedded.package.metadata
         return metadata.is_storage_box
       })
-      this.loading = false
-
       //all packages available for booking (Verkauf wurde ausgesetzt)
-      // this.packages = await this.$store.dispatch('getPackages')
-      // // filter already booked storages
-      // this.availableStorage = this.packages.filter((p) => {
-      //   for (const s of this.memberStorage) {
-      //     if (s.package === p.id) {
-      //       return false
-      //     }
-      //   }
-      //   //handle packages with no notes available for storage & visibility or malformed format
-      //   if (!p.notes) {
-      //     console.error('no notes (storage, visible) for package: ', p)
-      //     return false
-      //   }
-      //   return p.notes.is_storage_box && p.notes.shop_visible
-      // })
+      this.packages = await this.$store.dispatch('getPackages')
+      // filter already booked storages
+      this.availableStorage = this.packages.filter((p) => {
+        for (const s of this.memberStorage) {
+          if (s.package === p.id) {
+            return false
+          }
+        }
+        //handle packages with no notes available for storage & visibility or malformed format
+        if (!p.metadata) {
+          console.error('no notes (storage, visible) for package: ', p)
+          return false
+        }
+        this.loading = false
+        this.loadingAvailableStorage = false
+        return p.metadata.is_storage_box && p.metadata.shop_visible
+      })
     },
     async loadCreditStatus () {
       this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
@@ -182,16 +193,19 @@ export default {
       return Number(creditSum * 10).toFixed(1)
     },
     getMonthlyCredits () {
-      if (this?.membership) {
-        //console.log(this.membership[0])
-        let monthlyCredits = 0
-        this.membership[0].credits.forEach((credit) => {
-          if (credit?.period === 'month') {
-            monthlyCredits = parseFloat(credit.amount)
-          }
-        })
-        return monthlyCredits * 10
-      }
+      // check all memberPackages for possible monthly credits
+      let monthlyCredits = 0
+      this.memberPackages.forEach((p) => {
+        if (p?.credits.length > 0) {
+          p.credits.forEach((credit) => {
+            if (credit?.period === 'month') {
+              monthlyCredits += parseFloat(credit.amount)
+            }
+          })
+
+        }
+      })
+      return monthlyCredits * 10
     },
     checkValue ($value) {
       if (parseFloat($value) > this.deposit) {

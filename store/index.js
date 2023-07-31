@@ -315,6 +315,11 @@ const createStore = () => {
         const res = await connector.post(`v1/fabman/members/${id}/packages`, data)
         return res.data
       },
+      async cancelPackage ({ state }, data) {
+        const id = state.member.id
+        const res = await connector.put(`v1/fabman/members/${id}/packages/${data.id}`, data)
+        return res.data
+      },
       // TODO delete (package set in create member, security fix)
       // TODO - remove if deprecated
       // async setPackageOnboarding ({ state }, data) {
@@ -326,11 +331,6 @@ const createStore = () => {
       async uploadImage ({ state }, data) {
         const res = await connector.post('v1/files/image', data)
         //console.log(res)
-        return res.data
-      },
-      async cancelPackage ({ state }, memberPackageId, data) {
-        const id = state.member.id
-        const res = await connector.put(`v1/fabman/members/${id}/packages/${memberPackageId}`, data)
         return res.data
       },
       async getPaymentMethod ({ state }) {
@@ -377,6 +377,14 @@ const createStore = () => {
         const r = await axios.get(`${baseUrl + '/api/pretix/events'}/${subEvent}`)
         if (r.status === 200) {
           return r.data
+        }
+      },
+      async getFutureEvents ({ state }, event) {
+        const r = await axios.get(`${baseUrl}/api/pretix/events/${event}`, { params: { is_future: true } })
+        if (r.status === 200) {
+          return r.data
+        } else {
+          return undefined
         }
       },
       saveQuiz ({ state }, data) {
@@ -583,7 +591,7 @@ const createStore = () => {
         const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
         const cMachines = result.data
           .filter((machine) => { 
-            return (machine.pricePerTimeBusy > 0) 
+            return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList)
           })
           .map((machine) => { return { id: machine.id, name: machine.name, price: machine.pricePerTimeBusy, seconds: machine.pricePerTimeBusySeconds } })
         return cMachines

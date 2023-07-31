@@ -1,20 +1,23 @@
 <template>
-  <section
-    class="lg:pt-5 lg:pb-5 lg:px-0 pt-0 px-1 pb-24 flex justify-center bg-transparent lg:bg-white">
+  <section class="lg:pt-5 lg:pb-5 lg:px-0 pt-0 px-1 pb-24 flex justify-center bg-transparent">
     <div v-if="isLoading" class="inner-content w-11/12">
       <accordion>
         <div slot="header">{{ priceList.title }}</div>
-          <div class="relative flex pb-4">
-            <input type="text" :placeholder="[[$t('search')]]" v-model="search" name="" id=""
-              class="w-full p-4 m-1 box-border pl-16 border-0 rounded-md shadow-md shadow-gray-400 hover:shadow-gray-600 focus:border-2 focus:border-orange focus:rounded-md focus:shadow-orange-800">
-            <font-awesome-icon class="absolute left-3 top-2 p-3 text-orange" icon="search" />
-          </div>
+        <div class="relative flex pb-4">
+          <input type="text" :placeholder="[[$t('search')]]" v-model="search" name="" id=""
+            class="w-full p-4 m-1 box-border pl-16 border-0 rounded-md shadow-md shadow-gray-400 hover:shadow-gray-600 focus:border-2 focus:border-orange focus:rounded-md focus:shadow-orange-800">
+          <font-awesome-icon class="absolute left-3 top-2 p-3 text-orange" icon="search" />
+        </div>
         <div class="px-4 my-8 lg:px-8 lg:my-16">
           <table class="w-full box-border">
             <thead class="">
               <tr class="w-full">
-                <th class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-3/5 w-1/2 border-t border-l bg-gray-900 rounded-tl-md">{{ $t('name') }}</th>
-                <th class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-2/5 w-1/2 border-t border-r bg-gray-900 rounded-tr-md">{{ priceList.billedInCredits ? $t('credits') : $t('priceIn') }}</th>
+                <th
+                  class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-3/5 w-1/2 border-t border-l bg-gray-900 rounded-tl-md">
+                  {{ $t('name') }}</th>
+                <th
+                  class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-2/5 w-1/2 border-t border-r bg-gray-900 rounded-tr-md">
+                  {{ priceList.billedInCredits ? $t('credits') : $t('priceIn') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -57,7 +60,7 @@ export default {
           const price = Math.ceil(item.price * 10)
           if (price.toString().length > longestLength) {
             longestLength = price.toString().length
-          } 
+          }
         } else {
           const whole = Math.floor(item.price).toString()
           if (whole.length > longestLength) {
