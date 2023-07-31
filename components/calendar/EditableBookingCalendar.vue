@@ -2,7 +2,7 @@
   <div>
     <div class="flex justify-end pb-2">
       <button
-        v-if="this.selectedBookings.length > 0 || conflictedDate"
+        v-if="this.selectedBookings.length > 0 || invalidDate"
         @click="resetBookings() && this.$emit('reload')"
         class="gg-button flex"
       >
@@ -45,10 +45,10 @@
         <big-loading-spinner />
       </div>
     </div>
-    <div v-else class="booking-calendar">
+    <div v-else class="editable-booking-calendar">
       <vue-cal
         v-if="isMobile"
-        ref="vuecal"
+        ref="editableVueCal"
         small
         today-button
         :editable-events="{
@@ -61,13 +61,10 @@
         :snap-to-time="60"
         :drag-to-create-event="false"
         :cell-click-hold="false"
-        @cell-dblclick="
-          $refs.vuecal.createEvent($event, 120, {
-            class: 'blue-event',
-          })
-        "
+        @cell-dblclick="createNewEvent"
         @event-create="onEventCreate"
         @event-delete="eventDeleted"
+        @event-change="eventChanged"
         style="height: 52vh"
         class="vuecal--blue-theme vuecal--full-height-delete"
         active-view="day"
@@ -82,7 +79,7 @@
       />
       <vue-cal
         v-else
-        ref="vuecal"
+        ref="editableVueCal"
         xsmall
         today-button
         :editable-events="{
@@ -94,7 +91,6 @@
         }"
         @event-drag-create="onEventDragCreate"
         :snap-to-time="60"
-        @view-change="viewUpdated"
         @event-change="eventChanged"
         @event-delete="eventDeleted"
         style="height: 52vh"
@@ -126,6 +122,7 @@ import { helper } from '@/plugins/helper';
 import Alert from '@/components/Alert.vue';
 
 export default {
+  name: 'editable-booking-calendar',
   components: { VueCal, Alert },
   props: ['resource', 'space', 'member'],
   data() {
@@ -139,7 +136,7 @@ export default {
       showInfoBox: false,
       infoBoxColor: '',
       infoBoxMsg: '',
-      conflictedDate: null,
+      invalidDate: null,
     };
   },
   computed: {
@@ -167,29 +164,32 @@ export default {
     await this.fetchBookings();
   },
   methods: {
-    viewUpdated() {
-      console.log('viewUpdated');
-    },
-    eventCreated(calEvent) {
-      console.log('eventCreated', calEvent);
-      this.saveBooking(calEvent);
+    createNewEvent(startDateTime, durationInMinutes = 120) {
+      // Round start time to the nearest hour
+      this.$refs.editableVueCal.createEvent(
+        helper.roundToNearestHour(startDateTime),
+        durationInMinutes,
+        { class: 'blue-event' },
+      );
     },
     eventDeleted(calEvent) {
+      //console.log('Event deleted', calEvent);
       this.removeBooking(calEvent);
     },
     eventChanged(calEvent) {
       if (calEvent.originalEvent) {
         // Replace new event with the old one
+        //console.log('Event changed', calEvent);
         this.eventDeleted(calEvent.originalEvent);
         this.saveBooking(calEvent.event);
       }
     },
     onEventCreate(calEvent) {
-      console.log('onEventCreate', calEvent);
+      //console.log('onEventCreate', calEvent);
       this.saveBooking(calEvent);
     },
     onEventDragCreate(calEvent) {
-      console.log('onEventDragCreate', calEvent);
+      //console.log('onEventDragCreate', calEvent);
       this.saveBooking(calEvent);
     },
     mapBooking(calEvent) {
@@ -231,14 +231,19 @@ export default {
           this.bookings.forEach((booking) => {
             if (this.dateOverlaps(booking, newBooking) === true) {
               this.dateConflict();
-              this.conflictedDate = newBooking;
+              this.invalidDate = newBooking;
+            }
+            if (helper.dateIsInPast(new Date(newBooking.fromDateTime))) {
+              this.dateIsInPast();
+              this.invalidDate = newBooking;
             }
           });
 
-          if (this.conflictedDate) {
+          if (this.invalidDate) {
             // Do not save this booking
             return false;
           }
+
           // Check if object already exists, based on the ID, and replace it
           const index = this.selectedBookings.findIndex(
             (item) => item.id === newBooking.id,
@@ -252,16 +257,16 @@ export default {
           }
 
           this.storeBookings(this.selectedBookings);
-          console.log(
-            'booking stored',
-            this.$store.getters.getSelectedBookings,
-          );
+          // console.log(
+          //   'booking stored',
+          //   this.$store.getters.getSelectedBookings,
+          // );
         } else {
           // Wrong date format
           console.log(
-            'Wrong date format given.',
-            'FromDate' + newBooking.fromDateTime,
-            'UntilDate' + newBooking.untilDateTime,
+            'Wrong date format given. (fromDate, untilDate)',
+            newBooking.fromDateTime,
+            newBooking.untilDateTime,
           );
         }
       } else {
@@ -289,7 +294,7 @@ export default {
       });
       this.selectedBookings = [];
       this.$store.commit('resetBookings');
-      this.conflictedDate = null;
+      this.invalidDate = null;
       this.showInfoBox = false;
       if (reload) {
         this.fetchBookings();
@@ -301,7 +306,6 @@ export default {
       this.$store.getters.getSelectedBookings.forEach((booking) => {
         booking.member = String(this.member.id);
         booking.resource = String(booking.resource);
-        console.log('booking', booking);
         this.$store
           .dispatch('createBooking', booking)
           .then((data) => {
@@ -369,6 +373,10 @@ export default {
       const msg = 'Datum überschneidet sich.';
       this.openInfoBox(msg, '#f55252fc');
     },
+    dateIsInPast() {
+      const msg = 'Datum liegt in der Vergangenheit.';
+      this.openInfoBox(msg, '#f55252fc');
+    },
   },
 };
 </script>
@@ -395,7 +403,7 @@ export default {
   border-radius: 5px;
 }
 
-.booking-calendar {
+.editable-booking-calendar {
   background-color: white;
 
   @include media-breakpoint-down(sm) {

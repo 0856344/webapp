@@ -27,6 +27,7 @@ import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 
 export default {
+  name: 'booking-calendar',
   components: { VueCal },
   props: ['resource', 'space'],
   data() {

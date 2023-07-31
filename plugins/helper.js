@@ -51,6 +51,11 @@ export const helper = {
   isValidDate(date) {
     return date instanceof Date && !isNaN(date);
   },
+  dateIsInPast(date) {
+    const currentDate = new Date();
+
+    return date < currentDate;
+  },
   dateRangeOverlaps(aStart, aEnd, bStart, bEnd) {
     if (aStart <= bStart && bStart <= aEnd) return true; // b starts in a
     if (aStart <= bEnd && bEnd <= aEnd) return true; // b ends in a

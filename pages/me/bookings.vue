@@ -172,7 +172,7 @@ export default {
   name: 'bookings',
   middleware: 'authenticated',
   // eslint-disable-next-line vue/no-unused-components
-  components: { EditableBookingCalendar, vSelect, VueTour, Modal },
+  components: { EditableBookingCalendar, vSelect, Modal },
   data() {
     return {
       isMobile: false,
