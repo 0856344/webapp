@@ -16,9 +16,9 @@
     <div class="tab-section">
       <div class="tab-section-menu">
         <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-        <MenuLink to="/me/bookings/" icon="calendar">{{
-          $t('machineBooking')
-        }}</MenuLink>
+        <MenuLink to="/me/bookings/" icon="calendar"
+          >{{ $t('machineBooking') }} <span class="dot"></span
+        ></MenuLink>
         <MenuLink v-if="isMember" to="/me/packages" icon="coins"
           >{{ $t('membership') }} & Credits</MenuLink
         >

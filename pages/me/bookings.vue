@@ -3,8 +3,8 @@
     <section>
       <modal
         :show="modalOpen"
-        :header-text="'Buchung bestätigen?'"
-        :content-text="'Sollen deine eingetragenen Termine verbindlich gespeichert werden?'"
+        :header-text="'Buchung bestätigen'"
+        :content-text="'Sollen die ausgewählten Termine verbindlich eingetragen werden?'"
         :data="newBookings"
         :submit-text="'Speichern'"
         :loading="isLoading"
@@ -83,9 +83,9 @@
 
       <br />
 
-      <fieldset id="v-step-0" class="p-4">
+      <fieldset id="v-step-0" class="table-fieldset">
         <legend>Deine Reservierungen</legend>
-        <div class="flex justify-end pb-2">
+        <div class="flex pb-2 button-group">
           <button @click="fetchBookings(member.id)" class="gg-button flex">
             <svg
               style="fill: white"
@@ -105,12 +105,14 @@
           <table
             v-if="bookings.length > 0"
             class="member-portal-table table-auto"
+            style="margin: auto"
           >
             <thead>
               <tr>
                 <th class="activity-date">Startzeit</th>
                 <th class="activity-amount">Dauer</th>
-                <th class="activity-description">Maschine</th>
+                <th class="activity-status">Maschine</th>
+                <th class="activity-description">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -120,7 +122,7 @@
                     new Date(booking.fromDateTime).toLocaleDateString('de-AT')
                   }}
                 </td>
-                <td class="activity-date">
+                <td class="activity-amount">
                   {{
                     durationAsString(
                       new Date(booking.fromDateTime),
@@ -128,7 +130,18 @@
                     )
                   }}
                 </td>
-                <td class="activity-description">{{ booking.resource }}</td>
+                <td class="activity-status">
+                  {{ booking.resource.name }}
+                </td>
+                <td class="invoice-status justify-end">
+                  <div
+                    v-if="booking.state"
+                    class="bubble"
+                    :class="getBookingStateClass(booking)"
+                  >
+                    {{ getBookingStateText(booking) }}
+                  </div>
+                </td>
               </tr>
             </tbody>
             <div class="text-center bg-white py-2">
@@ -146,6 +159,11 @@
               >
                 <font-awesome-icon icon="arrow-circle-right" />
               </button>
+              <div>
+                <small class="mute-text"
+                  >{{ currentPage }} / {{ totalPages }}</small
+                >
+              </div>
             </div>
           </table>
           <div v-else><p>Keine Reservierungen vorhanden.</p></div>
@@ -245,6 +263,26 @@ export default {
     },
   },
   methods: {
+    getBookingStateClass(booking) {
+      switch (booking.state) {
+        case 'confirmed':
+          return 'green';
+        case 'cancelled':
+          return 'red';
+        default:
+          return 'bubble grey';
+      }
+    },
+    getBookingStateText(booking) {
+      switch (booking.state) {
+        case 'confirmed':
+          return 'Gebucht';
+        case 'cancelled':
+          return 'Storno';
+        default:
+          return '';
+      }
+    },
     createTourText() {
       return [
         {
@@ -374,6 +412,9 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.table-fieldset {
+  padding: 1rem;
+}
 button:disabled svg {
   color: grey;
 }
@@ -398,7 +439,9 @@ button:disabled svg {
 .icon-button:hover {
   fill: $color-orange;
 }
-
+.button-group {
+  justify-content: end;
+}
 .v-step {
   background: black !important;
 }
@@ -412,6 +455,26 @@ button:disabled svg {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .table-fieldset {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .member-portal-table {
+    thead {
+      padding: 0;
+      width: 100%;
+
+      tr {
+        padding: 0.6rem 0.1rem;
+      }
+    }
+  }
+  .button-group {
+    justify-content: center;
   }
 }
 </style>

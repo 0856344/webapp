@@ -42,7 +42,10 @@ body {
 .font-light {
   font-weight: 300;
 }
-
+.mute-text {
+  color: #4747479c;
+  font-size: 0.7em;
+}
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -383,6 +386,23 @@ input:focus {
   list-style: none;
 }
 
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: #e69140;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.fill-green {
+  fill: #66ab7f;
+}
+.fill-yellow {
+  fill: #ECAB6D;
+}
+.fill-red {
+  fill: #da6b6b;
+}
 
 // Table
 table {
@@ -505,11 +525,15 @@ table {
       }
 
       .red {
-        background: red;
+        background: #da6b6b;
       }
 
       .yellow {
         background: #ECAB6D;
+      }
+
+      .green {
+        background: #66ab7f;
       }
 
       .noStatus {
@@ -561,6 +585,7 @@ table {
 
         .activity-date {
           order: 1;
+          text-align: left;
         }
 
         .activity-amount {
@@ -570,6 +595,7 @@ table {
 
         .activity-status {
           order: 3;
+          text-align: left;
         }
 
         .activity-description {
@@ -580,6 +606,7 @@ table {
 
         .invoice-date {
           order: 1;
+           text-align: left;
         }
 
         .invoice-amount {
@@ -589,6 +616,7 @@ table {
 
         .invoice-number {
           order: 3;
+           text-align: left;
         }
 
         .invoice-status {
@@ -621,6 +649,7 @@ table {
 
         .activity-date {
           order: 1;
+          text-align: left;
         }
 
         .activity-amount {
@@ -630,6 +659,7 @@ table {
 
         .activity-status {
           order: 3;
+          text-align: left;
         }
 
         .activity-description {
@@ -640,6 +670,7 @@ table {
 
         .invoice-date {
           order: 1;
+          text-align: left;
         }
 
         .invoice-amount {
@@ -649,6 +680,7 @@ table {
 
         .invoice-number {
           order: 3;
+          text-align: left;
         }
 
         .invoice-status {
