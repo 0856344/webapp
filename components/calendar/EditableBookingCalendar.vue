@@ -331,14 +331,22 @@ export default {
             );
           })
           .catch((error) => {
-            if (error.response.data.error) {
-              console.log(error.response.status, error.response.data.error);
+            let errorMsg =
+              'Ups! Die Reservierung konnte leider nicht erstellt werden. Bitte wende dich an unseren Support.';
+            if (error.response.data) {
+              console.log(error.response.status, error.response.data);
+              if (
+                typeof error.response.data === 'string' &&
+                error.response.data.includes('member has no permission')
+              ) {
+                errorMsg =
+                  'Du besitzt keine Berechtigung für diese Maschine. Bitte wende dich an unseren Frontdesk für weitere Fragen.';
+              }
             } else {
-              console.log(error);
+              console.log(error.response);
             }
-            this.openGlobalInfoBox(
-              'Ups! Die Reservierung konnte leider nicht erstellt werden. Bitte wende dich an unseren Support.',
-            );
+            // Show error message to user
+            this.openGlobalInfoBox(errorMsg);
             this.$sentry.captureException(new Error(error));
           })
           .finally(() => {

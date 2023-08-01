@@ -207,7 +207,19 @@ export default {
   },
   watch: {
     selectedMachine(value) {
-      console.log('machine selected', value);
+      // Call method in child component
+      const machineCalender = this.$refs.machineCalender;
+      if (
+        machineCalender &&
+        typeof machineCalender.fetchBookings === 'function'
+      ) {
+        //TODO - await
+        setTimeout(() => {
+          console.log('RELOAD');
+          machineCalender.fetchBookings();
+          machineCalender.resetBookings(true);
+        }, 500);
+      }
     },
   },
   created() {
