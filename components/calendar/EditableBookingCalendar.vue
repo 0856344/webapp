@@ -332,7 +332,7 @@ export default {
           })
           .catch((error) => {
             let errorMsg =
-              'Ups! Die Reservierung konnte leider nicht erstellt werden. Bitte wende dich an unseren Support.';
+              'Ups! Die Reservierung konnte leider nicht erstellt werden. Bitte wende dich an frontdesk@grandgarage.eu.';
             if (error.response.data) {
               console.log(error.response.status, error.response.data);
               if (
@@ -340,13 +340,13 @@ export default {
                 error.response.data.includes('member has no permission')
               ) {
                 errorMsg =
-                  'Du besitzt keine Berechtigung für diese Maschine. Bitte wende dich an unseren Frontdesk für weitere Fragen.';
+                  'Du besitzt keine Berechtigung für diese Maschine. Bei Fragen wende dich bitte an frontdesk@grandgarage.eu.';
               }
             } else {
               console.log(error.response);
             }
             // Show error message to user
-            this.openGlobalInfoBox(errorMsg);
+            this.openGlobalInfoBox(errorMsg, '#f55252fc', 'exclamation', 20000);
             this.$sentry.captureException(new Error(error));
           })
           .finally(() => {
@@ -400,12 +400,7 @@ export default {
       this.infoBoxMsg = msg;
       this.showInfoBox = true;
     },
-    openGlobalInfoBox(
-      msg,
-      color = '#f55252fc',
-      icon = 'exclamation',
-      duration = 0,
-    ) {
+    openGlobalInfoBox(msg, color = '#29954f', icon = 'check', duration = 5000) {
       this.globalBoxMsg = msg;
       this.globalBoxColor = color;
       this.globalBoxIcon = icon;
@@ -514,16 +509,6 @@ export default {
   height: 20%;
 }
 
-.gg-button {
-  background-color: rgba(66, 163, 185, 0.8);
-  color: white;
-  border-radius: 4px;
-  font-size: 16px;
-  padding: 8px 16px;
-}
-.gg-button:hover {
-  background-color: rgba(104, 201, 223, 0.8);
-}
 .reload-icon {
   cursor: pointer;
 }

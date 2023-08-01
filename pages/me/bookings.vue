@@ -30,6 +30,7 @@
         </h2>
         <loading-spinner-inline v-if="isLoading" />
       </div>
+      <p></p>
       <br />
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
@@ -215,10 +216,9 @@ export default {
       ) {
         //TODO - await
         setTimeout(() => {
-          console.log('RELOAD');
           machineCalender.fetchBookings();
           machineCalender.resetBookings(true);
-        }, 500);
+        }, 250);
       }
     },
   },
