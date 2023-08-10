@@ -37,7 +37,7 @@
                 </th>
               </tr>
             </thead>
-            <tbody v-if="!(!!categorizedList)">
+            <tbody v-if="!!!categorizedList">
               <tr
                 v-for="item in filteredPriceListItems"
                 :key="item.id"
@@ -54,14 +54,33 @@
             </tbody>
             <tbody v-else>
               <template v-for="(items, category) in categorizedList">
-              <tr v-bind:key="category" class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-3/5 w-1/2 border-t border-l bg-blue-700 rounded-tl-md">
-                <td colspan="2" >
-                  <strong>{{ category }}</strong>
-                </td>
-              </tr>
-              <tr v-for="(item, index) in items" :key="`${item.name}_${index}`" class="odd:bg-gray-200 border-white border">
-                  <td class="pl-2 text-left font-mono text-sm sm:text-base">{{ item.name }}</td>
-                  <td class="pr-2 table font-mono text-sm sm:text-base" v-html="formatPriceHTML(item)"></td>
+                <tr v-bind:key="category">
+                  <td
+                    colspan="2"
+                    class="p-2 text-left font-mono text-blue border-b-2 border-b-gray-200"
+                  >
+                    <div class="inline-flex flex-col gap-0 items-start">
+                      <span class="sm:text-lg text-base font-bold uppercase">{{
+                        category
+                      }}</span>
+                      <span class="sm:text-sm text-xs">{{
+                        items[0]?.category_description
+                      }}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr
+                  v-for="(item, index) in items"
+                  :key="`${item.name}_${index}`"
+                  class="odd:bg-gray-200 border-white border"
+                >
+                  <td class="pl-2 text-left font-mono text-sm sm:text-base">
+                    {{ item.name }}
+                  </td>
+                  <td
+                    class="pr-2 table font-mono text-sm sm:text-base"
+                    v-html="formatPriceHTML(item)"
+                  ></td>
                 </tr>
               </template>
             </tbody>
@@ -79,7 +98,6 @@
 </template>
 
 <script>
-//TODO: suchfunktion, steuertext abgeschnitten
 export default {
   props: ['priceList'],
   middleware: 'authenticated',
@@ -132,8 +150,12 @@ export default {
         if (!obj[item.category]) {
           obj[item.category] = []
         }
-        obj[item.category].push({ name: item.name, price: item.price, unit: item.unit })
-
+        obj[item.category].push({
+          name: item.name,
+          price: item.price,
+          unit: item.unit,
+          category_description: item.category_description
+        })
         return obj
       }, {})
     },
@@ -148,7 +170,6 @@ export default {
       }
     },
     formatPriceHTML (item) {
-      console.log(item)
       if (item === undefined) return
       if (this.priceList.billedInCredits) {
         const price = Math.ceil(item.price * 10).toString()

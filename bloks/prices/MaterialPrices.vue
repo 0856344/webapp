@@ -26,7 +26,8 @@ export default {
             name: m.external_name, 
             price: m.price, 
             unit: m.unit_name,
-            category: m.category, 
+            category: m.category,
+            category_description: m.category_description
           } 
         }) 
       }
