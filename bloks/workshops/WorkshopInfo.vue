@@ -1,8 +1,6 @@
 <template>
   <div v-editable="blok" v-if="workshopInformation" class="workshop-info">
-  <div v-editable="blok" v-if="workshopInformation" class="workshop-info">
     <div class="left-content">
-      <h2 v-if="subtitle" class="headline">
       <h2 v-if="subtitle" class="headline">
         {{ subtitle }}
       </h2>
@@ -59,13 +57,6 @@ export default {
       futureEvents: []
     }
   },
-  created () {
-    this.$store
-      .dispatch('getFutureEvents', this.blok.pretix_shortform)
-      .then((res) => {
-        this.futureEvents = res
-      })
-  },
   computed: {
     subtitle () {
       return this.workshopInformation.split('\n')[0].slice(4)
@@ -98,6 +89,7 @@ export default {
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;
   }
+
   .left-content {
     .headline {
       position: relative;
@@ -112,6 +104,7 @@ export default {
       font-family: $font-secondary;
     }
   }
+
   .right-content {
     flex-direction: column;
     position: relative;
@@ -121,6 +114,7 @@ export default {
     @include media-breakpoint-down(lg) {
       margin: 0;
     }
+
     .workshop-dates {
       width: 100%;
       @include media-breakpoint-down(sm) {
@@ -128,35 +122,39 @@ export default {
         width: 90%;
       }
     }
+
     .teaser,
     .info-text {
-    .teaser,
-    .info-text {
-      font-weight: normal;
-      font-family: $font-primary;
-      line-height: 1.8;
-      font-size: 1.1rem;
-      @include media-breakpoint-down(sm) {
-        line-height: 1.7;
-        font-size: 1rem;
-        margin: 0 0 0 5%;
-        margin: 0 0 0 5%;
+      .teaser,
+      .info-text {
+        font-weight: normal;
+        font-family: $font-primary;
+        line-height: 1.8;
+        font-size: 1.1rem;
+        @include media-breakpoint-down(sm) {
+          line-height: 1.7;
+          font-size: 1rem;
+          margin: 0 0 0 5%;
+          margin: 0 0 0 5%;
+        }
       }
-    }
-    .teaser {
-      font-weight: bold;
-    }
-    .link {
-      background-color: $color-orange;
-      margin: 2% 0 0 5%;
-      text-transform: uppercase;
-      @include media-breakpoint-up(md) {
-        margin-left: 25%;
+
+      .teaser {
+        font-weight: bold;
       }
-      color: #fff;
-      padding: 0.7em 0.8em;
-      padding: 0.7em 0.8em;
-      font-weight: 800;
+
+      .link {
+        background-color: $color-orange;
+        margin: 2% 0 0 5%;
+        text-transform: uppercase;
+        @include media-breakpoint-up(md) {
+          margin-left: 25%;
+        }
+        color: #fff;
+        padding: 0.7em 0.8em;
+        padding: 0.7em 0.8em;
+        font-weight: 800;
+      }
     }
   }
 }
