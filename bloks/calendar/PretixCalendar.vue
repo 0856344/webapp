@@ -1,15 +1,26 @@
 <template>
-  <section class="pretix-calender-overview" v-if="calendar || (blok && blok.pretix_shortform)">
+  <section
+    class="pretix-calender-overview"
+    v-if="calendar || (blok && blok.pretix_shortform)"
+  >
     <div class="pretix-calendar">
-      <link rel="stylesheet" type="text/css" href="https://buchung.grandgarage.eu/oceanEye/widget/v1.css">
-      <script type="text/javascript" src="https://buchung.grandgarage.eu/widget/v1.de-informal.js" async></script>
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://buchung.grandgarage.eu/oceanEye/widget/v1.css"
+      />
+      <script
+        type="text/javascript"
+        src="https://buchung.grandgarage.eu/widget/v1.de-informal.js"
+        async
+      ></script>
       <div class="container">
         <div class="col-start">
-         <h2 v-if="blok && blok.headline" class="headline">
+          <h2 v-if="blok && blok.headline" class="headline">
             <markdown :value="blok.headline" />
           </h2>
         </div>
-       <div class="col-end" v-if="blok && blok.text">
+        <div class="col-end" v-if="blok && blok.text">
           <p v-if="blok.text" class="text">
             <markdown :value="blok.text" />
           </p>
@@ -19,13 +30,13 @@
         <div>
           <pretix-widget name="pretix" :event="pretixEvent"></pretix-widget>
         </div>
-<!--        <noscript>-->
-<!--          <div class="pretix-widget">-->
-<!--            <div class="pretix-widget-info-message">-->
-<!--              JavaScript ist in Ihrem Browser deaktiviert. Um unseren Ticket-Shop ohne JavaScript aufzurufen, klicken Sie bitte <a target="_blank" rel="noopener" :href="event">hier</a>.-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </noscript>-->
+        <!--        <noscript>-->
+        <!--          <div class="pretix-widget">-->
+        <!--            <div class="pretix-widget-info-message">-->
+        <!--              JavaScript ist in Ihrem Browser deaktiviert. Um unseren Ticket-Shop ohne JavaScript aufzurufen, klicken Sie bitte <a target="_blank" rel="noopener" :href="event">hier</a>.-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </noscript>-->
       </div>
     </div>
   </section>
@@ -35,41 +46,54 @@
 export default {
   props: ['calendar', 'blok'],
   computed: {
-    link () {
+    link() {
       if (this?.blok?.pretix_shortform) {
-        return 'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/widget/v1.css'
+        return (
+          'https://buchung.grandgarage.eu/' +
+          this.blok.pretix_shortform +
+          '/widget/v1.css'
+        );
       }
-      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/widget/v1.css'
+      return (
+        'https://buchung.grandgarage.eu/' +
+        this.$props.calendar +
+        '/widget/v1.css'
+      );
     },
-    event () {
+    event() {
       if (this?.blok?.pretix_shortform) {
-        return 'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/'
+        return (
+          'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/'
+        );
       }
-      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/'
+      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/';
     },
-    pretixEvent () {
+    pretixEvent() {
       if (this?.blok?.pretix_shortform) {
-        return 'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/'
+        return (
+          'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/'
+        );
       }
-      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/'
-    }
-  }
-}
+      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/';
+    },
+  },
+};
 </script>
 
-<style lang="scss" >
- .pretix-widget-event-availability-low.pretix-widget-event-calendar-event {
-   border-right: 10px solid #e69140 !important;
+<style lang="scss">
+.pretix-widget-event-availability-low.pretix-widget-event-calendar-event {
+  border-right: 10px solid #e69140 !important;
+}
 
- }
-
-.pretix-widget-event-list-entry .pretix-widget-event-availability-red .pretix-widget-event-availability-over{
+.pretix-widget-event-list-entry
+  .pretix-widget-event-availability-red
+  .pretix-widget-event-availability-over {
   color: white;
 }
 .pretix-calender-overview {
   background-color: white;
   margin-bottom: 5%;
-  .pretix-widget-event-description{
+  .pretix-widget-event-description {
     display: none;
   }
 }
@@ -132,14 +156,14 @@ export default {
       font-family: $font-primary;
       line-height: 1.6;
       font-size: 1.1em;
-      letter-spacing: .03em;
+      letter-spacing: 0.03em;
     }
   }
 }
 .pretix-content {
   display: flex;
   justify-content: center;
-  .pretix-widget-wrapper{
+  .pretix-widget-wrapper {
     a {
       color: $color-secondary;
       text-decoration: none;
@@ -158,16 +182,24 @@ export default {
     .pretix-widget-event-week-table {
       margin-top: 3%;
     }
-    .pretix-widget-event-availability-green, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-green {
+    .pretix-widget-event-availability-green,
+    .pretix-widget.pretix-widget-mobile
+      td.pretix-widget-has-events.pretix-widget-day-availability-green {
       background-color: $color-primary !important;
     }
-    .pretix-widget-event-availability-red, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-red {
+    .pretix-widget-event-availability-red,
+    .pretix-widget.pretix-widget-mobile
+      td.pretix-widget-has-events.pretix-widget-day-availability-red {
       background-color: $color-secondary !important;
     }
-    .pretix-widget-event-availability-reserved, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
+    .pretix-widget-event-availability-reserved,
+    .pretix-widget.pretix-widget-mobile
+      td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
       background-color: $color-yellow !important;
     }
-    .pretix-widget-event-availability-unknown, .pretix-widget.pretix-widget-mobile td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
+    .pretix-widget-event-availability-unknown,
+    .pretix-widget.pretix-widget-mobile
+      td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
       background-color: black !important;
     }
     width: 70vw;
@@ -175,6 +207,12 @@ export default {
     background: white;
     .pretix-widget {
       border: none;
+      .pretix-widget-event-calendar-table tr td {
+        border: solid 1px rgba(0, 0, 0, 0.1);
+      }
+      .pretix-widget-event-week-col {
+        border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+      }
       .pretix-widget-event-week-col:first-child {
         @media screen and (min-width: 1145px) {
           margin-left: 50px !important;
@@ -187,16 +225,18 @@ export default {
         margin-top: 15%;
       }
     }
-    .pretix-widget-event-list-back a:hover, a:focus {
+    .pretix-widget-event-list-back a:hover,
+    a:focus {
       color: black;
     }
-    .pretix-widget-event-calendar-head a:hover, a:focus {
+    .pretix-widget-event-calendar-head a:hover,
+    a:focus {
       color: black;
     }
-    .pretix-widget-event-calendar-previous-month{
+    .pretix-widget-event-calendar-previous-month {
       padding: 10px;
     }
-    .pretix-widget-event-calendar-next-month{
+    .pretix-widget-event-calendar-next-month {
       padding: 10px;
     }
 
