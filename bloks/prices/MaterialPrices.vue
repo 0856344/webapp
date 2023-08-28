@@ -21,11 +21,13 @@ export default {
       return { 
         title: this.$t('materials'),
         billedInCredits: false,
-        items: this.materials.map((m) => { 
+        items: this.materials.map((m) => {
           return { 
             name: m.external_name, 
             price: m.price, 
-            unit: m.unit_name 
+            unit: m.unit_name,
+            category: m.category,
+            category_description: m.category_description
           } 
         }) 
       }

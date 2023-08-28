@@ -168,7 +168,7 @@ export default {
     //TODO: use is_future parameter from pretix api
     addPretixToStoryblok () {
       this.workshops.forEach((item) => {
-        this.pretixWorkshops.forEach((pretixItem) => {  
+        this.pretixWorkshops.forEach((pretixItem) => {
           if (item.content.pretix_shortform && item.content.pretix_shortform === pretixItem[0].slug) {
             const lastItem = pretixItem[pretixItem.length - 1]
             const startDate = moment(lastItem.date_from)
@@ -273,7 +273,9 @@ export default {
 
 <style lang="scss">
 .pretix-content{
-  margin-top: 50px;
+  margin-top: 0;
+  margin-bottom: 50px;
+  background-color: white;
 }
 .pretix-content .pretix-widget-wrapper .pretix-widget-event-availability-red {
   color: white !important;
