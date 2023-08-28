@@ -205,9 +205,6 @@ export default {
 </script>
 
 <style lang="scss">
-.pretix-content{
-  margin-top: 50px;
-}
 .pretix-content .pretix-widget-wrapper .pretix-widget-event-availability-red {
   color: white !important;
 }
