@@ -273,7 +273,8 @@ export default {
 
 <style lang="scss">
 .pretix-content{
-  margin-top: 50px;
+  margin-top: 0;
+  margin-bottom: 50px;
   background-color: white;
 }
 .pretix-content .pretix-widget-wrapper .pretix-widget-event-availability-red {

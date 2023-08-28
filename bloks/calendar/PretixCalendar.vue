@@ -207,6 +207,9 @@ export default {
     background: white;
     .pretix-widget {
       border: none;
+      .pretix-widget-event-calendar {
+        padding-top: 50px;
+      }
       .pretix-widget-event-calendar-table tr td {
         border: solid 1px rgba(0, 0, 0, 0.1);
       }
