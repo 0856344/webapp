@@ -131,6 +131,7 @@ export default {
     @include media-breakpoint-down(sm) {
       justify-content: center;
       border-bottom: 2px solid #696969;
+      min-width: 260px;
     }
   }
 

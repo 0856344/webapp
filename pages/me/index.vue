@@ -12,18 +12,18 @@
           {{ $t('country') }}
         </label>
         <select id="country-input" v-model="member.countryCode"
-          class="self-end px-2 border-2 border-white rounded-sm">
+          class="px-2 border-2 rounded-sm w-full m-auto sm:min-w-fit">
           <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
         </select>
       </div>
       <TextInput :label="$t('phone')" v-model="member.phone" :isContact="true" />
-      <div class="grid items-baseline grid-flow-row gap-2 sm:py-2 sm:h-8 sm:grid-cols-contact" v-if="!member.paidForBy">
+      <div class="grid items-baseline grid-flow-row gap-2 self-center grow sm:py-2 sm:h-8 sm:grid-cols-contact sm:w-full" v-if="!member.paidForBy">
         <label class="block text-xs font-bold uppercase sm:text-end" for="checkbox">
           Rechnungsadresse
         </label>
-        <div class="flex items-end gap-2">
+        <div class="flex items-start gap-2">
           <input id="checkbox" class="w-4 h-4 ml-px" type="checkbox" :checked="member.hasBillingAddress"
             v-model="member.hasBillingAddress">
           <div class="text-md">weicht von Kontaktadresse ab</div>
@@ -46,7 +46,7 @@
           {{ $t('country') }}
         </label>
         <select id="country-input" v-model="member.billingCountryCode"
-          class="self-end px-2 border-2 border-white rounded-sm">
+          class="px-2 border-2 rounded-sm w-full m-auto sm:min-w-fit">
           <option v-for="country in countries" :value="country.id" v-bind:key="country.id">
             {{ country.name }}
           </option>
@@ -58,7 +58,7 @@
           Saving…
         </div>
         <button v-else type="submit"
-          class="w-5/6 py-2 mt-6 text-white rounded-sm bg-orange ring-2 ring-orange-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
+          class="w-full py-2 mt-6 text-white rounded-sm bg-orange ring-2 ring-orange-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
           :disabled="!dataValid">
           <font-awesome-icon icon="save" /> {{ $t('save') }}
         </button>
