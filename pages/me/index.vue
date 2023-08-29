@@ -80,7 +80,7 @@
           <input id="checkbox-sepa" class="w-4 h-4 ml-px" type="checkbox" :checked="sepaMandat" v-model="sepaMandat">
           <div class="text-xs">Ich ermächtige die CAP.future GMBH, Zahlungen von meinem Konto mittels
             SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der CAP.Future GMBH auf mein
-            Konto gezogenen SEPA-Lastschriften einzulösen. fIch kann innerhalb von acht Wochen, beginnend mit dem
+            Konto gezogenen SEPA-Lastschriften einzulösen. Ich kann innerhalb von acht Wochen, beginnend mit dem
             Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem
             Kreditinstitut vereinbarten Bedingungen.</div>
         </div>
