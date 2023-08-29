@@ -1,5 +1,5 @@
 <template>
-  <div class="grid items-baseline gap-2 sm:py-2 sm:h-8" v-bind:class="{ 'sm:grid-cols-contact': isContact, 'sm:grid-flow-col': !isContact }">
+  <div class="grid items-baseline gap-2 grow sm:py-2 sm:h-8 sm:w-full" v-bind:class="{ 'sm:grid-cols-contact': isContact, 'sm:grid-flow-col': !isContact }">
     <label class="block font-bold sm:text-end" v-bind:class="{ 'text-xs': isContact, 'uppercase': isContact }" :for="id">
       {{ label }}
     </label>
