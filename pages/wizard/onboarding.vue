@@ -1,121 +1,112 @@
 <template>
-  <div
-      class="wizard"
-  >
+  <div class="wizard">
     <div class="header">
-      <font-awesome-icon
-          class="icon"
-          icon="user-friends"
-      />
-      <h2>{{ $t('joinNow') }}</h2>
-      <p>{{ $t('becomeAMemberIn4simpleSteps') }}</p>
+      <font-awesome-icon class="icon" icon="user-friends" />
+      <h2>{{ $t("joinNow") }}</h2>
+      <p>{{ $t("becomeAMemberIn4simpleSteps") }}</p>
     </div>
     <div class="wizard-section">
       <div class="wizard-section-menu">
         <div class="steps">
           <div
-              :key="i"
-              v-for="s,i in steps"
-              class="step"
-              :class="{ 'icon': index > i, 'color': index >= i}"
+            :key="i"
+            v-for="(s, i) in steps"
+            class="step"
+            :class="{ icon: index > i, color: index >= i }"
           >
-            <span
-                v-if="!i"
-                class="dot"
-            >
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 230 200"
-              ><path
+            <span v-if="!i" class="dot">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 200">
+                <path
                   d="M20 130l40 40L200 30"
                   stroke-width="25"
                   fill="none"
                   stroke="#FFF"
-              /></svg>
+                />
+              </svg>
             </span>
-            <span
-                v-else
-                class="dot"
-            >
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 230 200"
-              ><path
+            <span v-else class="dot">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 200">
+                <path
                   d="M20 130l40 40L200 30"
                   stroke-width="25"
                   fill="none"
                   stroke="#FFF"
-              /></svg>
+                />
+              </svg>
             </span>
           </div>
         </div>
       </div>
       <div class="wizard-section-content">
         <NuxtChild
-            :key="$route.params.slug"
-            :onboarding-data="onboardingData"
+          :key="$route.params.slug"
+          :onboarding-data="onboardingData"
         />
       </div>
       <div class="wizard-section-nav">
         <div class="form">
           <div class="button-row">
             <button
-                v-if="activeStep === 'confirmation'"
-                class="input-button-primary"
-                @click="gotoASUorOpenLogin()"
+              v-if="activeStep === 'confirmation'"
+              class="input-button-primary"
+              @click="gotoASUorOpenLogin()"
             >
-              <font-awesome-icon icon="arrow-circle-right"/> {{ $t('startSafetyTraining') }}
+              <font-awesome-icon icon="arrow-circle-right" />
+              {{ $t("startSafetyTraining") }}
             </button>
             <button
-                v-else-if="index > 0"
-                class="input-button-primary"
-                @click="back()"
+              v-else-if="index > 0"
+              class="input-button-primary"
+              @click="back()"
             >
-              {{ $t('back') }}
+              {{ $t("back") }}
             </button>
             <button
-                v-if="activeStep !== 'confirmation'"
-                :class="['input-button-primary', { disabled: !nextStepDisabled }]"
-                :disabled="nextStepDisabled"
-                @click="next()"
+              v-if="activeStep !== 'confirmation'"
+              :class="['input-button-primary', { disabled: !nextStepDisabled }]"
+              :disabled="nextStepDisabled"
+              @click="next()"
             >
-              {{ activeStep === 'payment' ? 'Anmeldung abschließen' : 'Weiter' }}
+              {{
+                activeStep === "payment" ? "Anmeldung abschließen" : "Weiter"
+              }}
             </button>
           </div>
         </div>
         <div v-if="activeStep === 'confirmation'" class="confirmation-footer">
-          {{ $t('nextStepsAfterASU') }}
-          <br>
-          <p style="margin-bottom: 7px">{{ $t('ourOpeningHours') }} </p>
-            <a href="https://grandgarage.eu/de/kontakt" target="_blank">
-              {{ 'https://grandgarage.eu/de/kontakt' }}
-            </a>
-          <p style="margin-top: 20px">{{ $t('weAreLookingForwardToWelcomeYou') }}</p>
+          {{ $t("nextStepsAfterASU") }}
+          <br />
+          <p style="margin-bottom: 7px">{{ $t("ourOpeningHours") }}</p>
+          <a href="https://grandgarage.eu/de/kontakt" target="_blank">
+            {{ "https://grandgarage.eu/de/kontakt" }}
+          </a>
+          <p style="margin-top: 20px">
+            {{ $t("weAreLookingForwardToWelcomeYou") }}
+          </p>
         </div>
       </div>
-      <p v-if="loadingEmail" >{{this.loadingCheckEmailStatus}}</p>
-      <loading-spinner v-if="this.loadingEmail" class="loading-spinner ml-05"/>
+      <p v-if="loadingEmail">{{ this.loadingCheckEmailStatus }}</p>
+      <loading-spinner v-if="this.loadingEmail" class="loading-spinner ml-05" />
     </div>
-
   </div>
 </template>
 
 <script>
-
 const MemberType = {
   member: 1,
   corporate: 2,
-  corporate_freeCost: 3
-}
+  corporate_freeCost: 3,
+};
 export default {
-  data () {
+  data() {
     return {
       loading: false,
       loadingEmail: false,
-      loadingCheckEmailStatus: '',
+      loadingCheckEmailStatus: "",
+      passwordCheck: false,
       mailCheck: false,
       MemberType,
-      steps: ['userInformation', 'contact', 'image', 'payment', 'confirmation'],
+      steps: ["userInformation", "contact", "image", "payment", "confirmation"],
       onboardingData: {
         //image: null,
         image64: null,
@@ -127,7 +118,7 @@ export default {
           email: null,
           password: null,
           registered: false,
-          emailOk: false
+          emailOk: false,
         },
         contactInformation: {
           birthdate: null,
@@ -142,7 +133,7 @@ export default {
           companyCode: null,
           companyCodeValid: false,
           company: null,
-          hasBillingAddress: false
+          hasBillingAddress: false,
         },
         billingInformation: {
           firstName: null,
@@ -150,7 +141,7 @@ export default {
           address: null,
           zip: null,
           city: null,
-          country: null
+          country: null,
         },
         payment: {
           iban: null,
@@ -162,7 +153,7 @@ export default {
           accountOwnerLegalAge: false,
           privacyPolicy: false,
           ibanIsValid: false,
-          startDate: new Date().toISOString().split('T')[0]
+          startDate: new Date().toISOString().split("T")[0],
         },
         profile: {
           address: null,
@@ -171,228 +162,345 @@ export default {
           zip: null,
           phone: null,
           birthdate: null,
-          company: null
+          company: null,
         },
-        referrer: ''
+        referrer: "",
       },
-      invoiceContact: {}
-    }
+      invoiceContact: {},
+    };
   },
   computed: {
-    activeStep () {
-      return this.$route.path.split('/')[3] || 'index'
+    activeStep() {
+      return this.$route.path.split("/")[3] || "index";
     },
-    nextStepDisabled () {
-      const data = this.onboardingData
+    nextStepDisabled() {
+      const data = this.onboardingData;
       switch (this.activeStep) {
-        case 'index':
-          return false
-        case 'userInformation': {
-          const requiredKeys = ['firstName', 'lastName', 'gender', 'email', 'password']
-          return ((!!requiredKeys.filter(k => !data.userInformation[k]).length) || !data.userInformation.emailOk)
+        case "index":
+          return false;
+        case "userInformation": {
+          const requiredKeys = [
+            "firstName",
+            "lastName",
+            "gender",
+            "email",
+            "password",
+          ];
+          return (
+            !!requiredKeys.filter((k) => !data.userInformation[k]).length ||
+            !data.userInformation.emailOk
+          );
         }
-        case 'contact': {
-          const data = this.onboardingData
-          const requiredKeys = ['birthdate', 'address', 'zip', 'city', 'country']
-          const requiredKeysInvoiceContact = ['firstName', 'lastName', 'address', 'zip', 'city', 'country']
-          if (data.contactInformation.country === 'XX') return true
-          const allInvoiceContactFieldsSet = (!requiredKeysInvoiceContact.filter(k => !data.billingInformation[k]).length)
+        case "contact": {
+          const data = this.onboardingData;
+          const requiredKeys = [
+            "birthdate",
+            "address",
+            "zip",
+            "city",
+            "country",
+          ];
+          const requiredKeysInvoiceContact = [
+            "firstName",
+            "lastName",
+            "address",
+            "zip",
+            "city",
+            "country",
+          ];
+          if (data.contactInformation.country === "XX") return true;
+          const allInvoiceContactFieldsSet = !requiredKeysInvoiceContact.filter(
+            (k) => !data.billingInformation[k]
+          ).length;
           // if another invoice contact (checkbox) is selected, then the additional fields are required to proceed
-          if (data.contactInformation.hasBillingAddress && !allInvoiceContactFieldsSet) {
-            return true
+          if (
+            data.contactInformation.hasBillingAddress &&
+            !allInvoiceContactFieldsSet
+          ) {
+            return true;
           }
-          return ((!!requiredKeys.filter(k => !data.contactInformation[k]).length || !data.contactInformation.birthdateValid))
+          return (
+            !!requiredKeys.filter((k) => !data.contactInformation[k]).length ||
+            !data.contactInformation.birthdateValid
+          );
         }
-        case 'image': {
-          return this.onboardingData.image64 === null
+        case "image": {
+          return this.onboardingData.image64 === null;
         }
-        case 'payment': {
-          const membershipType = this.getMemberType()
+        case "payment": {
+          const membershipType = this.getMemberType();
           // if company & free cost
           if (membershipType === MemberType.corporate_freeCost) {
             if (data.payment.agb && data.payment.privacyPolicy) {
-              return false
+              return false;
             }
           }
           // if company & no free cost
           if (membershipType === MemberType.corporate) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner) {
-              return false
+            if (
+              data.payment.agb &&
+              data.payment.privacyPolicy &&
+              data.payment.sepaMandat &&
+              data.payment.ibanIsValid &&
+              data.payment.accountOwnerLegalAge &&
+              data.payment.accountOwner
+            ) {
+              return false;
             }
           }
           // if no company member
           if (membershipType === MemberType.member) {
-            if (data.payment.agb && data.payment.privacyPolicy && data.payment.sepaMandat && data.payment.ibanIsValid && data.payment.accountOwnerLegalAge && data.payment.accountOwner && data.payment.membership && data.payment.startDate) {
-              return false
+            if (
+              data.payment.agb &&
+              data.payment.privacyPolicy &&
+              data.payment.sepaMandat &&
+              data.payment.ibanIsValid &&
+              data.payment.accountOwnerLegalAge &&
+              data.payment.accountOwner &&
+              data.payment.membership &&
+              data.payment.startDate
+            ) {
+              return false;
             }
           }
-          return true
+          return true;
         }
-        case 'done': {
-          return data.referrer === ''
+        case "done": {
+          return data.referrer === "";
         }
         default:
-          return false
+          return false;
       }
     },
-    index () {
-      return this.steps.indexOf(this.activeStep)
+    index() {
+      return this.steps.indexOf(this.activeStep);
     },
-    user () {
-      return this.$store.state.user
-    }
+    user() {
+      return this.$store.state.user;
+    },
   },
   methods: {
     // TODO delete, clean up, unused & deprecated
-    getData () {
-      if (sessionStorage.getItem('onboardingData')) {
-        this.onboardingData = JSON.parse(sessionStorage.getItem('onboardingData'))
+    getData() {
+      if (sessionStorage.getItem("onboardingData")) {
+        this.onboardingData = JSON.parse(
+          sessionStorage.getItem("onboardingData")
+        );
       }
-      const user = this.$store.state.user
+      const user = this.$store.state.user;
       for (const key of Object.keys(this.onboardingData.profile)) {
         if (Object.prototype.hasOwnProperty.call(user, key)) {
-          this.onboardingData.profile[key] = user.profile[key]
+          this.onboardingData.profile[key] = user.profile[key];
         }
       }
     },
     // saveUserData () {
     //   this.$store.dispatch('updateUser', Object.assign({}, this.onboardingData.profile))
     // },
-    saveOnboardingData () {
-      sessionStorage.setItem('onboardingData', JSON.stringify(this.onboardingData))
+    saveOnboardingData() {
+      sessionStorage.setItem(
+        "onboardingData",
+        JSON.stringify(this.onboardingData)
+      );
     },
-    back () {
-      const ni = this.index - 1 < 0 ? 0 : this.index - 1
-      let path = this.steps[ni]
+    back() {
+      const ni = this.index - 1 < 0 ? 0 : this.index - 1;
+      let path = this.steps[ni];
       if (ni === 0) {
-        path = 'userInformation'
+        path = "userInformation";
       }
-      this.$router.push('/wizard/onboarding/' + path)
+      this.$router.push("/wizard/onboarding/" + path);
     },
-    async next () {
+    async next() {
       switch (this.activeStep) {
-        case 'index':
-          this.loadNextPage()
-          this.saveOnboardingData()
-          break
-        case 'userInformation':
-          this.mailCheck = false
+        case "index":
+          this.loadNextPage();
+          this.saveOnboardingData();
+          break;
+        case "userInformation":
+          this.mailCheck = false;
           // will go to next page if email is valid
-          await this.checkLoginDataAndProceed()
-          this.saveOnboardingData()
-          break
-        case 'contact':
-          this.loadNextPage()
-          this.saveOnboardingData()
+          await this.checkLoginDataAndProceed();
+          this.saveOnboardingData();
+          break;
+        case "contact":
+          this.loadNextPage();
+          this.saveOnboardingData();
           // set account owner _default name
           if (this.onboardingData.contactInformation.hasBillingAddress) {
-            this.onboardingData.payment.accountOwner = this.onboardingData.billingInformation.firstName + ' ' + this.onboardingData.billingInformation.lastName
+            this.onboardingData.payment.accountOwner =
+              this.onboardingData.billingInformation.firstName +
+              " " +
+              this.onboardingData.billingInformation.lastName;
           } else {
-            this.onboardingData.payment.accountOwner = this.onboardingData.userInformation.firstName + ' ' + this.onboardingData.userInformation.lastName
+            this.onboardingData.payment.accountOwner =
+              this.onboardingData.userInformation.firstName +
+              " " +
+              this.onboardingData.userInformation.lastName;
           }
 
-          break
-        case 'image':
-          this.loadNextPage()
-          this.saveOnboardingData()
-          break
-        case 'payment':
-          this.saveOnboardingData()
-          this.submit()
-          break
-        case 'done':
-          break
+          break;
+        case "image":
+          this.loadNextPage();
+          this.saveOnboardingData();
+          break;
+        case "payment":
+          this.saveOnboardingData();
+          this.submit();
+          break;
+        case "done":
+          break;
         default:
-          this.saveOnboardingData()
-          this.loadNextPage()
+          this.saveOnboardingData();
+          this.loadNextPage();
       }
     },
 
-    loadNextPage () {
-      const ni = this.index + 1 < 0 ? 0 : this.index + 1
-      const path = this.steps[ni]
+    loadNextPage() {
+      const ni = this.index + 1 < 0 ? 0 : this.index + 1;
+      const path = this.steps[ni];
       if (path) {
-        this.$router.push('/wizard/onboarding/' + path)
+        this.$router.push("/wizard/onboarding/" + path);
       }
     },
-    gotoASUorOpenLogin () {
+    gotoASUorOpenLogin() {
       if (this.$store.state.auth) {
-        this.$router.push('/me/trainings')
+        this.$router.push("/me/trainings");
       } else {
-        this.$store.dispatch('setSidebar', 'login')
+        this.$store.dispatch("setSidebar", "login");
       }
     },
-    getMemberType () {
-      if (this.onboardingData.contactInformation?.company?.metadata?.attendees_free_cost) {
-        return MemberType.corporate_freeCost
+    getMemberType() {
+      if (
+        this.onboardingData.contactInformation?.company?.metadata
+          ?.attendees_free_cost
+      ) {
+        return MemberType.corporate_freeCost;
       }
-      if (this.onboardingData.contactInformation?.company && !this.onboardingData.contactInformation.company?.metadata?.attendees_free_cost) {
-        return MemberType.corporate
-      } else { return MemberType.member }
+      if (
+        this.onboardingData.contactInformation?.company &&
+        !this.onboardingData.contactInformation.company?.metadata
+          ?.attendees_free_cost
+      ) {
+        return MemberType.corporate;
+      } else {
+        return MemberType.member;
+      }
     },
 
     // sets this.mailCheck to true, if e-mail address is valid for registration
-    async checkLoginDataAndProceed () {
-      this.loadingEmail = true
-      this.loadingCheckEmailStatus = 'Prüfe E-Mail Adresse...'
+    async checkLoginDataAndProceed() {
+      this.loadingEmail = true;
+      this.loadingCheckEmailStatus = "Prüfe E-Mail Adresse...";
       let payload = {
         email: this.onboardingData.userInformation.email,
         password: this.onboardingData.userInformation.password,
         user_metadata: {
           firstName: this.onboardingData.userInformation.firstName,
-          lastName: this.onboardingData.userInformation.lastName
-        }
+          lastName: this.onboardingData.userInformation.lastName,
+        },
+      };
+      // get captcha token for password check
+      await this.$recaptchaLoaded();
+      let token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+      let captchaData = {
+        "g-recaptcha-response": token,
+      };
+      payload = { ...payload, ...captchaData };
+      const isPasswordValid = await this.checkPassword(payload);
+      if (isPasswordValid) {
+        // renew captcha token for email check
+        await this.$recaptchaLoaded();
+        token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+        captchaData = {
+          "g-recaptcha-response": token,
+        };
+        payload = { ...payload, ...captchaData };
+        await this.checkMail(payload);
+      } else {
+        this.loadingEmail = false;
       }
-      // get captcha token
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
-      const captchaData = {
-        'g-recaptcha-response': token
-      }
-      payload = { ...payload, ...captchaData }
-      this.$store.dispatch('checkLoginData', payload).then((r) => {
-        this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar'
-        return new Promise(resolve => {
-          setTimeout(() => {
-            this.mailCheck = true
-            this.loadingEmail = false
-            this.loadNextPage()
-            this.saveOnboardingData()
-          }, 1000)
-        })
-      })
-        .catch((e) => {
-          this.loadingEmail = false
-          this.mailCheck = false
-          const errorStatus = e?.response?.status
-          if (e.error) {
-            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-          }
-          if (errorStatus) {
-            switch (errorStatus) {
-              case 401:
-                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits.', {
-                  theme: 'bubble'
-                })
-                break
-              case 429:
-                this.$toast.show('E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
-                  theme: 'bubble'
-                })
-                break
-              default:
-                this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
-                  theme: 'bubble'
-                })
-                break
-            }
-            this.mailCheck = false
-          }
-        }
-        )
     },
-    async submit () {
-      const memberType = this.getMemberType()
+    async checkPassword(payload) {
+      try {
+        const r = await this.$store.dispatch("checkPassword", payload);
+        return true;
+      } catch (e) {
+        const errorStatus = e?.response?.status;
+        if (e.error) {
+          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"';
+        }
+        if (errorStatus) {
+          switch (errorStatus) {
+            case 400:
+              this.$toast.show("Passwort ist zu schwach.", {
+                theme: "bubble",
+              });
+              break;
+            default:
+              this.$toast.show("Ein Fehler ist aufgetreten. ", e.code, {
+                theme: "bubble",
+              });
+              break;
+          }
+          return false;
+        }
+      }
+    },
+    async checkMail(payload) {
+      try {
+        const r = await this.$store.dispatch("checkMail", payload);
+        this.loadingCheckEmailStatus = "E-Mail Adresse ist verfügbar";
+
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            this.mailCheck = true;
+            this.loadingEmail = false;
+            this.loadNextPage();
+            this.saveOnboardingData();
+            resolve();
+          }, 1000);
+        });
+      } catch (e) {
+        this.loadingEmail = false;
+        this.mailCheck = false;
+        const errorStatus = e?.response?.status;
+
+        if (e.error) {
+          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"';
+        }
+
+        if (errorStatus) {
+          switch (errorStatus) {
+            case 401:
+              this.$toast.show(
+                "Ein User mit dieser Email Adresse existiert bereits.",
+                {
+                  theme: "bubble",
+                }
+              );
+              break;
+            case 429:
+              this.$toast.show(
+                "E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.",
+                {
+                  theme: "bubble",
+                }
+              );
+              break;
+            default:
+              this.$toast.show("Ein Fehler ist aufgetreten. ", e.code, {
+                theme: "bubble",
+              });
+              break;
+          }
+          this.mailCheck = false;
+        }
+      }
+    },
+
+    async submit() {
+      const memberType = this.getMemberType();
       // build onboarding requests
       let memberDataBasic = {
         // basicData = data for the new fabman user, that is needed for any membership type
@@ -408,161 +516,185 @@ export default {
         dateOfBirth: this.onboardingData.contactInformation.birthdate,
         phone: this.onboardingData.contactInformation.phone,
         countryCode: this.onboardingData.contactInformation.country,
-        hasBillingAddress: this.onboardingData.contactInformation.hasBillingAddress
-      }
-      if (this.onboardingData.userInformation.gender !== 'empty') {
-        memberDataBasic = { ...memberDataBasic, gender: this.onboardingData.userInformation.gender }
+        hasBillingAddress:
+          this.onboardingData.contactInformation.hasBillingAddress,
+      };
+      if (this.onboardingData.userInformation.gender !== "empty") {
+        memberDataBasic = {
+          ...memberDataBasic,
+          gender: this.onboardingData.userInformation.gender,
+        };
       }
       //let memberData = null
-      let extendMemberDataIban = null
-      let extendMemberDataBillingAddress = null
-      let memberData = null
+      let extendMemberDataIban = null;
+      let extendMemberDataBillingAddress = null;
+      let memberData = null;
       switch (memberType) {
         case MemberType.corporate_freeCost:
           //console.log('MemberType: corporate_freeCost')
-          memberData = memberDataBasic
+          memberData = memberDataBasic;
           memberData = {
             ...memberData,
             paidForBy: this.onboardingData.contactInformation.company.id,
-            space: this.onboardingData.contactInformation.company.metadata.attendees_space_id,
+            space:
+              this.onboardingData.contactInformation.company.metadata
+                .attendees_space_id,
             metadata: {
-              corporateMemberId: this.onboardingData.contactInformation.company.id.toString()
-            }
-
-          }
-          break
+              corporateMemberId:
+                this.onboardingData.contactInformation.company.id.toString(),
+            },
+          };
+          break;
         case MemberType.corporate:
           //console.log('MemberType: corporate')
-          memberData = memberDataBasic
+          memberData = memberDataBasic;
           memberData = {
             ...memberData,
-            space: this.onboardingData.contactInformation.company.metadata.attendees_space_id,
+            space:
+              this.onboardingData.contactInformation.company.metadata
+                .attendees_space_id,
             metadata: {
-              corporateMemberId: this.onboardingData.contactInformation.company.id.toString()
-            }
-          }
+              corporateMemberId:
+                this.onboardingData.contactInformation.company.id.toString(),
+            },
+          };
           extendMemberDataIban = {
             iban: this.onboardingData.payment.iban,
-            accountOwner: this.onboardingData.payment.accountOwner
-          }
+            accountOwner: this.onboardingData.payment.accountOwner,
+          };
           if (this.onboardingData.contactInformation.hasBillingAddress) {
             extendMemberDataBillingAddress = {
-              billingFirstName: this.onboardingData.billingInformation.firstName,
+              billingFirstName:
+                this.onboardingData.billingInformation.firstName,
               billingLastName: this.onboardingData.billingInformation.lastName,
               billingAddress: this.onboardingData.billingInformation.address,
               billingCity: this.onboardingData.billingInformation.city,
               billingZip: this.onboardingData.billingInformation.zip,
-              billingCountryCode: this.onboardingData.billingInformation.country
-            }
+              billingCountryCode:
+                this.onboardingData.billingInformation.country,
+            };
           }
-          memberData = { ...memberData, ...extendMemberDataIban }
-          memberData = { ...memberData, ...extendMemberDataBillingAddress }
-          break
+          memberData = { ...memberData, ...extendMemberDataIban };
+          memberData = { ...memberData, ...extendMemberDataBillingAddress };
+          break;
         case MemberType.member:
           //console.log('MemberType: member or corporate (no free cost)')
           extendMemberDataIban = {
             iban: this.onboardingData.payment.iban,
-            accountOwner: this.onboardingData.payment.accountOwner
-          }
+            accountOwner: this.onboardingData.payment.accountOwner,
+          };
           if (this.onboardingData.contactInformation.hasBillingAddress) {
             extendMemberDataBillingAddress = {
-              billingFirstName: this.onboardingData.billingInformation.firstName,
+              billingFirstName:
+                this.onboardingData.billingInformation.firstName,
               billingLastName: this.onboardingData.billingInformation.lastName,
               billingAddress: this.onboardingData.billingInformation.address,
               billingCity: this.onboardingData.billingInformation.city,
               billingZip: this.onboardingData.billingInformation.zip,
-              billingCountryCode: this.onboardingData.billingInformation.country
-            }
+              billingCountryCode:
+                this.onboardingData.billingInformation.country,
+            };
           }
-          memberData = { ...memberDataBasic, ...extendMemberDataIban }
-          memberData = { ...memberData, ...extendMemberDataBillingAddress }
-          break
+          memberData = { ...memberDataBasic, ...extendMemberDataIban };
+          memberData = { ...memberData, ...extendMemberDataBillingAddress };
+          break;
       }
       //console.log('memberData: ', memberData)
       // bundle package (membership) information
-      let packageData = null
+      let packageData = null;
       // private member
       if (memberType === MemberType.member) {
         packageData = {
           packageId: this.onboardingData.payment.membership.id,
-          startDate: this.onboardingData.payment.startDate
-        }
+          startDate: this.onboardingData.payment.startDate,
+        };
       } else {
         // company member
         packageData = {
-          packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id,
-          attendeesPackages: this.onboardingData.contactInformation.company.metadata.attendees_packages
-        }
+          packageId:
+            this.onboardingData.contactInformation.company.metadata
+              .attendees_package_id,
+          attendeesPackages:
+            this.onboardingData.contactInformation.company.metadata
+              .attendees_packages,
+        };
       }
       // add package information to memberdata
-      memberData = { ...memberData, packageData }
+      memberData = { ...memberData, packageData };
       // get captcha token
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      await this.$recaptchaLoaded();
+      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        'g-recaptcha-response': token
-      }
+        "g-recaptcha-response": token,
+      };
       // add captcha token to memberData
-      memberData = { ...memberData, ...captchaData }
+      memberData = { ...memberData, ...captchaData };
 
       // add image data to memberData
       const imageData = {
-        dataUrl: this.onboardingData.image64
-      }
-      memberData = { ...memberData, imageData }
-      this.loading = true
+        dataUrl: this.onboardingData.image64,
+      };
+      memberData = { ...memberData, imageData };
+      this.loading = true;
       //  create Fabman member and set membership
-      this.$store.dispatch('createMember', memberData).then((r) => {
-        // register Auth0
-        const registerAuth0Data = {
-          email: this.onboardingData.userInformation.email,
-          password: this.onboardingData.userInformation.password,
-          user_metadata: {
-            firstName: this.onboardingData.userInformation.firstName,
-            lastName: this.onboardingData.userInformation.lastName,
-            address: this.onboardingData.contactInformation.address,
-            city: this.onboardingData.contactInformation.city,
-            zip: this.onboardingData.contactInformation.zip
-          }
-        }
-        this.$store.dispatch('registerUser', registerAuth0Data).then((r) => {
-          this.loadNextPage()
-          this.loading = false
-          this.$store.dispatch('setSidebar', 'register-success')
-        }).catch((e) => {
-          this.loading = false
-          if (e.error) {
-            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-            return
-          }
-          if (e.code) {
-            switch (e.code) {
-              case 'user_exists':
-                this.errorMessage = 'Ein User mit dieser Email Adresse existiert bereits'
-                break
-              case 'invalid_password':
-                this.errorMessage = 'Das Passwort ist zu schwach.'
-                this.errorDescription = e.policy
-                break
-              default:
-                this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.code + '"'
-                break
-            }
-          }
+      this.$store
+        .dispatch("createMember", memberData)
+        .then((r) => {
+          // register Auth0
+          const registerAuth0Data = {
+            email: this.onboardingData.userInformation.email,
+            password: this.onboardingData.userInformation.password,
+            user_metadata: {
+              firstName: this.onboardingData.userInformation.firstName,
+              lastName: this.onboardingData.userInformation.lastName,
+              address: this.onboardingData.contactInformation.address,
+              city: this.onboardingData.contactInformation.city,
+              zip: this.onboardingData.contactInformation.zip,
+            },
+          };
+          this.$store
+            .dispatch("registerUser", registerAuth0Data)
+            .then((r) => {
+              this.loadNextPage();
+              this.loading = false;
+              this.$store.dispatch("setSidebar", "register-success");
+            })
+            .catch((e) => {
+              this.loading = false;
+              if (e.error) {
+                this.errorMessage =
+                  'Ein Fehler ist aufgetreten: "' + e.error + '"';
+                return;
+              }
+              if (e.code) {
+                switch (e.code) {
+                  case "user_exists":
+                    this.errorMessage =
+                      "Ein User mit dieser Email Adresse existiert bereits";
+                    break;
+                  case "invalid_password":
+                    this.errorMessage = "Das Passwort ist zu schwach.";
+                    this.errorDescription = e.policy;
+                    break;
+                  default:
+                    this.errorMessage =
+                      'Ein Fehler ist aufgetreten: "' + e.code + '"';
+                    break;
+                }
+              }
+            });
         })
-      })
         .catch((e) => {
-          this.$toast.show('Ein Fehler ist aufgetreten ', e.code, {
-            theme: 'bubble'
-          })
-        })
-    }
-  }
-}
+          this.$toast.show("Ein Fehler ist aufgetreten ", e.code, {
+            theme: "bubble",
+          });
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .wizard {
   margin: 0 4%;
 
@@ -597,7 +729,7 @@ export default {
 
           &:before {
             z-index: -1;
-            content: '';
+            content: "";
             position: absolute;
             margin-top: -3px;
             top: 50%;
@@ -690,7 +822,7 @@ export default {
     .input-button-primary {
       cursor: pointer;
       background-color: $color-orange;
-      color: #FFF;
+      color: #fff;
       min-width: 30%;
       border: 1px solid lighten($color-orange, 10);
       padding: 7px 12px 8px;
@@ -706,7 +838,6 @@ export default {
     background-color: grey;
     border: 1px solid darkgrey;
   }
-
 }
 
 .error-message {
@@ -718,12 +849,12 @@ export default {
       list-style-type: circle;
       padding: 0 0 0 1em;
       > li {
-        margin: .4em 0 0 0;
+        margin: 0.4em 0 0 0;
         > ul {
           padding: 0 0 0 1em;
           list-style-type: circle;
           > li {
-            margin: .4em 0 0 0;
+            margin: 0.4em 0 0 0;
           }
         }
       }

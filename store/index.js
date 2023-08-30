@@ -1,56 +1,56 @@
-import Vuex from 'vuex';
-import auth0 from 'auth0-js';
-import { getUserFromLocalStorage, setToken, unsetToken } from '~/utils/auth';
-import axios from 'axios';
-import moment from 'moment';
-import Vue from 'vue';
+import Vuex from "vuex";
+import auth0 from "auth0-js";
+import { getUserFromLocalStorage, setToken, unsetToken } from "~/utils/auth";
+import axios from "axios";
+import moment from "moment";
+import Vue from "vue";
 
 const origin = process.client ? window.location.origin : process.env.ORIGIN;
 
-console.log('### Nuxt environment is: ' + process.env.NUXT_ENV_ENVIRONMENT);
+console.log("### Nuxt environment is: " + process.env.NUXT_ENV_ENVIRONMENT);
 
 let tmpAuth = null;
 let tmpVersion = null;
 
 // Define auth0 routes depending on your environment
 switch (process.env.NUXT_ENV_ENVIRONMENT) {
-  case 'develop':
+  case "develop":
     tmpAuth = new auth0.WebAuth({
-      domain: 'gg-develop.eu.auth0.com',
-      clientID: 'kJfGQ92cUMcTWEhjYaYQ0NDBir6ByYs9',
-      audience: 'https://gg-develop.eu.auth0.com/api/v2/',
-      responseType: 'token id_token',
-      redirectUri: origin + '/auth',
+      domain: "gg-develop.eu.auth0.com",
+      clientID: "kJfGQ92cUMcTWEhjYaYQ0NDBir6ByYs9",
+      audience: "https://gg-develop.eu.auth0.com/api/v2/",
+      responseType: "token id_token",
+      redirectUri: origin + "/auth",
     });
     tmpVersion = process.env.CONNECTOR_API_URL_DEVELOP;
     // set public captcha site key (develop)
-    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG';
+    process.env.RECAPTCHA_SITE_KEY = "6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG";
     break;
-  case 'staging':
+  case "staging":
     tmpAuth = new auth0.WebAuth({
-      domain: 'gg-staging.eu.auth0.com',
-      clientID: 'LsZ4ug7c87ae1SAq1Q3nW4FjvJsQXb7T',
-      audience: 'https://gg-staging.eu.auth0.com/api/v2/',
-      responseType: 'token id_token',
-      redirectUri: origin + '/auth',
+      domain: "gg-staging.eu.auth0.com",
+      clientID: "LsZ4ug7c87ae1SAq1Q3nW4FjvJsQXb7T",
+      audience: "https://gg-staging.eu.auth0.com/api/v2/",
+      responseType: "token id_token",
+      redirectUri: origin + "/auth",
     });
     tmpVersion = process.env.CONNECTOR_API_URL_STAGING;
     // set public captcha site key (develop)
-    process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG';
+    process.env.RECAPTCHA_SITE_KEY = "6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG";
     break;
   default: // production
     tmpAuth = new auth0.WebAuth({
-      domain: 'auth.grandgarage.eu',
-      clientID: 'lwqb_LrkbU8b2rHfbC05C87xqM4bSfms',
-      audience: 'https://api.grandgarage.eu/',
-      responseType: 'token id_token',
-      redirectUri: origin + '/auth',
+      domain: "auth.grandgarage.eu",
+      clientID: "lwqb_LrkbU8b2rHfbC05C87xqM4bSfms",
+      audience: "https://api.grandgarage.eu/",
+      responseType: "token id_token",
+      redirectUri: origin + "/auth",
     });
     tmpVersion = process.env.CONNECTOR_API_URL;
     // set public captcha site key (production)
     // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
     // env variables stored on netlify are only available during build
-    process.env.RECAPTCHA_SITE_KEY = '6Ld5hhclAAAAAMYEqSvK9SxLbzZQhDMa1ouOaksM';
+    process.env.RECAPTCHA_SITE_KEY = "6Ld5hhclAAAAAMYEqSvK9SxLbzZQhDMa1ouOaksM";
 }
 
 const webAuth = tmpAuth;
@@ -58,9 +58,9 @@ const version = tmpVersion;
 
 const baseUrl = process.env.NUXT_ENV_CONNECTOR_URL
   ? process.env.NUXT_ENV_CONNECTOR_URL
-  : 'https://connector.grandgarage.eu';
-const connectorBaseUrl = baseUrl + '/api';
-const pretixBaseUrl = 'https://connector.grandgarage.eu/api/pretix/events';
+  : "https://connector.grandgarage.eu";
+const connectorBaseUrl = baseUrl + "/api";
+const pretixBaseUrl = "https://connector.grandgarage.eu/api/pretix/events";
 
 let connector = axios.create({
   baseURL: connectorBaseUrl,
@@ -70,9 +70,9 @@ let connector = axios.create({
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      cacheVersion: '',
-      debug: '',
-      language: 'de',
+      cacheVersion: "",
+      debug: "",
+      language: "de",
       sidebar: null,
       settings: {},
       user: null,
@@ -95,7 +95,7 @@ const createStore = () => {
         return state.memberCourses.find((c) => c.course_id === parseInt(id));
       },
       getStorageUrl() {
-        return baseUrl + '/storage/';
+        return baseUrl + "/storage/";
       },
       getBaseUrl() {
         return baseUrl;
@@ -174,19 +174,19 @@ const createStore = () => {
       init({ state, dispatch }, context) {
         const chain = [];
         if (!state.auth) {
-          chain.push(dispatch('checkAuth'));
+          chain.push(dispatch("checkAuth"));
         } else {
           if (!state.user) {
-            chain.push(dispatch('getUser'));
+            chain.push(dispatch("getUser"));
           } else {
-            chain.push(dispatch('getData'));
+            chain.push(dispatch("getData"));
           }
         }
         return Promise.all(chain);
       },
       getRecourseLogs() {
         return connector
-          .get('member/resourceLogs')
+          .get("member/resourceLogs")
           .then((r) => {
             return r;
           })
@@ -196,7 +196,7 @@ const createStore = () => {
       },
       getCurrentActivities() {
         return connector
-          .get('member/currentActivities')
+          .get("member/currentActivities")
           .then((r) => {
             return r;
           })
@@ -228,7 +228,7 @@ const createStore = () => {
         const c = axios.create({
           baseURL: connectorBaseUrl,
         });
-        return c.post('v1/blog/votes/vote', data).then((r) => {
+        return c.post("v1/blog/votes/vote", data).then((r) => {
           if (r.data.success) {
             return r.data;
           }
@@ -238,14 +238,14 @@ const createStore = () => {
         const c = axios.create({
           baseURL: connectorBaseUrl,
         });
-        return c.post('v1/blog/votes', data).then((r) => {
+        return c.post("v1/blog/votes", data).then((r) => {
           return r.data;
         });
       },
       getWorkshopDateMetadata({ state }, data) {
         if (connector) {
           return connector
-            .post('/v1/workshops/getWorkshopDateMetadata', data)
+            .post("/v1/workshops/getWorkshopDateMetadata", data)
             .then((r) => {
               if (r.data) {
                 return r.data;
@@ -258,13 +258,13 @@ const createStore = () => {
         }
       },
       bookWorkshop({ state }, data) {
-        return connector.post('/v1/workshops/checkoutWorkshop', data);
+        return connector.post("/v1/workshops/checkoutWorkshop", data);
       },
       checkout({ state }, data) {
-        return connector.post('/member/checkoutTransaction', data);
+        return connector.post("/member/checkoutTransaction", data);
       },
       workshopStorno({ state }, data) {
-        return connector.post('/member/workshopStorno', data);
+        return connector.post("/member/workshopStorno", data);
       },
       //@deprecated
       // TODO - remove if deprecated
@@ -278,7 +278,7 @@ const createStore = () => {
       // },
       startTransaction({ state }, data) {
         // Returns payrexx checkout link
-        return axios.post(connectorBaseUrl + '/payrexx/checkout', data);
+        return axios.post(connectorBaseUrl + "/payrexx/checkout", data);
       },
       // old version
       // TODO - remove if deprecated
@@ -301,7 +301,7 @@ const createStore = () => {
         const id = state.member.id;
         const res = await connector.post(
           `/v1/fabman/members/${id}/credits`,
-          data,
+          data
         );
         return res.data;
       },
@@ -309,14 +309,14 @@ const createStore = () => {
         const params = {
           member: state.member.id,
         };
-        const res = await connector.get('/v1/fabman/invoices', { params });
+        const res = await connector.get("/v1/fabman/invoices", { params });
         return res.data;
       },
       async getActivities({ state }) {
         const params = {
           member: state.member.id,
         };
-        const res = await connector.get('/v1/fabman/charges', { params });
+        const res = await connector.get("/v1/fabman/charges", { params });
         return res.data;
       },
       async getPDF({ state }, id) {
@@ -332,14 +332,14 @@ const createStore = () => {
         return res.data;
       },
       async getPackages({ state }) {
-        const res = await connector.get('/v1/fabman/packages');
+        const res = await connector.get("/v1/fabman/packages");
         return res.data;
       },
       async setPackage({ state }, data) {
         const id = state.member.id;
         const res = await connector.post(
           `v1/fabman/members/${id}/packages`,
-          data,
+          data
         );
         return res.data;
       },
@@ -347,7 +347,7 @@ const createStore = () => {
         const id = state.member.id;
         const res = await connector.put(
           `v1/fabman/members/${id}/packages/${data.id}`,
-          data,
+          data
         );
         return res.data;
       },
@@ -360,14 +360,14 @@ const createStore = () => {
       //   return res.data
       // },
       async uploadImage({ state }, data) {
-        const res = await connector.post('v1/files/image', data);
+        const res = await connector.post("v1/files/image", data);
         //console.log(res)
         return res.data;
       },
       async getPaymentMethod({ state }) {
         const id = state.member.id;
         const res = await connector.get(
-          `v1/fabman/members/${id}/payment-method`,
+          `v1/fabman/members/${id}/payment-method`
         );
         return res.data;
       },
@@ -386,13 +386,13 @@ const createStore = () => {
                   accessToken: authResult.accessToken,
                 };
                 setToken(authResult.accessToken);
-                commit('setAuth', auth);
+                commit("setAuth", auth);
                 axios.create({
-                  baseURL: connectorBaseUrl + '/member/invoice/' + id,
+                  baseURL: connectorBaseUrl + "/member/invoice/" + id,
                   // headers: {'Authorization': `Bearer ${auth.accessToken}`, 'Content-Type' : 'application/pdf'}
                   headers: { Authorization: `Bearer ${auth.accessToken}` },
                 });
-                dispatch('getPDF', id);
+                dispatch("getPDF", id);
                 resolve();
               }
             });
@@ -400,29 +400,31 @@ const createStore = () => {
         }
       },
       async getPretixEvents({ state }) {
-        const r = await axios.get(`${baseUrl + '/api/pretix/subevents'}`);
+        const r = await axios.get(`${baseUrl + "/api/pretix/subevents"}`);
         if (r.status === 200) {
           return r.data;
         }
       },
       async getPretixEventsForWorkshop({ state }, subEvent) {
         const r = await axios.get(
-          `${baseUrl + '/api/pretix/events'}/${subEvent}`,
+          `${baseUrl + "/api/pretix/events"}/${subEvent}`
         );
         if (r.status === 200) {
           return r.data;
         }
       },
-      async getFutureEvents ({ state }, event) {
-        const r = await axios.get(`${baseUrl}/api/pretix/events/${event}`, { params: { is_future: true } })
+      async getFutureEvents({ state }, event) {
+        const r = await axios.get(`${baseUrl}/api/pretix/events/${event}`, {
+          params: { is_future: true },
+        });
         if (r.status === 200) {
-          return r.data
+          return r.data;
         } else {
-          return undefined
+          return undefined;
         }
       },
-      saveQuiz ({ state }, data) {
-        return connector.post('/v1/courses/save-quiz', data).then((r) => {
+      saveQuiz({ state }, data) {
+        return connector.post("/v1/courses/save-quiz", data).then((r) => {
           if (r.data.success) {
             return r.data.data;
           }
@@ -430,15 +432,15 @@ const createStore = () => {
       },
       async savePublicQuiz({ state }, data) {
         const r = await axios.post(
-          connectorBaseUrl + '/v1/save-public-quiz',
-          data,
+          connectorBaseUrl + "/v1/save-public-quiz",
+          data
         );
         if (r.data.success) {
           return r.data.data;
         }
       },
       async getAsu() {
-        const r = await axios.get(connectorBaseUrl + '/v1/get-asu');
+        const r = await axios.get(connectorBaseUrl + "/v1/get-asu");
         if (r.data.success) {
           return r.data.data;
         }
@@ -450,7 +452,7 @@ const createStore = () => {
         const params = {
           course_id: id,
         };
-        return connector.get('/v1/courses/get-quiz', { params }).then((r) => {
+        return connector.get("/v1/courses/get-quiz", { params }).then((r) => {
           if (r.data.success) {
             return r.data.data;
           }
@@ -470,8 +472,8 @@ const createStore = () => {
         return r.data;
       },
       async createBooking({ commit }, data) {
-        console.log('createBooking', data);
-        const res = await connector.post('/v1/fabman/bookings/', data);
+        console.log("createBooking", data);
+        const res = await connector.post("/v1/fabman/bookings/", data);
         return res.data;
       },
       async getResource({ state }, id) {
@@ -483,7 +485,7 @@ const createStore = () => {
         return axios
           .get(`${origin}/.netlify/functions/getFabman`)
           .then((r) => {
-            commit('setFabman', r.data);
+            commit("setFabman", r.data);
           })
           .catch((err) => {
             this.$sentry.captureException(err);
@@ -496,20 +498,20 @@ const createStore = () => {
           .then((r) => {
             const patch = { profile: r.data };
             const user = Object.assign(state.user, patch);
-            commit('setUser', user);
+            commit("setUser", user);
           })
           .catch((err) => {
             this.$sentry.captureException(err);
           });
       },
       updateMember({ state, commit, dispatch }, data) {
-        Vue.delete(data, 'lockVersion');
+        Vue.delete(data, "lockVersion");
         const req = JSON.parse(JSON.stringify(data));
         return connector
-          .put('/v1/fabman/members/' + data.id, req)
+          .put("/v1/fabman/members/" + data.id, req)
           .then((r) => {
             const member = Object.assign(state.member, r.data);
-            commit('setMember', member);
+            commit("setMember", member);
           })
           .catch((err) => {
             this.$sentry.captureException(err);
@@ -531,7 +533,7 @@ const createStore = () => {
         return axios
           .get(`${origin}/.netlify/functions/getUser`)
           .then((netlifyResponse) => {
-            dispatch('getMemberByEmail', { email: netlifyResponse.data }).then(
+            dispatch("getMemberByEmail", { email: netlifyResponse.data }).then(
               (response) => {
                 const profile = response;
                 //console.log(response)
@@ -542,11 +544,11 @@ const createStore = () => {
                   // payment
                 };
                 //console.log(user)
-                commit('setUser', user);
+                commit("setUser", user);
                 // TODO remove getMember again (use user)
-                dispatch('getMember', user.profile.id);
+                dispatch("getMember", user.profile.id);
                 //return dispatch('getFabman')
-              },
+              }
             );
           })
           .catch((err) => {
@@ -555,14 +557,14 @@ const createStore = () => {
       },
       async getMemberByEmail({ commit }, data) {
         const res = await connector.post(
-          '/v1/fabman/members/getMemberByEmail/',
-          data,
+          "/v1/fabman/members/getMemberByEmail/",
+          data
         );
         return res.data;
       },
       getMember({ state, commit }, id) {
-        return connector.get('/v1/fabman/members/' + id).then((r) => {
-          commit('setMember', r.data);
+        return connector.get("/v1/fabman/members/" + id).then((r) => {
+          commit("setMember", r.data);
         });
       },
 
@@ -581,19 +583,19 @@ const createStore = () => {
                   accessToken: authResult.accessToken,
                 };
                 setToken(authResult.accessToken);
-                commit('setAuth', auth);
+                commit("setAuth", auth);
                 connector = axios.create({
                   baseURL: connectorBaseUrl,
                   headers: { Authorization: `Bearer ${auth.accessToken}` },
                 });
-                dispatch('getCourses');
-                dispatch('getMemberCourses');
+                dispatch("getCourses");
+                dispatch("getMemberCourses");
                 resolve();
               }
             });
           }).then(() => {
             if (!state.user) {
-              return dispatch('getUser');
+              return dispatch("getUser");
             }
           });
         } else {
@@ -623,11 +625,11 @@ const createStore = () => {
         });
       },
       logout({ commit }) {
-        commit('setAuth', null);
+        commit("setAuth", null);
         unsetToken();
       },
       startCourse({ commit }, context) {
-        return connector.post('/v1/courses/start-course', context).then((r) => {
+        return connector.post("/v1/courses/start-course", context).then((r) => {
           if (r.data.success) {
             return r.data.data;
           }
@@ -635,21 +637,21 @@ const createStore = () => {
       },
       getMaterials({ state }, id) {
         return axios
-          .get(connectorBaseUrl + '/products/materials')
+          .get(connectorBaseUrl + "/products/materials")
           .then((result) => {
             return result.data;
           });
       },
       getMachines({ state }, id) {
         return axios
-          .get(connectorBaseUrl + '/v1/fabman/resources')
+          .get(connectorBaseUrl + "/v1/fabman/resources")
           .then((result) => {
             return result.data;
           });
       },
       async getChargeableMachines({ state }, id) {
         const result = await axios.get(
-          connectorBaseUrl + '/v1/fabman/resources',
+          connectorBaseUrl + "/v1/fabman/resources"
         );
         const cMachines = result.data.filter((machine) => {
           return machine.pricePerTimeBusy > 0;
@@ -658,7 +660,7 @@ const createStore = () => {
       },
       async getMachinePrices({ state }, id) {
         const result = await axios.get(
-          connectorBaseUrl + '/v1/fabman/resources',
+          connectorBaseUrl + "/v1/fabman/resources"
         );
         const cMachines = result.data
           .filter((machine) => {
@@ -680,16 +682,16 @@ const createStore = () => {
       // @deprecated
       // TODO - delete if deprecated
       async startOnboarding({ commit }, data) {
-        const res = await connector.post('/member/startOnboarding', data);
+        const res = await connector.post("/member/startOnboarding", data);
         return res.data;
       },
       async hasCompletedOnboarding() {
-        const res = await connector.get('/member/hasCompletedOnboarding');
+        const res = await connector.get("/member/hasCompletedOnboarding");
         return res.data;
       },
       async hasCompletedRequiredCourses({ state, commit }, id) {
         const res = await connector.get(
-          `/v1/fabman/members/${id}/hasCompletedRequiredCourses`,
+          `/v1/fabman/members/${id}/hasCompletedRequiredCourses`
         );
         return res.data;
       },
@@ -697,21 +699,28 @@ const createStore = () => {
         return new Promise((resolve, reject) => {
           webAuth.login(
             {
-              connection: 'Username-Password-Authentication',
+              connection: "Username-Password-Authentication",
               email: context.email,
               password: context.password,
             },
             function (err, r) {
               if (err) reject(err);
               resolve(r);
-            },
+            }
           );
         });
       },
-      async checkLoginData({ commit }, data) {
+      async checkPassword({ commit }, data) {
         const res = await connector.post(
-          '/v1/fabman/services/checkEmail/',
-          data,
+          "/v1/fabman/services/checkPassword/",
+          data
+        );
+        return res.data;
+      },
+      async checkMail({ commit }, data) {
+        const res = await connector.post(
+          "/v1/fabman/services/checkEmail/",
+          data
         );
         return res.data;
       },
@@ -721,8 +730,8 @@ const createStore = () => {
         //   headers: {}
         // })
         const res = await connector.post(
-          '/v1/fabman/services/checkCompanyCode/',
-          data,
+          "/v1/fabman/services/checkCompanyCode/",
+          data
         );
         return res.data;
       },
@@ -731,18 +740,18 @@ const createStore = () => {
         //   baseURL: connectorBaseUrl,
         //   headers: {}
         // })
-        const res = await connector.get('/v1/fabman/countries/');
+        const res = await connector.get("/v1/fabman/countries/");
         return res.data;
       },
       async createMember({ commit }, data) {
-        const res = await connector.post('/v1/fabman/members/', data);
+        const res = await connector.post("/v1/fabman/members/", data);
         return res.data;
       },
       registerUser({ commit }, context) {
         return new Promise((resolve, reject) => {
           webAuth.signup(
             {
-              connection: 'Username-Password-Authentication',
+              connection: "Username-Password-Authentication",
               email: context.email,
               password: context.password,
               user_metadata: context.user_metadata,
@@ -750,7 +759,7 @@ const createStore = () => {
             function (err, r) {
               if (err) reject(err);
               resolve(r);
-            },
+            }
           );
         });
       },
@@ -758,13 +767,13 @@ const createStore = () => {
         return new Promise((resolve, reject) => {
           webAuth.changePassword(
             {
-              connection: 'Username-Password-Authentication',
+              connection: "Username-Password-Authentication",
               email: context.email,
             },
             function (err, r) {
               if (err) reject(err);
               resolve(r);
-            },
+            }
           );
         });
       },
@@ -774,9 +783,9 @@ const createStore = () => {
       getMemberCourses({ state, commit }, id) {
         if (!state.auth) return null;
 
-        return connector.get('/v1/courses/get-member-courses').then((r) => {
+        return connector.get("/v1/courses/get-member-courses").then((r) => {
           if (r.data.success) {
-            commit('setMemberCourses', r.data.data);
+            commit("setMemberCourses", r.data.data);
           }
         });
       },
@@ -784,10 +793,10 @@ const createStore = () => {
         if (!state.auth) return null;
 
         return connector
-          .get('/v1/courses/get-courses')
+          .get("/v1/courses/get-courses")
           .then((r) => {
             if (r.data.success) {
-              commit('setCourses', r.data.data);
+              commit("setCourses", r.data.data);
             }
           })
           .catch((err) => {
@@ -796,10 +805,10 @@ const createStore = () => {
       },
       loadTagsMachine({ state }) {
         return this.$storyapi
-          .get('cdn/tags', {
+          .get("cdn/tags", {
             filter_query: {
               component: {
-                in: 'machine',
+                in: "machine",
               },
             },
           })
@@ -809,10 +818,10 @@ const createStore = () => {
       },
       loadTagsTeam({ state }) {
         return this.$storyapi
-          .get('cdn/tags', {
+          .get("cdn/tags", {
             filter_query: {
               component: {
-                in: 'team-member',
+                in: "team-member",
               },
             },
           })
@@ -823,10 +832,10 @@ const createStore = () => {
       },
       loadTeam({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: {
               component: {
-                in: 'team-member',
+                in: "team-member",
               },
             },
             per_page: 50,
@@ -839,10 +848,10 @@ const createStore = () => {
       },
       loadPress({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: {
               component: {
-                in: 'press-overview',
+                in: "press-overview",
               },
             },
             per_page: 50,
@@ -871,8 +880,8 @@ const createStore = () => {
           .get(`cdn/stories/${uuid}`, {
             version: version,
             cv: state.cacheVersion,
-            find_by: 'uuid',
-            resolve_relations: 'workshop-date.workshop',
+            find_by: "uuid",
+            resolve_relations: "workshop-date.workshop",
           })
           .then((res) => {
             return res.data;
@@ -883,7 +892,7 @@ const createStore = () => {
       },
       loadPage({ state }, path) {
         if (!path) {
-          path = '/';
+          path = "/";
         }
 
         return this.$storyapi
@@ -951,24 +960,24 @@ const createStore = () => {
             return res.data.story;
           });
         if (!workshop) {
-          console.error('workshop not found: ', workshop);
+          console.error("workshop not found: ", workshop);
         }
         const dates = await this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: {
               workshop: {
                 in: workshop.uuid,
               },
               component: {
-                in: 'workshop-date',
+                in: "workshop-date",
               },
               starttime: {
-                'gt-date': moment().format('YYYY-MM-DD HH:mm'),
+                "gt-date": moment().format("YYYY-MM-DD HH:mm"),
               },
             },
             version: version,
             cv: state.cacheVersion,
-            sort_by: 'content.starttime:asc',
+            sort_by: "content.starttime:asc",
           })
           .then((res) => {
             return res.data.stories;
@@ -977,13 +986,13 @@ const createStore = () => {
       },
       findStatusMachines({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: {
               component: {
-                in: 'machine',
+                in: "machine",
               },
               machine_status_items: {
-                is: 'not_empty_array',
+                is: "not_empty_array",
               },
             },
             version: version,
@@ -999,7 +1008,7 @@ const createStore = () => {
       },
       findItems({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             ...filters,
             version: version,
             cv: state.cacheVersion,
@@ -1014,7 +1023,7 @@ const createStore = () => {
       },
       findEvents({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             ...filters,
             version: version,
             cv: state.cacheVersion,
@@ -1028,16 +1037,16 @@ const createStore = () => {
       },
       loadWorkshops({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: {
               component: {
-                in: 'workshop',
+                in: "workshop",
               },
             },
             per_page: 100,
             version: version,
             cv: state.cacheVersion,
-            sort_by: 'content.title:asc',
+            sort_by: "content.title:asc",
           })
           .then((res) => {
             return res.data;
@@ -1047,12 +1056,12 @@ const createStore = () => {
         const filters = data.filters;
         const search = data.search;
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             ...filters,
             version: version,
             cv: state.cacheVersion,
-            resolve_relations: 'workshop',
-            sort_by: 'content.starttime:desc',
+            resolve_relations: "workshop",
+            sort_by: "content.starttime:desc",
             per_page: 100,
           })
           .then((res) => {
@@ -1066,17 +1075,17 @@ const createStore = () => {
               if (!(wid in workshops)) {
                 workshops[wid] = Object.assign(
                   { dates: [] },
-                  w.content.workshop,
+                  w.content.workshop
                 );
               }
               workshops[wid].dates.push(w);
             }
-            if (search === '' || !search) {
+            if (search === "" || !search) {
               return Object.values(workshops).sort((a, b) =>
-                a.content.title.localeCompare(b.content.title),
+                a.content.title.localeCompare(b.content.title)
               );
             }
-            const searchString = new RegExp(search, 'i');
+            const searchString = new RegExp(search, "i");
             return Object.values(workshops)
               .filter((w) => {
                 return w.content.title.match(searchString);
@@ -1089,11 +1098,11 @@ const createStore = () => {
       },
       findWorkshopDates({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             ...filters,
             version: version,
             cv: state.cacheVersion,
-            sort_by: 'content.starttime:desc',
+            sort_by: "content.starttime:desc",
             per_page: 100,
           })
           .then((res) => {
@@ -1119,13 +1128,13 @@ const createStore = () => {
       },
       findNews({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: filters.filter_query,
             version: version,
             cv: state.cacheVersion,
             starts_with: `${state.language}/news`,
             per_page: 100,
-            sort_by: 'content.datetime:desc',
+            sort_by: "content.datetime:desc",
           })
           .then((res) => {
             return res.data;
@@ -1136,7 +1145,7 @@ const createStore = () => {
       },
       loadSitemap({ state, commit }) {
         return this.$storyapi
-          .get('cdn/links', {
+          .get("cdn/links", {
             version: version,
             cv: state.cacheVersion,
             starts_with: state.language,
@@ -1154,7 +1163,7 @@ const createStore = () => {
             version: version,
           })
           .then((res) => {
-            commit('setSettings', res.data.story.content);
+            commit("setSettings", res.data.story.content);
           })
           .catch((e) => {
             console.log(e);
@@ -1162,7 +1171,7 @@ const createStore = () => {
       },
       findPress({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
+          .get("cdn/stories", {
             filter_query: filters.filter_query,
             version: version,
             cv: state.cacheVersion,
@@ -1177,7 +1186,7 @@ const createStore = () => {
       },
       getDataSource({ state }, source) {
         return this.$storyapi
-          .get('cdn/datasource_entries', {
+          .get("cdn/datasource_entries", {
             datasource: source,
             cv: state.cacheVersion,
           })
