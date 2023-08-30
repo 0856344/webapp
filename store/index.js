@@ -590,7 +590,7 @@ const createStore = () => {
       async getMachinePrices ({ state }, id) {
         const result = await axios.get(connectorBaseUrl + '/v1/fabman/resources')
         const cMachines = result.data
-          .filter((machine) => { 
+          .filter((machine) => {
             return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList)
           })
           .map((machine) => { return { id: machine.id, name: machine.name, price: machine.pricePerTimeBusy, seconds: machine.pricePerTimeBusySeconds } })
@@ -622,7 +622,11 @@ const createStore = () => {
           })
         })
       },
-      async checkLoginData ({ commit }, data) {
+      async checkPassword ({ commit }, data) {
+        const res = await connector.post('/v1/fabman/services/checkPassword/', data)
+        return res.data
+      },
+      async checkMail ({ commit }, data) {
         const res = await connector.post('/v1/fabman/services/checkEmail/', data)
         return res.data
       },

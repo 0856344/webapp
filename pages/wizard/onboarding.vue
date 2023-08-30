@@ -113,6 +113,7 @@ export default {
       loading: false,
       loadingEmail: false,
       loadingCheckEmailStatus: '',
+      passwordCheck: false,
       mailCheck: false,
       MemberType,
       steps: ['userInformation', 'contact', 'image', 'payment', 'confirmation'],
@@ -334,7 +335,7 @@ export default {
     // sets this.mailCheck to true, if e-mail address is valid for registration
     async checkLoginDataAndProceed () {
       this.loadingEmail = true
-      this.loadingCheckEmailStatus = 'Prüfe E-Mail Adresse...'
+      this.loadingCheckEmailStatus = 'Prüfe Passwort und E-Mail Adresse...'
       let payload = {
         email: this.onboardingData.userInformation.email,
         password: this.onboardingData.userInformation.password,
@@ -343,54 +344,100 @@ export default {
           lastName: this.onboardingData.userInformation.lastName
         }
       }
-      // get captcha token
+      // get captcha token for password check
       await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
-      const captchaData = {
+      let token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      let captchaData = {
         'g-recaptcha-response': token
       }
       payload = { ...payload, ...captchaData }
-      this.$store.dispatch('checkLoginData', payload).then((r) => {
+      const isPasswordValid = await this.checkPassword(payload)
+      if (isPasswordValid) {
+        // renew captcha token for email check
+        await this.$recaptchaLoaded()
+        token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+        captchaData = {
+          'g-recaptcha-response': token
+        }
+        payload = { ...payload, ...captchaData }
+        await this.checkMail(payload)
+      } else {
+        this.loadingEmail = false
+      }
+
+    },
+    async checkPassword (payload) {
+      try {
+        const r = await this.$store.dispatch('checkPassword', payload)
+        return true
+      } catch (e) {
+        const errorStatus = e?.response?.status
+        if (e.error) {
+          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
+        }
+        if (errorStatus) {
+          switch (errorStatus) {
+            case 400:
+              this.$toast.show('Passwort ist zu schwach.', {
+                theme: 'bubble'
+              })
+              break
+            default:
+              this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
+                theme: 'bubble'
+              })
+              break
+          }
+          return false
+        }
+      }
+    },
+    async checkMail (payload) {
+      try {
+        const r = await this.$store.dispatch('checkMail', payload)
         this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar'
-        return new Promise(resolve => {
+
+        await new Promise(resolve => {
           setTimeout(() => {
             this.mailCheck = true
             this.loadingEmail = false
             this.loadNextPage()
             this.saveOnboardingData()
+            resolve()
           }, 1000)
         })
-      })
-        .catch((e) => {
-          this.loadingEmail = false
-          this.mailCheck = false
-          const errorStatus = e?.response?.status
-          if (e.error) {
-            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-          }
-          if (errorStatus) {
-            switch (errorStatus) {
-              case 401:
-                this.$toast.show('Ein User mit dieser Email Adresse existiert bereits.', {
-                  theme: 'bubble'
-                })
-                break
-              case 429:
-                this.$toast.show('E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
-                  theme: 'bubble'
-                })
-                break
-              default:
-                this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
-                  theme: 'bubble'
-                })
-                break
-            }
-            this.mailCheck = false
-          }
+      } catch (e) {
+        this.loadingEmail = false
+        this.mailCheck = false
+        const errorStatus = e?.response?.status
+
+        if (e.error) {
+          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
         }
-        )
+
+        if (errorStatus) {
+          switch (errorStatus) {
+            case 401:
+              this.$toast.show('Ein User mit dieser Email Adresse existiert bereits.', {
+                theme: 'bubble'
+              })
+              break
+            case 429:
+              this.$toast.show('E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
+                theme: 'bubble'
+              })
+              break
+            default:
+              this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
+                theme: 'bubble'
+              })
+              break
+          }
+          this.mailCheck = false
+        }
+      }
     },
+
     async submit () {
       const memberType = this.getMemberType()
       // build onboarding requests

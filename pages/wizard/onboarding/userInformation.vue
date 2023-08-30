@@ -38,9 +38,18 @@
           <input v-model="passwordRepeat" type="password" placeholder="">
 
           <div class="password-error">
-            <span v-if="!passwordRepeatIsEqual" class="bad">{{ $t('passwordsDoNotMatch') }} </span>
-            <br>
-            <span v-if="passwordTooShort" class="bad">{{ $t('passwordTooShort') }} </span>
+            <div v-if="!passwordRepeatIsEqual">
+              <span class="bad">{{ $t('passwordsDoNotMatch') }} </span>
+              <br>
+            </div>
+            <div v-if="passwordTooShort">
+              <span class="bad">{{ $t('passwordTooShort') }} </span>
+              <br>
+            </div>
+            <div v-if="password && !passwordComplexity">
+              <span class="bad">Das Passwort muss sowohl Ziffern als auch Groß- und Kleinschreibung enthalten.</span>
+              <br>
+            </div>
           </div>
         </div>
       </div>
@@ -83,15 +92,15 @@ export default {
     if (this.$route.query.plan) {
       const availablePackages = await this.$store.dispatch('getPackages')
       const memberPackage = availablePackages.find(p => p.name === decodeURIComponent(this.$route.query.plan).toUpperCase())
-      if (memberPackage !== undefined) { 
-        this.onboardingData.payment.membership = memberPackage 
+      if (memberPackage !== undefined) {
+        this.onboardingData.payment.membership = memberPackage
       }
     }
     this.$refs.firstInput.focus()
   },
   computed: {
     passwordValid () {
-      if (this.passwordRepeatIsEqual && !this.passwordTooShort) {
+      if (this.passwordRepeatIsEqual && !this.passwordTooShort && this.passwordComplexity) {
         this.onboardingData.userInformation.password = this.password
         return true
       } else {
@@ -109,6 +118,14 @@ export default {
     passwordTooShort () {
       if (this.password && this.password.length < 8) {
         return true
+      } else {
+        return false
+      }
+    },
+    passwordComplexity () {
+      if (this.password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*]*$/
+        return passwordRegex.test(this.password)
       } else {
         return false
       }
