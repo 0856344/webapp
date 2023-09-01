@@ -38,7 +38,7 @@ export default {
         { key: 'workshop', name: 'Workshops', value: false, nameToDisplay: 'Workshops' },
         { key: 'training', name: 'Einschulungen', value: false, nameToDisplay: 'Einschulungen' },
         { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false, nameToDisplay: 'Frauen und Technik' },
-        { key: 'for_kids', name: 'for_kids', value: false, nameToDisplay: 'Workshops für Kinder' }
+        { key: 'for_kids', name: 'for_kids', value: false, nameToDisplay: 'Kinder und Jugendliche' }
         // { key: 'makemas', name: '#makemas2022', value: false }
       ],
       loading: false,
