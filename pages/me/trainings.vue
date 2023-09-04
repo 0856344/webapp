@@ -2,7 +2,7 @@
   <div>
     <div>
       <div class="flex items-center mb-1">
-        <h2 class="m-0 mr-1 text-2xl">{{ $t("trainings") }}</h2>
+        <h2 class="m-0 mr-1 text-2xl">{{ $t('trainings') }}</h2>
       </div>
       <div v-if="courses" class="courseContainer">
         <Course v-for="course of courses" :key="course.id" :course="course" />
@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import Course from "@/bloks/Course.vue";
+import Course from '@/bloks/Course.vue';
 
 export default {
   components: {
     Course,
   },
-  middleware: "authenticated",
+  middleware: 'authenticated',
   data() {
     return {};
   },
@@ -31,7 +31,7 @@ export default {
       return this.$store.state.courses;
     },
     user() {
-      return this.$store.state.user;
+      return this.$store.state.member;
     },
   },
   created() {},
@@ -71,7 +71,7 @@ export default {
       &:before {
         position: absolute;
         right: 0;
-        content: "";
+        content: '';
         border-top: $color-blue 1px solid;
         border-right: $color-blue 1px solid;
         transform: rotateZ(45deg);

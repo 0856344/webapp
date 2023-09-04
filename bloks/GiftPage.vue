@@ -3,22 +3,28 @@
     <div class="gift-card-body">
       <div class="gift-card-header">
         <h2 v-if="action" class="gift-page-headline">
-      <span class="svg-icon mr-05">
-        <img src="~/assets/img/icons/gift-card-icon.svg" class="decorator">
-      </span>
+          <span class="svg-icon mr-05">
+            <img
+              src="~/assets/img/icons/gift-card-icon.svg"
+              class="decorator"
+            />
+          </span>
           <span class="svg-h2">
-        {{ $t('giftCard') }} {{ action === 'buy' ? 'kaufen' : 'einlösen' }}
-      </span>
-          <loading-spinner v-if="loading" class="loading-spinner ml-05"/>
+            {{ $t('giftCard') }} {{ action === 'buy' ? 'kaufen' : 'einlösen' }}
+          </span>
+          <loading-spinner v-if="loading" class="loading-spinner ml-05" />
         </h2>
         <h2 v-else class="gift-page-headline">
-      <span class="svg-icon mr-05">
-        <img src="~/assets/img/icons/gift-card-icon.svg" class="decorator">
-      </span>
+          <span class="svg-icon mr-05">
+            <img
+              src="~/assets/img/icons/gift-card-icon.svg"
+              class="decorator"
+            />
+          </span>
           <span class="svg-h2">
-        {{ $t('giftCards') }}
-      </span>
-          <loading-spinner v-if="loading" class="loading-spinner ml-05"/>
+            {{ $t('giftCards') }}
+          </span>
+          <loading-spinner v-if="loading" class="loading-spinner ml-05" />
         </h2>
       </div>
       <template v-if="!action">
@@ -26,78 +32,120 @@
           <markdown :value="blok.Title" />
         </div>
         <div class="items">
-<!--          Gutscheinkauf wurde am 30.6 auf Anforderung der GF ausgesetzt-->
-<!--          <section class="display-item">-->
-<!--            <div class="top">-->
-<!--              <div class="top-image" :style="{ 'background-image': 'url(' + $resizeImage(blok.imageBuy, '1500x1500') + ')' }"></div>-->
-<!--            </div>-->
-<!--            <div class="bottom">-->
-<!--              <div class="bottom-text">-->
-<!--                {{ $t('buyGiftCard') }}-->
-<!--              </div>-->
-<!--              <a href="https://grandgarage.firstvoucher.com/wertgutschein-fuer-die-grand-garage-m73245" target="_blank" class="buy-redeem-button">-->
-<!--                {{ $t('buy') }}-->
-<!--              </a>-->
-<!--            </div>-->
-<!--          </section>-->
+          <!--          Gutscheinkauf wurde am 30.6 auf Anforderung der GF ausgesetzt-->
+          <!--          <section class="display-item">-->
+          <!--            <div class="top">-->
+          <!--              <div class="top-image" :style="{ 'background-image': 'url(' + $resizeImage(blok.imageBuy, '1500x1500') + ')' }"></div>-->
+          <!--            </div>-->
+          <!--            <div class="bottom">-->
+          <!--              <div class="bottom-text">-->
+          <!--                {{ $t('buyGiftCard') }}-->
+          <!--              </div>-->
+          <!--              <a href="https://grandgarage.firstvoucher.com/wertgutschein-fuer-die-grand-garage-m73245" target="_blank" class="buy-redeem-button">-->
+          <!--                {{ $t('buy') }}-->
+          <!--              </a>-->
+          <!--            </div>-->
+          <!--          </section>-->
           <div class="spacer"></div>
-          <br>
+          <br />
           <section class="display-item">
             <div class="top">
-              <div class="top-image" :style="{ 'background-image': 'url(' + $resizeImage(blok.imageRedeem, '1500x1500') + ')' }"></div>
+              <div
+                class="top-image"
+                :style="{
+                  'background-image':
+                    'url(' + $resizeImage(blok.imageRedeem, '1500x1500') + ')',
+                }"
+              ></div>
             </div>
             <div class="bottom">
               <div class="bottom-text">
                 {{ $t('redeemGiftCard') }}
               </div>
-              <div class="buy-redeem-button"
-                   @click=goToRedeem()>
+              <div class="buy-redeem-button" @click="goToRedeem()">
                 {{ $t('redeem') }}
               </div>
             </div>
           </section>
-          <br>
+          <br />
         </div>
       </template>
 
       <transition name="fade">
         <template>
-
           <template v-if="action === 'redeem'">
             <div v-if="step === 0" class="description-gift-card">
-              <br>
-              <h3>Du hast zwei Optionen zur Auswahl, um deinen Wertgutschein einzulösen.</h3>
-              <br>
-              <p style="text-align: justify;"><b>Option 1: Mitgliedskonto</b></p> <p style="text-align: justify; margin-bottom: 0px"> Du kannst deinen Wertgutschein in voller Höhe oder auch einen Teilbetrag auf dein Mitgliedskonto aufladen und davon deine Mitgliedschaft, Maschinennutzung, verwendete Materialien aber auch Getränke bezahlen. Klingt gut? Dann einfach ins Feld „Gutschein einlösen“ den Gutscheincode eintragen und auf „Einlösen“ klicken. Dein Guthaben kannst du in deinem
-                <router-link v-if="isAuthenticated" to="/me">Mitgliedskonto</router-link>
-                <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">Mitgliedskonto</a> unter
-                <router-link v-if="isAuthenticated" to="/me/invoices">„Rechnungen“ </router-link>
-                <a v-if="!isAuthenticated" @click="login()" target="_self" href="javascript:;">„Rechnungen“</a>
-                abrufen.</p>
-              <br>
+              <br />
+              <h3>
+                Du hast zwei Optionen zur Auswahl, um deinen Wertgutschein
+                einzulösen.
+              </h3>
+              <br />
+              <p style="text-align: justify"><b>Option 1: Mitgliedskonto</b></p>
+              <p style="text-align: justify; margin-bottom: 0px">
+                Du kannst deinen Wertgutschein in voller Höhe oder auch einen
+                Teilbetrag auf dein Mitgliedskonto aufladen und davon deine
+                Mitgliedschaft, Maschinennutzung, verwendete Materialien aber
+                auch Getränke bezahlen. Klingt gut? Dann einfach ins Feld
+                „Gutschein einlösen“ den Gutscheincode eintragen und auf
+                „Einlösen“ klicken. Dein Guthaben kannst du in deinem
+                <router-link v-if="isAuthenticated" to="/me"
+                  >Mitgliedskonto</router-link
+                >
+                <a
+                  v-if="!isAuthenticated"
+                  @click="login()"
+                  target="_self"
+                  href="javascript:;"
+                  >Mitgliedskonto</a
+                >
+                unter
+                <router-link v-if="isAuthenticated" to="/me/invoices"
+                  >„Rechnungen“
+                </router-link>
+                <a
+                  v-if="!isAuthenticated"
+                  @click="login()"
+                  target="_self"
+                  href="javascript:;"
+                  >„Rechnungen“</a
+                >
+                abrufen.
+              </p>
+              <br />
               <div v-if="!isAuthenticated">
                 <div class="card">
                   <div class="input-redeem-card" @click="login()">
-                <span class="span">
-                {{ $t('giftCard') + ' einlösen' }} </span>
+                    <span class="span">
+                      {{ $t('giftCard') + ' einlösen' }}
+                    </span>
                     <div class="redeem-card-bottom">
-                        <TextInput v-model="giftcardCode" label="Gutscheincode:" ></TextInput>
+                      <TextInput
+                        v-model="giftcardCode"
+                        label="Gutscheincode:"
+                      ></TextInput>
                       <div class="image">
-                        <img src="~/assets/img/icons/gg-logo-icon.svg" width="50">
+                        <img
+                          src="~/assets/img/icons/gg-logo-icon.svg"
+                          width="50"
+                        />
                       </div>
                     </div>
                   </div>
                   <div class="login-reminder">
                     <div>
-                      <font-awesome-icon icon="info-circle"/>
-                      Bitte <a @click="login()" target="_self" href="javascript:;">logge dich ein</a>, um deinen Gutschein einlösen zu könnnen!
+                      <font-awesome-icon icon="info-circle" />
+                      Bitte
+                      <a @click="login()" target="_self" href="javascript:;"
+                        >logge dich ein</a
+                      >, um deinen Gutschein einlösen zu könnnen!
                     </div>
-                    <br>
+                    <br />
                   </div>
                   <div class="buttons">
                     <button
-                        class="input-button-primary"
-                        @click="goToGutscheine()"
+                      class="input-button-primary"
+                      @click="goToGutscheine()"
                     >
                       {{ $t('back') }}
                     </button>
@@ -107,95 +155,123 @@
               <div v-if="isAuthenticated && !isGiftcardSelected">
                 <div class="card">
                   <div class="input-redeem-card">
-                <span class="span">
-                Gutschein einlösen</span>
+                    <span class="span"> Gutschein einlösen</span>
                     <div class="redeem-card-bottom">
-                        <TextInput v-model="giftcardCode" label="Gutscheincode:" ></TextInput>
+                      <TextInput
+                        v-model="giftcardCode"
+                        label="Gutscheincode:"
+                      ></TextInput>
                       <div class="image">
-                        <img src="~/assets/img/icons/gg-logo-icon.svg" width="40">
+                        <img
+                          src="~/assets/img/icons/gg-logo-icon.svg"
+                          width="40"
+                        />
                       </div>
                     </div>
                   </div>
                   <div class="login-reminder">
                     <div>
-                      <font-awesome-icon icon="info-circle"/>
-                      {{'Bitte den Gutscheincode ohne dem "ID" Präfix eingeben.'}}
+                      <font-awesome-icon icon="info-circle" />
+                      {{
+                        'Bitte den Gutscheincode ohne dem "ID" Präfix eingeben.'
+                      }}
                     </div>
-                    <br>
+                    <br />
                   </div>
                   <div class="buttons">
                     <button
-                        class="input-button-payment"
-                        @click="goToGutscheine()"
+                      class="input-button-payment"
+                      @click="goToGutscheine()"
                     >
                       {{ $t('back') }}
                     </button>
                     <button
-                        class="input-button-payment"
-                        :disabled="!giftcardCode"
-                        @click="getGiftCard"
+                      class="input-button-payment"
+                      :disabled="!giftcardCode"
+                      @click="getGiftCard"
                     >
                       Weiter
                     </button>
-
                   </div>
                 </div>
               </div>
               <div v-if="isAuthenticated && isGiftcardSelected">
                 <div class="card">
                   <div class="input-redeem-card">
-                <span class="span">
-                Gutschein einlösen</span>
-                    <span class="code-span" style="margin-bottom: 10px; top: 10px">aktuelles Guthaben: <div style="font-weight: bold; color: darkgreen">{{deposit | replaceDotByComma}}€</div></span>
+                    <span class="span"> Gutschein einlösen</span>
+                    <span
+                      class="code-span"
+                      style="margin-bottom: 10px; top: 10px"
+                      >aktuelles Guthaben:
+                      <div style="font-weight: bold; color: darkgreen">
+                        {{ deposit | replaceDotByComma }}€
+                      </div></span
+                    >
                     <div class="redeem-card-bottom">
-                      <div class=" code">
+                      <div class="code">
                         <span class="code-span"> Betrag einlösen: </span>
 
-                        <input type="number" step=".01" :max="deposit" style="width: 80px; margin-left: 5px;" @input="checkValue(redeemDeposit)"
-                            v-model="redeemDeposit"
-                            class="form-item"
-                        >€
+                        <input
+                          type="number"
+                          step=".01"
+                          :max="deposit"
+                          style="width: 80px; margin-left: 5px"
+                          @input="checkValue(redeemDeposit)"
+                          v-model="redeemDeposit"
+                          class="form-item"
+                        />€
                       </div>
                       <div class="image">
-                        <img src="~/assets/img/icons/gg-logo-icon.svg" width="40">
+                        <img
+                          src="~/assets/img/icons/gg-logo-icon.svg"
+                          width="40"
+                        />
                       </div>
                     </div>
                   </div>
-<!--                  <div class="login-reminder">-->
-<!--                    <div>-->
-<!--                      <font-awesome-icon icon="info-circle"/>-->
-<!--                      {{'Der Restbetrag bleibt .'}}-->
-<!--                    </div>-->
-<!--                    <br>-->
-<!--                  </div>-->
+                  <!--                  <div class="login-reminder">-->
+                  <!--                    <div>-->
+                  <!--                      <font-awesome-icon icon="info-circle"/>-->
+                  <!--                      {{'Der Restbetrag bleibt .'}}-->
+                  <!--                    </div>-->
+                  <!--                    <br>-->
+                  <!--                  </div>-->
                   <div class="buttons">
                     <button
-                        class="input-button-payment"
-                        @click="goToGutscheine()"
+                      class="input-button-payment"
+                      @click="goToGutscheine()"
                     >
                       {{ $t('back') }}
                     </button>
-                    <button v-if="!isGiftcardSelected"
-                        class="input-button-payment"
-                        :disabled="!giftcardCode"
-                        @click="getGiftCard"
-                    >
-                    </button>
-                    <button v-if="isGiftcardSelected"
-                        class="input-button-payment"
-                        :disabled="!giftcardCode || redeemDeposit <= 0"
-                        @click="redeem"
+                    <button
+                      v-if="!isGiftcardSelected"
+                      class="input-button-payment"
+                      :disabled="!giftcardCode"
+                      @click="getGiftCard"
+                    ></button>
+                    <button
+                      v-if="isGiftcardSelected"
+                      class="input-button-payment"
+                      :disabled="!giftcardCode || redeemDeposit <= 0"
+                      @click="redeem"
                     >
                       Einlösen
                     </button>
-
                   </div>
                 </div>
               </div>
-              <br>
-              <p ><b>Option 2: Workshop & Events</b> </p><p style="text-align: justify"> Alternativ kannst du deinen Wertgutschein auch für einen unserer Workshop & Events verwenden. Suche dir dazu zunächst den passenden Termin aus unserem aktuellen
-              <router-link to="/de/workshops">{{ 'Angebot' }}</router-link>
-              aus und lege den Kurs in deinen Warenkorb. Deinen Wertgutschein kannst du später im Bestellvorgang bei den Zahlungsmethoden einlösen. Ein etwaiger Restbetrag kann mit demselben Gutscheincode zu einem späteren Zeitpunkt eingelöst werden.</p>
+              <br />
+              <p><b>Option 2: Workshop & Events</b></p>
+              <p style="text-align: justify">
+                Alternativ kannst du deinen Wertgutschein auch für einen unserer
+                Workshop & Events verwenden. Suche dir dazu zunächst den
+                passenden Termin aus unserem aktuellen
+                <router-link to="/de/workshops">{{ 'Angebot' }}</router-link>
+                aus und lege den Kurs in deinen Warenkorb. Deinen Wertgutschein
+                kannst du später im Bestellvorgang bei den Zahlungsmethoden
+                einlösen. Ein etwaiger Restbetrag kann mit demselben
+                Gutscheincode zu einem späteren Zeitpunkt eingelöst werden.
+              </p>
             </div>
           </template>
         </template>
@@ -205,24 +281,24 @@
 </template>
 
 <script>
-import TextInput from './basic/TextInput.vue'
+import TextInput from './basic/TextInput.vue';
 
 export default {
   props: ['blok'],
   components: {
-    TextInput
+    TextInput,
   },
   scrollToTop: true,
-  asyncData (context) {
-    const path = '/members/shop'
+  asyncData(context) {
+    const path = '/members/shop';
     return context.store.dispatch('loadPage', path).catch((e) => {
       context.error({
         statusCode: e.response.status,
-        message: e.response.statusText
-      })
-    })
+        message: e.response.statusText,
+      });
+    });
   },
-  data () {
+  data() {
     return {
       step: 0,
       action: null,
@@ -231,183 +307,194 @@ export default {
       isGiftcardSelected: false,
       deposit: 0,
       redeemDeposit: 0,
-      loading: false
-    }
+      loading: false,
+    };
   },
   computed: {
-    user () {
-      return this.$store.state.user
+    member() {
+      return this.$store.state.member;
     },
-    isAuthenticated () {
-      return !!this.$store.state.auth
+    isAuthenticated() {
+      return !!this.$store.state.auth;
     },
-    images () {
-      return this.blok.Images
-    }
+    images() {
+      return this.blok.Images;
+    },
   },
   watch: {
-    '$route.query' (to) {
-      this.getQuery(to)
-    }
+    '$route.query'(to) {
+      this.getQuery(to);
+    },
   },
-  mounted () {
-    this.getQuery(this.$route.query)
+  mounted() {
+    this.getQuery(this.$route.query);
   },
   filters: {
-    replaceDotByComma (value) {
-      return value.replace('.', ',')
-    }
+    replaceDotByComma(value) {
+      return value.replace('.', ',');
+    },
   },
   methods: {
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
+    login() {
+      this.$store.dispatch('setSidebar', 'login');
     },
-    getQuery (to) {
+    getQuery(to) {
       // eslint-disable-next-line no-prototype-builtins
       if (to.hasOwnProperty('origin')) {
-        this.origin = to.origin
+        this.origin = to.origin;
       }
       // eslint-disable-next-line no-prototype-builtins
-      if (to.hasOwnProperty('action') && ['buy', 'redeem'].includes(to.action)) {
-        this.action = to.action
-        this.step = 0
-        return
+      if (
+        to.hasOwnProperty('action') &&
+        ['buy', 'redeem'].includes(to.action)
+      ) {
+        this.action = to.action;
+        this.step = 0;
+        return;
       }
-      this.action = null
+      this.action = null;
     },
-    goToRedeem () {
-      this.$router.push('gutscheine?action=redeem')
-      window.scrollTo(0, 0)
+    goToRedeem() {
+      this.$router.push('gutscheine?action=redeem');
+      window.scrollTo(0, 0);
     },
-    goToGutscheine () {
-      this.isGiftcardSelected = 0
-      this.deposit = 0
-      this.redeemDeposit = 0
-      this.giftcardCode = null
-      this.$router.push('gutscheine')
-      window.scrollTo(0, 0)
+    goToGutscheine() {
+      this.isGiftcardSelected = 0;
+      this.deposit = 0;
+      this.redeemDeposit = 0;
+      this.giftcardCode = null;
+      this.$router.push('gutscheine');
+      window.scrollTo(0, 0);
     },
-    checkValue ($value) {
+    checkValue($value) {
       if (parseFloat($value) > this.deposit) {
-        this.redeemDeposit = this.deposit
+        this.redeemDeposit = this.deposit;
       }
       if (this.decimalCount($value) > 2) {
-        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2)
+        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2);
       }
     },
-    decimalCount (number) {
+    decimalCount(number) {
       // Convert to String
-      const numberAsString = number.toString()
+      const numberAsString = number.toString();
       // String Contains Decimal
       if (numberAsString.includes('.')) {
-        return numberAsString.split('.')[1].length
+        return numberAsString.split('.')[1].length;
       }
       // String Does Not Contain Decimal
-      return 0
+      return 0;
     },
-    async getGiftCard () {
-      this.loading = true
+    async getGiftCard() {
+      this.loading = true;
       // get captcha token
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      await this.$recaptchaLoaded();
+      const token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        'g-recaptcha-response': token
-      }
+        'g-recaptcha-response': token,
+      };
       // add captcha token to memberData
-      let payload = { secret: this.giftcardCode }
-      payload = { ...payload, ...captchaData }
-      await this.$store.dispatch('getGiftCard', payload)
-          .then((response) => {
-            //console.log('success', response)
-            // this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
-            //   className: 'goodToast'
-            // })
-            this.isGiftcardSelected = true
-            this.deposit = response.value
-            this.redeemDeposit = this.deposit
-          })
-          .catch((error) => {
-            this.giftcardCode = ''
-            switch (error.response.status) {
-              case 404:
-                this.$toast.show('Kein Gutschein mit diesem Code gefunden', {
-                  className: 'bubble'
-                })
-                break
-              case 405:
-                this.$toast.show('Dieser Gutschein wurde bereits eingelöst', {
-                  className: 'bubble'
-                })
-                break
-              case 429:
-                this.$toast.show('Überprüfung von Gutscheincode nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
-                  theme: 'bubble'
-                })
-                break
-              default:
-                this.$toast.show('Ein Fehler ist aufgetreten.', error, {
-                  className: 'badToast'
-                })
-                break
-            }
-          })
-          .finally(() => {
-            this.loading = false
-          })
-    },
-    async redeem () {
-      this.loading = true
-      // get captcha token
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
-      const captchaData = {
-        'g-recaptcha-response': token
-      }
-      // add captcha token to memberData
-      let payload = { secret: this.giftcardCode, value: this.redeemDeposit }
-      payload = { ...payload, ...captchaData }
-      await this.$store.dispatch('redeemGiftCard', payload)
+      let payload = { secret: this.giftcardCode };
+      payload = { ...payload, ...captchaData };
+      await this.$store
+        .dispatch('getGiftCard', payload)
         .then((response) => {
           //console.log('success', response)
-          this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
-            className: 'goodToast'
-          })
-          this.$router.push('/me/invoices')
+          // this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
+          //   className: 'goodToast'
+          // })
+          this.isGiftcardSelected = true;
+          this.deposit = response.value;
+          this.redeemDeposit = this.deposit;
         })
         .catch((error) => {
-          this.giftcardCode = ''
+          this.giftcardCode = '';
           switch (error.response.status) {
             case 404:
               this.$toast.show('Kein Gutschein mit diesem Code gefunden', {
-                className: 'bubble'
-              })
-              break
+                className: 'bubble',
+              });
+              break;
             case 405:
               this.$toast.show('Dieser Gutschein wurde bereits eingelöst', {
-                className: 'bubble'
-              })
-              break
+                className: 'bubble',
+              });
+              break;
             case 429:
-              this.$toast.show('Überprüfung von Gutscheincode nicht möglich. Bitte warten, um Fehler zu vermeiden.', {
-                theme: 'bubble'
-              })
-              break
+              this.$toast.show(
+                'Überprüfung von Gutscheincode nicht möglich. Bitte warten, um Fehler zu vermeiden.',
+                {
+                  theme: 'bubble',
+                },
+              );
+              break;
             default:
               this.$toast.show('Ein Fehler ist aufgetreten.', error, {
-                className: 'badToast'
-              })
-              break
+                className: 'badToast',
+              });
+              break;
           }
         })
         .finally(() => {
-          this.loading = false
+          this.loading = false;
+        });
+    },
+    async redeem() {
+      this.loading = true;
+      // get captcha token
+      await this.$recaptchaLoaded();
+      const token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
+      const captchaData = {
+        'g-recaptcha-response': token,
+      };
+      // add captcha token to memberData
+      let payload = { secret: this.giftcardCode, value: this.redeemDeposit };
+      payload = { ...payload, ...captchaData };
+      await this.$store
+        .dispatch('redeemGiftCard', payload)
+        .then((response) => {
+          //console.log('success', response)
+          this.$toast.show('Der Gutschein wurde erfolgreich eingelöst!', {
+            className: 'goodToast',
+          });
+          this.$router.push('/me/invoices');
         })
-    }
-  }
+        .catch((error) => {
+          this.giftcardCode = '';
+          switch (error.response.status) {
+            case 404:
+              this.$toast.show('Kein Gutschein mit diesem Code gefunden', {
+                className: 'bubble',
+              });
+              break;
+            case 405:
+              this.$toast.show('Dieser Gutschein wurde bereits eingelöst', {
+                className: 'bubble',
+              });
+              break;
+            case 429:
+              this.$toast.show(
+                'Überprüfung von Gutscheincode nicht möglich. Bitte warten, um Fehler zu vermeiden.',
+                {
+                  theme: 'bubble',
+                },
+              );
+              break;
+            default:
+              this.$toast.show('Ein Fehler ist aufgetreten.', error, {
+                className: 'badToast',
+              });
+              break;
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+  },
   // formatPrice ($price) {
   //   return Number($price).toFixed(2).toString() + ' €'
   // }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -450,7 +537,8 @@ h2 {
   height: 26px;
 }
 
-.svg-icon, .svg-h2 {
+.svg-icon,
+.svg-h2 {
   vertical-align: middle;
   display: inline-grid;
   .decorator {
@@ -461,7 +549,8 @@ h2 {
   }
 }
 
-.silent-link, .silent-info {
+.silent-link,
+.silent-info {
   font-size: 0.6em;
 }
 
@@ -493,7 +582,7 @@ h2 {
   margin-left: auto;
   margin-right: auto;
   font-size: 2.8rem;
-  font-family: "Chakra Petch", sans-serif;
+  font-family: 'Chakra Petch', sans-serif;
   text-transform: uppercase;
   padding: 20px;
   padding-left: 130px;
@@ -795,7 +884,6 @@ h2 {
       width: 300px;
       height: 150px;
       padding: 15px;
-
     }
   }
 }
@@ -894,7 +982,7 @@ h2 {
   font-family: $font-primary;
   line-height: 1.6;
   font-size: 0.9em;
-  letter-spacing: .03em;
+  letter-spacing: 0.03em;
   flex-direction: column;
   @include media-breakpoint-up(md) {
     width: 70%;

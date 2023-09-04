@@ -1,28 +1,16 @@
 <template>
-  <div
-    class="header-wrapper"
-    :class="{ 'scrolled': scrolled }"
-  >
-    <div
-      v-if="hasAuth"
-      class="login-header"
-    >
+  <div class="header-wrapper" :class="{ scrolled: scrolled }">
+    <div v-if="hasAuth" class="login-header">
       <div class="login-header-content">
         <template v-if="hasUser">
-          <nuxt-link
-            class="me"
-            to="/me"
-          >
+          <nuxt-link class="me" to="/me">
             <font-awesome-icon
               icon="user"
               style="margin-right: 0.2em; font-size: 0.9em"
             />
             <span>{{ username }}</span>
           </nuxt-link>
-          <div
-            class="logout"
-            @click="logout"
-          >
+          <div class="logout" @click="logout">
             <font-awesome-icon icon="sign-out-alt" />
           </div>
         </template>
@@ -34,22 +22,12 @@
     <header class="top-header">
       <div class="top-header-inner">
         <div class="logo">
-          <nuxt-link
-            class="top-header__link"
-            to="/"
-          >
-            <img src="~/assets/img/icons/gg-logo-icon.svg">
+          <nuxt-link class="top-header__link" to="/">
+            <img src="~/assets/img/icons/gg-logo-icon.svg" />
             <span v-if="devWarning">{{ devWarning }}</span>
           </nuxt-link>
-          <div
-            v-if="home && home.length > 0"
-            class="dropdown"
-          >
-            <div
-              v-for="child in home"
-              :key="child.id"
-              class="child"
-            >
+          <div v-if="home && home.length > 0" class="dropdown">
+            <div v-for="child in home" :key="child.id" class="child">
               <sb-link
                 :link="child.link"
                 class="child-nav-item"
@@ -68,45 +46,25 @@
           :item="item"
         />
         <div class="right-corner">
-<!--          <LanguageInput> </LanguageInput>-->
-          <div
-              v-if="!hasAuth"
-              class="login-button"
-          >
-            <button @click="login">
-              LOGIN
-            </button>
+          <!--          <LanguageInput> </LanguageInput>-->
+          <div v-if="!hasAuth" class="login-button">
+            <button @click="login">LOGIN</button>
           </div>
-          <div
-            class="menu-icon"
-            @click="toggleMenu()"
-        >
-          <img src="~/assets/img/icons/menu-icon.svg">
-        </div>
+          <div class="menu-icon" @click="toggleMenu()">
+            <img src="~/assets/img/icons/menu-icon.svg" />
+          </div>
         </div>
       </div>
     </header>
     <transition name="fadefromright">
-      <div
-        v-show="showMenu"
-        class="mobile-nav"
-      >
+      <div v-show="showMenu" class="mobile-nav">
         <div class="mobile-nav-header">
-          <div
-            class="home"
-            @click="toggleMenu()"
-          >
+          <div class="home" @click="toggleMenu()">
             <nuxt-link to="/">
-              <img
-                class="logo"
-                src="~/assets/img/icons/gg-logo-icon.svg"
-              >
+              <img class="logo" src="~/assets/img/icons/gg-logo-icon.svg" />
             </nuxt-link>
           </div>
-          <div
-            class="close-nav"
-            @click="toggleMenu"
-          >
+          <div class="close-nav" @click="toggleMenu">
             <svg
               class="close-nav-icon"
               viewBox="0 0 32 32"
@@ -114,7 +72,9 @@
               width="32"
             >
               <g>
-                <path d="M 5.5488281 3.8535156 A 2.0002 2.0002 0 0 0 4.15625 7.2890625 L 13.388672 16.519531 L 4.15625 25.751953 A 2.0002 2.0002 0 1 0 6.984375 28.580078 L 16.216797 19.347656 L 25.449219 28.580078 A 2.0002 2.0002 0 1 0 28.277344 25.751953 L 19.044922 16.519531 L 28.277344 7.2890625 A 2.0002 2.0002 0 0 0 26.824219 3.8554688 A 2.0002 2.0002 0 0 0 25.449219 4.4589844 L 16.216797 13.691406 L 6.984375 4.4589844 A 2.0002 2.0002 0 0 0 5.5488281 3.8535156 z " />
+                <path
+                  d="M 5.5488281 3.8535156 A 2.0002 2.0002 0 0 0 4.15625 7.2890625 L 13.388672 16.519531 L 4.15625 25.751953 A 2.0002 2.0002 0 1 0 6.984375 28.580078 L 16.216797 19.347656 L 25.449219 28.580078 A 2.0002 2.0002 0 1 0 28.277344 25.751953 L 19.044922 16.519531 L 28.277344 7.2890625 A 2.0002 2.0002 0 0 0 26.824219 3.8554688 A 2.0002 2.0002 0 0 0 25.449219 4.4589844 L 16.216797 13.691406 L 6.984375 4.4589844 A 2.0002 2.0002 0 0 0 5.5488281 3.8535156 z "
+                />
               </g>
             </svg>
           </div>
@@ -128,20 +88,9 @@
             @close="closeMenu"
           />
         </div>
-        <div
-          v-if="home && home.length > 0"
-          class="house-nav-items"
-        >
-          <div
-            v-for="child in home"
-            :key="child.id"
-            class="item"
-          >
-            <sb-link
-              :link="child.link"
-              class="item-link"
-              target="_blank"
-            >
+        <div v-if="home && home.length > 0" class="house-nav-items">
+          <div v-for="child in home" :key="child.id" class="item">
+            <sb-link :link="child.link" class="item-link" target="_blank">
               {{ child.name }}
             </sb-link>
           </div>
@@ -155,79 +104,82 @@
 /* import LanguageInput from './LanguageInput' */
 
 export default {
-/*  components: {
+  /*  components: {
     LanguageInput
   }, */
   props: ['blok'],
-  data () {
+  data() {
     return {
       scrolled: false,
-      showMenu: false
-    }
+      showMenu: false,
+    };
   },
   computed: {
-    loginLink () {
-      return '/' + this.$store.state.language + '/login'
+    loginLink() {
+      return '/' + this.$store.state.language + '/login';
     },
-    main () {
-      return this.$store.state.settings.main_navi
+    main() {
+      return this.$store.state.settings.main_navi;
     },
-    home () {
-      return this.$store.state.settings.home_navi
+    home() {
+      return this.$store.state.settings.home_navi;
     },
-    username () {
-      return this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
+    username() {
+      return (
+        this.$store.state.member.firstName +
+        ' ' +
+        this.$store.state.member.lastName
+      );
     },
-    hasAuth () {
-      return !!this.$store.state.auth
+    hasAuth() {
+      return !!this.$store.state.auth;
     },
-    hasUser () {
-      return !!this.$store.state.user
+    hasUser() {
+      return !!this.$store.state.member;
     },
-    devWarning () {
-      return process.env.NODE_ENV === 'development' ? 'DEV' : null
-    }
+    devWarning() {
+      return process.env.NODE_ENV === 'development' ? 'DEV' : null;
+    },
   },
   watch: {
     '$store.state.route.fullPath': function () {
-      this.closeMenu()
+      this.closeMenu();
+    },
+  },
+  created() {
+    if (process.client) {
+      window.addEventListener('scroll', this.handleScroll);
     }
   },
-  created () {
+  unmounted() {
     if (process.client) {
-      window.addEventListener('scroll', this.handleScroll)
-    }
-  },
-  unmounted () {
-    if (process.client) {
-      window.removeEventListener('scroll', this.handleScroll)
+      window.removeEventListener('scroll', this.handleScroll);
     }
   },
   methods: {
-    closeMenu () {
-      this.showMenu = false
+    closeMenu() {
+      this.showMenu = false;
     },
-    toggleMenu () {
-      this.showMenu = !this.showMenu
+    toggleMenu() {
+      this.showMenu = !this.showMenu;
     },
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
+    login() {
+      this.$store.dispatch('setSidebar', 'login');
     },
-    logout () {
+    logout() {
       this.$store.dispatch('logout').then(() => {
-        this.$router.push('/')
-      })
+        this.$router.push('/');
+      });
     },
     // add css-shadow when page is scrolled down
-    handleScroll () {
-      this.scrolled = window.scrollY > 0
-    }
-  }
-}
+    handleScroll() {
+      this.scrolled = window.scrollY > 0;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .header-wrapper {
   background-color: $color-bright-bg;
   position: fixed;
@@ -237,7 +189,7 @@ export default {
   max-width: 100%;
   transition: box-shadow 1s linear;
   &.scrolled {
-    box-shadow: 0 2px 5px rgba(0,0,0,.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
   .login-header {
     display: flex;
@@ -246,7 +198,7 @@ export default {
     align-items: center;
     background-color: $color-blue;
     padding: 5px;
-    color: #FFF;
+    color: #fff;
     font-size: 0.85em;
     height: 2em;
     .login-header-content {
@@ -264,7 +216,7 @@ export default {
       }
     }
     a {
-      color: #FFF;
+      color: #fff;
     }
   }
 }
@@ -273,7 +225,7 @@ export default {
   @include margin-page-wide();
   font-size: 1.1em;
   @media screen and (min-width: 1500px) {
-    letter-spacing: .1em;
+    letter-spacing: 0.1em;
     max-width: min-content;
     margin: auto;
   }
@@ -281,8 +233,8 @@ export default {
     display: flex;
     justify-content: space-between;
     margin: 0 -15px 0 -20px; // compensate paddings from logo and nav items
-    .right-corner{
-      display:flex;
+    .right-corner {
+      display: flex;
       align-items: center;
       padding: 12px 15px;
       .login-button {
@@ -294,14 +246,13 @@ export default {
           padding: 10px;
           outline: none;
           width: 100%;
-          color: #FFF;
+          color: #fff;
           border: none;
           background-color: $color-orange;
           margin: 0;
           cursor: pointer;
         }
-    }
-
+      }
     }
   }
 
@@ -327,7 +278,7 @@ export default {
       display: none;
       position: absolute;
       padding: 20px;
-      background-color: #FFF;
+      background-color: #fff;
       min-width: 150px;
       left: 18px;
       text-align: left;
@@ -391,12 +342,12 @@ export default {
       flex-grow: 1;
       flex-basis: 100%;
       font-weight: bold;
-      font-size: .85em;
-      letter-spacing: .05em;
+      font-size: 0.85em;
+      letter-spacing: 0.05em;
       .item-link {
         display: block;
         text-align: center;
-        padding:  3vh .5em;
+        padding: 3vh 0.5em;
       }
     }
   }
@@ -432,7 +383,6 @@ export default {
     .menu-icon {
       display: block;
     }
-
   }
 
   .mobile-nav {
@@ -449,13 +399,14 @@ export default {
     background: $color-bright-bg;
   }
 
-  .fadefromright-enter-active, .fadefromright-leave-active {
-    transition: all .3s;
+  .fadefromright-enter-active,
+  .fadefromright-leave-active {
+    transition: all 0.3s;
   }
-  .fadefromright-enter, .fadefromright-leave-to {
+  .fadefromright-enter,
+  .fadefromright-leave-to {
     opacity: 0;
     transform: translateX(50vw);
   }
 }
-
 </style>

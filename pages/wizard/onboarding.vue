@@ -2,8 +2,8 @@
   <div class="wizard">
     <div class="header">
       <font-awesome-icon class="icon" icon="user-friends" />
-      <h2>{{ $t("joinNow") }}</h2>
-      <p>{{ $t("becomeAMemberIn4simpleSteps") }}</p>
+      <h2>{{ $t('joinNow') }}</h2>
+      <p>{{ $t('becomeAMemberIn4simpleSteps') }}</p>
     </div>
     <div class="wizard-section">
       <div class="wizard-section-menu">
@@ -52,14 +52,14 @@
               @click="gotoASUorOpenLogin()"
             >
               <font-awesome-icon icon="arrow-circle-right" />
-              {{ $t("startSafetyTraining") }}
+              {{ $t('startSafetyTraining') }}
             </button>
             <button
               v-else-if="index > 0"
               class="input-button-primary"
               @click="back()"
             >
-              {{ $t("back") }}
+              {{ $t('back') }}
             </button>
             <button
               v-if="activeStep !== 'confirmation'"
@@ -68,20 +68,20 @@
               @click="next()"
             >
               {{
-                activeStep === "payment" ? "Anmeldung abschließen" : "Weiter"
+                activeStep === 'payment' ? 'Anmeldung abschließen' : 'Weiter'
               }}
             </button>
           </div>
         </div>
         <div v-if="activeStep === 'confirmation'" class="confirmation-footer">
-          {{ $t("nextStepsAfterASU") }}
+          {{ $t('nextStepsAfterASU') }}
           <br />
-          <p style="margin-bottom: 7px">{{ $t("ourOpeningHours") }}</p>
+          <p style="margin-bottom: 7px">{{ $t('ourOpeningHours') }}</p>
           <a href="https://grandgarage.eu/de/kontakt" target="_blank">
-            {{ "https://grandgarage.eu/de/kontakt" }}
+            {{ 'https://grandgarage.eu/de/kontakt' }}
           </a>
           <p style="margin-top: 20px">
-            {{ $t("weAreLookingForwardToWelcomeYou") }}
+            {{ $t('weAreLookingForwardToWelcomeYou') }}
           </p>
         </div>
       </div>
@@ -102,11 +102,11 @@ export default {
     return {
       loading: false,
       loadingEmail: false,
-      loadingCheckEmailStatus: "",
+      loadingCheckEmailStatus: '',
       passwordCheck: false,
       mailCheck: false,
       MemberType,
-      steps: ["userInformation", "contact", "image", "payment", "confirmation"],
+      steps: ['userInformation', 'contact', 'image', 'payment', 'confirmation'],
       onboardingData: {
         //image: null,
         image64: null,
@@ -153,7 +153,7 @@ export default {
           accountOwnerLegalAge: false,
           privacyPolicy: false,
           ibanIsValid: false,
-          startDate: new Date().toISOString().split("T")[0],
+          startDate: new Date().toISOString().split('T')[0],
         },
         profile: {
           address: null,
@@ -164,53 +164,53 @@ export default {
           birthdate: null,
           company: null,
         },
-        referrer: "",
+        referrer: '',
       },
       invoiceContact: {},
     };
   },
   computed: {
     activeStep() {
-      return this.$route.path.split("/")[3] || "index";
+      return this.$route.path.split('/')[3] || 'index';
     },
     nextStepDisabled() {
       const data = this.onboardingData;
       switch (this.activeStep) {
-        case "index":
+        case 'index':
           return false;
-        case "userInformation": {
+        case 'userInformation': {
           const requiredKeys = [
-            "firstName",
-            "lastName",
-            "gender",
-            "email",
-            "password",
+            'firstName',
+            'lastName',
+            'gender',
+            'email',
+            'password',
           ];
           return (
             !!requiredKeys.filter((k) => !data.userInformation[k]).length ||
             !data.userInformation.emailOk
           );
         }
-        case "contact": {
+        case 'contact': {
           const data = this.onboardingData;
           const requiredKeys = [
-            "birthdate",
-            "address",
-            "zip",
-            "city",
-            "country",
+            'birthdate',
+            'address',
+            'zip',
+            'city',
+            'country',
           ];
           const requiredKeysInvoiceContact = [
-            "firstName",
-            "lastName",
-            "address",
-            "zip",
-            "city",
-            "country",
+            'firstName',
+            'lastName',
+            'address',
+            'zip',
+            'city',
+            'country',
           ];
-          if (data.contactInformation.country === "XX") return true;
+          if (data.contactInformation.country === 'XX') return true;
           const allInvoiceContactFieldsSet = !requiredKeysInvoiceContact.filter(
-            (k) => !data.billingInformation[k]
+            (k) => !data.billingInformation[k],
           ).length;
           // if another invoice contact (checkbox) is selected, then the additional fields are required to proceed
           if (
@@ -224,10 +224,10 @@ export default {
             !data.contactInformation.birthdateValid
           );
         }
-        case "image": {
+        case 'image': {
           return this.onboardingData.image64 === null;
         }
-        case "payment": {
+        case 'payment': {
           const membershipType = this.getMemberType();
           // if company & free cost
           if (membershipType === MemberType.corporate_freeCost) {
@@ -265,8 +265,8 @@ export default {
           }
           return true;
         }
-        case "done": {
-          return data.referrer === "";
+        case 'done': {
+          return data.referrer === '';
         }
         default:
           return false;
@@ -276,79 +276,62 @@ export default {
       return this.steps.indexOf(this.activeStep);
     },
     user() {
-      return this.$store.state.user;
+      return this.$store.state.member;
     },
   },
   methods: {
-    // TODO delete, clean up, unused & deprecated
-    getData() {
-      if (sessionStorage.getItem("onboardingData")) {
-        this.onboardingData = JSON.parse(
-          sessionStorage.getItem("onboardingData")
-        );
-      }
-      const user = this.$store.state.user;
-      for (const key of Object.keys(this.onboardingData.profile)) {
-        if (Object.prototype.hasOwnProperty.call(user, key)) {
-          this.onboardingData.profile[key] = user.profile[key];
-        }
-      }
-    },
-    // saveUserData () {
-    //   this.$store.dispatch('updateUser', Object.assign({}, this.onboardingData.profile))
-    // },
     saveOnboardingData() {
       sessionStorage.setItem(
-        "onboardingData",
-        JSON.stringify(this.onboardingData)
+        'onboardingData',
+        JSON.stringify(this.onboardingData),
       );
     },
     back() {
       const ni = this.index - 1 < 0 ? 0 : this.index - 1;
       let path = this.steps[ni];
       if (ni === 0) {
-        path = "userInformation";
+        path = 'userInformation';
       }
-      this.$router.push("/wizard/onboarding/" + path);
+      this.$router.push('/wizard/onboarding/' + path);
     },
     async next() {
       switch (this.activeStep) {
-        case "index":
+        case 'index':
           this.loadNextPage();
           this.saveOnboardingData();
           break;
-        case "userInformation":
+        case 'userInformation':
           this.mailCheck = false;
           // will go to next page if email is valid
           await this.checkLoginDataAndProceed();
           this.saveOnboardingData();
           break;
-        case "contact":
+        case 'contact':
           this.loadNextPage();
           this.saveOnboardingData();
           // set account owner _default name
           if (this.onboardingData.contactInformation.hasBillingAddress) {
             this.onboardingData.payment.accountOwner =
               this.onboardingData.billingInformation.firstName +
-              " " +
+              ' ' +
               this.onboardingData.billingInformation.lastName;
           } else {
             this.onboardingData.payment.accountOwner =
               this.onboardingData.userInformation.firstName +
-              " " +
+              ' ' +
               this.onboardingData.userInformation.lastName;
           }
 
           break;
-        case "image":
+        case 'image':
           this.loadNextPage();
           this.saveOnboardingData();
           break;
-        case "payment":
+        case 'payment':
           this.saveOnboardingData();
           this.submit();
           break;
-        case "done":
+        case 'done':
           break;
         default:
           this.saveOnboardingData();
@@ -360,14 +343,14 @@ export default {
       const ni = this.index + 1 < 0 ? 0 : this.index + 1;
       const path = this.steps[ni];
       if (path) {
-        this.$router.push("/wizard/onboarding/" + path);
+        this.$router.push('/wizard/onboarding/' + path);
       }
     },
     gotoASUorOpenLogin() {
       if (this.$store.state.auth) {
-        this.$router.push("/me/trainings");
+        this.$router.push('/me/trainings');
       } else {
-        this.$store.dispatch("setSidebar", "login");
+        this.$store.dispatch('setSidebar', 'login');
       }
     },
     getMemberType() {
@@ -391,7 +374,7 @@ export default {
     // sets this.mailCheck to true, if e-mail address is valid for registration
     async checkLoginDataAndProceed() {
       this.loadingEmail = true;
-      this.loadingCheckEmailStatus = "Prüfe E-Mail Adresse...";
+      this.loadingCheckEmailStatus = 'Prüfe E-Mail Adresse...';
       let payload = {
         email: this.onboardingData.userInformation.email,
         password: this.onboardingData.userInformation.password,
@@ -402,18 +385,18 @@ export default {
       };
       // get captcha token for password check
       await this.$recaptchaLoaded();
-      let token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+      let token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
       let captchaData = {
-        "g-recaptcha-response": token,
+        'g-recaptcha-response': token,
       };
       payload = { ...payload, ...captchaData };
       const isPasswordValid = await this.checkPassword(payload);
       if (isPasswordValid) {
         // renew captcha token for email check
         await this.$recaptchaLoaded();
-        token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+        token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
         captchaData = {
-          "g-recaptcha-response": token,
+          'g-recaptcha-response': token,
         };
         payload = { ...payload, ...captchaData };
         await this.checkMail(payload);
@@ -423,7 +406,7 @@ export default {
     },
     async checkPassword(payload) {
       try {
-        const r = await this.$store.dispatch("checkPassword", payload);
+        const r = await this.$store.dispatch('checkPassword', payload);
         return true;
       } catch (e) {
         const errorStatus = e?.response?.status;
@@ -433,13 +416,13 @@ export default {
         if (errorStatus) {
           switch (errorStatus) {
             case 400:
-              this.$toast.show("Passwort ist zu schwach.", {
-                theme: "bubble",
+              this.$toast.show('Passwort ist zu schwach.', {
+                theme: 'bubble',
               });
               break;
             default:
-              this.$toast.show("Ein Fehler ist aufgetreten. ", e.code, {
-                theme: "bubble",
+              this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
+                theme: 'bubble',
               });
               break;
           }
@@ -449,8 +432,8 @@ export default {
     },
     async checkMail(payload) {
       try {
-        const r = await this.$store.dispatch("checkMail", payload);
-        this.loadingCheckEmailStatus = "E-Mail Adresse ist verfügbar";
+        const r = await this.$store.dispatch('checkMail', payload);
+        this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar';
 
         await new Promise((resolve) => {
           setTimeout(() => {
@@ -474,23 +457,23 @@ export default {
           switch (errorStatus) {
             case 401:
               this.$toast.show(
-                "Ein User mit dieser Email Adresse existiert bereits.",
+                'Ein User mit dieser Email Adresse existiert bereits.',
                 {
-                  theme: "bubble",
-                }
+                  theme: 'bubble',
+                },
               );
               break;
             case 429:
               this.$toast.show(
-                "E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.",
+                'E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.',
                 {
-                  theme: "bubble",
-                }
+                  theme: 'bubble',
+                },
               );
               break;
             default:
-              this.$toast.show("Ein Fehler ist aufgetreten. ", e.code, {
-                theme: "bubble",
+              this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
+                theme: 'bubble',
               });
               break;
           }
@@ -519,7 +502,7 @@ export default {
         hasBillingAddress:
           this.onboardingData.contactInformation.hasBillingAddress,
       };
-      if (this.onboardingData.userInformation.gender !== "empty") {
+      if (this.onboardingData.userInformation.gender !== 'empty') {
         memberDataBasic = {
           ...memberDataBasic,
           gender: this.onboardingData.userInformation.gender,
@@ -623,9 +606,9 @@ export default {
       memberData = { ...memberData, packageData };
       // get captcha token
       await this.$recaptchaLoaded();
-      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+      const token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        "g-recaptcha-response": token,
+        'g-recaptcha-response': token,
       };
       // add captcha token to memberData
       memberData = { ...memberData, ...captchaData };
@@ -638,7 +621,7 @@ export default {
       this.loading = true;
       //  create Fabman member and set membership
       this.$store
-        .dispatch("createMember", memberData)
+        .dispatch('createMember', memberData)
         .then((r) => {
           // register Auth0
           const registerAuth0Data = {
@@ -653,11 +636,11 @@ export default {
             },
           };
           this.$store
-            .dispatch("registerUser", registerAuth0Data)
+            .dispatch('registerUser', registerAuth0Data)
             .then((r) => {
               this.loadNextPage();
               this.loading = false;
-              this.$store.dispatch("setSidebar", "register-success");
+              this.$store.dispatch('setSidebar', 'register-success');
             })
             .catch((e) => {
               this.loading = false;
@@ -668,12 +651,12 @@ export default {
               }
               if (e.code) {
                 switch (e.code) {
-                  case "user_exists":
+                  case 'user_exists':
                     this.errorMessage =
-                      "Ein User mit dieser Email Adresse existiert bereits";
+                      'Ein User mit dieser Email Adresse existiert bereits';
                     break;
-                  case "invalid_password":
-                    this.errorMessage = "Das Passwort ist zu schwach.";
+                  case 'invalid_password':
+                    this.errorMessage = 'Das Passwort ist zu schwach.';
                     this.errorDescription = e.policy;
                     break;
                   default:
@@ -685,8 +668,8 @@ export default {
             });
         })
         .catch((e) => {
-          this.$toast.show("Ein Fehler ist aufgetreten ", e.code, {
-            theme: "bubble",
+          this.$toast.show('Ein Fehler ist aufgetreten ', e.code, {
+            theme: 'bubble',
           });
         });
     },
@@ -729,7 +712,7 @@ export default {
 
           &:before {
             z-index: -1;
-            content: "";
+            content: '';
             position: absolute;
             margin-top: -3px;
             top: 50%;

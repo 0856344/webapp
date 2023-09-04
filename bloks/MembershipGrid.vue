@@ -1,50 +1,38 @@
 <template>
-  <div
-    v-editable="blok"
-    class="membership-grid"
-  >
+  <div v-editable="blok" class="membership-grid">
     <div class="membership-info">
       <div>
-        <div
-          v-if="blok.title"
-          class="title"
-        >
+        <div v-if="blok.title" class="title">
           {{ blok.title }}
         </div>
 
-        <div
-          v-if="blok.info"
-          class="info"
-        >
+        <div v-if="blok.info" class="info">
           <markdown :value="blok.info" />
         </div>
       </div>
       <div class="image">
-        <img
-          :src="$resizeImage(blok.image, '500x0')"
-          alt=""
-        >
+        <img :src="$resizeImage(blok.image, '500x0')" alt="" />
       </div>
     </div>
     <div class="membership-details">
       <div class="payment-options">
         <div class="payment-options-title">
-          {{ $t( "paymentInterval" ) }}
+          {{ $t('paymentInterval') }}
         </div>
         <div class="pricetabs">
           <div
             class="pricetab"
-            :class="(priceView == 'monthly' ? 'active' : '')"
+            :class="priceView == 'monthly' ? 'active' : ''"
             @click="setPriceView('monthly')"
           >
-            {{ $t( "monthly" ) }}
+            {{ $t('monthly') }}
           </div>
           <div
             class="pricetab"
-            :class="(priceView == 'annually' ? 'active' : '')"
+            :class="priceView == 'annually' ? 'active' : ''"
             @click="setPriceView('annually')"
           >
-            {{ $t( "yearly" ) }}
+            {{ $t('yearly') }}
           </div>
         </div>
       </div>
@@ -57,15 +45,10 @@
           :price-view="priceView"
         />
       </div>
-      <div
-        v-if="!isAuthenticated"
-        class="login-register-info"
-      >
+      <div v-if="!isAuthenticated" class="login-register-info">
         <p>Registriere dich jetzt und werde Mitglied</p>
         <div class="register-button">
-          <button @click="register">
-            Jetzt Mitglied werden
-          </button>
+          <button @click="register">Jetzt Mitglied werden</button>
         </div>
       </div>
     </div>
@@ -75,38 +58,34 @@
 <script>
 export default {
   props: ['blok'],
-  data () {
+  data() {
     return {
-      priceView: 'monthly'
-    }
+      priceView: 'monthly',
+    };
   },
   computed: {
-    hasUser () {
-      return !!this.$store.state.user
+    hasUser() {
+      return !!this.$store.state.member;
     },
-    isAuthenticated () {
-      return !!this.$store.state.auth
+    isAuthenticated() {
+      return !!this.$store.state.auth;
     },
-    isMember () {
-      return this.$store.state.user.profile.state === 'active'
-    }
   },
   methods: {
-    setPriceView (v) {
-      this.priceView = v
+    setPriceView(v) {
+      this.priceView = v;
     },
-    register () {
-      this.$router.push('/wizard/onboarding/userInformation')
+    register() {
+      this.$router.push('/wizard/onboarding/userInformation');
     },
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
-    }
-  }
-}
+    login() {
+      this.$store.dispatch('setSidebar', 'login');
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .membership-grid {
   margin: 10vh 0;
   @include media-breakpoint-down(lg) {
@@ -136,7 +115,7 @@ export default {
       line-height: 1.3;
       font-weight: bold;
       font-family: $font-primary;
-      letter-spacing: .05em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       width: 50%;
     }
@@ -167,7 +146,6 @@ export default {
       letter-spacing: 0.04em;
       line-height: 1.6;
     }
-
   }
   .membership-details {
     flex-basis: 50%;
@@ -182,18 +160,18 @@ export default {
       margin: 0 0 3vh;
       align-items: center;
       justify-content: center;
-      font-size: .8em;
+      font-size: 0.8em;
       text-transform: uppercase;
 
       .payment-options-title {
         font-weight: bold;
-        margin-right: .7em;
+        margin-right: 0.7em;
       }
       .pricetabs {
         display: inline-flex;
         .pricetab {
           cursor: pointer;
-          padding: .4em 1em;
+          padding: 0.4em 1em;
           &.active {
             background-color: $color-orange;
             border-radius: 1em;
@@ -215,7 +193,7 @@ export default {
       flex-direction: column;
       align-items: center;
       p {
-        max-width: 500px ;
+        max-width: 500px;
         span {
           font-size: 1.2rem;
           color: $color-orange;
@@ -225,21 +203,21 @@ export default {
           }
         }
       }
-     .register-button {
-       text-align: center;
-       button {
-        outline: none;
-        cursor: pointer;
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #FFF;
-        border: none;
-        padding: 15px;
-        background-color: $color-orange;
-        margin: 1.5em 0;
-        transition: background-color .3s linear;
-        &:hover {
-          background-color: saturate(darken($color-orange, 5%), 100%);
+      .register-button {
+        text-align: center;
+        button {
+          outline: none;
+          cursor: pointer;
+          font-size: 1.2em;
+          font-weight: bold;
+          color: #fff;
+          border: none;
+          padding: 15px;
+          background-color: $color-orange;
+          margin: 1.5em 0;
+          transition: background-color 0.3s linear;
+          &:hover {
+            background-color: saturate(darken($color-orange, 5%), 100%);
           }
         }
       }

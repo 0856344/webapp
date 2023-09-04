@@ -138,7 +138,7 @@ export default {
       return this.story.tag_list;
     },
     hasUser() {
-      return !!this.$store.state.user;
+      return !!this.$store.state.member;
     },
     singleMachine() {
       return (

@@ -1,5 +1,5 @@
 <template>
-  <div class="profile" v-if="user !== null && member !== null">
+  <div class="profile" v-if="member !== null">
     <div class="header">
       <h1 class="name">{{ member.firstName }} {{ member.lastName }}</h1>
       <h2 style="display: none">STAGING</h2>
@@ -16,10 +16,10 @@
     <div class="tab-section">
       <div class="tab-section-menu">
         <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-        <MenuLink to="/me/bookings/" icon="calendar"
-          >{{ $t('machineBooking') }} <span class="dot"></span
-        ></MenuLink>
-        <MenuLink v-if="isMember" to="/me/packages" icon="coins"
+        <MenuLink to="/me/bookings/" icon="calendar">{{
+          $t('machineBooking')
+        }}</MenuLink>
+        <MenuLink to="/me/packages" icon="coins"
           >{{ $t('membership') }} & Credits</MenuLink
         >
         <MenuLink
@@ -80,9 +80,12 @@ export default {
       const data = this.$store.getters.getPackageById(p.package);
       return { ...p, ...data };
     },
-
-    getWorkshops() {
-      // let data = this.$store.getters.getMemberCourseById(p);
+    storeBookings(bookings) {
+      // Save selected bookings in the global store
+      if (!bookings) {
+        bookings = this.selectedBookings;
+      }
+      this.$store.commit('setSelectedBookings', bookings);
     },
     logout() {
       this.$store.dispatch('logout').then(() => {
@@ -91,15 +94,8 @@ export default {
     },
   },
   computed: {
-    user() {
-      return this.$store.state.user; // TODO: remove/edit lambda functions (Requests via Connector)
-    },
     member() {
       return this.$store.state.member;
-    },
-    isMember() {
-      // TODO
-      return this.$store.state.user.profile.state === 'active';
     },
   },
 };

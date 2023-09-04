@@ -2,15 +2,15 @@
   <div class="machine-header">
     <div
       class="header-image"
-      :style="{ 'background-image': 'url(' + $resizeImage(machine.headerImage, '1600x0') + ')' }"
+      :style="{
+        'background-image':
+          'url(' + $resizeImage(machine.headerImage, '1600x0') + ')',
+      }"
     />
-    <div
-      v-if="machine.title"
-      class="header-title"
-    >
+    <div v-if="machine.title" class="header-title">
       <div class="machine-tags">
         <span :key="tag.id" v-for="(tag, index) in tags">
-          {{ tag }}<span v-if="index+1 < tags.length">, </span>
+          {{ tag }}<span v-if="index + 1 < tags.length">, </span>
         </span>
       </div>
       <div class="title">
@@ -26,35 +26,38 @@
 </template>
 
 <script>
-import MachineStatus from '@/bloks/machines/MachineStatus.vue'
+import MachineStatus from '@/bloks/machines/MachineStatus.vue';
 
 export default {
   components: {
-    MachineStatus
+    MachineStatus,
   },
   props: ['story'],
   computed: {
-    machine () {
-      return this.story.content
+    machine() {
+      return this.story.content;
     },
-    tags () {
-      return this.story.tag_list
+    tags() {
+      return this.story.tag_list;
     },
-    hasUser () {
-      return !!this.$store.state.user
+    hasUser() {
+      return !!this.$store.state.member;
     },
-    singleMachine () {
-      return this.machine && this.machine.machine_status_items && this.machine.machine_status_items.length === 1
+    singleMachine() {
+      return (
+        this.machine &&
+        this.machine.machine_status_items &&
+        this.machine.machine_status_items.length === 1
+      );
     },
-    hasBridge () {
-      return this.machine.machine_status_items[0].hasBridge
-    }
-  }
-}
+    hasBridge() {
+      return this.machine.machine_status_items[0].hasBridge;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .machine-header {
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;
@@ -77,7 +80,7 @@ export default {
     position: absolute;
     right: 0;
     bottom: 0;
-    background-color: #FFF;
+    background-color: #fff;
     padding: 4vh;
     min-width: 50%;
     @include media-breakpoint-up(md) {
@@ -90,12 +93,12 @@ export default {
     .machine-tags {
       color: $color-blue;
       text-transform: uppercase;
-      margin-bottom: .8rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 0.05em;
       font-weight: 400;
     }
     .title {
-      margin: 0 0 .8rem;
+      margin: 0 0 0.8rem;
       font-size: 1.5rem;
       @include media-breakpoint-up(md) {
         font-size: 2.5rem;
@@ -104,8 +107,8 @@ export default {
       font-weight: bold;
     }
     .subtitle {
-      font-size: .9rem;
-      letter-spacing: .05em;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
     }
     .status {
       position: absolute;

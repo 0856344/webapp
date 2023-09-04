@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     hasUser() {
-      return !!this.$store.state.user;
+      return !!this.$store.state.member;
     },
     events() {
       return this.bookings.map((booking) => {

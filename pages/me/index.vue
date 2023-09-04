@@ -2,7 +2,7 @@
   <div>
     <section>
       <div class="flex items-center mb-1">
-        <h2 class="m-0 mr-1 text-2xl">{{ $t("contactDetails") }}</h2>
+        <h2 class="m-0 mr-1 text-2xl">{{ $t('contactDetails') }}</h2>
       </div>
       <form
         class="flex flex-col gap-4 mx-4 sm:mx-0 sm:mr-4"
@@ -42,7 +42,7 @@
             class="block text-xs font-bold uppercase sm:text-end"
             for="country-input"
           >
-            {{ $t("country") }}
+            {{ $t('country') }}
           </label>
           <select
             id="country-input"
@@ -126,7 +126,7 @@
             class="block text-xs font-bold uppercase sm:text-end"
             for="country-input"
           >
-            {{ $t("country") }}
+            {{ $t('country') }}
           </label>
           <select
             id="country-input"
@@ -151,7 +151,7 @@
             class="w-5/6 py-2 mt-6 text-white rounded-sm bg-orange ring-2 ring-orange-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
             :disabled="!dataValid"
           >
-            <font-awesome-icon icon="save" /> {{ $t("save") }}
+            <font-awesome-icon icon="save" /> {{ $t('save') }}
           </button>
         </div>
       </form>
@@ -229,7 +229,7 @@
                 paymentMethod.accountOwnerName === ''
               "
             >
-              <font-awesome-icon icon="save" /> {{ $t("save") }}
+              <font-awesome-icon icon="save" /> {{ $t('save') }}
             </button>
           </div>
         </div>
@@ -239,11 +239,11 @@
 </template>
 
 <script>
-import { helper } from "@/plugins/helper";
-import TextInput from "../../bloks/basic/TextInput.vue";
+import { helper } from '@/plugins/helper';
+import TextInput from '../../bloks/basic/TextInput.vue';
 
 export default {
-  middleware: "authenticated",
+  middleware: 'authenticated',
   components: { TextInput },
   data() {
     return {
@@ -251,22 +251,22 @@ export default {
       loadingPayment: false,
       countries: null,
       paymentMethod: {
-        iban: "",
+        iban: '',
       },
       // WIP
       // iban: '',
       sepaMandat: false,
       ibanIsValid: true,
       ibanFieldFocus: false,
-      currentIban: "",
+      currentIban: '',
     };
   },
   async mounted() {
-    this.countries = await this.$store.dispatch("getCountries");
+    this.countries = await this.$store.dispatch('getCountries');
     this.paymentMethod = {
-      iban: "",
+      iban: '',
     };
-    const paymentMethod = await this.$store.dispatch("getPaymentMethod");
+    const paymentMethod = await this.$store.dispatch('getPaymentMethod');
     if (paymentMethod && paymentMethod.iban) {
       this.paymentMethod = paymentMethod;
       this.currentIban = this.paymentMethod.iban;
@@ -282,10 +282,10 @@ export default {
         if (!this.ibanFieldFocus && this.paymentMethod.iban.length > 3) {
           return (
             this.paymentMethod.iban.substr(0, 2) +
-            new Array(this.paymentMethod.iban.length - 4).join("x") +
+            new Array(this.paymentMethod.iban.length - 4).join('x') +
             this.paymentMethod.iban.substr(
               this.paymentMethod.iban.length - 4,
-              4
+              4,
             )
           );
         } else {
@@ -305,7 +305,7 @@ export default {
           this.member.zip &&
           this.member.city &&
           this.member.countryCode &&
-          this.member.countryCode !== "XX"
+          this.member.countryCode !== 'XX'
         ) {
           // check optional invoice contact fields
           if (!this.member.hasBillingAddress) {
@@ -334,7 +334,7 @@ export default {
   methods: {
     clearIban() {
       this.ibanFieldFocus = true;
-      this.paymentMethod.iban = "";
+      this.paymentMethod.iban = '';
       this.sepaMandat = false;
       this.validateIban();
     },
@@ -359,47 +359,46 @@ export default {
       let payload = Object.assign({}, this.member);
       // get captcha token
       await this.$recaptchaLoaded();
-      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+      const token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        "g-recaptcha-response": token,
+        'g-recaptcha-response': token,
       };
       payload = { ...payload, ...captchaData };
       this.$store
-        .dispatch("updateMember", payload)
+        .dispatch('updateMember', payload)
         .then(() => {
           this.loading = false;
           this.$notify({
-            title: "Yay!",
-            text: "Änderungen gespeichert.",
+            title: 'Yay!',
+            text: 'Änderungen gespeichert.',
           });
         })
         .catch((e) => {
           this.loading = false;
           this.$notify({
-            title: "Error",
-            type: "error",
-            text: "Ein Fehler ist aufgetreten.",
+            title: 'Error',
+            type: 'error',
+            text: 'Ein Fehler ist aufgetreten.',
           });
         });
     },
     async updatePaymentMethod(event) {
       this.loadingPayment = true;
-      //const accountOwnerName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
       let updatePaymentRequest = {
-        type: "sepa",
+        type: 'sepa',
         iban: this.paymentMethod.iban,
         accountOwnerName: this.paymentMethod.accountOwnerName,
       };
       await this.$recaptchaLoaded();
-      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+      const token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        "g-recaptcha-response": token,
+        'g-recaptcha-response': token,
       };
       updatePaymentRequest = { ...updatePaymentRequest, ...captchaData };
       this.$store
         .dispatch(
-          "updatePaymentMethod",
-          Object.assign({}, updatePaymentRequest)
+          'updatePaymentMethod',
+          Object.assign({}, updatePaymentRequest),
         )
         .then(() => {
           this.loadingPayment = false;
@@ -407,16 +406,16 @@ export default {
           this.ibanFieldFocus = false;
           this.sepaMandat = false;
           this.$notify({
-            title: "Yay!",
-            text: "Änderungen gespeichert.",
+            title: 'Yay!',
+            text: 'Änderungen gespeichert.',
           });
         })
         .catch((e) => {
           this.loadingPayment = false;
           this.$notify({
-            title: "Error",
-            type: "error",
-            text: "Ein Fehler ist aufgetreten.",
+            title: 'Error',
+            type: 'error',
+            text: 'Ein Fehler ist aufgetreten.',
           });
         });
     },
