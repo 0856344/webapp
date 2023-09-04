@@ -29,10 +29,13 @@
           </label>
         </div>
       </div>
+      <div v-show="!isCalendar" class="search">
+        <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
+      </div>
     </div>
     <div v-show="!isCalendar" >
       <div class="workshop-list-wrapper" :key="this.filter">
-        <div v-if="filteredWorkshops && filteredWorkshops.length > 0" class="workshop-list">
+        <div v-if="this.filter || this.search" class="workshop-list">
           <transition-group name="list">
             <workshop-list-item
                 v-for="item in filteredWorkshops"
@@ -44,8 +47,7 @@
             ></workshop-list-item>
           </transition-group>
         </div>
-        <div >
-          <div v-if="fullWorkshops && fullWorkshops.length > 0 && !noResults" class="workshop-list">
+          <div v-else-if="fullWorkshops && fullWorkshops.length > 0" class="workshop-list">
             <transition-group name="list">
               <workshop-list-item
                   v-for="item in fullWorkshops"
@@ -57,7 +59,6 @@
               ></workshop-list-item>
             </transition-group>
           </div>
-        </div>
       </div>
     </div>
     <div v-if="isCalendar"  :key="this.display" >
@@ -114,7 +115,6 @@ export default {
       selectedEvent: '',
       filteredWorkshops: [],
       filter: '',
-      noResults: false,
       isCalendar: false, // false = grid , true = calender,
       windowWidth: Infinity,
       display: 'calendar'
@@ -187,7 +187,6 @@ export default {
     },
     updateFilter () {
       this.loading = true
-      this.noResults = false
       this.selectedEvent = this.selectedCategories()
       if (this.selectedEvent.length > 1) {
         this.deselectOldest()
@@ -211,14 +210,21 @@ export default {
     filterWorkshopsBySearch () {
       this.filteredWorkshops = []
       this.fullWorkshops.forEach((item) => {
-        if (item.blok.content.title.includes(this.search)) {
-          if (this.filter !== '') {
-            if (item.blok.content.category === this.filter) {
-              this.filteredWorkshops.push(item)
+        if (this.search !== '') {
+          if (item.blok.content.title.includes(this.search)) {
+            // text search AND category filter
+            if (this.filter !== '') {
+              if (item.blok.content.category === this.filter) {
+                this.filteredWorkshops.push(item)
+              }
             } else {
-              this.noResults = true
+              // only text search
+              this.filteredWorkshops.push(item)
             }
-          } else {
+          }
+        } else {
+          // only category filter
+          if (item.blok.content.category === this.filter) {
             this.filteredWorkshops.push(item)
           }
         }
