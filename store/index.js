@@ -81,6 +81,7 @@ const createStore = () => {
       courses: null,
       memberCourses: null,
       member: null,
+      memberPackages: null,
       workshops: null,
       necessaryCookie: false,
       analyticsCookie: false,
@@ -102,6 +103,9 @@ const createStore = () => {
       },
       getMemberCourses: (state) => () => {
         return state.memberCourses;
+      },
+      getMemberPackages: (state) => () => {
+        return state.memberPackages;
       },
       getPackageById: (state) => (id) => {
         return state.fabman.packages.find((p) => p.id === id);

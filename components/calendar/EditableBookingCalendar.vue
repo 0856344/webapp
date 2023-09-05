@@ -238,6 +238,14 @@ export default {
           helper.isValidDate(newBooking.fromDateTime) &&
           helper.isValidDate(newBooking.untilDateTime)
         ) {
+          // if (!this.validHours(newBooking)) {
+          //   // TODO - included hours check - https://grandgarage.atlassian.net/browse/HP-345
+          //   console.log('NOT VALID HOURS');
+          //   this.hoursExceeded(2);
+          //   this.invalidDate = newBooking;
+          //   const memberPackages = this.$store.getters.getMemberPackages();
+          //   console.log('store getMemberPackages', memberPackages);
+          // }
           this.bookings.forEach((booking) => {
             if (this.dateOverlaps(booking, newBooking) === true) {
               this.dateConflict();
@@ -283,6 +291,10 @@ export default {
         // Wrong event format
         console.log('Wrong event format. Given: ' + typeof calEvent);
       }
+    },
+    validHours(booking) {
+      // TODO - https://grandgarage.atlassian.net/browse/HP-345
+      return false;
     },
     storeBookings(bookings) {
       // Save selected bookings in the global store
@@ -419,6 +431,10 @@ export default {
     },
     dateIsInPast() {
       const msg = 'Datum liegt in der Vergangenheit.';
+      this.openInfoBox(msg, '#f55252fc');
+    },
+    hoursExceeded(includedHours) {
+      const msg = 'In deinem Paket sind ' + includedHours + 'h inkludiert.';
       this.openInfoBox(msg, '#f55252fc');
     },
   },
