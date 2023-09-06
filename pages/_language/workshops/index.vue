@@ -369,7 +369,7 @@ export default {
 }
 
 .workshop-list-wrapper {
-  margin-top: 30px;
+  margin-top: 5px;
   display: flex;
 
   .workshop-list {
@@ -528,8 +528,8 @@ export default {
   .search {
     display: flex;
     @include margin-page-wide();
-    margin-top: 2vh;
-    margin-bottom: 2vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
 
     input[type=text] {
       flex: 1;
