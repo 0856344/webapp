@@ -142,7 +142,7 @@ export default {
         }
       })
       if (identifiedMembership) {
-        this.membership = [];
+        this.membership = []
         this.membership.push(identifiedMembership)
       }
 
@@ -173,12 +173,19 @@ export default {
     async loadCreditStatus () {
       this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
       // update credits status every 30 seconds
-      setInterval(() => {
-        this.$store.dispatch('getMemberCredits', this.$store.state.member.id).then((response) => {
-          this.memberCredits = response
-        }).catch(err => {
-          console.error(err)
-        })
+      const reloadCredits = setInterval(() => {
+        if (!this.$store.state.auth) {
+          clearInterval(reloadCredits)
+        } else {
+          this.$store
+            .dispatch('getMemberCredits', this.$store.state.member.id)
+            .then((response) => {
+              this.memberCredits = response
+            })
+            .catch((err) => {
+              console.error(err)
+            })
+        }
       }, 30000)
     },
     getAllCredits () {
