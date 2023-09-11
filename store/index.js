@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import auth0 from 'auth0-js'
-import { getUserFromLocalStorage, setToken, unsetToken } from '~/utils/auth'
+import { getUserFromLocalStorage, setToken, unsetToken, handler } from '~/utils/auth'
 import axios from 'axios'
 import moment from 'moment'
 import Vue from 'vue'
@@ -475,8 +475,13 @@ const createStore = () => {
       },
       getUser ({ state, commit, dispatch }) {
         // TODO - @see https://grandgarage.atlassian.net/browse/HP-317
-        return axios.get(`${origin}/.netlify/functions/getUser`).then((netlifyResponse) => {
-          dispatch('getMemberByEmail', { email: netlifyResponse.data }).then((response) => {
+        // DONE - remove lambda function -  @see https://grandgarage.atlassian.net/browse/HP-317
+        handler(state.auth.accessToken, {}, (error, response) => {
+          if (error) {
+            console.error('Error handle Token:', error)
+          } else {
+            const jwtEmail = JSON.parse(response.body)
+          dispatch('getMemberByEmail', { email: jwtEmail }).then((response) => {
             const profile = response
             //console.log(response)
             const user = {
@@ -491,8 +496,7 @@ const createStore = () => {
             dispatch('getMember', user.profile.id)
             //return dispatch('getFabman')
           })
-        }).catch((err) => {
-          this.$sentry.captureException(err)
+        }
         })
       },
       async getMemberByEmail ({ commit }, data) {
