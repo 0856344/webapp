@@ -16,12 +16,12 @@
     <div class="tab-section">
       <div class="tab-section-menu">
         <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-        <MenuLink to="/me/bookings/" icon="calendar">{{
+        <MenuLink v-show="canSeeBookings" to="/me/bookings/" icon="calendar">{{
           $t('machineBooking')
         }}</MenuLink>
         <MenuLink to="/me/packages" icon="coins"
-          >{{ $t('membership') }} & Credits</MenuLink
-        >
+          >{{ $t('membership') }} & Credits
+        </MenuLink>
         <MenuLink
           to="/me/trainings"
           icon="graduation-cap"
@@ -55,6 +55,7 @@
 
 <script>
 import MenuLink from '@/bloks/MenuLink.vue';
+import { helper } from '@/plugins/helper';
 
 export default {
   middleware: 'authenticated',
@@ -69,24 +70,12 @@ export default {
   },
   created() {},
   async mounted() {
-    //this.hasCompletedOnboarding = await this.$store.dispatch('hasCompletedOnboarding'
     this.hasCompletedRequiredCourses = await this.$store.dispatch(
       'hasCompletedRequiredCourses',
       this.$store.state.member.id,
     );
   },
   methods: {
-    getPackage(p) {
-      const data = this.$store.getters.getPackageById(p.package);
-      return { ...p, ...data };
-    },
-    storeBookings(bookings) {
-      // Save selected bookings in the global store
-      if (!bookings) {
-        bookings = this.selectedBookings;
-      }
-      this.$store.commit('setSelectedBookings', bookings);
-    },
     logout() {
       this.$store.dispatch('logout').then(() => {
         this.$router.push('/');
@@ -96,6 +85,12 @@ export default {
   computed: {
     member() {
       return this.$store.state.member;
+    },
+    canSeeBookings() {
+      const memberPackages = this.$store.getters.getMemberPackages();
+      const isAllowed = helper.isAllowedToBook(memberPackages);
+      console.log('isAllowed', isAllowed);
+      return isAllowed;
     },
   },
 };

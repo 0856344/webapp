@@ -75,7 +75,6 @@ const createStore = () => {
       language: 'de',
       sidebar: null,
       settings: {},
-      user: null,
       auth: null,
       fabman: null,
       courses: null,
@@ -339,13 +338,19 @@ const createStore = () => {
         return r.data;
       },
       async createBooking({ commit }, data) {
-        console.log('createBooking', data);
         const res = await connector.post('/v1/fabman/bookings/', data);
         return res.data;
       },
       async getResource({ state }, id) {
-        const r = await connector.get(`v1/fabman/resources/${id}`);
-        return r.data;
+        await connector
+          .get(`v1/fabman/resources/${id}`)
+          .then((res) => {
+            return res.data;
+          })
+          .catch((res) => {
+            this.$sentry.captureException(res);
+            console.log(res);
+          });
       },
       updateMember({ state, commit, dispatch }, data) {
         Vue.delete(data, 'lockVersion');

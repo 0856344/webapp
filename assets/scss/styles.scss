@@ -404,6 +404,9 @@ input:focus {
   display: inline-block;
 }
 
+.fill-grey {
+  fill: #252525;
+}
 .fill-green {
   fill: #66ab7f;
 }
@@ -412,6 +415,12 @@ input:focus {
 }
 .fill-red {
   fill: #da6b6b;
+}
+.fill-primary {
+  fill: $color-primary
+}
+.fill-secondary {
+  fill: $color-secondary
 }
 
 // Table

@@ -125,6 +125,7 @@
 </template>
 
 <script>
+import { PACKAGES_SHORT_FORMS } from '@/services/constants.js';
 export default {
   middleware: 'authenticated',
   data() {
@@ -164,16 +165,16 @@ export default {
       this.membership = this.memberPackages.filter((p) => {
         //console.log('package: ', p._embedded.package.metadata)
         const metadata = p._embedded.package.metadata;
-        if (metadata?.shortform === 'DISCOUNT') {
+        if (metadata?.shortform === PACKAGES_SHORT_FORMS.discount) {
           this.discount = p;
           this.hasDiscount = true;
         }
         // filter only membership from memberPackages - precondition: one member has one membership
         if (
           metadata.is_storage_box ||
-          metadata?.shortform === 'DISCOUNT' ||
-          metadata?.shortform === '500_CREDITS' ||
-          metadata?.shortform === '500_CREDITS_DISCOUNTED'
+          metadata?.shortform === PACKAGES_SHORT_FORMS.discount ||
+          metadata?.shortform === PACKAGES_SHORT_FORMS.credits_500 ||
+          metadata?.shortform === PACKAGES_SHORT_FORMS.credits_500_discounted
         ) {
           return false;
         }

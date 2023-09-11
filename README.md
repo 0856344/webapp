@@ -135,7 +135,7 @@ Make sure you use a supported NodeJS Version in all of your Terminal sessions. N
 ### Can't login on localhost
 ![img.png](./assets/img/local_error.png)
 
-Make sure connector.dev.grandgarage.eu is accessible (run docker or see connector readme) and are you login on the secure domain localhost:3010.
+Make sure connector.dev.grandgarage.eu is accessible (run docker or see connector readme) and that you are using the secure localhost:3010 port (proxy).
 
 
 ### How to add fontawesome icons?

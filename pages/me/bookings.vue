@@ -17,7 +17,7 @@
         <h2 class="m-0 mr-2 text-2xl">
           {{ $t('machineBookings') }}
           <svg
-            class="cursor-pointer icon-button inline-block fill-current w-5 h-5 ml-1"
+            class="cursor-pointer icon-button-secondary inline-block w-5 h-5 ml-1 fill-secondary"
             xmlns="http://www.w3.org/2000/svg"
             height="1em"
             @click="startTour"
@@ -30,7 +30,6 @@
         </h2>
         <loading-spinner-inline v-if="isLoading" />
       </div>
-      <p></p>
       <br />
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
@@ -443,13 +442,17 @@ button:disabled svg {
   background-color: transparent;
 }
 
-.icon-button {
+.icon-button,
+.icon-button-secondary {
   color: lightgrey;
   cursor: pointer;
 }
 
 .icon-button:hover {
-  fill: $color-orange;
+  fill: $color-secondary;
+}
+.icon-button-secondary:hover {
+  fill: #0c0c0c;
 }
 .button-group {
   justify-content: end;

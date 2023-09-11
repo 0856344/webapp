@@ -34,6 +34,7 @@ export default {
     return {
       isLoading: false,
       bookings: null,
+      showAlert: false,
     };
   },
   computed: {
@@ -61,15 +62,24 @@ export default {
       this.bookings = [];
       this.isLoading = true;
       //this.resource = 3136 //TODO for debugging - remove!
-      if (this.space === 'smartgarage') {
-        // TODO
-        //console.log('SPACE FOUND - booking calender', this.space)
-        //this.getBookingByMethod('getBookingsBySpace', this.space)
-        this.getBookingByMethod('getBookingsByResource', 4049);
-      } else if (this.resource) {
-        //console.log('RESOURCE FOUND - booking calender', this.resource)
-        this.getBookingByMethod('getBookingsByResource', this.resource);
+      try {
+        if (this.space === 'smartgarage') {
+          // TODO
+          //console.log('SPACE FOUND - booking calender', this.space)
+          //this.getBookingByMethod('getBookingsBySpace', this.space)
+          this.getBookingByMethod('getBookingsByResource', 4049);
+        } else if (this.resource) {
+          //console.log('RESOURCE FOUND - booking calender', this.resource)
+          this.getBookingByMethod('getBookingsByResource', this.resource);
+        }
+      } catch (exception) {
+        console.log('exception', exception);
+        this.createAlert('error');
       }
+    },
+    createAlert(message, color = '#f55252fc') {
+      this.showAlert = true;
+      this.openInfoBox(message, '#f55252fc');
     },
     getBookingByMethod(method, id) {
       this.$store
