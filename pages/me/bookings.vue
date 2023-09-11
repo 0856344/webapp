@@ -12,12 +12,22 @@
         @confirm="confirmModal"
       >
       </modal>
+      <modal
+        :show="infoModalOpen"
+        :header-text="infoModalHeadline"
+        :content-text="infoModalText"
+        :submit-text="'Bestätigen'"
+        :loading="isLoading"
+        @close="closeInfoModal"
+        @confirm="confirmInfoModal"
+      >
+      </modal>
       <v-tour name="myTour" :steps="steps"></v-tour>
       <div class="flex items-center mb-1">
         <h2 class="m-0 mr-2 text-2xl">
           {{ $t('machineBookings') }}
           <svg
-            class="cursor-pointer icon-button-secondary inline-block w-5 h-5 ml-1 fill-secondary"
+            class="cursor-pointer icon-button-secondary inline-block w-5 h-5 ml-1 fill-secondary jump-animation"
             xmlns="http://www.w3.org/2000/svg"
             height="1em"
             @click="startTour"
@@ -33,6 +43,7 @@
       <br />
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
+        <p>Hier kannst du eine Maschine buchen.</p>
         <div>
           <div class="flex-1 mr-6 mb-4">
             <label
@@ -103,7 +114,7 @@
         </div>
         <div v-if="bookings">
           <table
-            v-if="bookings.length > 0"
+            v-if="bookings?.length > 0"
             class="member-portal-table table-auto"
             style="margin: auto"
           >
@@ -113,6 +124,7 @@
                 <th class="activity-amount">Dauer</th>
                 <th class="activity-status">Maschine</th>
                 <th class="activity-description">Status</th>
+                <th class="activity-description">Stornieren</th>
               </tr>
             </thead>
             <tbody>
@@ -133,13 +145,34 @@
                 <td class="activity-status">
                   {{ booking.resource.name }}
                 </td>
-                <td class="invoice-status justify-end">
+                <td class="invoice-status">
                   <div
                     v-if="booking.state"
                     class="bubble"
                     :class="getBookingStateClass(booking)"
                   >
                     {{ getBookingStateText(booking) }}
+                  </div>
+                </td>
+                <td class="invoice-status">
+                  <div v-if="loadingCancel && booking.id === loadingCancel">
+                    <loading-spinner-inline v-if="true" />
+                  </div>
+                  <div
+                    v-else-if="
+                      !hasBeenCanceled(booking?.state) &&
+                      !isInPast(booking?.untilDateTime)
+                    "
+                  >
+                    <button
+                      class="cancelButton"
+                      @click="startCancellation(booking)"
+                    >
+                      <font-awesome-icon
+                        :class="{ active: infoModalOpen }"
+                        icon="trash"
+                      />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -183,6 +216,7 @@ import VueTour from 'vue-tour';
 import 'vue-tour/dist/vue-tour.css';
 import Modal from '@/components/modals/Modal.vue';
 import moment from 'moment/moment';
+import { FABMAN_BOOKING_STATE } from '@/services/constants.js';
 
 Vue.use(VueTour);
 
@@ -195,8 +229,14 @@ export default {
     return {
       isMobile: false,
       modalOpen: false,
+      infoModalOpen: false,
+      infoModalHeadline: '',
+      infoModalText: '',
+      infoModalSubmitMethod: '',
+      selectedTableBooking: null,
       loadingMachines: false,
       loadingBookings: false,
+      loadingCancel: null,
       machines: [],
       bookings: [],
       selectedMachine: null,
@@ -223,7 +263,6 @@ export default {
   },
   created() {
     this.isMobile = helper.isMobile();
-    console.log('isMobile', this.isMobile);
 
     this.steps = this.createTourText();
   },
@@ -259,7 +298,11 @@ export default {
       return readableBookings;
     },
     isLoading() {
-      return this.loadingBookings || this.loadingMachines;
+      return (
+        this.loadingBookings ||
+        this.loadingMachines ||
+        this.loadingCancel !== null
+      );
     },
     member() {
       return this.$store.state.member;
@@ -293,6 +336,157 @@ export default {
         default:
           return '';
       }
+    },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+    openModal() {
+      this.modalOpen = true;
+    },
+    confirmModal() {
+      this.saveEvents();
+    },
+    closeModal() {
+      this.modalOpen = false;
+    },
+    openInfoModal(text, submitMethod = null, headline = 'Bestätigen') {
+      this.infoModalSubmitMethod = submitMethod;
+      this.infoModalText = text;
+      this.infoModalHeadline = headline;
+      this.infoModalOpen = true;
+    },
+    confirmInfoModal() {
+      if (
+        typeof this?.infoModalSubmitMethod === 'string' &&
+        this.$options.methods[this.infoModalSubmitMethod]
+      ) {
+        // TODO - open method generically
+        console.log('open', this.infoModalSubmitMethod);
+        // Call the given function by name
+        this.cancelBooking(this.selectedTableBooking.id);
+        // this.$options.methods[this.infoModalSubmitMethod](
+        //   this.selectedTableBooking,
+        // );
+      }
+    },
+    closeInfoModal() {
+      this.infoModalOpen = false;
+      setTimeout(() => {
+        this.infoModalSubmitMethod = '';
+        this.infoModalText = '';
+        this.infoModalHeadline = '';
+      }, 1000);
+    },
+    isInPast(date) {
+      return helper.dateIsInPast(date);
+    },
+    saveEvents() {
+      this.closeModal();
+
+      // Call method in child component
+      const machineCalender = this.$refs.machineCalender;
+      if (
+        machineCalender &&
+        typeof machineCalender.writeBookingsToFabman === 'function'
+      ) {
+        machineCalender.writeBookingsToFabman();
+      }
+    },
+    durationInHours(fromDate, untilDate) {
+      return parseInt(helper.getDifferenceInHours(fromDate, untilDate));
+    },
+    durationAsString(fromDate, untilDate) {
+      const hours = this.durationInHours(fromDate, untilDate);
+      return hours === 1 ? 'eine Stunde' : hours + ' Stunden';
+    },
+    async fetchMachines() {
+      this.loadingMachines = true;
+      await this.$store
+        .dispatch('getMachines')
+        .then((res) => {
+          // Filter non visible machines
+          const filteredMachines = res.filter(function (machine) {
+            return machine.visibleForMembers && machine.canBeBooked;
+          });
+
+          // Add dropdown label to machine
+          filteredMachines.map(function (machine) {
+            machine.machineLabel = machine.name;
+            return machine;
+          });
+          this.machines = filteredMachines;
+        })
+        .catch((error) => {
+          console.log('Error! Could not load machines', error);
+        })
+        .finally(() => {
+          this.loadingMachines = false;
+        });
+    },
+    hasBeenCanceled(state) {
+      return state === FABMAN_BOOKING_STATE.cancelled;
+    },
+    startCancellation(booking) {
+      this.selectedTableBooking = booking;
+      console.log('booking', this.selectedTableBooking);
+      this.openInfoModal(
+        'Möchtest du die ausgewählte Reservierung wirklich stornieren?',
+        'cancelBooking',
+        'Stornieren?',
+      );
+    },
+    async cancelBooking(id) {
+      console.log('selectedTableBooking', this.selectedTableBooking);
+      if (!id) {
+        id = this?.selectedTableBooking.id;
+      }
+      console.log('CANCEL', id);
+      this.loadingCancel = id;
+      await this.$store
+        .dispatch('cancelBooking', id)
+        .then((res) => {
+          console.log('Booking cancelled!', res);
+          this.fetchBookings();
+          this.closeInfoModal();
+          //TODO - reset booking calendar
+        })
+        .catch((error) => {
+          console.log('Error! Could not cancel booking', error);
+        })
+        .finally(() => {
+          this.loadingCancel = null;
+        });
+    },
+    async fetchBookings(memberId) {
+      if (!memberId) {
+        memberId = this.member.id;
+      }
+      this.loadingBookings = true;
+      await this.$store
+        .dispatch('getBookingsByMember', memberId)
+        .then((res) => {
+          this.bookings = res;
+        })
+        .catch((error) => {
+          console.log('Error! Could not load bookings', error);
+        })
+        .finally(() => {
+          this.loadingBookings = false;
+        });
+    },
+    startTour() {
+      // Start introduction tour
+      this.$tours.myTour.scrollToOptions = {
+        behavior: 'instant',
+      };
+      this.$tours.myTour.start();
     },
     createTourText() {
       return [
@@ -331,94 +525,6 @@ export default {
         },
       ];
     },
-    previousPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    openModal() {
-      this.modalOpen = true;
-    },
-    confirmModal() {
-      this.saveEvents();
-    },
-    closeModal() {
-      this.modalOpen = false;
-    },
-    saveEvents() {
-      this.closeModal();
-
-      // Call method in child component
-      const machineCalender = this.$refs.machineCalender;
-      if (
-        machineCalender &&
-        typeof machineCalender.writeBookingsToFabman === 'function'
-      ) {
-        machineCalender.writeBookingsToFabman();
-      }
-    },
-    startTour() {
-      // Start introduction tour
-      this.$tours.myTour.scrollToOptions = {
-        behavior: 'instant',
-      };
-      this.$tours.myTour.start();
-    },
-    durationInHours(fromDate, untilDate) {
-      return parseInt(helper.getDifferenceInHours(fromDate, untilDate));
-    },
-    durationAsString(fromDate, untilDate) {
-      const hours = this.durationInHours(fromDate, untilDate);
-      return hours === 1 ? 'eine Stunde' : hours + ' Stunden';
-    },
-    async fetchMachines() {
-      this.loadingMachines = true;
-      await this.$store
-        .dispatch('getMachines')
-        .then((res) => {
-          // Filter non visible machines
-          const filteredMachines = res.filter(function (machine) {
-            return machine.visibleForMembers && machine.canBeBooked;
-          });
-
-          // Add dropdown label to machine
-          filteredMachines.map(function (machine) {
-            machine.machineLabel = machine.name;
-            return machine;
-          });
-          this.machines = filteredMachines;
-        })
-        .catch((error) => {
-          console.log('Error! Could not load machines', error);
-        })
-        .finally(() => {
-          this.loadingMachines = false;
-        });
-    },
-
-    async fetchBookings(memberId) {
-      if (!memberId) {
-        memberId = this.member.id;
-      }
-      this.loadingBookings = true;
-      await this.$store
-        .dispatch('getBookingsByMember', memberId)
-        .then((res) => {
-          this.bookings = res;
-          console.log('fetched bookings', res);
-        })
-        .catch((error) => {
-          console.log('Error! Could not load bookings', error);
-        })
-        .finally(() => {
-          this.loadingBookings = false;
-        });
-    },
   },
 };
 </script>
@@ -447,7 +553,15 @@ button:disabled svg {
   color: lightgrey;
   cursor: pointer;
 }
-
+.cancelButton {
+  color: grey;
+}
+.cancelButton:hover {
+  color: black;
+}
+.cancelButton:active {
+  color: $color-secondary;
+}
 .icon-button:hover {
   fill: $color-secondary;
 }
@@ -485,11 +599,36 @@ button:disabled svg {
 
       tr {
         padding: 0.6rem 0.1rem;
+
+        th {
+          min-width: 200px;
+        }
+
+        td {
+          min-width: 200px;
+          display: flex;
+          justify-content: center;
+        }
       }
     }
   }
   .button-group {
     justify-content: center;
+  }
+}
+.jump-animation {
+  animation: jump 1s 3;
+  transform-origin: center;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
 </style>

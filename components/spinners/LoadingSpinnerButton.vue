@@ -13,8 +13,8 @@ export default {};
 /** @see https://loading.io/css/ */
 .spinner-ring {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 14px;
+  height: 14px;
 }
 
 .spinner-ring:after {
@@ -22,11 +22,11 @@ export default {};
   padding: 0;
   content: ' ';
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  border: 2px solid $color-black;
-  border-color: $color-black transparent $color-black transparent;
+  border: 2px solid white;
+  border-color: white transparent white transparent;
   animation: spinner-ring 1.2s linear infinite;
 }
 

@@ -13,3 +13,9 @@ export const PACKAGES_SHORT_FORMS = {
   credits_500: '500_CREDITS',
   credits_500_discounted: '500_CREDITS_DISCOUNTED',
 };
+
+export const FABMAN_BOOKING_STATE = {
+  pending: 'pending',
+  cancelled: 'cancelled',
+  confirmed: 'confirmed',
+};

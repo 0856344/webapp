@@ -1,55 +1,60 @@
 <template>
-  <div class="profile" v-if="member !== null">
-    <div class="header">
-      <h1 class="name">{{ member.firstName }} {{ member.lastName }}</h1>
-      <h2 style="display: none">STAGING</h2>
-      <code class="number">#{{ member.memberNumber }}</code>
-    </div>
-    <div
-      v-if="!hasCompletedRequiredCourses"
-      class="alert alert-secondary"
-      role="alert"
-    >
-      <font-awesome-icon icon="info-circle" />
-      {{ $t('openSafetyTraining') }}
-    </div>
-    <div class="tab-section">
-      <div class="tab-section-menu">
-        <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-        <MenuLink v-show="canSeeBookings" to="/me/bookings/" icon="calendar">{{
-          $t('machineBooking')
-        }}</MenuLink>
-        <MenuLink to="/me/packages" icon="coins"
-          >{{ $t('membership') }} & Credits
-        </MenuLink>
-        <MenuLink
-          to="/me/trainings"
-          icon="graduation-cap"
-          style="color: white !important"
-        >
-          <font-awesome-icon
-            :style="{ color: '#E69140' }"
-            v-if="!hasCompletedRequiredCourses"
-            icon="info-circle"
-          />
-          {{ $t('trainings') }}
-        </MenuLink>
-        <MenuLink to="/de/gutscheine" icon="money-bill">Gutscheine</MenuLink>
-        <MenuLink
-          :isActive="$route.name.includes('invoices')"
-          to="/me/invoices"
-          icon="file-invoice"
-          >{{ $t('invoices') }}
-        </MenuLink>
+  <div>
+    <div class="profile" v-if="member !== null">
+      <div class="header">
+        <h1 class="name">{{ member.firstName }} {{ member.lastName }}</h1>
+        <h2 style="display: none">STAGING</h2>
+        <code class="number">#{{ member.memberNumber }}</code>
       </div>
-      <div class="tab-section-content">
-        <NuxtChild :key="$route.params.slug"></NuxtChild>
+      <div
+        v-if="!hasCompletedRequiredCourses"
+        class="alert alert-secondary"
+        role="alert"
+      >
+        <font-awesome-icon icon="info-circle" />
+        {{ $t('openSafetyTraining') }}
+      </div>
+      <div class="tab-section">
+        <div class="tab-section-menu">
+          <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
+          <MenuLink
+            v-show="canSeeBookings"
+            to="/me/bookings/"
+            icon="calendar"
+            >{{ $t('machineBooking') }}</MenuLink
+          >
+          <MenuLink to="/me/packages" icon="coins"
+            >{{ $t('membership') }} & Credits
+          </MenuLink>
+          <MenuLink
+            to="/me/trainings"
+            icon="graduation-cap"
+            style="color: white !important"
+          >
+            <font-awesome-icon
+              :style="{ color: '#E69140' }"
+              v-if="!hasCompletedRequiredCourses"
+              icon="info-circle"
+            />
+            {{ $t('trainings') }}
+          </MenuLink>
+          <MenuLink to="/de/gutscheine" icon="money-bill">Gutscheine</MenuLink>
+          <MenuLink
+            :isActive="$route.name.includes('invoices')"
+            to="/me/invoices"
+            icon="file-invoice"
+            >{{ $t('invoices') }}
+          </MenuLink>
+        </div>
+        <div class="tab-section-content">
+          <NuxtChild :key="$route.params.slug"></NuxtChild>
+        </div>
       </div>
     </div>
-  </div>
-  <div v-else>
-    Deine Daten werden geladen. Bitte lade die Seite neu.
-    <big-loading-spinner></big-loading-spinner>
+    <div v-else>
+      Deine Daten werden geladen. Bitte lade die Seite neu.
+      <big-loading-spinner></big-loading-spinner>
+    </div>
   </div>
 </template>
 
@@ -88,9 +93,8 @@ export default {
     },
     canSeeBookings() {
       const memberPackages = this.$store.getters.getMemberPackages();
-      const isAllowed = helper.isAllowedToBook(memberPackages);
-      console.log('isAllowed', isAllowed);
-      return isAllowed;
+
+      return helper.isAllowedToBook(memberPackages);
     },
   },
 };

@@ -14,7 +14,7 @@
             {{ contentText }}
           </p>
           <ul
-            v-show="data.length > 0"
+            v-show="data?.length > 0"
             class="flex flex-col rounded data-field text-sm list-disc text-left p-4"
           >
             <li v-for="item in data" :key="item.id" class="mb-2">
@@ -29,11 +29,12 @@
               @click="handleClose"
               class="input-button-white mr-1 shadow-md"
             >
-              Abbrechen
+              <font-awesome-icon icon="ban" />
+              <span>Abbrechen</span>
             </button>
 
             <button
-              class="input-button-primary shadow-md"
+              class="input-button-primary shadow-md flex"
               :class="{
                 'bg-gray-500 cursor-not-allowed': loading,
                 'bg-blue-500': !loading,
@@ -41,11 +42,9 @@
               :disabled="loading"
               @click="handleConfirm"
             >
-              <span v-if="loading" class="animate-spin mr-2">
-                <loading-spinner class="loading-spinner ml-05" />
-                &#9696;
-              </span>
-              <span>{{ loading ? 'Loading...' : submitText }}</span>
+              <loading-spinner-button v-if="loading" class="mr-2" />
+              <font-awesome-icon v-else icon="check" class="mr-2" />
+              <span>{{ loading ? 'Lade...' : submitText }}</span>
             </button>
           </div>
         </div>
@@ -55,11 +54,11 @@
 </template>
 
 <script>
-import loadingSpinner from '@/components/spinners/LoadingSpinner.vue';
+import loadingSpinnerButton from '~/components/spinners/LoadingSpinnerButton.vue';
 
 export default {
   name: 'GeneralModal',
-  components: { loadingSpinner },
+  components: { loadingSpinnerButton },
   props: {
     show: Boolean,
     headerText: String,
@@ -67,6 +66,7 @@ export default {
     submitText: String,
     loading: Boolean,
     data: Array,
+    id: String,
   },
   methods: {
     handleClose() {

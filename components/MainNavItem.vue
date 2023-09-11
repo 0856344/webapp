@@ -1,33 +1,18 @@
 <template>
   <div class="nav-item">
-    <sb-link
-      :link="item.link"
-      class="main-nav-item"
-    >
+    <sb-link :link="item.link" class="main-nav-item">
       <div>{{ item.name }}</div>
-      <div
-        v-if="item.children && item.children.length > 0"
-        class="caret-down"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 320 512"
-        ><path d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z" /></svg>
+      <div v-if="item.children && item.children.length > 0" class="caret-down">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+          <path
+            d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"
+          />
+        </svg>
       </div>
     </sb-link>
-    <div
-      v-if="item.children && item.children.length > 0"
-      class="dropdown"
-    >
-      <div
-        v-for="child in item.children"
-        :key="child.id"
-        class="child"
-      >
-        <sb-link
-          :link="child.link"
-          class="child-nav-item"
-        >
+    <div v-if="item.children && item.children.length > 0" class="dropdown">
+      <div v-for="child in item.children" :key="child.id" class="child">
+        <sb-link :link="child.link" class="child-nav-item">
           {{ child.name }}
         </sb-link>
       </div>
@@ -37,12 +22,11 @@
 
 <script charset="utf-8">
 export default {
-  props: ['item', 'variant']
-}
+  props: ['item', 'variant'],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .nav-item {
   position: relative;
   .main-nav-item {
@@ -82,7 +66,7 @@ export default {
       }
     }
     &:focus {
-      outline:none;
+      outline: none;
     }
   }
 
@@ -94,8 +78,8 @@ export default {
   }
   .caret-down {
     height: 0.9em;
-    padding-left: .3em;
-    margin-top: .1em;
+    padding-left: 0.3em;
+    margin-top: 0.1em;
     svg {
       display: block;
       height: 100%;
@@ -106,7 +90,9 @@ export default {
     position: absolute;
     padding: 20px;
     margin-left: -28px;
-    background-color: #FFF;
+    background-color: #fff;
+    border: 1px solid #d1d1d1;
+    border-radius: 0em 0em 0.5em 0.5em;
     min-width: 150px;
     left: 25px;
     .child {
@@ -121,16 +107,16 @@ export default {
         padding: 8px;
         position: relative;
         &:focus {
-          outline:none;
+          outline: none;
           &:before {
-            content: "";
+            content: '';
             position: absolute;
-            width: .65em;
-            height: .65em;
+            width: 0.65em;
+            height: 0.65em;
             border-radius: 50%;
             background-color: $color-orange;
-            left: -.6em;
-            top: .7em;
+            left: -0.6em;
+            top: 0.7em;
           }
         }
       }
@@ -142,5 +128,4 @@ export default {
     }
   }
 }
-
 </style>

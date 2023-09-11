@@ -11,6 +11,7 @@ import Accordion from '@/components/Accordion.vue';
 import Alert from '@/components/Alert.vue';
 import BigLoadingSpinner from '@/components/spinners/BigLoadingSpinner.vue';
 import LoadingSpinnerInline from '@/components/spinners/LoadingSpinnerInline.vue';
+import LoadingSpinnerButton from '~/components/spinners/LoadingSpinnerButton.vue';
 import VueTour from 'vue-tour';
 import Modal from '@/components/modals/Modal.vue';
 
@@ -228,6 +229,7 @@ Vue.component('accordion', Accordion);
 Vue.component('alert', Alert);
 Vue.component('big-loading-spinner', BigLoadingSpinner);
 Vue.component('loading-spinner-inline', LoadingSpinnerInline);
+Vue.component('loading-spinner-button', LoadingSpinnerButton);
 Vue.component('spacer', Spacer);
 Vue.component('vue-tour', VueTour);
 Vue.component('modal', Modal);

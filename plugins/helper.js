@@ -52,7 +52,6 @@ export const helper = {
 
     let isAllowed = true;
     filteredMemberPackages.forEach((memberPackage) => {
-      console.log('memberPackage', memberPackage);
       if (
         memberPackage?._embedded?.package?.metadata?.shortform ===
         PACKAGES_SHORT_FORMS.smart_garage
@@ -79,19 +78,21 @@ export const helper = {
     let parsedDate;
 
     // Check if date is a string in "YYYY-MM-DD" format
-    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    if (typeof date === 'string') {
       parsedDate = new Date(date);
     } else if (date instanceof Date) {
       parsedDate = date;
-    } else {
-      console.log(
-        'Error while checking dateIsInPast(): Invalid date format or type',
-      );
-      throw new Error('Invalid date format or type');
     }
 
+    if (!this.isValidDate(parsedDate)) {
+      console.log(
+        'Error dateIsInPast(): Invalid date format or type',
+        parsedDate,
+      );
+      return false;
+    }
     const currentDate = new Date();
-    console.log('is in past', parsedDate < currentDate);
+
     return parsedDate < currentDate;
   },
   dateRangeOverlaps(aStart, aEnd, bStart, bEnd) {

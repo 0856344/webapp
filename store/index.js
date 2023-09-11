@@ -1,6 +1,11 @@
 import Vuex from 'vuex';
 import auth0 from 'auth0-js';
-import { getUserFromLocalStorage, setToken, unsetToken, handler } from '~/utils/auth';
+import {
+  getUserFromLocalStorage,
+  setToken,
+  unsetToken,
+  handler,
+} from '~/utils/auth';
 import axios from 'axios';
 import moment from 'moment';
 import Vue from 'vue';
@@ -341,6 +346,10 @@ const createStore = () => {
         const res = await connector.post('/v1/fabman/bookings/', data);
         return res.data;
       },
+      async cancelBooking({ state }, id) {
+        const res = await connector.delete(`v1/fabman/bookings/${id}`);
+        return res.data;
+      },
       async getResource({ state }, id) {
         await connector
           .get(`v1/fabman/resources/${id}`)
@@ -396,7 +405,7 @@ const createStore = () => {
               },
             );
           }
-        })
+        });
       },
       async getMemberByEmail({ commit }, email) {
         const res = await connector.post(
@@ -404,11 +413,6 @@ const createStore = () => {
           email,
         );
         return res.data;
-      },
-      getMember({ state, commit }, id) {
-        return connector.get('/v1/fabman/members/' + id).then((r) => {
-          commit('setMember', r.data);
-        });
       },
       checkAuth({ commit, dispatch, state }) {
         if (state.auth || getUserFromLocalStorage()) {
