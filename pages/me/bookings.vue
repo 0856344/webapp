@@ -22,14 +22,14 @@
         @confirm="confirmInfoModal"
       >
       </modal>
-      <v-tour name="myTour" :steps="steps"></v-tour>
+      <v-tour name="myTour" :steps="steps" :options="tourOptions"></v-tour>
       <div class="flex items-center mb-1">
-        <h2 class="m-0 mr-2 text-2xl">
+        <h2 class="m-0 mr-2 text-2xl flex items-center">
           {{ $t('machineBookings') }}
           <svg
-            class="cursor-pointer icon-button-secondary inline-block w-5 h-5 ml-1 fill-secondary jump-animation"
+            class="cursor-pointer icon-button-secondary inline-block w-5 h-5 ml-1 fill-secondary demo-button"
+            :class="{ 'jump-animation': isFirstVisit }"
             xmlns="http://www.w3.org/2000/svg"
-            height="1em"
             @click="startTour"
             viewBox="0 0 512 512"
           >
@@ -37,8 +37,22 @@
               d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
             />
           </svg>
+          <loading-spinner-inline v-if="isLoading" class="pl-2" />
+          <svg
+            v-show="isFirstVisit"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24.24 49.12"
+            class="inline-block fill-secondary info-arrow pl-4 pr-3"
+          >
+            <path
+              class="cls-3"
+              d="m16.71,37.11c2.24,2.76,4.59,5.42,7.19,7.86.65.61.34,1.82-.53,2.02-1.79.41-3.57.89-5.36,1.27-1.61.35-3.39.95-5.04.85-.82-.05-1.19-1.14-.43-1.59,1.42-.84,3.26-1.13,4.84-1.55.3-.08.6-.15.9-.22-1.06-.16-2.13-.38-3.09-.66-2.45-.69-4.85-1.73-6.97-3.14C3.78,38.99.95,34.24.22,28.98c-.78-5.54.6-11.13,3.28-15.99,1.39-2.52,3.12-4.85,5.01-7.02.98-1.12,2.02-2.18,3.09-3.21.97-.93,1.96-2.07,3.19-2.66.8-.39,1.77.43,1.27,1.27-.61,1.03-1.57,1.8-2.4,2.66-.9.94-1.78,1.9-2.63,2.89-1.74,2.02-3.35,4.14-4.67,6.47-2.5,4.37-3.88,9.37-3.34,14.43.52,4.9,3.11,9.01,7.12,11.81,1.91,1.34,4.03,2.29,6.24,3.01.83.27,1.68.46,2.53.67-1.4-1.4-2.91-2.69-4.14-4.25-1.08-1.37.82-3.33,1.94-1.94"
+            />
+          </svg>
+          <p v-show="isFirstVisit" class="text-xs color-secondary pl-1">
+            Willkommen! Hier bekommst du eine Einführung.
+          </p>
         </h2>
-        <loading-spinner-inline v-if="isLoading" />
       </div>
       <br />
       <fieldset class="p-4">
@@ -217,6 +231,7 @@ import 'vue-tour/dist/vue-tour.css';
 import Modal from '@/components/modals/Modal.vue';
 import moment from 'moment/moment';
 import { FABMAN_BOOKING_STATE } from '@/services/constants.js';
+import Cookies from 'js-cookie';
 
 Vue.use(VueTour);
 
@@ -227,6 +242,7 @@ export default {
   components: { EditableBookingCalendar, vSelect, Modal },
   data() {
     return {
+      isFirstVisit: true,
       isMobile: false,
       modalOpen: false,
       infoModalOpen: false,
@@ -241,6 +257,14 @@ export default {
       bookings: [],
       selectedMachine: null,
       steps: null,
+      tourOptions: {
+        labels: {
+          buttonSkip: 'Überspringen',
+          buttonPrevious: 'Zurück',
+          buttonNext: 'Weiter',
+          buttonStop: 'Fertig',
+        },
+      },
       currentPage: 1,
       rowsPerPage: 8,
     };
@@ -272,6 +296,12 @@ export default {
 
     // Load machine bookings
     await this.fetchBookings(this.member.id);
+
+    // Check first visit
+    if (!Cookies.get('visited')) {
+      Cookies.set('visited', 'true');
+      this.isFirstVisit = true;
+    }
   },
   computed: {
     tourStep2Text() {
@@ -435,7 +465,6 @@ export default {
     },
     startCancellation(booking) {
       this.selectedTableBooking = booking;
-      console.log('booking', this.selectedTableBooking);
       this.openInfoModal(
         'Möchtest du die ausgewählte Reservierung wirklich stornieren?',
         'cancelBooking',
@@ -443,19 +472,15 @@ export default {
       );
     },
     async cancelBooking(id) {
-      console.log('selectedTableBooking', this.selectedTableBooking);
       if (!id) {
         id = this?.selectedTableBooking.id;
       }
-      console.log('CANCEL', id);
       this.loadingCancel = id;
       await this.$store
         .dispatch('cancelBooking', id)
         .then((res) => {
-          console.log('Booking cancelled!', res);
           this.fetchBookings();
           this.closeInfoModal();
-          //TODO - reset booking calendar
         })
         .catch((error) => {
           console.log('Error! Could not cancel booking', error);
@@ -529,6 +554,11 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.custom-svg-style {
+  width: 100px;
+  height: 100px;
+  fill: blue;
+}
 .table-fieldset {
   padding: 1rem;
 }
@@ -577,6 +607,16 @@ button:disabled svg {
 .spin-animation {
   animation: rotate 1s linear infinite;
 }
+.demo-button {
+  height: 1em;
+}
+.info-arrow {
+  height: 1.8em;
+  transform: rotate(102deg);
+  position: relative;
+  top: -20px;
+  left: 0;
+}
 
 @keyframes rotate {
   from {
@@ -588,6 +628,18 @@ button:disabled svg {
 }
 
 @include media-breakpoint-down(xs) {
+  .demo-button {
+    height: 80px;
+    width: 50px;
+  }
+  .info-arrow {
+    height: 80px;
+    left: 10px;
+    position: relative;
+    top: -30px;
+    transform: rotate(102deg);
+  }
+
   .table-fieldset {
     padding-right: 0;
     padding-left: 0;
