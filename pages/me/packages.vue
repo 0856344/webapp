@@ -1,33 +1,34 @@
 <template>
   <div class="section">
-    <h2>{{ $t('membership') }} & Credits</h2>
-    <br>
+    <h2>{{ $t("membership") }} & Credits</h2>
+    <br />
     <fieldset>
       <legend>Mitgliedschaft</legend>
-        <div>  <loading-spinner v-if="loading" color="#333"/></div>
+      <div><loading-spinner v-if="loading" color="#333" /></div>
       <div v-if="!loading && membership">
-        <div
-            v-for="userPackage of membership"
-            :key="userPackage.id">
-          <package v-on:reload="reload"
-              :user-package="userPackage"
-              :storage=false />
-        </div>
-      </div>
-
-      <div v-if="memberStorage && memberStorage.length > 0" >
-        <div
-            v-for="userPackage of memberStorage"
-            :key="userPackage.id">
-          <package v-on:reload="reload"
-              :user-package="userPackage"
-              :storage=true
-              :booked=true
+        <div v-for="userPackage of membership" :key="userPackage.id">
+          <package
+            v-on:reload="reload"
+            :user-package="userPackage"
+            :storage="false"
           />
         </div>
       </div>
-      <p>Bei Änderungen deiner Mitgliedschaft kontaktiere bitte unseren Frontdesk per Mail an
-        <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
+
+      <div v-if="memberStorage && memberStorage.length > 0">
+        <div v-for="userPackage of memberStorage" :key="userPackage.id">
+          <package
+            v-on:reload="reload"
+            :user-package="userPackage"
+            :storage="true"
+            :booked="true"
+          />
+        </div>
+      </div>
+      <p>
+        Bei Änderungen deiner Mitgliedschaft kontaktiere bitte unseren Frontdesk
+        per Mail an <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
+      </p>
     </fieldset>
     <fieldset v-if="hasSmartGarage">
       <legend>Credits</legend>
@@ -38,50 +39,88 @@
         </span>
         <span v-if="this.getAllCredits() !== 0">
           <transition name="fade">
-            <span v-show="!loading"><strong> <span style="color: green">{{ this.getAllCredits() }} Credits</span> </strong></span>
+            <span v-show="!loading"
+              ><strong>
+                <span style="color: green"
+                  >{{ this.getAllCredits() }} Credits</span
+                >
+              </strong></span
+            >
           </transition>
         </span>
       </div>
 
-      <p>Monatliches Kontingent: <strong> {{ this.getMonthlyCredits() }} Credits</strong> </p>
-      <p>Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die Freikontingente können nicht ins nächste Monat mitgenommen werden. Die zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.  Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.</p>
-      <p style="font-size: smaller">Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten, oder wechsle deine Mitgliedschaft, indem du eine Mail an den Frontdesk schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a></p>
+      <p>
+        Monatliches Kontingent:
+        <strong> {{ this.getMonthlyCredits() }} Credits</strong>
+      </p>
+      <p>
+        Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die
+        Freikontingente können nicht ins nächste Monat mitgenommen werden.
+      </p>
+      <p>
+        <strong>UNSER TIPP: </strong>Sichere dir vorab zusätzliche Credits —
+        direkt im Bereich ‚Credits kaufen‘ mit einem Klick. Diese zusätzlich
+        (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.
+        Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.
+      </p>
+      <p>
+        Du willst dein Paket wechseln, dann schicke gern ein Mail an den
+        Frontdesk <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
+      </p>
       <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
-        <p><strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist gültig bis: <strong> <span style="color: green">{{ formatDate(discount.untilDate) }}.</span> </strong></p>
-        <p style="font-size: smaller"><u>Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk vorort!</u></p>
+        <p>
+          <strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist
+          gültig bis:
+          <strong>
+            <span style="color: green"
+              >{{ formatDate(discount.untilDate) }}.</span
+            >
+          </strong>
+        </p>
+        <p style="font-size: smaller">
+          <u
+            >Läuft deine Ermäßigung bald ab? Dann verlängere sie beim Frontdesk
+            vorort!</u
+          >
+        </p>
       </div>
-      <div> <loading-spinner v-if="loading" color="#333"/>  </div>
+      <div><loading-spinner v-if="loading" color="#333" /></div>
     </fieldset>
     <fieldset v-if="hasSmartGarage">
       <legend style="margin-bottom: 20px">Credits kaufen</legend>
-      <div>  <loading-spinner v-if="!memberPackages" color="#333"/></div>
+      <div><loading-spinner v-if="!memberPackages" color="#333" /></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
-        <credit-package v-on:reload="reload" :hasDiscount=hasDiscount />
-        <p style="font-size: smaller"><u>Hinweis: Credits können für die Arbeitszeit an den Maschinen genutzt werden.</u></p>
+        <credit-package v-on:reload="reload" :hasDiscount="hasDiscount" />
       </div>
     </fieldset>
 
     <fieldset>
       <legend>Lager</legend>
-      <div>  <loading-spinner v-if="loadingAvailableStorage" color="#333"/></div>
-      <div v-if="!loadingAvailableStorage && availableStorage && availableStorage.length > 0 && membership &&membership.length > 0" >
-        <div
-            v-for="userPackage of availableStorage"
-            :key="userPackage.id">
-          <package v-on:reload="reload"
-              :user-package="userPackage"
-              :storage=true
-              :booked=false
+      <div><loading-spinner v-if="loadingAvailableStorage" color="#333" /></div>
+      <div
+        v-if="
+          !loadingAvailableStorage &&
+          availableStorage &&
+          availableStorage.length > 0 &&
+          membership &&
+          membership.length > 0
+        "
+      >
+        <div v-for="userPackage of availableStorage" :key="userPackage.id">
+          <package
+            v-on:reload="reload"
+            :user-package="userPackage"
+            :storage="true"
+            :booked="false"
           />
         </div>
       </div>
     </fieldset>
-
   </div>
- </template>
+</template>
 
 <script>
-
 export default {
   middleware: 'authenticated',
   data () {
@@ -111,7 +150,10 @@ export default {
       this.loading = true
       this.loadingAvailableStorage = true
       await this.loadCreditStatus()
-      this.memberPackages = await this.$store.dispatch('getMemberPackages', this.$store.state.member.id)
+      this.memberPackages = await this.$store.dispatch(
+        'getMemberPackages',
+        this.$store.state.member.id
+      )
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
@@ -123,7 +165,12 @@ export default {
           this.hasDiscount = true
         }
         // filter only membership from memberPackages - precondition: one member has one membership
-        if (metadata.is_storage_box || metadata?.shortform === 'DISCOUNT' || metadata?.shortform === '500_CREDITS' || metadata?.shortform === '500_CREDITS_DISCOUNTED') {
+        if (
+          metadata.is_storage_box ||
+          metadata?.shortform === 'DISCOUNT' ||
+          metadata?.shortform === '500_CREDITS' ||
+          metadata?.shortform === '500_CREDITS_DISCOUNTED'
+        ) {
           return false
         }
         // only SmartGarage members have credit feature
@@ -171,21 +218,20 @@ export default {
       })
     },
     async loadCreditStatus () {
-      this.memberCredits = await this.$store.dispatch('getMemberCredits', this.$store.state.member.id)
+      this.memberCredits = await this.$store.dispatch(
+        'getMemberCredits',
+        this.$store.state.member.id
+      )
       // update credits status every 30 seconds
-      const reloadCredits = setInterval(() => {
-        if (!this.$store.state.auth) {
-          clearInterval(reloadCredits)
-        } else {
-          this.$store
-            .dispatch('getMemberCredits', this.$store.state.member.id)
-            .then((response) => {
-              this.memberCredits = response
-            })
-            .catch((err) => {
-              console.error(err)
-            })
-        }
+      setInterval(() => {
+        this.$store
+          .dispatch('getMemberCredits', this.$store.state.member.id)
+          .then((response) => {
+            this.memberCredits = response
+          })
+          .catch((err) => {
+            console.error(err)
+          })
       }, 30000)
     },
     getAllCredits () {
@@ -209,7 +255,6 @@ export default {
               monthlyCredits += parseFloat(credit.amount)
             }
           })
-
         }
       })
       return monthlyCredits * 10
@@ -225,24 +270,35 @@ export default {
   },
   computed: {
     mail () {
-      const fullName = this.$store.state.user.profile.firstName + ' ' + this.$store.state.user.profile.lastName
+      const fullName =
+        this.$store.state.user.profile.firstName +
+        ' ' +
+        this.$store.state.user.profile.lastName
       const memberNumber = this.$store.state.user.profile.memberNumber
-      return 'mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: ' + fullName + ' ' + '(' + memberNumber + ')'
+      return (
+        'mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: ' +
+        fullName +
+        ' ' +
+        '(' +
+        memberNumber +
+        ')'
+      )
     }
   }
 }
 </script>
 
 <style lang="scss">
-  fieldset {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #000;
-  }
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
-  }
+fieldset {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #000;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>
