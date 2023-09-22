@@ -132,10 +132,10 @@ export default {
         content: "";
         border-top: #000 0.15em solid;
         border-right: #000 0.15em solid;
-        transform: rotateZ(45deg);
+        transform: scaleX(1.4) rotateZ(45deg);
         transform-origin: top right;
-        height: .3em;
-        width: .3em;
+        height: 0.7em;
+        width: 0.7em;
         margin-top: .4em;
         right: 4%;
       }
