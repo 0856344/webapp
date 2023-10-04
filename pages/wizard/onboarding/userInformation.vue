@@ -124,7 +124,7 @@ export default {
     },
     passwordComplexity () {
       if (this.password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*]*$/
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\x20-\x7E]*$/
         return passwordRegex.test(this.password)
       } else {
         return false
