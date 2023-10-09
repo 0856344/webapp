@@ -175,18 +175,28 @@
                   <div
                     v-else-if="
                       !hasBeenCanceled(booking?.state) &&
+                      !isInPast(booking?.fromDateTime) &&
                       !isInPast(booking?.untilDateTime)
                     "
                   >
-                    <button
-                      class="cancelButton"
-                      @click="startCancellation(booking)"
+                    <span
+                      v-if="
+                        !beforeHours(booking?.fromDateTime, bookingLockHours)
+                      "
                     >
-                      <font-awesome-icon
-                        :class="{ active: infoModalOpen }"
-                        icon="trash"
-                      />
-                    </button>
+                      <button
+                        class="cancelButton"
+                        @click="startCancellation(booking)"
+                      >
+                        <font-awesome-icon
+                          :class="{ active: infoModalOpen }"
+                          icon="trash"
+                        />
+                      </button>
+                    </span>
+                    <span v-else class="mute-text"
+                      >nur {{ bookingLockHours }}h im voraus möglich</span
+                    >
                   </div>
                 </td>
               </tr>
@@ -221,7 +231,7 @@
 </template>
 
 <script>
-import Vue, { ref } from 'vue';
+import Vue from 'vue';
 import { helper } from '~/plugins/helper';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
@@ -230,7 +240,7 @@ import VueTour from 'vue-tour';
 import 'vue-tour/dist/vue-tour.css';
 import Modal from '@/components/modals/Modal.vue';
 import moment from 'moment/moment';
-import { FABMAN_BOOKING_STATE } from '@/services/constants.js';
+import { FABMAN_BOOKING_STATE, BOOKING_LOCK } from '@/services/constants.js';
 import Cookies from 'js-cookie';
 
 Vue.use(VueTour);
@@ -242,7 +252,7 @@ export default {
   components: { EditableBookingCalendar, vSelect, Modal },
   data() {
     return {
-      isFirstVisit: true,
+      isFirstVisit: false,
       isMobile: false,
       modalOpen: false,
       infoModalOpen: false,
@@ -304,6 +314,9 @@ export default {
     }
   },
   computed: {
+    bookingLockHours() {
+      return BOOKING_LOCK.cancellationInHours;
+    },
     tourStep2Text() {
       return this.isMobile
         ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Doppelklicke auf einen Zeitslot, um eine Buchung zu erstellen."
@@ -393,18 +406,7 @@ export default {
       this.infoModalOpen = true;
     },
     confirmInfoModal() {
-      if (
-        typeof this?.infoModalSubmitMethod === 'string' &&
-        this.$options.methods[this.infoModalSubmitMethod]
-      ) {
-        // TODO - open method generically
-        console.log('open', this.infoModalSubmitMethod);
-        // Call the given function by name
-        this.cancelBooking(this.selectedTableBooking.id);
-        // this.$options.methods[this.infoModalSubmitMethod](
-        //   this.selectedTableBooking,
-        // );
-      }
+      this.cancelBooking(this.selectedTableBooking.id);
     },
     closeInfoModal() {
       this.infoModalOpen = false;
@@ -416,6 +418,9 @@ export default {
     },
     isInPast(date) {
       return helper.dateIsInPast(date);
+    },
+    beforeHours(date, hours = 24) {
+      return helper.dateIsBeforeCurrentInHours(date, hours);
     },
     saveEvents() {
       this.closeModal();

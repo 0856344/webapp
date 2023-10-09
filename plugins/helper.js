@@ -77,7 +77,7 @@ export const helper = {
   dateIsInPast(date) {
     let parsedDate;
 
-    // Check if date is a string in "YYYY-MM-DD" format
+    // Make sure given date is in Date format
     if (typeof date === 'string') {
       parsedDate = new Date(date);
     } else if (date instanceof Date) {
@@ -94,6 +94,28 @@ export const helper = {
     const currentDate = new Date();
 
     return parsedDate < currentDate;
+  },
+  timeDifferenceInHours(startDate, endDate) {
+    return Math.abs(startDate - endDate) / 36e5; //36e5 is the scientific notation for 60*60*1000
+  },
+  dateIsBeforeCurrentInHours(date, hours = 24) {
+    // Make sure given date is in Date format
+    if (typeof date === 'string') {
+      date = new Date(date);
+    }
+    if (!this.isValidDate(date)) {
+      console.log(
+        'Error dateIsBeforeHours(): Invalid date format or type',
+        date,
+      );
+      return false;
+    }
+
+    const currentDate = new Date();
+    const timeDifference = date - currentDate;
+    const millisecondsInHours = hours * 36e5; // 36e5 is the scientific notation for 60*60*1000
+
+    return timeDifference < millisecondsInHours;
   },
   dateRangeOverlaps(aStart, aEnd, bStart, bEnd) {
     if (aStart <= bStart && bStart <= aEnd) return true; // b starts in a

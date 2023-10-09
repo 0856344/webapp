@@ -51,8 +51,8 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      Deine Daten werden geladen. Bitte lade die Seite neu.
+    <div v-else class="flex flex-col text-center mt-4">
+      <p>Deine Daten werden geladen. Bitte lade die Seite neu.</p>
       <big-loading-spinner></big-loading-spinner>
     </div>
   </div>

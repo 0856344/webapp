@@ -19,3 +19,9 @@ export const FABMAN_BOOKING_STATE = {
   cancelled: 'cancelled',
   confirmed: 'confirmed',
 };
+
+export const BOOKING_LOCK = {
+  // TODO - get lock from Fabman Space
+  cancellationInHours: 24,
+  limitInHours: 1,
+};

@@ -126,6 +126,7 @@ import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 import { helper } from '@/plugins/helper';
 import Alert from '@/components/Alert.vue';
+import { BOOKING_LOCK } from '@/services/constants';
 
 export default {
   name: 'editable-booking-calendar',
@@ -150,6 +151,9 @@ export default {
     };
   },
   computed: {
+    allowedBookingHours() {
+      return BOOKING_LOCK.limitInHours;
+    },
     hasUser() {
       return !!this.$store.state.member;
     },
@@ -238,14 +242,13 @@ export default {
           helper.isValidDate(newBooking.fromDateTime) &&
           helper.isValidDate(newBooking.untilDateTime)
         ) {
-          // if (!this.validHours(newBooking)) {
-          //   // TODO - included hours check - https://grandgarage.atlassian.net/browse/HP-345
-          //   console.log('NOT VALID HOURS');
-          //   this.hoursExceeded(2);
-          //   this.invalidDate = newBooking;
-          //   const memberPackages = this.$store.getters.getMemberPackages();
-          //   console.log('store getMemberPackages', memberPackages);
-          // }
+          if (this.hoursExceeded(newBooking, this.allowedBookingHours)) {
+            //console.log('NOT VALID - EXCEEDED HOURS');
+            this.hoursExceededAlert(this.allowedBookingHours);
+            this.invalidDate = newBooking;
+            const memberPackages = this.$store.getters.getMemberPackages();
+            //console.log('store getMemberPackages', memberPackages);
+          }
           this.bookings.forEach((booking) => {
             if (this.dateOverlaps(booking, newBooking) === true) {
               this.dateConflict();
@@ -261,7 +264,7 @@ export default {
             // Do not save this booking
             return false;
           }
-
+          console.log('VALID');
           // Check if object already exists, based on the ID, and replace it
           const index = this.selectedBookings.findIndex(
             (item) => item.id === newBooking.id,
@@ -292,9 +295,14 @@ export default {
         console.log('Wrong event format. Given: ' + typeof calEvent);
       }
     },
-    validHours(booking) {
-      // TODO - https://grandgarage.atlassian.net/browse/HP-345
-      return false;
+    hoursExceeded(booking, allowedHours) {
+      const differenceInHours = helper.timeDifferenceInHours(
+        booking.untilDateTime,
+        booking.fromDateTime,
+      );
+      console.log('hours', differenceInHours);
+
+      return differenceInHours > allowedHours;
     },
     storeBookings(bookings) {
       // Save selected bookings in the global store
@@ -433,7 +441,7 @@ export default {
       const msg = 'Datum liegt in der Vergangenheit.';
       this.openInfoBox(msg, '#f55252fc');
     },
-    hoursExceeded(includedHours) {
+    hoursExceededAlert(includedHours) {
       const msg = 'In deinem Paket sind ' + includedHours + 'h inkludiert.';
       this.openInfoBox(msg, '#f55252fc');
     },
