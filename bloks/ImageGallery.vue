@@ -1,10 +1,20 @@
 <template>
-  <div v-editable="blok" class="image-gallery">
+  <div v-editable="blok" class="mage-gallery text-center mt-12 flex flex-wrap justify-center gap-3">
     <div
         v-for="s in blok.Images"
         :key="s._uid"
-        class="image-row"
-        :style="{ 'background-image': 'url(' + $resizeImage(s.image, '450x500') + ')', 'width': '350px'}">
+        class="inline-block"
+    >
+        <div v-if="s.pdf"
+            class="bg-no-repeat transition-transform transform hover:scale-105 w-full max-w-xs">
+            <a v-if="s.pdf" :href="s.pdf.filename" target="_blank" class="hover:cursor-pointer">
+              <img :src="s.image.filename" loading="lazy" :style="{ 'background-image': 'url(' + $resizeImage(s.image, '450x500') + ')'}" class="max-h-80">
+            </a>
+        </div>
+      <div v-else
+        class="image-row bg-contain bg-center bg-no-repeat"
+        :style="{ 'background-image': 'url(' + $resizeImage(s.image, '450x500') + ')', 'width': '350px', 'height': '18em'}">
+      </div>
     </div>
   </div>
 </template>
@@ -13,30 +23,13 @@
 
 export default {
   props: ['blok']
-// computed: {
-// urls () {
-// return this.images.map((i) => {
-// return i.image
-// })
-// },
-// thumbnail () {
-// return this.images[0].image
-// }
-// }
 }
 </script>
 
 <style lang="scss" scoped>
 
 .image-gallery {
-  text-align: center;
-  margin-top: 3em;
   .image-row{
-    display: inline-block;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 19em;
     @media screen and (max-width: 1050px) {
       width: 250px !important;
       height: 240px !important;
