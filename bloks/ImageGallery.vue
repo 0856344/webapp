@@ -1,5 +1,5 @@
 <template>
-  <div v-editable="blok" class="mage-gallery text-center mt-12 flex flex-wrap justify-center gap-3">
+  <div v-editable="blok" class="image-gallery text-center mt-12 flex flex-wrap justify-center gap-3">
     <div
         v-for="s in blok.Images"
         :key="s._uid"
