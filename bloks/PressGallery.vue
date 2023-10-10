@@ -123,7 +123,6 @@ export default {
   img {
     max-height: 100%;
     min-width: 100%;
-    object-fit: cover;
     vertical-align: bottom;
     padding:10px;
   }
