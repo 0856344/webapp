@@ -13,7 +13,7 @@
         </div>
       <div v-else
         class="image-row bg-contain bg-center bg-no-repeat"
-        :style="{ 'background-image': 'url(' + $resizeImage(s.image, '450x500') + ')', 'width': '350px', 'height': '18em'}">
+        :style="{ 'background-image': 'url(' + $resizeImage(s.image, '450x500') + ')', 'width': '320px', 'height': '18em'}">
       </div>
     </div>
   </div>
