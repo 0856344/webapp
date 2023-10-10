@@ -41,6 +41,7 @@ To support https on localhost, follow these steps:
 ##### Request failed to proxy: ECONNREFUSED
 Make sure you use a supported NodeJS Version in all of your Terminal sessions. Node Version can be switches by using [NVM](https://github.com/nvm-sh/nvm).
 
+Another reason for the error message could be that nuxt-production is not loading properly anymore
 ## Start
 ```
 # Install Dependencies
