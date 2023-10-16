@@ -22,9 +22,9 @@
           :style="{ 'background-image': 'url(' + $resizeImage(s.image, '300x300') + ')' }"
         />
       </div>
-      <div class="swiper-button-next" />
-      <div class="swiper-button-prev" />
     </div>
+    <div class="swiper-button-next" />
+    <div class="swiper-button-prev" />
   </div>
 </template>
 
@@ -135,6 +135,23 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    margin-left: -30px;
+    margin-right: -30px;
+    top: 50%;
+    @include media-breakpoint-down(xs){
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    @include media-breakpoint-down(md){
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+      margin-left: -0px;
+      margin-right: -0px;
+    }
   }
 }
 </style>

@@ -78,6 +78,7 @@ export default {
 .image-slideshow {
   margin: 2em 0;
   color: $color-blue;
+  position: relative; // needed for z-index (blue dashed stripe)
   .text {
     @include margin-page-middle();
     font-size: 1.8rem;
@@ -116,6 +117,19 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    top: 50%;
+    @include media-breakpoint-down(md){
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+    }
+    @include media-breakpoint-down(xs){
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-right: 20px;
+      margin-left: 20px;
+    }
   }
 }
 </style>
