@@ -53,8 +53,10 @@ export default {
     },
     num () {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 786) {
+        if (window.innerWidth < 500) {
           return 1
+        } else if (window.innerWidth < 900) {
+          return 2
         }
       }
       return 3
@@ -73,6 +75,7 @@ export default {
 
 .team-image-slider {
   color: $color-blue;
+  position: relative; // needed for z-index (blue dashed stripe)
   .text {
     @include margin-page-wide;
     padding: 5rem 0 0;
@@ -106,6 +109,19 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    top: 50%;
+    @include media-breakpoint-down(md){
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+    }
+    @include media-breakpoint-down(xs){
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-right: 20px;
+      margin-left: 20px;
+    }
   }
   .reference {
     @include margin-page-wide;

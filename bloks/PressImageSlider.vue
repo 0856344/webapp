@@ -15,9 +15,9 @@
             </div>
           </div>
       </div>
-      <div class="swiper-button-next" />
-      <div class="swiper-button-prev" />
     </div>
+    <div class="swiper-button-next" />
+    <div class="swiper-button-prev" />
   </div>
 </template>
 <script>
@@ -46,7 +46,7 @@ export default {
     },
     spaceBetween () {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 600) {
+        if (window.innerWidth < 500) {
           return 0
         }
       }
@@ -54,8 +54,10 @@ export default {
     },
     num () {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 600) {
-          return 1.5
+        if (window.innerWidth < 500) {
+          return 1
+        } else if (window.innerWidth < 900) {
+          return 2
         }
       }
       return 3
@@ -108,7 +110,7 @@ export default {
   .swiper-container {
     margin-top: 3%;
     width: 100%;
-    height: 22em;
+    height: 24em;
     padding-bottom: 60px;
     .swiper-slide {
       display: block;
@@ -133,7 +135,22 @@ export default {
     height: 50px;
     border-radius: 50%;
     background-color: $color-yellow;
-    background-size: 12px;
+    background-size: 12px;;
+    margin-left: -30px;
+    margin-right: -30px;
+    top: 50%;
+    @include media-breakpoint-down(md){
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+      margin: 0;
+    }
+    @include media-breakpoint-down(xs){
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin: 0;
+    }
   }
 }
 .text-image-slider{
