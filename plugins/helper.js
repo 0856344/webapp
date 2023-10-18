@@ -3,11 +3,10 @@ import moment from 'moment'
 import IBAN from 'iban'
 
 Vue.prototype.$resizeImage = function (str, param) {
-  // ensure compatiblity with image-slideshow changes in storyblok (schema changes)
   if (str?.filename) {
-    return typeof str.filename === 'undefined' ? '' : str.filename.replace(/a.storyblok.com/g, 'img2.storyblok.com/' + param)
+    str = str.filename
   }
-  return typeof str === 'undefined' ? '' : str.replace(/a.storyblok.com/g, 'img2.storyblok.com/' + param)
+  return typeof str === 'undefined' ? '' : `${str}/m/${param}`
 }
 
 Vue.filter('date', function (value) {
