@@ -83,7 +83,7 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/sentry',
     '@nuxtjs/toast',
-    //'@nuxtjs/eslint-module',
+    '@nuxtjs/eslint-module',
     '@nuxtjs/robots',
     'nuxt-i18n'
   ],
