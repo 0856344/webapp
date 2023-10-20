@@ -1,24 +1,24 @@
-$color-primary: #72A4B2;
-$color-secondary: #E69140;
-$color-success: #93B369;
+$color-primary: #72a4b2;
+$color-secondary: #e69140;
+$color-success: #93b369;
 
 $color-primary-border: #679eac;
 $color-secondary-border: #e08931;
 $color-success-border: #80a547;
 
-$color-orange: #E69140;
-$color-blue: #72A4B2;
-$color-blue-intro: #72A4B2;
+$color-orange: #e69140;
+$color-blue: #72a4b2;
+$color-blue-intro: #72a4b2;
 $color-yellow: #eae222;
-$color-blue-alt: #72A4B2;
-$color-red: #8F0E00;
+$color-blue-alt: #72a4b2;
+$color-red: #8f0e00;
 $color-black: #333;
 
 $color-bright-bg: #f2f3ee;
 
-$font-primary: 'IBM Plex Sans Condensed', sans-serif;
-$font-secondary: 'Chakra Petch', sans-serif;
-$font-mono: 'Roboto Mono', monospace;
+$font-primary: "IBM Plex Sans Condensed", sans-serif;
+$font-secondary: "Chakra Petch", sans-serif;
+$font-mono: "Roboto Mono", monospace;
 
 $menu-min-width: 860px;
 $mobile-small: 576px;
@@ -33,15 +33,14 @@ $step-size: 30px;
 $margin-page-wide: 0 80px; // for layout-related images/areas etc (with enough space for vertical breadcrumb)
 $margin-page-narrow: 0 176px 268px; // for text, content etc
 
-
 // Mixins for breakpoints
 // Copypasta + modified from https://github.com/twbs/bootstrap/blob/v4-dev/scss/mixins/_breakpoints.scss
 // inspiration for breakpoint values: https://gs.statcounter.com/screen-resolution-stats/all/austria/2018
 
 $grid-breakpoints: (
-        'xs': 360px,
-        'sm': 576px,
-        'md': 800px,
-        'lg': 992px,
-        'xl': 1366px
+  "xs": 360px,
+  "sm": 576px,
+  "md": 800px,
+  "lg": 992px,
+  "xl": 1366px,
 ) !default;

@@ -44,37 +44,37 @@
 
 <script>
 export default {
-  props: ['calendar', 'blok'],
+  props: ["calendar", "blok"],
   computed: {
     link() {
       if (this?.blok?.pretix_shortform) {
         return (
-          'https://buchung.grandgarage.eu/' +
+          "https://buchung.grandgarage.eu/" +
           this.blok.pretix_shortform +
-          '/widget/v1.css'
+          "/widget/v1.css"
         );
       }
       return (
-        'https://buchung.grandgarage.eu/' +
+        "https://buchung.grandgarage.eu/" +
         this.$props.calendar +
-        '/widget/v1.css'
+        "/widget/v1.css"
       );
     },
     event() {
       if (this?.blok?.pretix_shortform) {
         return (
-          'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/'
+          "https://buchung.grandgarage.eu/" + this.blok.pretix_shortform + "/"
         );
       }
-      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/';
+      return "https://buchung.grandgarage.eu/" + this.$props.calendar + "/";
     },
     pretixEvent() {
       if (this?.blok?.pretix_shortform) {
         return (
-          'https://buchung.grandgarage.eu/' + this.blok.pretix_shortform + '/'
+          "https://buchung.grandgarage.eu/" + this.blok.pretix_shortform + "/"
         );
       }
-      return 'https://buchung.grandgarage.eu/' + this.$props.calendar + '/';
+      return "https://buchung.grandgarage.eu/" + this.$props.calendar + "/";
     },
   },
 };

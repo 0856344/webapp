@@ -1,16 +1,13 @@
 <template>
-  <div
-    v-editable="blok"
-    class="feature"
-  >
+  <div v-editable="blok" class="feature">
     <h1>{{ blok.name }}</h1>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">

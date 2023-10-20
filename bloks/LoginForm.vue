@@ -1,45 +1,36 @@
 <template>
-  <div
-    class="login-form"
-    @keyup.enter="submit"
-  >
+  <div class="login-form" @keyup.enter="submit">
     <div class="header-item">
       <div class="form-item space">
         <div class="headline">
-          {{ $t('toGGCommunityLogin') }}
+          {{ $t("toGGCommunityLogin") }}
         </div>
       </div>
-      <div
-        class="close"
-        @click="close"
-      >
+      <div class="close" @click="close">
         <font-awesome-icon icon="times" />
       </div>
     </div>
     <div class="form-item">
-      <span class="label">  {{ $t('email') }}</span>
+      <span class="label"> {{ $t("email") }}</span>
       <input
         v-model="email"
         class="input"
         type="text"
-        :placeholder= "[[ $t('yourE-mailAddress') ]]"
+        :placeholder="[[$t('yourE-mailAddress')]]"
         @input="clearErrorMessage"
-      >
+      />
     </div>
     <div class="form-item">
-      <span class="label">  {{ $t('password') }}</span>
+      <span class="label"> {{ $t("password") }}</span>
       <input
         v-model="password"
         class="input"
         type="password"
-        :placeholder= "[[ $t('yourPassword') ]]"
+        :placeholder="[[$t('yourPassword')]]"
         @input="clearErrorMessage"
-      >
+      />
     </div>
-    <div
-      v-if="errorMessage"
-      class="error-message"
-    >
+    <div v-if="errorMessage" class="error-message">
       <span>{{ errorMessage }}</span>
     </div>
     <div class="form-item button-row">
@@ -48,74 +39,65 @@
         type="submit"
         value="Login"
         @click="submit"
-      >
-    </div>
-    <div
-      class="subtitle"
-      @click="register"
-    >
-      <font-awesome-icon
-        class="icon"
-        icon="user-friends"
       />
-      <span style="font-weight: bold">  {{ $t('joinNow') }}</span>
     </div>
-    <div
-      class="subtitle"
-      @click="recover"
-    >
-      <font-awesome-icon
-        class="icon"
-        icon="key"
-      />
-      <span>{{ $t('resetPassword') }}</span>
+    <div class="subtitle" @click="register">
+      <font-awesome-icon class="icon" icon="user-friends" />
+      <span style="font-weight: bold"> {{ $t("joinNow") }}</span>
+    </div>
+    <div class="subtitle" @click="recover">
+      <font-awesome-icon class="icon" icon="key" />
+      <span>{{ $t("resetPassword") }}</span>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      email: '',
-      password: '',
-      errorMessage: null
-    }
+      email: "",
+      password: "",
+      errorMessage: null,
+    };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    close () {
-      this.$store.dispatch('setSidebar', null)
+    close() {
+      this.$store.dispatch("setSidebar", null);
     },
-    register () {
-      this.close()
-      this.$router.push('/de/mitgliedschaften')
+    register() {
+      this.close();
+      this.$router.push("/de/mitgliedschaften");
     },
-    recover () {
-      this.$store.dispatch('setSidebar', 'recover')
+    recover() {
+      this.$store.dispatch("setSidebar", "recover");
     },
-    submit () {
+    submit() {
       const data = {
         email: this.email,
-        password: this.password
-      }
-      localStorage.setItem('pathToLoadAfterLogin', this.$router.currentRoute.fullPath)
-      this.$store.dispatch('loginUser', data).then((r) => {
-      }).catch((e) => {
-        this.errorMessage = e.description || e.error || e.code
-      })
+        password: this.password,
+      };
+      localStorage.setItem(
+        "pathToLoadAfterLogin",
+        this.$router.currentRoute.fullPath
+      );
+      this.$store
+        .dispatch("loginUser", data)
+        .then((r) => {})
+        .catch((e) => {
+          this.errorMessage = e.description || e.error || e.code;
+        });
     },
-    clearErrorMessage () {
-      this.errorMessage = null
-    }
-  }
-}
+    clearErrorMessage() {
+      this.errorMessage = null;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .login-form {
   padding: 5vw;
   background-color: $color-bright-bg;
@@ -167,7 +149,7 @@ export default {
     .label {
       font-weight: bold;
       text-transform: uppercase;
-      font-size: .7em;
+      font-size: 0.7em;
     }
     .input {
       outline: none;
@@ -185,10 +167,11 @@ export default {
       display: flex;
       justify-content: flex-end;
     }
-    input[type=submit], button{
+    input[type="submit"],
+    button {
       cursor: pointer;
       background-color: $color-orange;
-      color: #FFF;
+      color: #fff;
       min-width: 35%;
       border: 1px solid lighten($color-orange, 10);
       padding: 7px 12px 8px;

@@ -1,22 +1,18 @@
 <template>
-  <div
-        v-if="value"
-        v-html="renderedMarkdown"
-    />
+  <div v-if="value" v-html="renderedMarkdown" />
 </template>
 
 <script>
-import { marked } from 'marked'
+import { marked } from "marked";
 
 export default {
-  props: ['value'],
+  props: ["value"],
   computed: {
-    renderedMarkdown () {
-      return marked(this.value)
-    }
-  }
-}
+    renderedMarkdown() {
+      return marked(this.value);
+    },
+  },
+};
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

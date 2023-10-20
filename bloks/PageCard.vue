@@ -1,18 +1,19 @@
 <template>
-  <div
-      v-editable="blok"
-      class="page-card"
-  >
+  <div v-editable="blok" class="page-card">
     <nuxt-link :to="'/' + blok.link.cached_url">
-      <section
-          class="display-item"
-      >
+      <section class="display-item">
         <div class="top">
-          <div class="top-image" :style="{ 'background-image': 'url(' + $resizeImage(blok.image, '1500x1500') + ')' }"/>
+          <div
+            class="top-image"
+            :style="{
+              'background-image':
+                'url(' + $resizeImage(blok.image, '1500x1500') + ')',
+            }"
+          />
         </div>
         <div class="bottom">
           <div class="bottom-text">
-            {{blok.text}}
+            {{ blok.text }}
           </div>
         </div>
       </section>
@@ -22,10 +23,9 @@
 
 <script>
 export default {
-  name: 'PageCard',
-  props: ['blok']
-
-}
+  name: "PageCard",
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>

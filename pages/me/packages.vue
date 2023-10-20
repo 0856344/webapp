@@ -122,8 +122,8 @@
 
 <script>
 export default {
-  middleware: 'authenticated',
-  data () {
+  middleware: "authenticated",
+  data() {
     return {
       memberPackages: null,
       membership: null,
@@ -136,156 +136,156 @@ export default {
       hasSmartGarage: false,
       loading: false,
       availableStorage: null,
-      loadingAvailableStorage: false
-    }
+      loadingAvailableStorage: false,
+    };
   },
-  async mounted () {
-    await this.reload()
+  async mounted() {
+    await this.reload();
   },
   methods: {
-    formatDate (date) {
-      return new Date(date).toLocaleDateString('de-at')
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("de-at");
     },
-    async reload () {
-      this.loading = true
-      this.loadingAvailableStorage = true
-      await this.loadCreditStatus()
+    async reload() {
+      this.loading = true;
+      this.loadingAvailableStorage = true;
+      await this.loadCreditStatus();
       this.memberPackages = await this.$store.dispatch(
-        'getMemberPackages',
+        "getMemberPackages",
         this.$store.state.member.id
-      )
+      );
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
       this.membership = this.memberPackages.filter((p) => {
         //console.log('package: ', p._embedded.package.metadata)
-        const metadata = p._embedded.package.metadata
-        if (metadata?.shortform === 'DISCOUNT') {
-          this.discount = p
-          this.hasDiscount = true
+        const metadata = p._embedded.package.metadata;
+        if (metadata?.shortform === "DISCOUNT") {
+          this.discount = p;
+          this.hasDiscount = true;
         }
         // filter only membership from memberPackages - precondition: one member has one membership
         if (
           metadata.is_storage_box ||
-          metadata?.shortform === 'DISCOUNT' ||
-          metadata?.shortform === '500_CREDITS' ||
-          metadata?.shortform === '500_CREDITS_DISCOUNTED'
+          metadata?.shortform === "DISCOUNT" ||
+          metadata?.shortform === "500_CREDITS" ||
+          metadata?.shortform === "500_CREDITS_DISCOUNTED"
         ) {
-          return false
+          return false;
         }
         // only SmartGarage members have credit feature
         if (metadata?.allow_credits) {
-          this.hasSmartGarage = true
+          this.hasSmartGarage = true;
         }
-        return true
-      })
+        return true;
+      });
       // check if package has "is_membership_identifier" flag to identify the membership package
       // (show only identified membership in that case)
       // https://grandgarage.atlassian.net/browse/CON-443
-      let identifiedMembership = null
+      let identifiedMembership = null;
       this.membership.forEach((p) => {
         if (p?._embedded?.package?.metadata?.is_membership_identifier) {
-          identifiedMembership = p
+          identifiedMembership = p;
         }
-      })
+      });
       if (identifiedMembership) {
-        this.membership = []
-        this.membership.push(identifiedMembership)
+        this.membership = [];
+        this.membership.push(identifiedMembership);
       }
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
-        const metadata = p._embedded.package.metadata
-        return metadata.is_storage_box
-      })
+        const metadata = p._embedded.package.metadata;
+        return metadata.is_storage_box;
+      });
       //all packages available for booking (Verkauf wurde ausgesetzt)
-      this.packages = await this.$store.dispatch('getPackages')
+      this.packages = await this.$store.dispatch("getPackages");
       // filter already booked storages
       this.availableStorage = this.packages.filter((p) => {
         for (const s of this.memberStorage) {
           if (s.package === p.id) {
-            return false
+            return false;
           }
         }
         //handle packages with no notes available for storage & visibility or malformed format
         if (!p.metadata) {
-          console.error('no notes (storage, visible) for package: ', p)
-          return false
+          console.error("no notes (storage, visible) for package: ", p);
+          return false;
         }
-        this.loading = false
-        this.loadingAvailableStorage = false
-        return p.metadata.is_storage_box && p.metadata.shop_visible
-      })
+        this.loading = false;
+        this.loadingAvailableStorage = false;
+        return p.metadata.is_storage_box && p.metadata.shop_visible;
+      });
     },
-    async loadCreditStatus () {
+    async loadCreditStatus() {
       this.memberCredits = await this.$store.dispatch(
-        'getMemberCredits',
+        "getMemberCredits",
         this.$store.state.member.id
-      )
+      );
       // update credits status every 30 seconds
       setInterval(() => {
         this.$store
-          .dispatch('getMemberCredits', this.$store.state.member.id)
+          .dispatch("getMemberCredits", this.$store.state.member.id)
           .then((response) => {
-            this.memberCredits = response
+            this.memberCredits = response;
           })
           .catch((err) => {
-            console.error(err)
-          })
-      }, 30000)
+            console.error(err);
+          });
+      }, 30000);
     },
-    getAllCredits () {
-      let creditSum = 0
+    getAllCredits() {
+      let creditSum = 0;
       if (this.memberCredits) {
         this.memberCredits.forEach((credit) => {
           if (credit?.remainingAmount) {
-            creditSum += parseFloat(credit.remainingAmount)
+            creditSum += parseFloat(credit.remainingAmount);
           }
-        })
+        });
       }
-      return Number(creditSum * 10).toFixed(1)
+      return Number(creditSum * 10).toFixed(1);
     },
-    getMonthlyCredits () {
+    getMonthlyCredits() {
       // check all memberPackages for possible monthly credits
-      let monthlyCredits = 0
+      let monthlyCredits = 0;
       this.memberPackages.forEach((p) => {
         if (p?.credits.length > 0) {
           p.credits.forEach((credit) => {
-            if (credit?.period === 'month') {
-              monthlyCredits += parseFloat(credit.amount)
+            if (credit?.period === "month") {
+              monthlyCredits += parseFloat(credit.amount);
             }
-          })
+          });
         }
-      })
-      return monthlyCredits * 10
+      });
+      return monthlyCredits * 10;
     },
-    checkValue ($value) {
+    checkValue($value) {
       if (parseFloat($value) > this.deposit) {
-        this.redeemDeposit = this.deposit
+        this.redeemDeposit = this.deposit;
       }
       if (this.decimalCount($value) > 2) {
-        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2)
+        this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2);
       }
-    }
+    },
   },
   computed: {
-    mail () {
+    mail() {
       const fullName =
         this.$store.state.user.profile.firstName +
-        ' ' +
-        this.$store.state.user.profile.lastName
-      const memberNumber = this.$store.state.user.profile.memberNumber
+        " " +
+        this.$store.state.user.profile.lastName;
+      const memberNumber = this.$store.state.user.profile.memberNumber;
       return (
-        'mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: ' +
+        "mailto:frontdesk@grandgarage.eu?subject=Änderungsantrag Mitgliedschaft: " +
         fullName +
-        ' ' +
-        '(' +
+        " " +
+        "(" +
         memberNumber +
-        ')'
-      )
-    }
-  }
-}
+        ")"
+      );
+    },
+  },
+};
 </script>
 
 <style lang="scss">

@@ -1,12 +1,13 @@
 <template>
   <section>
     <div class="team-wrapper">
-      <img class="image" :src="$resizeImage(story.content.image, '1600x0')">
+      <img class="image" :src="$resizeImage(story.content.image, '1600x0')" />
       <div class="team">
         <div class="headline">
-          {{ $t('the') }}
-          <span class="strike"> {{ $t('machines') }}</span>
-          <br> {{ $t('peopleBehind') }}
+          {{ $t("the") }}
+          <span class="strike"> {{ $t("machines") }}</span>
+          <br />
+          {{ $t("peopleBehind") }}
         </div>
         <div class="subline">
           <markdown :value="story.content.introduction"></markdown>
@@ -32,98 +33,115 @@
     <div class="member-list-wrapper">
       <div v-if="members && members.length > 0" class="member-list">
         <transition-group name="list">
-          <team-member-preview :key="item.id" v-for="item in members" :story="item"
-                               class="list-item"></team-member-preview>
+          <team-member-preview
+            :key="item.id"
+            v-for="item in members"
+            :story="item"
+            class="list-item"
+          ></team-member-preview>
         </transition-group>
       </div>
-      <div v-else class="member-list-none">
-      </div>
+      <div v-else class="member-list-none"></div>
     </div>
     <div v-for="i in footer" :key="i._uid">
-      <component v-if="i.component" :key="i.component._uid" :blok="i" :is="i.component"></component>
+      <component
+        v-if="i.component"
+        :key="i.component._uid"
+        :blok="i"
+        :is="i.component"
+      ></component>
     </div>
   </section>
 </template>
 
 <script>
-import storyblokLivePreview from '@/mixins/storyblokLivePreview'
+import storyblokLivePreview from "@/mixins/storyblokLivePreview";
 
 export default {
   components: {
     //Checkbox
   },
   mixins: [storyblokLivePreview],
-  data () {
+  data() {
     return {
       story: null,
-      tagsCollapsed: true
-    }
+      tagsCollapsed: true,
+    };
   },
-  created () {
-    this.$watch('tags', (newVal, oldVal) => {
-      this.update()
-    }, { deep: true })
+  created() {
+    this.$watch(
+      "tags",
+      (newVal, oldVal) => {
+        this.update();
+      },
+      { deep: true }
+    );
   },
   methods: {
-    toggleTags () {
-      this.tagsCollapsed = !this.tagsCollapsed
+    toggleTags() {
+      this.tagsCollapsed = !this.tagsCollapsed;
     },
-    update () {
-      this.$store.dispatch('findItems', this.filters).then((data) => {
-        this.members = data.stories
-      })
-    }
+    update() {
+      this.$store.dispatch("findItems", this.filters).then((data) => {
+        this.members = data.stories;
+      });
+    },
   },
   computed: {
-    footer () {
-      return this.story.content.footer
+    footer() {
+      return this.story.content.footer;
     },
-    filters () {
+    filters() {
       return {
         filter_query: {
           component: {
-            in: 'team-member'
-          }
+            in: "team-member",
+          },
         },
-        with_tag: this.filterTags.join(',')
-      }
+        with_tag: this.filterTags.join(","),
+      };
     },
-    filterTags () {
-      return this.tags.filter((t) => {
-        return t.value
-      }).map((t) => {
-        return t.name
-      })
-    }
+    filterTags() {
+      return this.tags
+        .filter((t) => {
+          return t.value;
+        })
+        .map((t) => {
+          return t.name;
+        });
+    },
   },
-  async asyncData (context) {
-    const tags = await context.store.dispatch('loadTagsTeam')
+  async asyncData(context) {
+    const tags = await context.store.dispatch("loadTagsTeam");
     const filters = {
       filter_query: {
         component: {
-          in: 'team-member'
+          in: "team-member",
+        },
+      },
+    };
+    const team = await context.store
+      .dispatch("findItems", filters)
+      .then((data) => {
+        if (data.stories) {
+          return { members: data.stories };
         }
-      }
-    }
-    const team = await context.store.dispatch('findItems', filters).then((data) => {
-      if (data.stories) {
-        return { members: data.stories }
-      }
-      return { members: [] }
-    })
-    const page = await context.store.dispatch('loadPage', '/team').catch(e => {
-      context.error({
-        statusCode: e.response.status,
-        message: e.response.statusText
-      })
-    })
-    return { tags, ...team, ...page }
-  }
-}
+        return { members: [] };
+      });
+    const page = await context.store
+      .dispatch("loadPage", "/team")
+      .catch((e) => {
+        context.error({
+          statusCode: e.response.status,
+          message: e.response.statusText,
+        });
+      });
+    return { tags, ...team, ...page };
+  },
+};
 </script>
 
 <style lang="scss">
-
 .team-wrapper {
   padding: 10% 10% 0% 10%;
   position: relative;
@@ -156,7 +174,7 @@ export default {
     .headline {
       font-weight: bold;
       margin-bottom: 20px;
-      font-size: 3.0rem;
+      font-size: 3rem;
       text-transform: uppercase;
 
       .strike {
@@ -188,13 +206,13 @@ export default {
   }
 
   .headline {
-    color: #FFF;
+    color: #fff;
     font-weight: bold;
     font-size: 1.8rem;
     @include margin-page-wide();
     margin-bottom: 20px;
     text-transform: uppercase;
-    letter-spacing: .05em;
+    letter-spacing: 0.05em;
     @include media-breakpoint-down(sm) {
       font-size: 1.2rem;
       margin-bottom: 10px;
@@ -208,7 +226,7 @@ export default {
     grid-template-columns: repeat(3, 1fr);
     @include media-breakpoint-down(sm) {
       grid-template-columns: 1fr 1fr;
-      font-size: .85em;
+      font-size: 0.85em;
     }
     @include media-breakpoint-down(xs) {
       grid-template-columns: 1fr;
@@ -217,21 +235,21 @@ export default {
 
     > .tag {
       font-family: $font-mono;
-      color: #FFF;
+      color: #fff;
       user-select: none;
       cursor: pointer;
 
-      input[type=checkbox] {
+      input[type="checkbox"] {
         outline: none;
         -webkit-appearance: none;
         padding: 5px;
-        border: 1px solid #FFF;
+        border: 1px solid #fff;
         border-radius: 3px;
         position: relative;
         top: 0;
 
         &:checked {
-          background-color: #FFF;
+          background-color: #fff;
         }
       }
     }
@@ -242,7 +260,7 @@ export default {
     overflow: hidden;
     position: relative;
     max-height: 1000px;
-    transition: all .3s linear;
+    transition: all 0.3s linear;
     padding-bottom: 30px;
     .expander {
       cursor: pointer;
@@ -250,10 +268,10 @@ export default {
       bottom: 0;
       width: 100%;
       height: 20px;
-      transition: all .3s linear;
+      transition: all 0.3s linear;
 
       &:after {
-        transition: all .3s linear;
+        transition: all 0.3s linear;
         content: "";
         position: absolute;
         left: 50%;
@@ -315,12 +333,12 @@ export default {
       }
     }
 
-    .list-enter-active, .list-leave-active {
+    .list-enter-active,
+    .list-leave-active {
       transition: all 0.5s;
     }
 
-    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
-    {
+    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
       opacity: 0;
       transform: translateX(30px);
     }
@@ -331,5 +349,4 @@ export default {
     text-align: center;
   }
 }
-
 </style>

@@ -1,24 +1,18 @@
 <template>
   <transition name="fade">
-    <div
-      class="modal"
-      @click="close"
-    >
+    <div class="modal" @click="close">
       <div class="container">
         <div class="top">
           <div class="title">
-            {{ $t( "covid-19-information" ) }}
+            {{ $t("covid-19-information") }}
           </div>
         </div>
         <div class="content">
           <slot />
         </div>
         <div class="buttons">
-          <button
-            class="button-primary"
-            @click="close"
-          >
-            {{ $t( "understood" ) }}
+          <button class="button-primary" @click="close">
+            {{ $t("understood") }}
           </button>
         </div>
       </div>
@@ -27,33 +21,32 @@
 </template>
 <script>
 export default {
-  name: 'Modal',
+  name: "Modal",
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     icon: {
       type: String,
       required: false,
-      default: null
-    }
+      default: null,
+    },
   },
-  mounted () {
-    window.addEventListener('scroll', this.close)
+  mounted() {
+    window.addEventListener("scroll", this.close);
   },
   methods: {
-    close () {
-      this.$emit('close')
-      sessionStorage.setItem('hasSeenPopup', 'true')
-      window.removeEventListener('scroll', this.handleScroll)
-    }
-  }
-}
+    close() {
+      this.$emit("close");
+      sessionStorage.setItem("hasSeenPopup", "true");
+      window.removeEventListener("scroll", this.handleScroll);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .modal {
   z-index: 1001;
   display: flex;
@@ -63,11 +56,11 @@ export default {
   width: 100vw !important;
   height: 100vh !important;
   background: repeating-linear-gradient(
-          45deg,
-          rgba(0, 0, 0, 0.3),
-          rgba(0, 0, 0, 0.3) 70px,
-          rgba(0, 0, 0, 0.8) 70px,
-          rgba(0, 0, 0, 0.8) 140px
+    45deg,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.3) 70px,
+    rgba(0, 0, 0, 0.8) 70px,
+    rgba(0, 0, 0, 0.8) 140px
   );
   & .container {
     position: relative;

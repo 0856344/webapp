@@ -1,27 +1,20 @@
 <template>
-  <div
-      class="image-slideshow"
-  >
+  <div class="image-slideshow">
     <div v-swiper:swiper="swiperOption">
-      <div
-          class="swiper-wrapper"
-          :class="{ center : length }"
-      >
-        <div
-            v-for="s in items"
-            :key="s"
-            class="swiper-slide"
-        >
+      <div class="swiper-wrapper" :class="{ center: length }">
+        <div v-for="s in items" :key="s" class="swiper-slide">
           <nuxt-link :to="localePath('/de/press/' + s.slug)">
             <div class="press-post-preview">
-              <div class="image" :style="{ 'background-image': 'url(' + s.content.Image + ')' }">
-              </div>
+              <div
+                class="image"
+                :style="{ 'background-image': 'url(' + s.content.Image + ')' }"
+              ></div>
               <div class="press-information">
                 <div class="title">
-                  {{s.content.Title}}
+                  {{ s.content.Title }}
                 </div>
                 <div class="date">
-                  {{s.content.Date.slice(0,11)}}
+                  {{ s.content.Date.slice(0, 11) }}
                 </div>
               </div>
             </div>
@@ -29,60 +22,54 @@
         </div>
       </div>
     </div>
-    <div
-        v-if="!length"
-        class="swiper-button-next"
-    />
-    <div
-        v-if="!length"
-        class="swiper-button-prev"
-    />
+    <div v-if="!length" class="swiper-button-next" />
+    <div v-if="!length" class="swiper-button-prev" />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['items'],
+  props: ["items"],
   computed: {
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 10
+          return 10;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 1
+          return 1;
         } else if (window.innerWidth < 950) {
-          return 2
+          return 2;
         } else if (window.innerWidth < 1250) {
-          return 3
+          return 3;
         }
       }
-      return 4
+      return 4;
     },
-    length () {
-      return this.items.length < 4
-    }
-  }
-}
+    length() {
+      return this.items.length < 4;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -102,7 +89,7 @@ export default {
   margin-top: 2rem;
   height: 18em;
   position: relative;
-  @include media-breakpoint-down(sm){
+  @include media-breakpoint-down(sm) {
     padding-bottom: 0;
   }
   .text {
@@ -125,18 +112,18 @@ export default {
       //  height: 300px !important;
       //  margin-left: -20px;
       //}
-      @include media-breakpoint-down(xs){
+      @include media-breakpoint-down(xs) {
         margin: 0 auto;
       }
     }
     //@include media-breakpoint-down(md){
     //  height: 50vh !important;
     //}
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       height: 10em;
       padding-bottom: 0;
     }
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       height: 18em;
     }
   }
@@ -150,13 +137,13 @@ export default {
     margin-left: -30px;
     margin-right: -30px;
     top: 50%;
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       width: 40px;
       height: 40px;
       background-size: 10px;
       margin: 0;
     }
-    @include media-breakpoint-down(xs){
+    @include media-breakpoint-down(xs) {
       width: 35px;
       height: 35px;
       background-size: 8px;
@@ -165,7 +152,6 @@ export default {
   }
 }
 .press-post-preview {
-
   border-radius: 10px;
   background: #fdfdfc;
   width: 294px;
@@ -187,7 +173,7 @@ export default {
     color: black;
     height: inherit;
     padding: 20px;
-    display:flex;
+    display: flex;
     flex-flow: column;
     justify-content: space-between;
     .title {
@@ -198,7 +184,8 @@ export default {
   &:hover {
     .image {
       transform: scale(1.03);
-      transition: transform 400ms cubic-bezier(0.4, 0, 0.25, 1) 0ms, opacity 1s cubic-bezier(0.4, 0, 0.25, 1) 0ms;
+      transition: transform 400ms cubic-bezier(0.4, 0, 0.25, 1) 0ms,
+        opacity 1s cubic-bezier(0.4, 0, 0.25, 1) 0ms;
       background-size: cover;
       width: 294px;
       overflow: hidden;

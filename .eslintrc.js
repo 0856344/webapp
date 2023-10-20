@@ -5,10 +5,14 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: ["plugin:vue/essential"],
+  extends: [
+    'plugin:vue/essential',
+    'eslint:recommended',
+    'prettier',
+  ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: "module",
   },
   rules: {
     // nuxt functions that have ( { vars } ) as parameters will be ignored

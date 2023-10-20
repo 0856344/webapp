@@ -1,81 +1,65 @@
 <template>
-    <div
-        class="contact-person"
-    >
-      <div class="teaser-content">
-        <div
-            id="start"
-            class="col-start"
-        >
-          <h2
-              v-if="blok.headline"
-              class="headline"
-          >
-            {{blok.headline}}
-          </h2>
+  <div class="contact-person">
+    <div class="teaser-content">
+      <div id="start" class="col-start">
+        <h2 v-if="blok.headline" class="headline">
+          {{ blok.headline }}
+        </h2>
+      </div>
+      <div class="col-end">
+        <p v-if="blok.description" class="text">
+          <markdown :value="blok.description" />
+        </p>
+      </div>
+      <div class="contact-block">
+        <div class="info">
+          <markdown :value="blok.info" />
         </div>
-        <div class="col-end">
-          <p
-              v-if="blok.description"
-              class="text"
-          >
-            <markdown :value="blok.description" />
-          </p>
+        <div v-if="person.length === 1 && !member" class="contact-details">
+          <div>
+            <single-contact-preview
+              :id="person[0]"
+              :single_member_text="singleMemberText"
+            />
+          </div>
         </div>
-        <div  class="contact-block">
-          <div class="info">
-            <markdown :value="blok.info" />
+        <div v-else class="contact-details">
+          <div v-if="person && person.length > 0" class="double-contact">
+            <contact-preview v-for="p in person" :id="p" :key="p" />
           </div>
-          <div v-if="person.length === 1 && !member"  class="contact-details">
-            <div >
-              <single-contact-preview :id="person[0]" :single_member_text="singleMemberText"/>
-            </div>
-          </div>
-          <div  v-else class="contact-details">
-            <div v-if="person && person.length > 0" class="double-contact">
-              <contact-preview
-                  v-for="p in person"
-                  :id="p"
-                  :key="p"
-              />
-            </div>
-            <div v-if="member" class="double-contact">
-              <contact-preview
-                  v-for="m in member"
-                  :id="m"
-                  :key="m._uid"
-              />
-            </div>
+          <div v-if="member" class="double-contact">
+            <contact-preview v-for="m in member" :id="m" :key="m._uid" />
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
-import SingleContactPreview from '@/bloks/person/SingleContactPreview.vue'
+import SingleContactPreview from "@/bloks/person/SingleContactPreview.vue";
 
 export default {
   components: { SingleContactPreview },
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    person () {
+    person() {
       if (this.blok.contact != null) {
-        return this.blok.contact
+        return this.blok.contact;
       }
-      return null
+      return null;
     },
-    member () {
+    member() {
       if (this.blok.member != null) {
-        return this.blok.member
+        return this.blok.member;
       }
-      return null
+      return null;
     },
-    singleMemberText () {
-      return this.blok.single_member_text
-    }
-  }
-}
+    singleMemberText() {
+      return this.blok.single_member_text;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -86,10 +70,10 @@ export default {
   flex: 1;
   justify-content: center;
   margin: 2rem 0 6rem 0;
-  .double-contact{
+  .double-contact {
     display: flex;
     @include media-breakpoint-down(md) {
-      flex-flow:column;
+      flex-flow: column;
     }
   }
   .teaser-content {
@@ -151,12 +135,12 @@ export default {
         font-family: $font-primary;
         line-height: 1.6;
         font-size: 1.1em;
-        letter-spacing: .03em;
+        letter-spacing: 0.03em;
       }
     }
   }
 }
-.contact-block{
+.contact-block {
   display: flex;
   background-color: white;
   padding: 30px;
@@ -184,7 +168,6 @@ export default {
       .info {
         line-height: 1.2;
         font-size: 1.1em;
-
       }
 
       .contact-details {
@@ -199,11 +182,10 @@ export default {
 }
 @include media-breakpoint-down(xs) {
   .contact-block {
-      .info {
-        line-height: 1.2;
-        font-size: 0.9em;
-
-      }
+    .info {
+      line-height: 1.2;
+      font-size: 0.9em;
     }
   }
+}
 </style>

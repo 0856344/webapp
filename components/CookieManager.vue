@@ -1,38 +1,47 @@
 <template>
   <transition name="fade">
-    <div class="cookie-manager" v-if="this.$route.path !='/de/datenschutzerklaerung'">
+    <div
+      class="cookie-manager"
+      v-if="this.$route.path != '/de/datenschutzerklaerung'"
+    >
       <div class="boxContainer">
         <div class="box">
           <div class="title">
-            {{ $t('manageCookies') }}
+            {{ $t("manageCookies") }}
           </div>
           <div class="text">
-            {{ $t('cookiesDescription') }}<NuxtLink to="/de/datenschutzerklaerung">{{ $t('dataPrivacyPolicy') }}</NuxtLink>{{ $t('dataPrivacyRead') }}.<br><br><br>
+            {{ $t("cookiesDescription")
+            }}<NuxtLink to="/de/datenschutzerklaerung">{{
+              $t("dataPrivacyPolicy")
+            }}</NuxtLink
+            >{{ $t("dataPrivacyRead") }}.<br /><br /><br />
             <div class="select-buttons">
               <label>
-                <input type="checkbox" name=""  v-model="necessaryCookie"/>
-                <div class="icon-box">
-                </div><div class="cookie-name">{{ $t('necessaryCookies') }}</div>
+                <input type="checkbox" name="" v-model="necessaryCookie" />
+                <div class="icon-box"></div>
+                <div class="cookie-name">{{ $t("necessaryCookies") }}</div>
               </label>
               <label>
-                <input type="checkbox" name="" v-model="analyticsCookie"/>
-                <div class="icon-box">
-                </div><div class="cookie-name">{{ $t('analyticsCookies') }}</div>
+                <input type="checkbox" name="" v-model="analyticsCookie" />
+                <div class="icon-box"></div>
+                <div class="cookie-name">{{ $t("analyticsCookies") }}</div>
               </label>
             </div>
-            <br><br>
+            <br /><br />
             <div>
-              {{ $t('adjustCookiePreferences') }}
+              {{ $t("adjustCookiePreferences") }}
             </div>
-            <br>
+            <br />
             <div class="confirm-buttons">
-              <Button class="input-button-primary"
-                      @click=selectAll> {{ $t('selectAll') }}</Button>
+              <Button class="input-button-primary" @click="selectAll">
+                {{ $t("selectAll") }}</Button
+              >
               <Button
-                  :disabled="!necessaryCookie"
-                  class="input-button-primary"
-                  @click="setCookiePreferences"
-              >    {{ $t('save') }}
+                :disabled="!necessaryCookie"
+                class="input-button-primary"
+                @click="setCookiePreferences"
+              >
+                {{ $t("save") }}
               </Button>
             </div>
           </div>
@@ -44,42 +53,41 @@
 
 <script>
 export default {
-  name: 'CookieManager',
+  name: "CookieManager",
   data: () => ({
     necessaryCookie: true,
-    analyticsCookie: true
+    analyticsCookie: true,
   }),
   methods: {
-    enableTracking () {
-      this.$ga.enable()
-      this.$ga.event('category', 'action', 'label', 123)
+    enableTracking() {
+      this.$ga.enable();
+      this.$ga.event("category", "action", "label", 123);
     },
-    selectAll () {
-      this.necessaryCookie = true
-      this.analyticsCookie = true
+    selectAll() {
+      this.necessaryCookie = true;
+      this.analyticsCookie = true;
     },
-    setCookiePreferences () {
-      this.$store.commit('setNecessaryCookie', this.necessaryCookie)
-      this.$store.commit('setAnalyticsCookie', this.analyticsCookie)
-      localStorage.setItem('hasAcceptedNecessaryCookie', this.necessaryCookie)
-      localStorage.setItem('hasAcceptedAnalyticsCookie', this.analyticsCookie)
+    setCookiePreferences() {
+      this.$store.commit("setNecessaryCookie", this.necessaryCookie);
+      this.$store.commit("setAnalyticsCookie", this.analyticsCookie);
+      localStorage.setItem("hasAcceptedNecessaryCookie", this.necessaryCookie);
+      localStorage.setItem("hasAcceptedAnalyticsCookie", this.analyticsCookie);
       if (this.analyticsCookie) {
-        this.enableTracking()
+        this.enableTracking();
       }
-      this.close()
+      this.close();
     },
-    close () {
-      this.$emit('close')
-      localStorage.setItem('hasSeenPopup', 'true')
-    }
-  }
-}
+    close() {
+      this.$emit("close");
+      localStorage.setItem("hasSeenPopup", "true");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
-.select-buttons{
-  display:flex;
+.select-buttons {
+  display: flex;
   flex-flow: column;
   align-items: flex-start;
   margin-left: 20%;
@@ -112,7 +120,7 @@ export default {
   margin-right: 10%;
 }
 .cookie-name {
-  display:flex;
+  display: flex;
   align-items: center;
 }
 .select-buttons label input[type="checkbox"]:checked ~ .icon-box {
@@ -140,24 +148,24 @@ export default {
   transition: 0.5s cubic-bezier(0.755, 0.05, 0.855, 0.06);
 }
 
-.cookie-manager{
+.cookie-manager {
   background: repeating-linear-gradient(
-          45deg,
-          rgba(0, 0, 0, 0.3),
-          rgba(0, 0, 0, 0.3) 70px,
-          rgba(0, 0, 0, 0.8) 70px,
-          rgba(0, 0, 0, 0.8) 140px
+    45deg,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.3) 70px,
+    rgba(0, 0, 0, 0.8) 70px,
+    rgba(0, 0, 0, 0.8) 140px
   );
   z-index: 1001;
   width: 100vw !important;
   height: 100vh !important;
   display: flex;
-  position:absolute;
+  position: absolute;
   flex-flow: column;
   justify-content: center;
   align-items: center;
   font-family: "Roboto Mono", monospace;
-  .checkbox{
+  .checkbox {
     height: 3vh;
   }
   & .boxContainer {
@@ -171,7 +179,7 @@ export default {
       min-height: 12.5em;
       padding: 4em 5em;
       margin: 2em;
-      width:40vw;
+      width: 40vw;
       border: 2px solid #ccccccb0;
       border-radius: 25px;
       & .title {
@@ -187,8 +195,8 @@ export default {
           margin-right: 0;
         }
       }
-      @media(max-width: 1500px) {
-        width:60vw;
+      @media (max-width: 1500px) {
+        width: 60vw;
         height: 89vh;
       }
       @include media-breakpoint-down(lg) {
@@ -206,7 +214,7 @@ export default {
           margin-left: 18%;
           margin-top: 5%;
         }
-        .select-buttons label{
+        .select-buttons label {
           width: 100%;
         }
       }
@@ -219,7 +227,7 @@ export default {
           font-size: 1.3em;
         }
         .select-buttons {
-          margin:0%;
+          margin: 0%;
         }
       }
     }
@@ -235,7 +243,7 @@ export default {
         height: 7vh;
         border-radius: 3px;
         font-size: 1.5rem;
-        @media(max-width: 1500px) {
+        @media (max-width: 1500px) {
           width: 18vw;
           margin-top: auto;
         }

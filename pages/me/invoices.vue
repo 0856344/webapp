@@ -122,128 +122,128 @@
 </template>
 <script>
 export default {
-  name: 'Invoices',
-  middleware: 'authenticated',
-  data () {
+  name: "Invoices",
+  middleware: "authenticated",
+  data() {
     return {
       loadingInvoices: false,
       loadingActivities: false,
       loadingPdf: false,
       invoices: null,
       activities: null,
-      highlightedId: null
-    }
+      highlightedId: null,
+    };
   },
-  async mounted () {
-    this.getQuery(this.$route.query)
+  async mounted() {
+    this.getQuery(this.$route.query);
 
     // Load invoices
-    this.loadingInvoices = true
+    this.loadingInvoices = true;
     await this.$store
-      .dispatch('getInvoices')
+      .dispatch("getInvoices")
       .then((res) => {
-        this.invoices = res
+        this.invoices = res;
         this.invoices = this.invoices.filter((invoice) => {
           return (
-            invoice.cancelledInvoice === null && invoice.state !== 'cancelled'
-          )
-        })
+            invoice.cancelledInvoice === null && invoice.state !== "cancelled"
+          );
+        });
       })
       .catch((error) => {
-        console.error('Error! Could not load invoices', error)
+        console.error("Error! Could not load invoices", error);
       })
       .finally(() => {
-        this.loadingInvoices = false
-      })
+        this.loadingInvoices = false;
+      });
 
     // Load activities
-    this.loadingActivities = true
+    this.loadingActivities = true;
     await this.$store
-      .dispatch('getActivities')
+      .dispatch("getActivities")
       .then((res) => {
-        this.activities = res
+        this.activities = res;
       })
       .catch((error) => {
-        console.error('Error! Could not load activities', error)
+        console.error("Error! Could not load activities", error);
       })
       .finally(() => {
-        this.loadingActivities = false
-      })
+        this.loadingActivities = false;
+      });
   },
   computed: {
-    isLoading () {
-      return this.loadingInvoices || this.loadingActivities || this.loadingPdf
+    isLoading() {
+      return this.loadingInvoices || this.loadingActivities || this.loadingPdf;
     },
-    totalResult () {
-      let total = 0
+    totalResult() {
+      let total = 0;
       for (const item in this.activities) {
-        total += parseFloat(this.activities[item].price)
+        total += parseFloat(this.activities[item].price);
       }
-      return total
-    }
+      return total;
+    },
   },
   methods: {
-    getInvoiceStateClass (invoice) {
+    getInvoiceStateClass(invoice) {
       switch (invoice.state) {
-        case 'paid':
-          return 'grey'
-        case 'unpaid':
-          return 'yellow'
-        case 'cancelled':
-          return 'red'
+        case "paid":
+          return "grey";
+        case "unpaid":
+          return "yellow";
+        case "cancelled":
+          return "red";
         default:
-          return 'bubble grey'
+          return "bubble grey";
       }
     },
-    getInvoiceStateText (invoice) {
+    getInvoiceStateText(invoice) {
       switch (invoice.state) {
-        case 'paid':
-          return 'Bezahlt'
-        case 'unpaid':
-          return 'Offen'
-        case 'cancelled':
-          return 'Storno'
+        case "paid":
+          return "Bezahlt";
+        case "unpaid":
+          return "Offen";
+        case "cancelled":
+          return "Storno";
         default:
-          return ''
+          return "";
       }
     },
-    getQuery (to) {
-      if (Object.prototype.hasOwnProperty.call(to, 'id')) {
-        this.highlightedId = to.id
+    getQuery(to) {
+      if (Object.prototype.hasOwnProperty.call(to, "id")) {
+        this.highlightedId = to.id;
       }
     },
-    async getPdf (invoice) {
-      this.loadingPdf = true
+    async getPdf(invoice) {
+      this.loadingPdf = true;
       await this.$store
-        .dispatch('getPDF', invoice.id)
+        .dispatch("getPDF", invoice.id)
         .then((res) => {
-          const binary = atob(res.pdf.replace(/\s/g, ''))
-          const len = binary.length
-          const buffer = new ArrayBuffer(len)
-          const view = new Uint8Array(buffer)
+          const binary = atob(res.pdf.replace(/\s/g, ""));
+          const len = binary.length;
+          const buffer = new ArrayBuffer(len);
+          const view = new Uint8Array(buffer);
           for (let i = 0; i < len; i++) {
-            view[i] = binary.charCodeAt(i)
+            view[i] = binary.charCodeAt(i);
           }
-          const blob = new Blob([view], { type: 'application/pdf' })
-          const link = document.createElement('a')
-          link.target = '_blank'
-          link.download = `Rechnung_${invoice.number}.pdf`
-          link.href = URL.createObjectURL(blob)
-          link.click()
+          const blob = new Blob([view], { type: "application/pdf" });
+          const link = document.createElement("a");
+          link.target = "_blank";
+          link.download = `Rechnung_${invoice.number}.pdf`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
         })
         .catch((error) => {
-          console.error(error.response.status, error.response.msg)
-          this.$sentry.captureException(new Error(error))
-          this.$toast.show('Die Rechnung konnte nicht geladen werden', {
-            className: 'badToast'
-          })
+          console.error(error.response.status, error.response.msg);
+          this.$sentry.captureException(new Error(error));
+          this.$toast.show("Die Rechnung konnte nicht geladen werden", {
+            className: "badToast",
+          });
         })
         .finally(() => {
-          this.loadingPdf = false
-        })
-    }
-  }
-}
+          this.loadingPdf = false;
+        });
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .invoice {

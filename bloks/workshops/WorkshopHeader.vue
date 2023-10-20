@@ -1,16 +1,12 @@
 <template>
-  <div
-    v-editable="blok"
-    class="header"
-  >
+  <div v-editable="blok" class="header">
     <div
       class="header-image"
-      :style="{ 'background-image': 'url(' + $resizeImage(blok.image, '1600x0') + ')' }"
+      :style="{
+        'background-image': 'url(' + $resizeImage(blok.image, '1600x0') + ')',
+      }"
     />
-    <div
-      v-if="blok.title"
-      class="header-title"
-    >
+    <div v-if="blok.title" class="header-title">
       <h1>{{ blok.title }}</h1>
     </div>
   </div>
@@ -18,12 +14,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .header {
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;
@@ -39,7 +34,7 @@ export default {
     position: absolute;
     right: 0;
     bottom: 0;
-    background-color: #FFF;
+    background-color: #fff;
     padding: 4vh;
     min-width: 50%;
     @include media-breakpoint-up(md) {
@@ -64,7 +59,6 @@ export default {
       h1 {
         font-size: 2rem;
       }
-
     }
   }
 }

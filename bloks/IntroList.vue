@@ -1,8 +1,5 @@
 <template>
-  <div
-      v-editable="blok"
-      class="intro-list"
-  >
+  <div v-editable="blok" class="intro-list">
     <div class="headline">
       <h3 class="headline-text">
         {{ blok.headline }}
@@ -10,54 +7,45 @@
     </div>
     <div class="content">
       <div class="primary-col">
-
         <div class="intro-items">
           <div
-              :key="i._uid"
-              v-for="i in blok.items"
-              class="intro-item-title"
-              :class="(selected === i._uid ? 'is-selected' : '')"
-              @click="updateSelected(i)"
+            :key="i._uid"
+            v-for="i in blok.items"
+            class="intro-item-title"
+            :class="selected === i._uid ? 'is-selected' : ''"
+            @click="updateSelected(i)"
           >
             <div class="text">
               {{ i.title }}
             </div>
-            <div class="arrow"/>
+            <div class="arrow" />
           </div>
         </div>
       </div>
       <div class="secondary-col">
         <div class="intro-text">
-          <div
-              v-for="(i, k) in blok.items"
-              :key="k"
-              class="intro-item-text"
-          >
+          <div v-for="(i, k) in blok.items" :key="k" class="intro-item-text">
             <transition name="fadefromleft">
               <span v-if="selected === i._uid">{{ i.text }}</span>
             </transition>
           </div>
         </div>
         <div
-            class="intro-bg-image"
-            :class="(selected ? 'has-content' : '')"
-            :style="'background-image: url('+$resizeImage(blok.image, '700x0')+')'"
-            :alt="blok.headline"
+          class="intro-bg-image"
+          :class="selected ? 'has-content' : ''"
+          :style="
+            'background-image: url(' + $resizeImage(blok.image, '700x0') + ')'
+          "
+          :alt="blok.headline"
         />
         <svg
-            class="circle"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16px"
-            height="16px"
-            viewBox="0 0 16 16"
+          class="circle"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16px"
+          height="16px"
+          viewBox="0 0 16 16"
         >
-          <circle
-              cx="8"
-              cy="8"
-              r="7"
-              fill="none"
-              stroke-width="1"
-          />
+          <circle cx="8" cy="8" r="7" fill="none" stroke-width="1" />
         </svg>
       </div>
     </div>
@@ -66,26 +54,24 @@
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      selected: null
-    }
+      selected: null,
+    };
   },
-  created () {
-    this.selected = this.blok.items[0]._uid
+  created() {
+    this.selected = this.blok.items[0]._uid;
   },
   methods: {
-    updateSelected (e) {
-      this.selected = e._uid
-    }
-  }
-
-}
+    updateSelected(e) {
+      this.selected = e._uid;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .intro-list {
   background-image: url(~assets/img/intro-list-3d-object.svg);
   background-repeat: no-repeat;
@@ -119,7 +105,7 @@ export default {
       padding: 5%;
       .headline-text {
         font-size: 2rem;
-        letter-spacing: .05rem;
+        letter-spacing: 0.05rem;
         width: 38%;
       }
     }
@@ -128,7 +114,6 @@ export default {
         width: 50%;
       }
     }
-
   }
   .content {
     display: flex;
@@ -138,7 +123,8 @@ export default {
     //  @include margin-page-wide;
     //}
 
-    .primary-col, .secondary-col {
+    .primary-col,
+    .secondary-col {
       flex-grow: 1;
       @include media-breakpoint-up(lg) {
         width: 50%;
@@ -154,7 +140,6 @@ export default {
     }
 
     .primary-col {
-
       .intro-items {
         margin: 18% 0 20% 45%;
         @include media-breakpoint-down(md) {
@@ -170,11 +155,11 @@ export default {
           padding: 2vh 0;
           justify-content: stretch;
           letter-spacing: 0.03em;
-          transition: color .3s linear;
+          transition: color 0.3s linear;
           @include media-breakpoint-up(lg) {
             font-size: 1.1em;
             .arrow {
-              transition: all .3s linear;
+              transition: all 0.3s linear;
               border-top: 0.12vw solid $color-blue-intro;
               margin: 0.8vw 10% 0 3%;
               width: 0%;
@@ -186,8 +171,8 @@ export default {
                 position: absolute;
                 transform: rotate(45deg);
                 transform-origin: top right;
-                margin-top: -.04vw;
-                margin-right: -.05vw;
+                margin-top: -0.04vw;
+                margin-right: -0.05vw;
               }
             }
             &.is-selected {
@@ -212,9 +197,9 @@ export default {
           @include media-breakpoint-down(md) {
             .arrow {
               position: absolute;
-              transition: width .3s linear .3s, height .2s linear 0s;
-              border-top: .1em solid $color-blue-intro;
-              border-right: .1em solid $color-blue-intro;
+              transition: width 0.3s linear 0.3s, height 0.2s linear 0s;
+              border-top: 0.1em solid $color-blue-intro;
+              border-right: 0.1em solid $color-blue-intro;
               margin: 1.3em 10% 0 0;
               width: 2%;
               height: 0;
@@ -229,15 +214,15 @@ export default {
                 position: absolute;
                 transform: rotate(45deg);
                 transform-origin: top right;
-                margin-top: -.05em;
-                margin-right: -.05em;
+                margin-top: -0.05em;
+                margin-right: -0.05em;
               }
             }
             &.is-selected {
               color: $color-blue-intro;
 
               .arrow {
-                transition: width .3s linear, height .2s linear .3s;
+                transition: width 0.3s linear, height 0.2s linear 0.3s;
                 display: block;
                 align-self: stretch;
                 position: absolute;
@@ -252,7 +237,6 @@ export default {
                 // }
               }
             }
-
           }
         }
       }
@@ -273,7 +257,7 @@ export default {
       .intro-bg-image {
         position: relative;
         max-width: 100%;
-        transition: opacity .2s linear;
+        transition: opacity 0.2s linear;
         z-index: 2;
         background-color: #aaa;
         background-position: center;
@@ -282,7 +266,7 @@ export default {
         height: 100%;
 
         &.has-content {
-          opacity: .2;
+          opacity: 0.2;
         }
       }
 
@@ -322,11 +306,13 @@ export default {
     }
   }
 
-  .fadefromleft-enter-active, .fadefromleft-leave-active {
-    transition: all .3s;
+  .fadefromleft-enter-active,
+  .fadefromleft-leave-active {
+    transition: all 0.3s;
   }
 
-  .fadefromleft-enter, .fadefromleft-leave-to {
+  .fadefromleft-enter,
+  .fadefromleft-leave-to {
     opacity: 0;
     transform: translateX(-50vw);
   }

@@ -1,54 +1,91 @@
 <template>
   <div class="section">
-    <h3 style="margin-top: 40px;">Willkommen in der GRAND GARAGE!</h3>
-    <p>Wir freuen uns darauf, dass du Mitglied in unserer Innovationswerkstatt wirst.</p>
-    <p>{{ $t('beforeYouCanStart') }}</p>
+    <h3 style="margin-top: 40px">Willkommen in der GRAND GARAGE!</h3>
+    <p>
+      Wir freuen uns darauf, dass du Mitglied in unserer Innovationswerkstatt
+      wirst.
+    </p>
+    <p>{{ $t("beforeYouCanStart") }}</p>
     <form class="form">
       <div class="form-item">
-        <span class="label">{{ $t('firstName') }}<span class="red">*</span></span>
-        <input class="input-text" ref="firstInput" type="text" v-model="onboardingData.userInformation.firstName" />
+        <span class="label"
+          >{{ $t("firstName") }}<span class="red">*</span></span
+        >
+        <input
+          class="input-text"
+          ref="firstInput"
+          type="text"
+          v-model="onboardingData.userInformation.firstName"
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('lastName') }}<span class="red">*</span></span>
-        <input class="input-text" type="text" v-model="onboardingData.userInformation.lastName" />
+        <span class="label"
+          >{{ $t("lastName") }}<span class="red">*</span></span
+        >
+        <input
+          class="input-text"
+          type="text"
+          v-model="onboardingData.userInformation.lastName"
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('gender') }}<span class="red">*</span></span>
-        <select class="input-select" v-model="onboardingData.userInformation.gender">
-          <option :key="gender.id" :value="gender.internalName" v-for="gender in genders">{{ gender.displayName }}
+        <span class="label">{{ $t("gender") }}<span class="red">*</span></span>
+        <select
+          class="input-select"
+          v-model="onboardingData.userInformation.gender"
+        >
+          <option
+            :key="gender.id"
+            :value="gender.internalName"
+            v-for="gender in genders"
+          >
+            {{ gender.displayName }}
           </option>
         </select>
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('email') }}<span class="red">*</span></span>
-        <input class="input-text" type="text" v-model="onboardingData.userInformation.email" @input="checkMail" />
+        <span class="label">{{ $t("email") }}<span class="red">*</span></span>
+        <input
+          class="input-text"
+          type="text"
+          v-model="onboardingData.userInformation.email"
+          @input="checkMail"
+        />
       </div>
 
       <div class="form-item">
-        <span class="label">{{ $t('password') }}</span>
+        <span class="label">{{ $t("password") }}</span>
         <div class="password-wrapper">
-          <input v-model="password" :class="{ red: invalidFields.includes('password') }" type="password" placeholder=""
-            @input="checkPassword">
+          <input
+            v-model="password"
+            :class="{ red: invalidFields.includes('password') }"
+            type="password"
+            placeholder=""
+            @input="checkPassword"
+          />
           <div v-if="!passwordValid" class="form-item password-status" />
         </div>
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('reenterPassword') }}</span>
+        <span class="label">{{ $t("reenterPassword") }}</span>
         <div class="password-wrapper">
-          <input v-model="passwordRepeat" type="password" placeholder="">
+          <input v-model="passwordRepeat" type="password" placeholder="" />
 
           <div class="password-error">
             <div v-if="!passwordRepeatIsEqual">
-              <span class="bad">{{ $t('passwordsDoNotMatch') }} </span>
-              <br>
+              <span class="bad">{{ $t("passwordsDoNotMatch") }} </span>
+              <br />
             </div>
             <div v-if="passwordTooShort">
-              <span class="bad">{{ $t('passwordTooShort') }} </span>
-              <br>
+              <span class="bad">{{ $t("passwordTooShort") }} </span>
+              <br />
             </div>
             <div v-if="password && !passwordComplexity">
-              <span class="bad">Das Passwort muss sowohl Ziffern als auch Groß- und Kleinschreibung enthalten.</span>
-              <br>
+              <span class="bad"
+                >Das Passwort muss sowohl Ziffern als auch Groß- und
+                Kleinschreibung enthalten.</span
+              >
+              <br />
             </div>
           </div>
         </div>
@@ -58,101 +95,107 @@
 </template>
 
 <script>
-
-import validator from 'validator'
+import validator from "validator";
 
 export default {
   props: {
     onboardingData: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       genders: [
-        { id: 1, displayName: 'männlich', internalName: 'male' },
-        { id: 2, displayName: 'weiblich', internalName: 'female' },
-        { id: 3, displayName: 'andere', internalName: 'other' },
-        { id: 4, displayName: 'keine Angabe', internalName: 'empty' }
+        { id: 1, displayName: "männlich", internalName: "male" },
+        { id: 2, displayName: "weiblich", internalName: "female" },
+        { id: 3, displayName: "andere", internalName: "other" },
+        { id: 4, displayName: "keine Angabe", internalName: "empty" },
       ],
       loading: false,
       invalidFields: [],
-      email: '',
-      password: '',
-      passwordRepeat: '',
-      firstName: '',
-      lastName: '',
+      email: "",
+      password: "",
+      passwordRepeat: "",
+      firstName: "",
+      lastName: "",
       errorMessage: null,
-      errorDescription: '',
-      emailInvalid: false
-    }
+      errorDescription: "",
+      emailInvalid: false,
+    };
   },
-  async mounted () {
+  async mounted() {
     if (this.$route.query.plan) {
-      const availablePackages = await this.$store.dispatch('getPackages')
-      const memberPackage = availablePackages.find(p => p.name === decodeURIComponent(this.$route.query.plan).toUpperCase())
+      const availablePackages = await this.$store.dispatch("getPackages");
+      const memberPackage = availablePackages.find(
+        (p) =>
+          p.name === decodeURIComponent(this.$route.query.plan).toUpperCase()
+      );
       if (memberPackage !== undefined) {
-        this.onboardingData.payment.membership = memberPackage
+        this.onboardingData.payment.membership = memberPackage;
       }
     }
-    this.$refs.firstInput.focus()
+    this.$refs.firstInput.focus();
   },
   computed: {
-    passwordValid () {
-      if (this.passwordRepeatIsEqual && !this.passwordTooShort && this.passwordComplexity) {
+    passwordValid() {
+      if (
+        this.passwordRepeatIsEqual &&
+        !this.passwordTooShort &&
+        this.passwordComplexity
+      ) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.onboardingData.userInformation.password = this.password
-        return true
+        this.onboardingData.userInformation.password = this.password;
+        return true;
       } else {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.onboardingData.userInformation.password = null
-        return false
+        this.onboardingData.userInformation.password = null;
+        return false;
       }
     },
-    passwordRepeatIsEqual () {
+    passwordRepeatIsEqual() {
       if (this.password === this.passwordRepeat) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     },
-    passwordTooShort () {
+    passwordTooShort() {
       if (this.password && this.password.length < 8) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     },
-    passwordComplexity () {
+    passwordComplexity() {
       if (this.password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\x20-\x7E]*$/
-        return passwordRegex.test(this.password)
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\x20-\x7E]*$/;
+        return passwordRegex.test(this.password);
       } else {
-        return false
+        return false;
       }
     },
-    emailValid () {
-      return validator.isEmail(this.email)
-    }
+    emailValid() {
+      return validator.isEmail(this.email);
+    },
   },
   methods: {
-    checkMail () {
-      this.onboardingData.userInformation.emailOk = false
+    checkMail() {
+      this.onboardingData.userInformation.emailOk = false;
       if (validator.isEmail(this.onboardingData.userInformation.email)) {
-        this.onboardingData.userInformation.emailOk = true
+        this.onboardingData.userInformation.emailOk = true;
       }
     },
-    clearError () {
-      this.errorMessage = null
-      this.errorDescription = ''
+    clearError() {
+      this.errorMessage = null;
+      this.errorDescription = "";
     },
 
-    checkPassword () {
-      this.clearError()
-    }
-  }
-}
+    checkPassword() {
+      this.clearError();
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -190,7 +233,7 @@ export default {
   .label {
     font-weight: bold;
     text-transform: uppercase;
-    font-size: .7em;
+    font-size: 0.7em;
   }
 
   input {
@@ -219,11 +262,11 @@ export default {
       right: 10px;
       top: 50%;
       background-color: $color-orange;
-      height: .5em;
-      width: .5em;
+      height: 0.5em;
+      width: 0.5em;
       padding: 0;
-      margin-top: -.25em;
-      border-radius: 50%
+      margin-top: -0.25em;
+      border-radius: 50%;
     }
   }
 
@@ -239,7 +282,7 @@ export default {
 
   button {
     background-color: $color-orange;
-    color: #FFF;
+    color: #fff;
     border: 1px solid lighten($color-orange, 10);
     padding: 7px 13px 9px;
     line-height: 1;
@@ -250,7 +293,7 @@ export default {
     }
 
     &:disabled {
-      background-color: #AAA;
+      background-color: #aaa;
       border-color: #999;
       cursor: not-allowed;
     }
@@ -258,7 +301,7 @@ export default {
 
   .bad {
     color: $color-orange;
-    font-size: .7em;
+    font-size: 0.7em;
     font-weight: bold;
   }
 }
@@ -268,7 +311,7 @@ export default {
   display: flex;
 
   .checkbox-wrapper {
-    padding-right: .5em;
+    padding-right: 0.5em;
     outline: none;
     user-select: none;
     max-width: 180px;
@@ -277,8 +320,8 @@ export default {
   label {
     user-select: none;
     flex: 1;
-    font-size: .7em;
-    letter-spacing: .03em;
+    font-size: 0.7em;
+    letter-spacing: 0.03em;
     line-height: 1.2;
     font-weight: 700;
   }
@@ -300,19 +343,19 @@ export default {
     font-size: 0.8em;
     color: #333;
 
-    >ul {
+    > ul {
       list-style-type: circle;
       padding: 0 0 0 1em;
 
-      >li {
-        margin: .4em 0 0 0;
+      > li {
+        margin: 0.4em 0 0 0;
 
-        >ul {
+        > ul {
           padding: 0 0 0 1em;
           list-style-type: circle;
 
-          >li {
-            margin: .4em 0 0 0;
+          > li {
+            margin: 0.4em 0 0 0;
           }
         }
       }

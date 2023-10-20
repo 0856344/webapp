@@ -3,24 +3,17 @@
     <div class="pre-footer">
       <div class="pre-footer-top">
         <div class="logo">
-          <img
-            src="~/assets/img/icons/gg-logo.svg"
-            alt
-          >
+          <img src="~/assets/img/icons/gg-logo.svg" alt />
         </div>
       </div>
       <div class="pre-footer-bottom">
         <div class="col text">
-          {{ $t('innovationFactory') }}
+          {{ $t("innovationFactory") }}
         </div>
         <div class="col logos">
           <marquee :duration="Number(marqueeDuration)">
-            <div
-              v-for="(logo) in logos"
-              :key="logo._uid"
-              class="logo"
-            >
-              <img :src="$resizeImage(logo.image, `${logoWidth}x0`)">
+            <div v-for="logo in logos" :key="logo._uid" class="logo">
+              <img :src="$resizeImage(logo.image, `${logoWidth}x0`)" />
             </div>
           </marquee>
         </div>
@@ -40,7 +33,7 @@
                 target="_blank"
                 novalidate
               >
-                <h4>  {{ $t('stayInTouch') }}</h4>
+                <h4>{{ $t("stayInTouch") }}</h4>
                 <div class="newsletter-subscribe">
                   <input
                     id="mce-EMAIL"
@@ -48,10 +41,10 @@
                     value=""
                     name="EMAIL"
                     class="required email"
-                    :placeholder= "[[ $t('yourE-mailAddress') ]]"
-                  >
+                    :placeholder="[[$t('yourE-mailAddress')]]"
+                  />
                   <div
-                    style="position: absolute; left: -5000px;"
+                    style="position: absolute; left: -5000px"
                     aria-hidden="true"
                   >
                     <input
@@ -59,10 +52,10 @@
                       name="b_ab921bf052a64b20bb1f16123_8006406cc5"
                       tabindex="-1"
                       value=""
-                    >
+                    />
                   </div>
                   <button type="submit">
-                    {{ $t('signUp') }}
+                    {{ $t("signUp") }}
                   </button>
                 </div>
               </form>
@@ -102,7 +95,11 @@
                   role="img"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
-                ><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" /></svg>
+                >
+                  <path
+                    d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
+                  />
+                </svg>
               </a>
               <a
                 href="https://www.facebook.com/grandgaragelinz/"
@@ -118,7 +115,11 @@
                   role="img"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
-                ><path d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z" /></svg>
+                >
+                  <path
+                    d="M448 56.7v398.5c0 13.7-11.1 24.7-24.7 24.7H309.1V306.5h58.2l8.7-67.6h-67v-43.2c0-19.6 5.4-32.9 33.5-32.9h35.8v-60.5c-6.2-.8-27.4-2.7-52.2-2.7-51.6 0-87 31.5-87 89.4v49.9h-58.4v67.6h58.4V480H24.7C11.1 480 0 468.9 0 455.3V56.7C0 43.1 11.1 32 24.7 32h398.5c13.7 0 24.8 11.1 24.8 24.7z"
+                  />
+                </svg>
               </a>
             </div>
             <h4>{{ item.headline }}</h4>
@@ -132,80 +133,82 @@
 </template>
 
 <script charset="utf-8">
-import axios from 'axios'
+import axios from "axios";
 
 export default {
-  data () {
+  data() {
     return {
       loading: false,
       subscribed: false,
       form: {
-        email: ''
+        email: "",
       },
-      logoWidth: 200
-    }
+      logoWidth: 200,
+    };
   },
   computed: {
-    logos () {
-      return this.shuffle(this.$store.state.settings.footer_logos)
+    logos() {
+      return this.shuffle(this.$store.state.settings.footer_logos);
     },
-    marqueeDuration () {
+    marqueeDuration() {
       // velocity is 100px/s
-      return this.logos.length * this.logoWidth / 100
-    }
+      return (this.logos.length * this.logoWidth) / 100;
+    },
   },
   methods: {
-    encode (data) {
+    encode(data) {
       return Object.keys(data)
         .map(
-          key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
+          (key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
         )
-        .join('&')
+        .join("&");
     },
-    shuffle (arra1) {
-      if (!arra1) return []
-      let ctr = null
+    shuffle(arra1) {
+      if (!arra1) return [];
+      let ctr = null;
       if (arra1.length != null) {
-        ctr = arra1.length
+        ctr = arra1.length;
       }
-      let temp
-      let index
+      let temp;
+      let index;
 
       while (ctr > 0) {
-        index = Math.floor(Math.random() * ctr)
-        ctr--
-        temp = arra1[ctr]
-        arra1[ctr] = arra1[index]
-        arra1[index] = temp
+        index = Math.floor(Math.random() * ctr);
+        ctr--;
+        temp = arra1[ctr];
+        arra1[ctr] = arra1[index];
+        arra1[index] = temp;
       }
-      return arra1
+      return arra1;
     },
-    handleSubmit () {
-      if (this.form.email === '') return
-      this.loading = true
+    handleSubmit() {
+      if (this.form.email === "") return;
+      this.loading = true;
       const axiosConfig = {
-        header: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      }
-      axios.post(
-        '/',
-        this.encode({
-          'form-name': 'newsletter',
-          ...this.form
-        }),
-        axiosConfig
-      ).then(() => {
-        this.loading = false
-        this.subscribed = true
-      }).catch(() => {
-        this.loading = false
-      })
-    }
-  }
-}
+        header: { "Content-Type": "application/x-www-form-urlencoded" },
+      };
+      axios
+        .post(
+          "/",
+          this.encode({
+            "form-name": "newsletter",
+            ...this.form,
+          }),
+          axiosConfig
+        )
+        .then(() => {
+          this.loading = false;
+          this.subscribed = true;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .footer {
   margin-top: 20px;
   display: flex;
@@ -286,22 +289,32 @@ export default {
           display: flex;
           position: relative;
           overflow: hidden;
-            &:before {
-              content: "";
-              position: absolute;
-              left: 0;
-              top: 0;
-              height: 40px;
-              z-index: 1;
-              @include media-breakpoint-down(sm) {
-                width: 100vw;
-                background: linear-gradient(to right, rgba(255,255,255,1),rgba(255,255,255,0), rgba(255,255,255,0), rgba(255,255,255,1));
-              }
-              @include media-breakpoint-up(md) {
-                width: 50%;
-                background: linear-gradient(to right, rgba(255,255,255,1),rgba(255,255,255,0));
-              }
-              pointer-events: none;
+          &:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 40px;
+            z-index: 1;
+            @include media-breakpoint-down(sm) {
+              width: 100vw;
+              background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 1)
+              );
+            }
+            @include media-breakpoint-up(md) {
+              width: 50%;
+              background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0)
+              );
+            }
+            pointer-events: none;
           }
           .marquee-text-content {
             height: 100%;
@@ -388,25 +401,25 @@ export default {
               @include media-breakpoint-down(sm) {
                 width: 55%;
               }
-              border-top: .1em solid #000;
-              margin: .25em 1em;
-              transition: transform .15s ease-out;
+              border-top: 0.1em solid #000;
+              margin: 0.25em 1em;
+              transition: transform 0.15s ease-out;
               &:after {
                 content: "";
                 position: absolute;
-                right: -.1em;
-                top: -.05em;
-                border-top: .1em solid #000;
-                border-right: .1em solid #000;
-                width: .5em;
-                height: .5em;
+                right: -0.1em;
+                top: -0.05em;
+                border-top: 0.1em solid #000;
+                border-right: 0.1em solid #000;
+                width: 0.5em;
+                height: 0.5em;
                 transform-origin: right top;
                 transform: rotate(45deg);
               }
             }
             &:hover {
               .arrow {
-                transform: translateX(.5em);
+                transform: translateX(0.5em);
               }
             }
           }
@@ -445,13 +458,13 @@ export default {
         }
         .info-item {
           .social-icons {
-            fill: #FFF;
+            fill: #fff;
             a.social-icon {
               margin: 0 0.2em;
               display: inline-block;
               width: 2em;
               &:visited {
-                fill: #FFF;
+                fill: #fff;
               }
               &:hover {
                 fill: #eee;

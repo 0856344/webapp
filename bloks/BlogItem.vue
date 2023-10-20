@@ -1,38 +1,37 @@
 <template>
   <div class="blog-item-display">
-    <nuxt-link :to="localePath('/de/news/'+blog.slug)" class="link">
+    <nuxt-link :to="localePath('/de/news/' + blog.slug)" class="link">
       <section class="header">
-        <img class="image" :src="blog.content.image">
+        <img class="image" :src="blog.content.image" />
         <div class="background-square"></div>
         <div class="title-head">
           <code class="title">{{ blog.content.title }}</code>
           <code class="teaser">{{ blog.content.teaser }}</code>
-          <p class="date" v-if="blog.content.datetime">{{ blog.content.datetime | date }}</p>
+          <p class="date" v-if="blog.content.datetime">
+            {{ blog.content.datetime | date }}
+          </p>
         </div>
       </section>
-    </Nuxt-link>
+    </nuxt-link>
   </div>
 </template>
 <script>
 export default {
-  head () {
+  head() {
     return {
-      meta: [
-        { hid: 'og:title', property: 'og:title', content: 'testTitle' }
-      ]
-    }
+      meta: [{ hid: "og:title", property: "og:title", content: "testTitle" }],
+    };
   },
   props: {
     blog: {
       type: Object,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .link {
   color: white;
 }

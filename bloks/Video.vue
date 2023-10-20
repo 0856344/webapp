@@ -1,31 +1,24 @@
 <template>
-  <div
-      v-editable="blok"
-      class="video-blok"
-  >
+  <div v-editable="blok" class="video-blok">
     <div class="container">
-      <div
-          class="col-start"
-      >
-        <h2
-            v-if="blok.headline"
-            class="headline"
-        >
+      <div class="col-start">
+        <h2 v-if="blok.headline" class="headline">
           <markdown :value="blok.headline" />
         </h2>
       </div>
       <div class="col-end">
-        <p
-            v-if="blok.text"
-            class="text"
-        >
+        <p v-if="blok.text" class="text">
           <markdown :value="blok.text" />
         </p>
       </div>
       <div class="iframe-container" v-if="blok.video">
-        <iframe :src="blok.video" title="YouTube video player" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
+        <iframe
+          :src="blok.video"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
       </div>
     </div>
   </div>
@@ -33,12 +26,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .video-blok {
   color: #000;
   display: flex;
@@ -106,7 +98,7 @@ export default {
         font-family: $font-primary;
         line-height: 1.6;
         font-size: 1.1em;
-        letter-spacing: .03em;
+        letter-spacing: 0.03em;
       }
     }
   }

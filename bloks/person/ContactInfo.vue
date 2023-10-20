@@ -1,27 +1,16 @@
 <template>
-  <div
-    v-editable="blok"
-    class="contact-info"
-  >
+  <div v-editable="blok" class="contact-info">
     <div
       v-if="blok.image"
       class="banner"
-      :style="{ 'background-image': 'url(' + $resizeImage(blok.image, '1600x0') + ')' }"
+      :style="{
+        'background-image': 'url(' + $resizeImage(blok.image, '1600x0') + ')',
+      }"
     />
-    <div
-      v-else
-      class="banner-spacer"
-    />
-    <div
-      v-if="blok.items && blok.items.length > 0"
-      class="info"
-    >
+    <div v-else class="banner-spacer" />
+    <div v-if="blok.items && blok.items.length > 0" class="info">
       <div class="spacer" />
-      <div
-        v-for="i in blok.items"
-        :key="i.uid"
-        class="info-item"
-      >
+      <div v-for="i in blok.items" :key="i.uid" class="info-item">
         <sb-link :link="i.link">
           <h4 class="title">
             {{ i.title }}
@@ -37,12 +26,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
-
 .contact-info {
   margin: 20px -20px;
   .banner {
@@ -61,12 +49,12 @@ export default {
     }
     .info-item {
       @include media-breakpoint-up(md) {
-        transform:translateY(-50%);
+        transform: translateY(-50%);
       }
       background-color: #000;
       a {
         text-decoration: none;
-        color: #FFF;
+        color: #fff;
         display: block;
         padding: 50px;
         @include media-breakpoint-down(sm) {

@@ -1,14 +1,8 @@
 <template>
-  <div
-    v-editable="blok"
-    class="info-box"
-  >
+  <div v-editable="blok" class="info-box">
     <div class="box-content">
       <div class="row">
-        <h2
-          v-if="blok.title"
-          class="title"
-        >
+        <h2 v-if="blok.title" class="title">
           {{ blok.title }}
         </h2>
       </div>
@@ -16,10 +10,7 @@
         <div class="text">
           <markdown :value="blok.text" />
           <div class="image">
-            <img
-              :src="$resizeImage(blok.image, '500x0')"
-              alt=""
-            >
+            <img :src="$resizeImage(blok.image, '500x0')" alt="" />
           </div>
         </div>
       </div>
@@ -29,22 +20,21 @@
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    noUser () {
-      return !this.$store.state.user
-    }
+    noUser() {
+      return !this.$store.state.user;
+    },
   },
   methods: {
-    register () {
-      this.$store.dispatch('setSidebar', 'register')
-    }
-  }
-}
+    register() {
+      this.$store.dispatch("setSidebar", "register");
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .info-box {
   .box-content {
     margin: 50px 0;
@@ -57,7 +47,7 @@ export default {
       line-height: 1.5;
       font-weight: bold;
       font-family: $font-primary;
-      letter-spacing: .05em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       width: 50%;
     }
@@ -88,7 +78,7 @@ export default {
             cursor: pointer;
             font-size: 1.2em;
             font-weight: bold;
-            color: #FFF;
+            color: #fff;
             border: none;
             padding: 15px;
             background-color: $color-orange;

@@ -1,12 +1,6 @@
 <template>
-  <div
-    v-editable="blok"
-    class="spotlight-slider"
-  >
-    <div
-      v-if="blok.text"
-      class="text"
-    >
+  <div v-editable="blok" class="spotlight-slider">
+    <div v-if="blok.text" class="text">
       {{ blok.text }}
     </div>
     <div v-swiper:swiper="swiperOption">
@@ -15,12 +9,11 @@
           v-for="s in blok.items"
           :key="s._uid"
           class="swiper-slide"
-          :style="{ 'background-image': 'url(' + $resizeImage(s.image, '700x0') + ')' }"
+          :style="{
+            'background-image': 'url(' + $resizeImage(s.image, '700x0') + ')',
+          }"
         >
-          <div
-            v-if="s.text"
-            class="swiper-item-content"
-          >
+          <div v-if="s.text" class="swiper-item-content">
             {{ s.text }}
           </div>
         </div>
@@ -33,44 +26,43 @@
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 786) {
-          return 0
+          return 0;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 786) {
-          return 1
+          return 1;
         }
       }
-      return 3
-    }
-  }
-}
+      return 3;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .spotlight-slider {
   margin: -20px;
   padding: 30px;
@@ -99,7 +91,7 @@ export default {
         position: absolute;
         width: 100%;
         bottom: 0;
-        transition: opacity ease-in-out .3s;
+        transition: opacity ease-in-out 0.3s;
         opacity: 0;
         display: flex;
         align-items: center;

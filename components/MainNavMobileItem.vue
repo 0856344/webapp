@@ -1,45 +1,26 @@
 <template>
   <div class="nav-item">
     <!-- if item has children -->
-    <div
-      v-if="item.children && item.children.length > 0"
-      class="main-nav-item"
-    >
-      <div
-        class="level-entry"
-        @click="openLayer()"
-      >
+    <div v-if="item.children && item.children.length > 0" class="main-nav-item">
+      <div class="level-entry" @click="openLayer()">
         {{ item.name }}
       </div>
       <transition
         v-if="item.children && item.children.length > 0"
         name="fadefromright"
       >
-        <div
-          v-if="active"
-          :key="item._uid"
-          class="nav-layer"
-        >
+        <div v-if="active" :key="item._uid" class="nav-layer">
           <div class="level-header">
-            <div
-              class="levelUp"
-              @click="closeLayer()"
-            >
-              <svg
-                class="back-icon"
-                viewBox="0 0 32 32"
-                height="32"
-                width="32"
-              >
+            <div class="levelUp" @click="closeLayer()">
+              <svg class="back-icon" viewBox="0 0 32 32" height="32" width="32">
                 <g>
-                  <path d="M 26.894531 3.1035156 A 2.0002 2.0002 0 0 0 25.988281 3.3164062 L 4.6953125 13.679688 A 2.0003715 2.0003715 0 0 0 3.5742188 15.378906 A 2.0002 2.0002 0 0 0 4.6230469 17.462891 L 25.914062 28.927734 A 2.0002 2.0002 0 1 0 27.810547 25.40625 L 9.7382812 15.675781 L 27.738281 6.9140625 A 2.0002 2.0002 0 0 0 26.894531 3.1035156 z " />
+                  <path
+                    d="M 26.894531 3.1035156 A 2.0002 2.0002 0 0 0 25.988281 3.3164062 L 4.6953125 13.679688 A 2.0003715 2.0003715 0 0 0 3.5742188 15.378906 A 2.0002 2.0002 0 0 0 4.6230469 17.462891 L 25.914062 28.927734 A 2.0002 2.0002 0 1 0 27.810547 25.40625 L 9.7382812 15.675781 L 27.738281 6.9140625 A 2.0002 2.0002 0 0 0 26.894531 3.1035156 z "
+                  />
                 </g>
               </svg>
             </div>
-            <div
-              class="close"
-              @click="closeNav()"
-            >
+            <div class="close" @click="closeNav()">
               <svg
                 class="close-icon"
                 viewBox="0 0 32 32"
@@ -47,26 +28,18 @@
                 width="32"
               >
                 <g>
-                  <path d="M 5.5488281 3.8535156 A 2.0002 2.0002 0 0 0 4.15625 7.2890625 L 13.388672 16.519531 L 4.15625 25.751953 A 2.0002 2.0002 0 1 0 6.984375 28.580078 L 16.216797 19.347656 L 25.449219 28.580078 A 2.0002 2.0002 0 1 0 28.277344 25.751953 L 19.044922 16.519531 L 28.277344 7.2890625 A 2.0002 2.0002 0 0 0 26.824219 3.8554688 A 2.0002 2.0002 0 0 0 25.449219 4.4589844 L 16.216797 13.691406 L 6.984375 4.4589844 A 2.0002 2.0002 0 0 0 5.5488281 3.8535156 z " />
+                  <path
+                    d="M 5.5488281 3.8535156 A 2.0002 2.0002 0 0 0 4.15625 7.2890625 L 13.388672 16.519531 L 4.15625 25.751953 A 2.0002 2.0002 0 1 0 6.984375 28.580078 L 16.216797 19.347656 L 25.449219 28.580078 A 2.0002 2.0002 0 1 0 28.277344 25.751953 L 19.044922 16.519531 L 28.277344 7.2890625 A 2.0002 2.0002 0 0 0 26.824219 3.8554688 A 2.0002 2.0002 0 0 0 25.449219 4.4589844 L 16.216797 13.691406 L 6.984375 4.4589844 A 2.0002 2.0002 0 0 0 5.5488281 3.8535156 z "
+                  />
                 </g>
               </svg>
             </div>
           </div>
-          <sb-link
-            :link="item.link"
-            class="child-nav-item main-item"
-          >
+          <sb-link :link="item.link" class="child-nav-item main-item">
             <div>{{ item.name }}</div>
           </sb-link>
-          <div
-            v-for="child in item.children"
-            :key="child.id"
-            class="child"
-          >
-            <sb-link
-              :link="child.link"
-              class="child-nav-item"
-            >
+          <div v-for="child in item.children" :key="child.id" class="child">
+            <sb-link :link="child.link" class="child-nav-item">
               {{ child.name }}
             </sb-link>
           </div>
@@ -74,11 +47,7 @@
       </transition>
     </div>
     <!-- else -->
-    <sb-link
-      v-else
-      :link="item.link"
-      class="main-nav-item"
-    >
+    <sb-link v-else :link="item.link" class="main-nav-item">
       {{ item.name }}
     </sb-link>
   </div>
@@ -86,38 +55,38 @@
 
 <script charset="utf-8">
 export default {
-  props: ['item'],
-  data () {
+  props: ["item"],
+  data() {
     return {
-      active: false
-    }
+      active: false,
+    };
   },
   methods: {
-    openLayer () {
-      this.active = true
+    openLayer() {
+      this.active = true;
     },
-    closeLayer () {
-      this.active = false
+    closeLayer() {
+      this.active = false;
     },
-    closeNav () {
-      this.active = false
-      this.$emit('close')
-    }
-  }
-}
+    closeNav() {
+      this.active = false;
+      this.$emit("close");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .nav-item {
   display: flex;
   flex-direction: column;
-  .main-nav-item, .child-nav-item {
+  .main-nav-item,
+  .child-nav-item {
     display: block;
     padding: 3vh 4%;
     font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: .08em;
+    letter-spacing: 0.08em;
     &.nuxt-link-active {
       color: $color-orange;
     }
@@ -136,7 +105,7 @@ export default {
         transform-origin: top right;
         height: 0.7em;
         width: 0.7em;
-        margin-top: .4em;
+        margin-top: 0.4em;
         right: 4%;
       }
     }
@@ -164,7 +133,8 @@ export default {
         .close {
           padding: 3vh 4%;
         }
-        .close-icon, .back-icon {
+        .close-icon,
+        .back-icon {
           width: 1.1em;
           fill: #fff;
         }
@@ -172,13 +142,14 @@ export default {
     }
   }
 
-  .fadefromright-enter-active, .fadefromright-leave-active {
-    transition: all .3s;
+  .fadefromright-enter-active,
+  .fadefromright-leave-active {
+    transition: all 0.3s;
   }
-  .fadefromright-enter, .fadefromright-leave-to {
+  .fadefromright-enter,
+  .fadefromright-leave-to {
     opacity: 0;
     transform: translateX(50vw);
   }
 }
-
 </style>

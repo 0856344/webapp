@@ -1,19 +1,20 @@
-
 <template>
   <div class="image-slideshow-blue">
-    <div class="subtext">
-    </div>
+    <div class="subtext"></div>
     <div v-swiper:swiper="swiperOption">
       <div class="swiper-wrapper">
-          <div
-              v-for="s in imageGallery"
-              :key="s._uid"
-              class="swiper-slide"
-              :style="{ backgroundImage: 'url(' + $resizeImage(s.image, '300x300') + ')'}">
-            <div class="text-image-slider">
-              {{s.text}}
-            </div>
+        <div
+          v-for="s in imageGallery"
+          :key="s._uid"
+          class="swiper-slide"
+          :style="{
+            backgroundImage: 'url(' + $resizeImage(s.image, '300x300') + ')',
+          }"
+        >
+          <div class="text-image-slider">
+            {{ s.text }}
           </div>
+        </div>
       </div>
     </div>
     <div class="swiper-button-next" />
@@ -22,53 +23,53 @@
 </template>
 <script>
 export default {
-  props: ['story'],
+  props: ["story"],
   computed: {
-    imageGallery () {
-      return this.story
+    imageGallery() {
+      return this.story;
     },
-    image () {
-      return 'assets/img/icons/download-icon.svg'
+    image() {
+      return "assets/img/icons/download-icon.svg";
     },
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 0
+          return 0;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 1
+          return 1;
         } else if (window.innerWidth < 900) {
-          return 2
+          return 2;
         }
       }
-      return 3
-    }
+      return 3;
+    },
   },
   methods: {
     myPath: function (to) {
-      window.open(to)
-    }
-  }
-}
+      window.open(to);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -76,7 +77,7 @@ export default {
   position: relative; // needed for z-index (blue dashed stripe)
   padding: 30px;
   background-color: black;
-  color: #FFF;
+  color: #fff;
   .text {
     padding: 3rem 5rem 0 5rem;
     font-size: 1.8rem;
@@ -97,7 +98,7 @@ export default {
     padding: 1rem 1rem 0 5rem;
     font-size: 1.2rem;
     @include media-breakpoint-down(md) {
-      font-size: 1.0rem;
+      font-size: 1rem;
       padding: 2vh 4vw;
     }
     font-family: $font-primary;
@@ -117,12 +118,12 @@ export default {
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      @include media-breakpoint-down(xs){
+      @include media-breakpoint-down(xs) {
         margin: 0 auto;
         display: block;
       }
     }
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       height: 13em;
       padding: 0;
       width: 100%;
@@ -135,17 +136,17 @@ export default {
     height: 50px;
     border-radius: 50%;
     background-color: $color-yellow;
-    background-size: 12px;;
+    background-size: 12px;
     margin-left: -30px;
     margin-right: -30px;
     top: 50%;
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       width: 40px;
       height: 40px;
       background-size: 10px;
       margin: 0;
     }
-    @include media-breakpoint-down(xs){
+    @include media-breakpoint-down(xs) {
       width: 35px;
       height: 35px;
       background-size: 8px;
@@ -153,7 +154,7 @@ export default {
     }
   }
 }
-.text-image-slider{
+.text-image-slider {
   margin-top: 200px;
   display: flex;
   justify-content: center;

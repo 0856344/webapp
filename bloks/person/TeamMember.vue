@@ -1,75 +1,88 @@
 <template>
-    <div v-editable="blok" class="member-page" @touchstart="touch">
-        <a ref="hidden" href="#" display="none"/>
-        <div class="header">
-            <div class="image" @mouseover="imgHover = true" @mouseleave="imgHover = false">
+  <div v-editable="blok" class="member-page" @touchstart="touch">
+    <a ref="hidden" href="#" display="none" />
+    <div class="header">
+      <div
+        class="image"
+        @mouseover="imgHover = true"
+        @mouseleave="imgHover = false"
+      >
+        <img
+          v-if="!showAltImg"
+          class="picture"
+          :src="$resizeImage(blok.image, '700x700')"
+          :alt="blok.name + ', ' + blok.title"
+        />
+        <img
+          v-else
+          class="picture"
+          :src="$resizeImage(blok.image_alt, '700x700')"
+          :alt="blok.name + ', ' + blok.title"
+        />
+      </div>
+      <div class="info">
+        <div class="short-info">
+          <div class="name-contact">
+            <div class="name">{{ blok.name }}</div>
+          </div>
+          <div class="title-contact-options">
+            <div class="title">{{ blok.title }}</div>
+            <div class="contact-options">
+              <a
+                v-if="blok.email"
+                class="option-email"
+                :href="'mailto:' + blok.email"
+              >
                 <img
-                        v-if="!showAltImg"
-                        class="picture"
-                        :src="$resizeImage(blok.image, '700x700')"
-                        :alt="blok.name + ', ' + blok.title"
-                >
-                <img
-                        v-else
-                        class="picture"
-                        :src="$resizeImage(blok.image_alt, '700x700')"
-                        :alt="blok.name + ', ' + blok.title"
-                >
+                  class="icon"
+                  src="@/assets/img/icons/envelope.svg"
+                  alt=""
+                />
+                <div class="text">{{ blok.email }}</div>
+              </a>
             </div>
-            <div class="info">
-                <div class="short-info">
-                    <div class="name-contact">
-                        <div class="name">{{ blok.name }}</div>
-                    </div>
-                    <div class="title-contact-options">
-                        <div class="title">{{ blok.title }}</div>
-                        <div class="contact-options">
-                            <a v-if="blok.email" class="option-email" :href="'mailto:'+blok.email">
-                                <img class="icon" src="@/assets/img/icons/envelope.svg" alt="">
-                                <div class="text">{{ blok.email }}</div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-        <div class="body">
-            <div class="future-slogan">
-                <div class="first">
-                    {{ $t('theFuture') }}
-                </div>
-                <div class="second">
-                    {{ $t('belongs') }}{{ blok.future }}<span v-if="!blok.future"> {{ $t('toUsAll') }}</span>
-                </div>
-            </div>
-            <div class="description">
-                <markdown :value="blok.description"/>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="body">
+      <div class="future-slogan">
+        <div class="first">
+          {{ $t("theFuture") }}
+        </div>
+        <div class="second">
+          {{ $t("belongs") }}{{ blok.future
+          }}<span v-if="!blok.future"> {{ $t("toUsAll") }}</span>
+        </div>
+      </div>
+      <div class="description">
+        <markdown :value="blok.description" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      imgHover: false
-    }
+      imgHover: false,
+    };
   },
   computed: {
-    showAltImg () {
-      return !!this.imgHover
-    }
+    showAltImg() {
+      return !!this.imgHover;
+    },
   },
   methods: {
-    touch (e) {
-      if (e.target.localName !== 'img') {
-        this.$refs.hidden.focus()
+    touch(e) {
+      if (e.target.localName !== "img") {
+        this.$refs.hidden.focus();
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -123,7 +136,7 @@ ol {
 
         .name-contact {
           padding-bottom: 1rem;
-          border-bottom: .4rem solid black;
+          border-bottom: 0.4rem solid black;
           margin-top: 1rem;
           margin-bottom: 1rem;
           display: flex;
@@ -145,8 +158,8 @@ ol {
           justify-content: space-between;
 
           .contact-options {
-            font-size: .9rem;
-            margin-bottom: .8rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
             display: flex;
             flex-direction: column;
 
@@ -159,7 +172,7 @@ ol {
 
               .icon {
                 width: 18px;
-                margin-left: .5em;
+                margin-left: 0.5em;
               }
 
               .text {
@@ -195,7 +208,7 @@ ol {
       .first {
         font-weight: bold;
         text-transform: uppercase;
-        margin-bottom: .2em;
+        margin-bottom: 0.2em;
       }
 
       .second {

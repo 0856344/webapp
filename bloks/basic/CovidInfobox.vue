@@ -1,18 +1,18 @@
-
 <template>
   <div class="covidInfobox">
     <div class="boxContainer">
       <div class="box">
         <div class="title">
-          {{ $t( "covidInfoTitle" ) }}
+          {{ $t("covidInfoTitle") }}
         </div>
         <div class="text">
-          {{ $t( "covidInfoText" ) }}
-        <NuxtLink to="/de/covid">{{ $t('here') }}</NuxtLink><br><br>
+          {{ $t("covidInfoText") }}
+          <NuxtLink to="/de/covid">{{ $t("here") }}</NuxtLink
+          ><br /><br />
 
-          {{ $t( "workShopCostRefund" ) }}<br><br>
+          {{ $t("workShopCostRefund") }}<br /><br />
 
-          {{ $t( "weAreLookingForward") }}
+          {{ $t("weAreLookingForward") }}
         </div>
       </div>
     </div>
@@ -20,7 +20,6 @@
 </template>
 
 <style lang="scss" scoped>
-
 .covidInfobox {
   display: flex;
   justify-content: center;

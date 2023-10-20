@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-editable="blok"
-    class="about-info"
-  >
+  <div v-editable="blok" class="about-info">
     <div v-if="blok.headline" class="headline">
       {{ blok.headline }}
     </div>
@@ -16,15 +13,11 @@
         <div class="content">
           <markdown :value="blok.content" />
           <a v-if="blok.contentLink" :href="blok.contentLink" target="_blank">
-            {{blok.contentLinkName}}
+            {{ blok.contentLinkName }}
           </a>
         </div>
         <div class="image-wrapper">
-          <img
-            class="image"
-            :src="$resizeImage(blok.image, '950x0')"
-            alt=""
-          >
+          <img class="image" :src="$resizeImage(blok.image, '950x0')" alt="" />
         </div>
       </div>
     </div>
@@ -33,12 +26,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
-
 .about-info {
   @include media-breakpoint-down(md) {
     display: flex;
@@ -90,7 +82,7 @@ export default {
           padding: 2%;
           width: 100%;
         }
-        letter-spacing: .02em;
+        letter-spacing: 0.02em;
         font-variant-ligatures: no-common-ligatures;
         line-height: 1.2;
         width: 70%;
@@ -122,7 +114,7 @@ export default {
           margin-bottom: 5%;
           padding: 0 9% 0 0;
         }
-        letter-spacing: .03em;
+        letter-spacing: 0.03em;
         line-height: 1.6;
       }
     }

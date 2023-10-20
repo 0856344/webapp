@@ -1,41 +1,41 @@
 <template>
-    <div v-editable="blok">
-        <div class="machine-card">
-            <div class="machine" v-if="machines != null && machines.length != 0">
-                <div class="name"> {{ this.blok.title }}</div>
-                <div class="display-machines">
-                    <machine-preview
-                            v-for="machine in machines"
-                            :id="machine"
-                            :key="machine"
-                    />
-                </div>
-            </div>
+  <div v-editable="blok">
+    <div class="machine-card">
+      <div class="machine" v-if="machines != null && machines.length != 0">
+        <div class="name">{{ this.blok.title }}</div>
+        <div class="display-machines">
+          <machine-preview
+            v-for="machine in machines"
+            :id="machine"
+            :key="machine"
+          />
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
   components: {},
-  props: ['blok'],
-  mounted () {
-    this.machines = this.blok.machines
+  props: ["blok"],
+  mounted() {
+    this.machines = this.blok.machines;
   },
-  data () {
+  data() {
     return {
-      machines: []
-    }
+      machines: [],
+    };
   },
   computed: {
-    machine () {
-      return this.story.content
+    machine() {
+      return this.story.content;
     },
-    machinelink () {
-      return '/de/machines/' + this.story.slug
-    }
-  }
-}
+    machinelink() {
+      return "/de/machines/" + this.story.slug;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -72,7 +72,7 @@ export default {
 }
 
 .preview-wrapper:hover {
-    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2);
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .preview-wrapper {
@@ -81,7 +81,7 @@ export default {
   justify-content: center;
 
   .machine-preview:hover {
-    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2) !important;
+    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2) !important;
   }
 
   .machine-preview {

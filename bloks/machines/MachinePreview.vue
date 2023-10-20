@@ -4,7 +4,13 @@
       <div class="machine-preview">
         <nuxt-link class="story" :to="machinelink">
           <div class="display-machine">
-            <div class="banner" :style="{ 'background-image': 'url(' + $resizeImage(machine.image, '700x0') + ')' }"/>
+            <div
+              class="banner"
+              :style="{
+                'background-image':
+                  'url(' + $resizeImage(machine.image, '700x0') + ')',
+              }"
+            />
             <div class="title">
               {{ machine.title }}
             </div>
@@ -17,50 +23,51 @@
 
 <script>
 export default {
-  props: ['id'],
-  data () {
+  props: ["id"],
+  data() {
     return {
-      story: null
-    }
+      story: null,
+    };
   },
   computed: {
-    machine () {
-      return this.story.content
+    machine() {
+      return this.story.content;
     },
-    machinelink () {
-      return '/de/machines/' + this.story.slug
-    }
+    machinelink() {
+      return "/de/machines/" + this.story.slug;
+    },
   },
-  created () {
-    this.$store.app.$storyapi.get(`cdn/stories/${this.id}`, {
-      find_by: 'uuid'
-    }).then((res) => {
-      this.story = res.data.story
-    }).catch((e) => {
-    })
+  created() {
+    this.$store.app.$storyapi
+      .get(`cdn/stories/${this.id}`, {
+        find_by: "uuid",
+      })
+      .then((res) => {
+        this.story = res.data.story;
+      })
+      .catch((e) => {});
   },
   methods: {
-    open () {
-      this.$router.push({ path: this.story.full_slug })
-    }
-  }
-}
+    open() {
+      this.$router.push({ path: this.story.full_slug });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
-.display-machine{
+.display-machine {
   @include media-breakpoint-down(sm) {
     background: white;
     padding: 16px;
   }
 }
 
-.preview-wrapper{
+.preview-wrapper {
   height: inherit;
 }
 .machine-preview:hover {
-  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2);
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .preview-wrapper {
@@ -77,7 +84,7 @@ export default {
     word-wrap: break-word;
     border-radius: 10px;
     @include media-breakpoint-down(sm) {
-      height:auto;
+      height: auto;
       margin-left: 5%;
     }
 
@@ -101,7 +108,7 @@ export default {
         background-size: cover;
         background-position: center;
         @include media-breakpoint-down(sm) {
-         height: 200px;
+          height: 200px;
         }
       }
 

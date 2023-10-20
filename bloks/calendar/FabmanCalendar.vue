@@ -1,19 +1,22 @@
 <template>
-    <div v-editable="blok">
-        <!-- TODO -->
-        <div class="fabman-calendar">
-            <machine-calendar :space="this.blok.space" :resource="4049"></machine-calendar>
-        </div>
+  <div v-editable="blok">
+    <!-- TODO -->
+    <div class="fabman-calendar">
+      <machine-calendar
+        :space="this.blok.space"
+        :resource="4049"
+      ></machine-calendar>
     </div>
+  </div>
 </template>
 
 <script>
-import MachineCalendar from '@/bloks/calendar/MachineCalendar.vue'
+import MachineCalendar from "@/bloks/calendar/MachineCalendar.vue";
 
 export default {
   components: { MachineCalendar },
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>

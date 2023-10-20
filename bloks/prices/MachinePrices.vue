@@ -1,52 +1,60 @@
 <template v-editable="blok">
-  <Pricelist :priceList="priceList"/>
+  <Pricelist :priceList="priceList" />
 </template>
 
 <script>
-import Pricelist from './Pricelist.vue'
+import Pricelist from "./Pricelist.vue";
 
 export default {
-  props: ['blok'],
+  props: ["blok"],
   components: {
-    Pricelist
+    Pricelist,
   },
-  middleware: 'authenticated',
-  data () {
+  middleware: "authenticated",
+  data() {
     return {
-      machines: []
-    }
+      machines: [],
+    };
   },
   computed: {
-    filteredMachines () {
-      return this.machines
-        .map((m) => {
-          let name = m.name
-          if (name.includes('#')) {
-            name = name.split('#')[0]
-          }
-          return { ...m, name }
-        })
-        //remove duplicate objects from array
-        .filter((m, index, self) =>
-          index === self.findIndex((t) => (
-            t.name === m.name
-          ))
-        )
+    filteredMachines() {
+      return (
+        this.machines
+          .map((m) => {
+            let name = m.name;
+            if (name.includes("#")) {
+              name = name.split("#")[0];
+            }
+            return { ...m, name };
+          })
+          //remove duplicate objects from array
+          .filter(
+            (m, index, self) =>
+              index === self.findIndex((t) => t.name === m.name)
+          )
+      );
     },
-    priceList () {
-      return { 
-        title: this.$t('machines'), 
+    priceList() {
+      return {
+        title: this.$t("machines"),
         billedInCredits: true,
         items: this.filteredMachines.map((m) => {
-          const minutes = m.seconds / 60
-          const timeUnit = minutes === 1 ? 'min' : minutes === 60 ? 'h' : minutes < 1 ? 's' : 'min'
-          return { name: m.name, price: m.price, unit: timeUnit } 
-        }) 
-      }
-    }
+          const minutes = m.seconds / 60;
+          const timeUnit =
+            minutes === 1
+              ? "min"
+              : minutes === 60
+              ? "h"
+              : minutes < 1
+              ? "s"
+              : "min";
+          return { name: m.name, price: m.price, unit: timeUnit };
+        }),
+      };
+    },
   },
-  async mounted () {
-    this.machines = await this.$store.dispatch('getMachinePrices')
-  }
-}
+  async mounted() {
+    this.machines = await this.$store.dispatch("getMachinePrices");
+  },
+};
 </script>

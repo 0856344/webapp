@@ -1,17 +1,7 @@
 <template>
-  <div
-    v-editable="blok"
-    class="job-opening"
-  >
-    <v-collapse-wrapper
-      ref="wrapper"
-      @afterToggle="updateStatus"
-    >
-      <div
-        v-collapse-toggle
-        class="toggle-title"
-        :class="{ active }"
-      >
+  <div v-editable="blok" class="job-opening">
+    <v-collapse-wrapper ref="wrapper" @afterToggle="updateStatus">
+      <div v-collapse-toggle class="toggle-title" :class="{ active }">
         <div class="title">
           {{ blok.title }}
         </div>
@@ -22,25 +12,24 @@
             width="33.26"
             height="20.409"
             viewBox="0 0 8.8 5.4"
-          ><path
-            d="M.42.48L4.4 4.46 8.38.48"
-            fill="none"
-            stroke="#000"
-            stroke-width="1.3"
-          /></svg>
+          >
+            <path
+              d="M.42.48L4.4 4.46 8.38.48"
+              fill="none"
+              stroke="#000"
+              stroke-width="1.3"
+            />
+          </svg>
         </div>
       </div>
-      <div
-        v-collapse-content
-        class="content"
-      >
+      <div v-collapse-content class="content">
         <div class="inner-content">
           <img
             v-if="blok.image"
             class="image"
             :src="$resizeImage(blok.image, '1700x550')"
             alt=""
-          >
+          />
           <div class="header">
             <div class="col-title">
               <div class="title">
@@ -50,10 +39,15 @@
                 {{ blok.subtitle }}
               </div>
             </div>
-            <div class="col-button" >
-              <a v-bind:href="contact" v-if="!this.hideContact" target="_blank"
-                 class="apply-button">
-              {{ $t('apply') }}</a>
+            <div class="col-button">
+              <a
+                v-bind:href="contact"
+                v-if="!this.hideContact"
+                target="_blank"
+                class="apply-button"
+              >
+                {{ $t("apply") }}</a
+              >
             </div>
           </div>
           <markdown :value="blok.description" />
@@ -65,42 +59,41 @@
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      active: false
-    }
+      active: false,
+    };
   },
   methods: {
-    updateStatus (e) {
-      this.active = e.status
-    }
+    updateStatus(e) {
+      this.active = e.status;
+    },
   },
   computed: {
-    hideContact () {
-      return this.blok.hide_contact
+    hideContact() {
+      return this.blok.hide_contact;
     },
 
-    contact () {
+    contact() {
       if (this.blok.contact.match(/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/)) {
-        return `mailto:${this.blok.contact}`
+        return `mailto:${this.blok.contact}`;
       } else {
-        if (this.blok.contact !== '') {
-          return this.blok.contact
+        if (this.blok.contact !== "") {
+          return this.blok.contact;
         } else {
-          return 'mailto:office@grandgarage.eu'
+          return "mailto:office@grandgarage.eu";
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .job-opening {
   margin-bottom: 5px;
-  background-color: #FFF;
+  background-color: #fff;
   .toggle-title {
     padding: 20px;
     font-family: $font-secondary;
@@ -130,7 +123,7 @@ export default {
       padding: 20px 0;
       display: flex;
       @include media-breakpoint-down(sm) {
-          flex-direction: column;
+        flex-direction: column;
       }
       .col-title {
         flex: 1;
@@ -146,7 +139,6 @@ export default {
         }
       }
       .col-button {
-
         .apply-button {
           font-size: 1.2rem;
           text-transform: uppercase;
@@ -154,10 +146,10 @@ export default {
           padding: 1rem 2rem;
           border: none;
           background-color: $color-orange;
-          color: #FFF;
+          color: #fff;
           cursor: pointer;
           display: inline-block;
-          margin-top: .2rem;
+          margin-top: 0.2rem;
           @include media-breakpoint-down(sm) {
             margin-top: 1rem;
           }
@@ -166,12 +158,12 @@ export default {
     }
     &.v-collapse-content {
       max-height: 0;
-      transition: max-height .3s ease-out;
+      transition: max-height 0.3s ease-out;
       overflow: hidden;
       padding: 0;
     }
     &.v-collapse-content-end {
-      transition:max-height .3s ease-in;
+      transition: max-height 0.3s ease-in;
       max-height: max-content;
     }
     .inner-content {
