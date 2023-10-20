@@ -368,7 +368,7 @@ export default {
     },
     async checkPassword (payload) {
       try {
-        const r = await this.$store.dispatch('checkPassword', payload)
+        await this.$store.dispatch('checkPassword', payload)
         return true
       } catch (e) {
         const errorStatus = e?.response?.status
@@ -394,7 +394,7 @@ export default {
     },
     async checkMail (payload) {
       try {
-        const r = await this.$store.dispatch('checkMail', payload)
+        await this.$store.dispatch('checkMail', payload)
         this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar'
 
         await new Promise(resolve => {

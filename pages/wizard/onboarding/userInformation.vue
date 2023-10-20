@@ -101,9 +101,11 @@ export default {
   computed: {
     passwordValid () {
       if (this.passwordRepeatIsEqual && !this.passwordTooShort && this.passwordComplexity) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.onboardingData.userInformation.password = this.password
         return true
       } else {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.onboardingData.userInformation.password = null
         return false
       }

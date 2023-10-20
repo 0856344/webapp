@@ -58,7 +58,6 @@ const version = tmpVersion
 
 const baseUrl = process.env.NUXT_ENV_CONNECTOR_URL ? process.env.NUXT_ENV_CONNECTOR_URL : 'https://connector.grandgarage.eu'
 const connectorBaseUrl = baseUrl + '/api'
-const pretixBaseUrl = 'https://connector.grandgarage.eu/api/pretix/events'
 
 let connector = axios.create({
   baseURL: connectorBaseUrl,
