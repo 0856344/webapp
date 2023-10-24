@@ -61,10 +61,10 @@
         <div>
           <div class="flex-1 mr-6 mb-4">
             <label
-              >Maschine<small v-if="machines && machines.length > 0">
-                ({{ machines.length }})&nbsp;</small
-              >
-            </label>
+              >Maschine<small v-if="machines && machines.length > 0"
+                >({{ machines.length }})&nbsp;</small
+              ></label
+            >
             <v-select
               id="v-step-1"
               :loading="loadingMachines"
@@ -399,11 +399,23 @@ export default {
     closeModal() {
       this.modalOpen = false;
     },
-    openInfoModal(text, submitMethod = null, headline = 'Bestätigen') {
+    openInfoModal(
+      text,
+      submitMethod = null,
+      headline = 'Bestätigen',
+      duration = 5000,
+    ) {
       this.infoModalSubmitMethod = submitMethod;
       this.infoModalText = text;
       this.infoModalHeadline = headline;
       this.infoModalOpen = true;
+
+      if (duration > 0) {
+        // Hide alert after duration (milliseconds)
+        setTimeout(() => {
+          this.infoModalOpen = false;
+        }, duration);
+      }
     },
     confirmInfoModal() {
       this.cancelBooking(this.selectedTableBooking.id);

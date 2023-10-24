@@ -9,10 +9,10 @@
         style="min-height: 60px"
       >
         <span>
-          <span class="block sm:inline"
-            ><font-awesome-icon :icon="icon"></font-awesome-icon>&nbsp;
-            {{ message }}</span
-          >
+          <span class="block sm:inline">
+            <font-awesome-icon :icon="icon"></font-awesome-icon>&nbsp;
+            <span v-html="message" class="alert-message"></span>
+          </span>
         </span>
         <span>
           <span class="close-button" @click="toggle">
@@ -101,5 +101,12 @@ export default {
 }
 .fade-enter-to /* .fade-enter-active in <2.1.8 */ {
   opacity: 1;
+}
+.alert-message ul {
+  display: inline-flex;
+  list-style-type: disc;
+  flex-direction: column;
+  padding: 0;
+  margin: 10px 0 10px 30px;
 }
 </style>

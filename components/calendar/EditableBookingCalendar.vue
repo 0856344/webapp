@@ -1,10 +1,10 @@
 <template>
   <div>
     <Alert
-      :show="showGlobalInfoBox"
-      :message="globalBoxMsg"
-      :icon="globalBoxIcon"
-      :color="globalBoxColor"
+      :show="showAlertBox"
+      :message="alertMsg"
+      :icon="alertIcon"
+      :color="alertColor"
     ></Alert>
     <div class="flex justify-end pb-2">
       <button
@@ -112,11 +112,6 @@
         :disable-views="['years']"
       />
     </div>
-    <Alert
-      :show="showInfoBox"
-      :message="infoBoxMsg"
-      :color="infoBoxColor"
-    ></Alert>
   </div>
 </template>
 
@@ -141,13 +136,10 @@ export default {
       showNotice: true,
       selectedBookings: [],
       invalidDate: null,
-      showInfoBox: false,
-      infoBoxColor: '',
-      infoBoxMsg: '',
-      globalBoxIcon: 'info-circle',
-      globalBoxColor: '',
-      showGlobalInfoBox: false,
-      globalBoxMsg: '',
+      alertIcon: 'info-circle',
+      alertColor: '',
+      showAlertBox: false,
+      alertMsg: '',
     };
   },
   computed: {
@@ -193,17 +185,17 @@ export default {
     eventChanged(calEvent) {
       if (calEvent.originalEvent) {
         // Replace new event with the old one
-        //console.log('Event changed', calEvent);
+        console.log('Event changed', calEvent);
         this.eventDeleted(calEvent.originalEvent);
         this.saveBooking(calEvent.event);
       }
     },
     onEventCreate(calEvent) {
-      //console.log('onEventCreate', calEvent);
+      console.log('onEventCreate', calEvent);
       this.saveBooking(calEvent);
     },
     onEventDragCreate(calEvent) {
-      //console.log('onEventDragCreate', calEvent);
+      console.log('onEventDragCreate', calEvent);
       this.saveBooking(calEvent);
     },
     mapBooking(calEvent) {
@@ -230,7 +222,7 @@ export default {
         //this.getBookingByMethod('getBookingsBySpace', this.space)
         this.getBookingByMethod('getBookingsByResource', 4049);
       } else if (this.resource) {
-        //console.log('RESOURCE FOUND - booking calender', this.resource)
+        //console.log('RESOURCE FOUND - booking calendar', this.resource)
         this.getBookingByMethod('getBookingsByResource', this.resource);
       }
     },
@@ -238,62 +230,86 @@ export default {
       if (calEvent && calEvent._eid) {
         const newBooking = this.mapBooking(calEvent);
 
-        if (
-          helper.isValidDate(newBooking.fromDateTime) &&
-          helper.isValidDate(newBooking.untilDateTime)
-        ) {
-          if (this.hoursExceeded(newBooking, this.allowedBookingHours)) {
-            //console.log('NOT VALID - EXCEEDED HOURS');
-            this.hoursExceededAlert(this.allowedBookingHours);
-            this.invalidDate = newBooking;
-            const memberPackages = this.$store.getters.getMemberPackages();
-            //console.log('store getMemberPackages', memberPackages);
-          }
-          this.bookings.forEach((booking) => {
-            if (this.dateOverlaps(booking, newBooking) === true) {
-              this.dateConflict();
-              this.invalidDate = newBooking;
-            }
-            if (helper.dateIsInPast(new Date(newBooking.fromDateTime))) {
-              this.dateIsInPast();
-              this.invalidDate = newBooking;
-            }
-          });
-
-          if (this.invalidDate) {
-            // Do not save this booking
-            return false;
-          }
-          console.log('VALID');
-          // Check if object already exists, based on the ID, and replace it
-          const index = this.selectedBookings.findIndex(
-            (item) => item.id === newBooking.id,
-          );
-          if (index !== -1) {
-            // Replace the object at the found index with the new object
-            this.selectedBookings.splice(index, 1, newBooking);
-          } else {
-            // No object has been found
-            this.selectedBookings.push(newBooking);
-          }
-
-          this.storeBookings(this.selectedBookings);
-          // console.log(
-          //   'booking stored',
-          //   this.$store.getters.getSelectedBookings,
-          // );
-        } else {
-          // Wrong date format
-          console.log(
-            'Wrong date format given. (fromDate, untilDate)',
-            newBooking.fromDateTime,
-            newBooking.untilDateTime,
-          );
+        if (!this.isBookingValid(newBooking)) {
+          return false;
         }
+
+        // Check if object already exists, based on the ID, and replace it
+        const index = this.selectedBookings.findIndex(
+          (item) => item.id === newBooking.id,
+        );
+        if (index !== -1) {
+          // Replace the object at the found index with the new object
+          this.selectedBookings.splice(index, 1, newBooking);
+        } else {
+          // No object has been found
+          this.selectedBookings.push(newBooking);
+        }
+
+        this.storeBookings(this.selectedBookings);
       } else {
         // Wrong event format
         console.log('Wrong event format. Given: ' + typeof calEvent);
       }
+    },
+    isBookingValid(newBooking) {
+      let alertMsg = null;
+
+      if (
+        !helper.isValidDate(newBooking.fromDateTime) ||
+        !helper.isValidDate(newBooking.untilDateTime)
+      ) {
+        // Wrong date format
+        console.log(
+          'Wrong date format given. (fromDate, untilDate)',
+          newBooking.fromDateTime,
+          newBooking.untilDateTime,
+        );
+        return false;
+      }
+      if (this.hoursExceeded(newBooking, this.allowedBookingHours)) {
+        // Do not save this booking
+        // TODO - Get allowed limitation from fabman package/space
+        const memberPackages = this.$store.getters.getMemberPackages();
+        alertMsg =
+          'In deinem Paket enthaltenes Stundenkontingent: ' +
+          this.allowedBookingHours +
+          'h';
+        this.invalidDate = newBooking;
+      }
+      for (const booking of this.bookings) {
+        if (this.dateOverlaps(booking, newBooking) === true) {
+          // Do not save this booking
+          alertMsg =
+            alertMsg != null
+              ? alertMsg + ' | Datum überschneidet sich.'
+              : 'Datum überschneidet sich.';
+          this.invalidDate = newBooking;
+
+          break;
+        }
+        if (helper.dateIsInPast(new Date(newBooking.fromDateTime))) {
+          console.log('NOT ALLOWED: is in PAST');
+          // Do not save this booking
+          alertMsg =
+            alertMsg != null
+              ? alertMsg + ' | Datum liegt in der Vergangenheit.'
+              : 'Datum liegt in der Vergangenheit.';
+          this.invalidDate = newBooking;
+
+          break;
+        }
+      }
+      if (this.invalidDate) {
+        this.showAlert(alertMsg, '#f55252fc', 'exclamation'); // Show for 10 seconds
+
+        console.log('INVALID DATE', this.invalidDate);
+        // There are errors - do not save and reset anything
+        this.resetBookings();
+
+        return false;
+      }
+      return true;
     },
     hoursExceeded(booking, allowedHours) {
       const differenceInHours = helper.timeDifferenceInHours(
@@ -325,7 +341,6 @@ export default {
       this.selectedBookings = [];
       this.$store.commit('resetBookings');
       this.invalidDate = null;
-      this.showInfoBox = false;
       if (reload) {
         this.fetchBookings();
       }
@@ -343,30 +358,28 @@ export default {
               console.log('error', data);
             }
             console.log('Reservierungen wurden erstellt!');
-            this.openGlobalInfoBox(
+            this.showAlert(
               'Reservierung erfolgreich erstellt!',
               '#29954f',
               'check',
-              5000,
             );
           })
           .catch((error) => {
             let errorMsg =
               'Ups! Die Reservierung konnte leider nicht erstellt werden. Bitte wende dich an frontdesk@grandgarage.eu.';
-            if (error.response.data) {
-              console.log(error.response.status, error.response.data);
+            if (error.response.data.data) {
               if (
-                typeof error.response.data === 'string' &&
-                error.response.data.includes('member has no permission')
+                typeof error.response.data.data === 'string' &&
+                error.response.data.data.includes('no permission')
               ) {
                 errorMsg =
                   'Du besitzt keine Berechtigung für diese Maschine. Bei Fragen wende dich bitte an frontdesk@grandgarage.eu.';
               }
             } else {
-              console.log(error.response);
+              console.log(error.response.data);
             }
             // Show error message to user
-            this.openGlobalInfoBox(errorMsg, '#f55252fc', 'exclamation', 20000);
+            this.showAlert(errorMsg, '#f55252fc', 'exclamation');
             this.$sentry.captureException(new Error(error));
           })
           .finally(() => {
@@ -415,35 +428,18 @@ export default {
 
       return overlapping;
     },
-    openInfoBox(msg, color = null) {
-      this.infoBoxColor = color;
-      this.infoBoxMsg = msg;
-      this.showInfoBox = true;
-    },
-    openGlobalInfoBox(msg, color = '#29954f', icon = 'check', duration = 5000) {
-      this.globalBoxMsg = msg;
-      this.globalBoxColor = color;
-      this.globalBoxIcon = icon;
-      this.showGlobalInfoBox = true;
+    showAlert(msg, color = '#29954f', icon = 'check', duration = 10000) {
+      this.alertMsg = msg;
+      this.alertColor = color;
+      this.alertIcon = icon;
+      this.showAlertBox = true;
 
       if (duration > 0) {
         // Hide alert after duration (milliseconds)
         setTimeout(() => {
-          this.showGlobalInfoBox = false;
+          this.showAlertBox = false;
         }, duration);
       }
-    },
-    dateConflict() {
-      const msg = 'Datum überschneidet sich.';
-      this.openInfoBox(msg, '#f55252fc');
-    },
-    dateIsInPast() {
-      const msg = 'Datum liegt in der Vergangenheit.';
-      this.openInfoBox(msg, '#f55252fc');
-    },
-    hoursExceededAlert(includedHours) {
-      const msg = 'In deinem Paket sind ' + includedHours + 'h inkludiert.';
-      this.openInfoBox(msg, '#f55252fc');
     },
   },
 };
@@ -465,6 +461,7 @@ export default {
     font-size: 0.5em;
   }
 }
+
 .vuecal__today-btn {
   font-size: 0.6em;
   border: 1px solid black;
