@@ -1,14 +1,12 @@
 <template>
-  <div
-    v-editable="blok"
-  >
-    <div v-if="blok.title" class="title"> {{blok.title}}</div>
+  <div v-editable="blok">
+    <div v-if="blok.title" class="title">{{ blok.title }}</div>
     <div class="gg-grid">
       <component
-          v-for="story in blok.columns"
-          :is="story.component"
-          :key="story._uid"
-          :blok="story"
+        v-for="story in blok.columns"
+        :is="story.component"
+        :key="story._uid"
+        :blok="story"
       />
     </div>
   </div>
@@ -16,8 +14,8 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>

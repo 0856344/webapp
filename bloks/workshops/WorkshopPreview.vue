@@ -2,27 +2,22 @@
   <div v-if="story">
     <div class="preview-wrapper">
       <div class="workshop-preview">
-        <router-link
-          class="story"
-          :to="'/' + story.full_slug">
+        <router-link class="story" :to="'/' + story.full_slug">
           <div
             class="banner"
-            :style="{ 'background-image': 'url(' + $resizeImage(workshop.image, '700x0') + ')' }"
+            :style="{
+              'background-image':
+                'url(' + $resizeImage(workshop.image, '700x0') + ')',
+            }"
           />
           <div class="title">
             {{ workshop.title }}
           </div>
-          <div
-            v-if="workshop.subtitle"
-            class="subtitle"
-          >
+          <div v-if="workshop.subtitle" class="subtitle">
             {{ subtitle }}
           </div>
           <div class="teaser">
-            <markdown
-                :value="teaser"
-                class="info-text"
-            />
+            <markdown :value="teaser" class="info-text" />
           </div>
         </router-link>
       </div>
@@ -32,45 +27,50 @@
 
 <script>
 export default {
-  props: ['id'],
-  data () {
+  props: ["id"],
+  data() {
     return {
       story: null,
-      info: '',
-      subtitle: '',
-      teaser: ''
-    }
+      info: "",
+      subtitle: "",
+      teaser: "",
+    };
   },
   computed: {
-    workshop () {
-      return this.story.content
-    }
+    workshop() {
+      return this.story.content;
+    },
   },
-  mounted () {
-    this.$store.app.$storyapi.get(`cdn/stories/${this.id}`, {
-      find_by: 'uuid'
-    }).then((res) => {
-      this.story = res.data.story
-    }).catch((e) => {
-    })
+  mounted() {
+    this.$store.app.$storyapi
+      .get(`cdn/stories/${this.id}`, {
+        find_by: "uuid",
+      })
+      .then((res) => {
+        this.story = res.data.story;
+      })
+      .catch((e) => {});
   },
-  updated () {
-    this.getPretixData()
+  updated() {
+    this.getPretixData();
   },
   methods: {
-    async getPretixData () {
+    async getPretixData() {
       if (this.story.content.pretix_shortform) {
-        const events = await this.$store.dispatch('getPretixEventsForWorkshop', this.story.content.pretix_shortform)
-        const info = events.pop().frontpage_text['de-informal']
-        this.subtitle = info.split('\n')[0].slice(4)
-        this.teaser = info.split('\n').splice(1).join('\n')
+        const events = await this.$store.dispatch(
+          "getPretixEventsForWorkshop",
+          this.story.content.pretix_shortform
+        );
+        const info = events.pop().frontpage_text["de-informal"];
+        this.subtitle = info.split("\n")[0].slice(4);
+        this.teaser = info.split("\n").splice(1).join("\n");
       }
     },
-    open () {
-      this.$router.push({ path: this.story.full_slug })
-    }
-  }
-}
+    open() {
+      this.$router.push({ path: this.story.full_slug });
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .preview-wrapper {
@@ -98,7 +98,7 @@ export default {
       background-color: white;
 
       &:hover {
-        box-shadow: 5px 5px 10px 0px rgba(0,0,0,0.2);
+        box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
       }
 
       .banner {

@@ -1,15 +1,15 @@
 <template>
-    <div>
-        <div class="flex justify-center items-center">
-            <div class="spinner-ring"></div>
-        </div>
+  <div>
+    <div class="flex justify-center items-center">
+      <div class="spinner-ring"></div>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'BigLoadingSpinner'
-}
+  name: "BigLoadingSpinner",
+};
 </script>
 
 <style scoped lang="scss">

@@ -1,54 +1,48 @@
 <template>
   <div class="section">
     <div>
-      <h2>{{ $t('trainings') }}</h2>
-      <loading-spinner v-if="!courses" color="#333"/>
+      <h2>{{ $t("trainings") }}</h2>
+      <loading-spinner v-if="!courses" color="#333" />
       <div v-if="courses" class="courseContainer">
-          <Course
-              v-for="course of courses"
-              :key="course.id"
-              :course="course"
-          />
+        <Course v-for="course of courses" :key="course.id" :course="course" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Course from '@/bloks/Course.vue'
+import Course from "@/bloks/Course.vue";
 
 export default {
   components: {
-    Course
+    Course,
   },
-  middleware: 'authenticated',
-  data () {
-    return {}
+  middleware: "authenticated",
+  data() {
+    return {};
   },
   computed: {
-    memberCourses () {
-      return this.$store.state.memberCourses
+    memberCourses() {
+      return this.$store.state.memberCourses;
     },
-    courses () {
-      return this.$store.state.courses
+    courses() {
+      return this.$store.state.courses;
       // return this.$store.state.courses.sort((a, b) => {
       //   const ma = this.memberCourses.filter(m => m.course_id === a.id)[0]
       //   const mb = this.memberCourses.filter(m => m.course_id === b.id)[0]
       //   return ma.is_valid - mb.is_valid
       // })
     },
-    user () {
-      return this.$store.state.user
-    }
+    user() {
+      return this.$store.state.user;
+    },
   },
-  created () {
-  },
-  methods: {}
-}
+  created() {},
+  methods: {},
+};
 </script>
 
 <style lang="scss">
-
 .section {
   display: flex;
   flex-direction: column;
@@ -66,7 +60,7 @@ export default {
       color: $color-blue;
     }
 
-    margin: 1em 0 .5em;
+    margin: 1em 0 0.5em;
     display: flex;
     align-items: center;
     min-width: 200px;
@@ -75,7 +69,7 @@ export default {
       border-top: $color-blue 1px solid;
       width: 1em;
       position: relative;
-      margin-right: .3em;
+      margin-right: 0.3em;
 
       &:before {
         position: absolute;
@@ -85,12 +79,11 @@ export default {
         border-right: $color-blue 1px solid;
         transform: rotateZ(45deg);
         transform-origin: top right;
-        height: .3em;
-        width: .3em;
-        margin-top: -.5px;
+        height: 0.3em;
+        width: 0.3em;
+        margin-top: -0.5px;
       }
     }
   }
 }
-
 </style>

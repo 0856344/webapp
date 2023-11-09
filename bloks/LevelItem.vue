@@ -2,7 +2,7 @@
   <div :class="active ? 'level-item active' : 'level-item'">
     <!-- .level-indicator content must be loaded from storyblok language -->
     <h3 class="level-indicator">
-      {{ $t('level') }}
+      {{ $t("level") }}
     </h3>
     <h1 class="number">
       {{ number }}
@@ -11,19 +11,15 @@
       <h2 class="title">
         {{ blok.title }}
       </h2>
-
     </div>
-    <div
-      v-if="blok.areas"
-      class="areas"
-    >
+    <div v-if="blok.areas" class="areas">
       <h3
         v-for="(area, index) in blok.areas.split(',')"
         :key="index"
         class="area"
       >
         {{ area }}
-        <br>
+        <br />
       </h3>
     </div>
   </div>
@@ -31,12 +27,11 @@
 
 <script>
 export default {
-  props: ['blok', 'number', 'active']
-}
+  props: ["blok", "number", "active"],
+};
 </script>
 
 <style lang="scss">
-
 .level-item {
   display: flex;
   user-select: none;

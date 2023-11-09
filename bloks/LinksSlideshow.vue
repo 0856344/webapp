@@ -1,30 +1,22 @@
 <template>
-  <div
-      v-editable="blok"
-      class="link-slideshow"
-  >
+  <div v-editable="blok" class="link-slideshow">
     <div v-swiper:swiper="swiperOption">
       <div class="swiper-wrapper">
-        <div
-            :key="i.id"
-            v-for="(i, c) in link_background"
-            class="swiper-slide"
-        >
+        <div :key="i.id" v-for="(i, c) in link_background" class="swiper-slide">
           <!--<a :href="window+'/'+s.link.cached_url" target="_blank">{{s.link}}</a>-->
           <a
-              class="link-slideshow-link"
-              :href="window+'/'+blok.items[c].link.cached_url"
-              target="_blank"
+            class="link-slideshow-link"
+            :href="window + '/' + blok.items[c].link.cached_url"
+            target="_blank"
           >
             <div
-                class="link-slideshow-item"
-                :style="{ 'background-image': 'url(' + i + ')'}"
+              class="link-slideshow-item"
+              :style="{ 'background-image': 'url(' + i + ')' }"
             >
               <img
-                  src="~/assets/img/icons/arrow-right-solid.svg"
-                  class="decorator"
-              >
-
+                src="~/assets/img/icons/arrow-right-solid.svg"
+                class="decorator"
+              />
             </div>
             <div class="link-name">
               <span class="link-name">{{ slug[c] }}</span>
@@ -32,114 +24,130 @@
           </a>
         </div>
       </div>
-      <div class="swiper-button-next"/>
-      <div class="swiper-button-prev"/>
+      <div class="swiper-button-next" />
+      <div class="swiper-button-prev" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
       uuid: null,
       slug: [],
       link_item: [],
-      type: null
-    }
+      type: null,
+    };
   },
   computed: {
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 786) {
-          return 0
+          return 0;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 786) {
-          return 1
+          return 1;
         }
       }
-      return 3
+      return 3;
     },
-    window () {
-      return window.location.origin
+    window() {
+      return window.location.origin;
     },
-    link_background () {
-      return this.link_item
-    }
+    link_background() {
+      return this.link_item;
+    },
   },
-  created () {
-    this.story()
+  created() {
+    this.story();
   },
   methods: {
-    story () {
-      let string
-      let url
-      let item
+    story() {
+      let string;
+      let url;
+      let item;
       //console.log(this.blok.items)
       for (let i = 0; i < this.blok.items.length; i++) {
         //console.log(this.blok.items[i].link.cached_url)
         // this.slug = this.blok.items[0].link.cached_url.split('/')[0];
-        string = this.blok.items[i].link.cached_url.substring(this.blok.items[i].link.cached_url.indexOf('/') + 1)
-        if (this.blok.items[i].link.cached_url.indexOf('machines') !== -1) {
-          this.type = 'machines'
+        string = this.blok.items[i].link.cached_url.substring(
+          this.blok.items[i].link.cached_url.indexOf("/") + 1
+        );
+        if (this.blok.items[i].link.cached_url.indexOf("machines") !== -1) {
+          this.type = "machines";
           //console.log(this.type)
         }
-        if (this.blok.items[i].link.cached_url.indexOf('workshops') !== -1) {
-          this.type = 'workshops'
+        if (this.blok.items[i].link.cached_url.indexOf("workshops") !== -1) {
+          this.type = "workshops";
           //console.log(this.type)
         }
-        if (this.blok.items[i].link.cached_url.indexOf('workshopdates') !== -1) {
-          this.type = 'workshopdates'
+        if (
+          this.blok.items[i].link.cached_url.indexOf("workshopdates") !== -1
+        ) {
+          this.type = "workshopdates";
           //console.log(this.type)
         }
-        this.slug.push((string.substring(string.indexOf('/') + 1)).toUpperCase())
+        this.slug.push(string.substring(string.indexOf("/") + 1).toUpperCase());
         //console.log(this.slug)
-        this.uuid = this.blok.items[0].link.id
-        if (this.type === 'machines') {
-          this.$store.dispatch('loadMachineItem', string.substring(string.indexOf('/') + 1)).then((data) => {
-            // console.log(data.story)
-            string = data.story.content.image
-            url = string.substring(string.indexOf('/') + 1)
-            item = url.substring(url.indexOf('.') + 1)
-            this.link_item.push('//img2.' + item)
-            //console.log(this.link_item)
-          }).catch((err) => {
-            console.error(err)
-          })
+        this.uuid = this.blok.items[0].link.id;
+        if (this.type === "machines") {
+          this.$store
+            .dispatch(
+              "loadMachineItem",
+              string.substring(string.indexOf("/") + 1)
+            )
+            .then((data) => {
+              // console.log(data.story)
+              string = data.story.content.image;
+              url = string.substring(string.indexOf("/") + 1);
+              item = url.substring(url.indexOf(".") + 1);
+              this.link_item.push("//img2." + item);
+              //console.log(this.link_item)
+            })
+            .catch((err) => {
+              console.error(err);
+            });
         }
-        if (this.type === 'workshops') {
+        if (this.type === "workshops") {
           //console.log(string.substring(string.indexOf('/') + 1))
-          this.$store.dispatch('loadWorkshopItem', string.substring(string.indexOf('/') + 1)).then((data) => {
-            // console.log(data.workshop)
-            // console.log('workshop')
-            string = data.workshop.content.image
-            url = string.substring(string.indexOf('/') + 1)
-            item = url.substring(url.indexOf('.') + 1)
-            this.link_item.push('//img2.' + item)
-            // console.log(this.link_item)
-          }).catch((err) => {
-            console.error(err)
-          })
+          this.$store
+            .dispatch(
+              "loadWorkshopItem",
+              string.substring(string.indexOf("/") + 1)
+            )
+            .then((data) => {
+              // console.log(data.workshop)
+              // console.log('workshop')
+              string = data.workshop.content.image;
+              url = string.substring(string.indexOf("/") + 1);
+              item = url.substring(url.indexOf(".") + 1);
+              this.link_item.push("//img2." + item);
+              // console.log(this.link_item)
+            })
+            .catch((err) => {
+              console.error(err);
+            });
         }
       }
       /* console.log(this.blok.items[0].link.cached_url);
@@ -158,13 +166,12 @@ export default {
                 }).catch((err) => {
                     console.log(err);
                 }) */
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .link-slideshow {
   color: $color-blue;
   margin: 40px;
@@ -189,7 +196,6 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
-
   }
 
   .swiper-button-next.link {

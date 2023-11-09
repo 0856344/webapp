@@ -1,15 +1,9 @@
 <template>
   <div>
-    <nuxt-link
-      v-if="content.hasContent"
-      :to="'/' + blok.full_slug"
-    >
+    <nuxt-link v-if="content.hasContent" :to="'/' + blok.full_slug">
       <div class="machine-list-item">
         <div class="image">
-          <img
-            :src="$resizeImage(content.image, '450x450')"
-            alt=""
-          >
+          <img :src="$resizeImage(content.image, '450x450')" alt="" />
         </div>
         <div class="body">
           <div class="title">
@@ -17,7 +11,7 @@
           </div>
           <div class="machine-tags">
             <span :key="tag.id" v-for="(tag, index) in tags">
-              {{ tag }}<span v-if="index+1 < tags.length">, </span>
+              {{ tag }}<span v-if="index + 1 < tags.length">, </span>
             </span>
           </div>
           <div class="teaser">
@@ -26,15 +20,9 @@
         </div>
       </div>
     </nuxt-link>
-    <div
-      v-else
-      class="machine-list-item"
-    >
+    <div v-else class="machine-list-item">
       <div class="image">
-        <img
-          :src="$resizeImage(content.image, '450x450')"
-          alt=""
-        >
+        <img :src="$resizeImage(content.image, '450x450')" alt="" />
       </div>
       <div class="body">
         <div class="title">
@@ -42,7 +30,7 @@
         </div>
         <div class="machine-tags">
           <span :key="tag.id" v-for="(tag, index) in tags">
-            {{ tag }}<span v-if="index+1 < tags.length">, </span>
+            {{ tag }}<span v-if="index + 1 < tags.length">, </span>
           </span>
         </div>
         <div class="teaser">
@@ -55,20 +43,19 @@
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    content () {
-      return this.blok.content
+    content() {
+      return this.blok.content;
     },
-    tags () {
-      return this.blok.tag_list
-    }
-  }
-}
+    tags() {
+      return this.blok.tag_list;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 a {
   text-decoration: none;
   color: #000;
@@ -96,20 +83,20 @@ a {
     .title {
       font-family: $font-secondary;
       font-size: 1.2rem;
-      margin-bottom: .4em;
+      margin-bottom: 0.4em;
       overflow-wrap: break-word;
     }
     .machine-tags {
       font-size: 0.9rem;
       color: $color-blue;
       text-transform: uppercase;
-      margin-bottom: .8rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 0.05em;
       font-weight: 400;
       word-wrap: break-word;
     }
     .subtitle {
-      margin:  0 0 1em 0;
+      margin: 0 0 1em 0;
     }
     .teaser {
       font-family: $font-mono;

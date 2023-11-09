@@ -3,36 +3,28 @@
     class="machine-status"
     :style="{ 'background-color': color, 'font-size': fontSize }"
   >
-    <div
-      v-if="name"
-      class="machine-name"
-    >
+    <div v-if="name" class="machine-name">
       {{ name }}
     </div>
-    <div
-      v-if="resource"
-      class="resource"
-    >
+    <div v-if="resource" class="resource">
       <div v-if="resource.state === 'active'">
         <div v-if="resource.offline">
-          {{ $t( "offline" ) }}
+          {{ $t("offline") }}
         </div>
         <div v-else-if="resource.inUse">
-          {{ $t( "inUse" ) }}
+          {{ $t("inUse") }}
         </div>
         <div v-else>
-          {{ $t( "available" ) }}
+          {{ $t("available") }}
         </div>
       </div>
-<!--      TODO Wartungsnotiz wieder einblenden-->
-<!--      <div-->
-<!--        v-else-if="resource.state === 'locked'"-->
-<!--        :title="resource.maintenanceNotes"-->
-<!--      >-->
-        <div
-          v-else-if="resource.state === 'locked'"
-      >
-        {{ $t( "outOfOrder" ) }}
+      <!--      TODO Wartungsnotiz wieder einblenden-->
+      <!--      <div-->
+      <!--        v-else-if="resource.state === 'locked'"-->
+      <!--        :title="resource.maintenanceNotes"-->
+      <!--      >-->
+      <div v-else-if="resource.state === 'locked'">
+        {{ $t("outOfOrder") }}
       </div>
       <div v-else>
         {{ resource.state }}
@@ -46,43 +38,42 @@
 
 <script>
 export default {
-  props: ['id', 'name'],
-  data () {
+  props: ["id", "name"],
+  data() {
     return {
-      resource: null
-    }
+      resource: null,
+    };
   },
   computed: {
-    color () {
+    color() {
       if (!this.resource) {
-        return '#FFF'
+        return "#FFF";
       }
-      if (this.resource.state === 'locked') {
-        return '#ebe223'
+      if (this.resource.state === "locked") {
+        return "#ebe223";
       }
       if (this.resource.offline) {
-        return '#666'
+        return "#666";
       }
       if (this.resource.inUse) {
-        return '#ff6f00'
+        return "#ff6f00";
       }
-      if (this.resource.state === 'active') {
-        return '#0069aa'
+      if (this.resource.state === "active") {
+        return "#0069aa";
       }
-      return '#FFF'
+      return "#FFF";
     },
-    fontSize () {
-      return this.resource && this.resource.inUse ? '0.9em' : '1em'
-    }
+    fontSize() {
+      return this.resource && this.resource.inUse ? "0.9em" : "1em";
+    },
   },
-  async created () {
-    this.resource = await this.$store.dispatch('getResource', this.id)
-  }
-}
+  async created() {
+    this.resource = await this.$store.dispatch("getResource", this.id);
+  },
+};
 </script>
 
 <style lang="scss">
-
 .machine-status {
   padding: 10px;
   border-bottom: 1px solid #f2f3ee;
@@ -97,7 +88,7 @@ export default {
     text-align: center;
     font-weight: bold;
     font-size: 0.9em;
-    color: #FFF;
+    color: #fff;
     height: 2em;
     div {
       display: inline-block;

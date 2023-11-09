@@ -8,42 +8,33 @@
         <div class="space">
           <div class="headline">
             <div>
-              <div
-                class="back"
-                @click="login"
-              >
+              <div class="back" @click="login">
                 <font-awesome-icon icon="angle-left" />
               </div>
-              <span class="text"> {{ $t( "resetPassword" ) }}</span>
+              <span class="text"> {{ $t("resetPassword") }}</span>
             </div>
-            <div
-              class="close"
-              @click="close"
-            >
+            <div class="close" @click="close">
               <font-awesome-icon icon="times" />
             </div>
           </div>
           <div class="info">
-            {{ $t( "pleaseEnterEmail" ) }}
+            {{ $t("pleaseEnterEmail") }}
           </div>
         </div>
       </div>
       <div class="form-item">
-        <span class="label"> {{ $t( "email" ) }}</span>
+        <span class="label"> {{ $t("email") }}</span>
         <input
           ref="email"
           v-model="email"
           type="email"
-          :placeholder= "[[ $t('yourE-mailAddress') ]]"
+          :placeholder="[[$t('yourE-mailAddress')]]"
           @input="checkMail"
-        >
+        />
       </div>
       <div class="form-item button-row">
-        <button
-          :disabled="!email.length"
-          @click="submit"
-        >
-          {{ $t( "send" ) }}
+        <button :disabled="!email.length" @click="submit">
+          {{ $t("send") }}
         </button>
       </div>
     </div>
@@ -51,50 +42,48 @@
 </template>
 
 <script>
-
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      email: '',
-      loading: false
-    }
+      email: "",
+      loading: false,
+    };
   },
   methods: {
-    close () {
-      this.$store.dispatch('setSidebar', null)
+    close() {
+      this.$store.dispatch("setSidebar", null);
     },
-    async submit () {
-      this.loading = true
+    async submit() {
+      this.loading = true;
       const data = {
-        email: this.email
-      }
-      await this.$store.dispatch('recoverPassword', data)
-      this.loading = false
-      this.$store.dispatch('setSidebar', 'recover-success')
+        email: this.email,
+      };
+      await this.$store.dispatch("recoverPassword", data);
+      this.loading = false;
+      this.$store.dispatch("setSidebar", "recover-success");
     },
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
+    login() {
+      this.$store.dispatch("setSidebar", "login");
     },
-    clearError () {
-      this.errorMessage = null
-      this.errorDescription = ''
+    clearError() {
+      this.errorMessage = null;
+      this.errorDescription = "";
     },
-    checkName () {
-      this.clearError()
+    checkName() {
+      this.clearError();
     },
-    checkMail () {
-      this.clearError()
+    checkMail() {
+      this.clearError();
     },
-    checkPassword () {
-      this.clearError()
-    }
-  }
-}
+    checkPassword() {
+      this.clearError();
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .recover-form {
   padding: 5vw;
   background-color: $color-bright-bg;
@@ -103,15 +92,17 @@ export default {
     display: flex;
     margin-bottom: 40px;
     & > div {
-      .back, .close {
+      .back,
+      .close {
         display: inline-flex;
       }
       .close {
         margin-left: 6em;
       }
-      .back:hover, .close:hover {
+      .back:hover,
+      .close:hover {
         color: $color-orange;
-        cursor:pointer
+        cursor: pointer;
       }
     }
     .headline {
@@ -153,7 +144,7 @@ export default {
     .label {
       font-weight: bold;
       text-transform: uppercase;
-      font-size: .7em;
+      font-size: 0.7em;
     }
     input {
       outline: none;
@@ -176,11 +167,11 @@ export default {
         right: 10px;
         top: 50%;
         background-color: $color-orange;
-        height: .5em;
-        width: .5em;
+        height: 0.5em;
+        width: 0.5em;
         padding: 0;
-        margin-top: -.25em;
-        border-radius: 50%
+        margin-top: -0.25em;
+        border-radius: 50%;
       }
     }
     .password-error {
@@ -193,7 +184,7 @@ export default {
     }
     button {
       background-color: $color-orange;
-      color: #FFF;
+      color: #fff;
       border: 1px solid lighten($color-orange, 10);
       padding: 7px 13px 9px;
       line-height: 1;
@@ -202,14 +193,14 @@ export default {
         background-color: lighten($color-orange, 10);
       }
       &:disabled {
-        background-color: #AAA;
+        background-color: #aaa;
         border-color: #999;
         cursor: not-allowed;
       }
     }
     .bad {
       color: $color-orange;
-      font-size: .7em;
+      font-size: 0.7em;
       font-weight: bold;
     }
   }
@@ -217,7 +208,7 @@ export default {
     padding: 8px 0;
     display: flex;
     .checkbox-wrapper {
-      padding-right: .5em;
+      padding-right: 0.5em;
       outline: none;
       user-select: none;
       max-width: 180px;
@@ -225,8 +216,8 @@ export default {
     label {
       user-select: none;
       flex: 1;
-      font-size: .7em;
-      letter-spacing: .03em;
+      font-size: 0.7em;
+      letter-spacing: 0.03em;
       line-height: 1.2;
       font-weight: 700;
     }
@@ -247,12 +238,12 @@ export default {
         list-style-type: circle;
         padding: 0 0 0 1em;
         > li {
-          margin: .4em 0 0 0;
+          margin: 0.4em 0 0 0;
           > ul {
             padding: 0 0 0 1em;
             list-style-type: circle;
             > li {
-              margin: .4em 0 0 0;
+              margin: 0.4em 0 0 0;
             }
           }
         }

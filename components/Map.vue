@@ -1,120 +1,113 @@
 <template>
-  <div
-    v-editable="blok"
-    class="map"
-  >
-    <img
-      class="placeholder"
-      src="~/assets/img/map.png"
-      alt=""
-    >
+  <div v-editable="blok" class="map">
+    <img class="placeholder" src="~/assets/img/map.png" alt="" />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
       mapTypeControl: false,
       markers: [],
-      styles:
-      [
+      styles: [
         {
-          featureType: 'administrative',
-          elementType: 'labels.text.fill',
+          featureType: "administrative",
+          elementType: "labels.text.fill",
           stylers: [
             {
-              color: '#f85e5e'
-            }
-          ]
+              color: "#f85e5e",
+            },
+          ],
         },
         {
-          featureType: 'landscape',
+          featureType: "landscape",
           stylers: [
             {
-              color: '#f2f3ee'
-            }
-          ]
+              color: "#f2f3ee",
+            },
+          ],
         },
         {
-          featureType: 'poi',
+          featureType: "poi",
           stylers: [
             {
-              visibility: 'off'
-            }
-          ]
+              visibility: "off",
+            },
+          ],
         },
         {
-          featureType: 'road',
+          featureType: "road",
           stylers: [
             {
-              saturation: -100
+              saturation: -100,
             },
             {
-              lightness: 45
-            }
-          ]
+              lightness: 45,
+            },
+          ],
         },
         {
-          featureType: 'road.arterial',
-          elementType: 'labels.icon',
+          featureType: "road.arterial",
+          elementType: "labels.icon",
           stylers: [
             {
-              visibility: 'off'
-            }
-          ]
+              visibility: "off",
+            },
+          ],
         },
         {
-          featureType: 'road.highway',
+          featureType: "road.highway",
           stylers: [
             {
-              visibility: 'simplified'
-            }
-          ]
+              visibility: "simplified",
+            },
+          ],
         },
         {
-          featureType: 'transit',
+          featureType: "transit",
           stylers: [
             {
-              visibility: 'off'
-            }
-          ]
+              visibility: "off",
+            },
+          ],
         },
         {
-          featureType: 'water',
+          featureType: "water",
           stylers: [
             {
-              color: '#72a4b2'
+              color: "#72a4b2",
             },
             {
-              visibility: 'on'
-            }
-          ]
-        }
-      ]
-    }
+              visibility: "on",
+            },
+          ],
+        },
+      ],
+    };
   },
   computed: {
-    options () {
+    options() {
       return {
-        styles: this.styles
-      }
-    }
+        styles: this.styles,
+      };
+    },
   },
-  created () {
-    this.markers = [{
-      position: {
-        lat: Number(this.blok.lat),
-        lng: Number(this.blok.lon)
-      }
-    }]
-  }
-}
+  created() {
+    this.markers = [
+      {
+        position: {
+          lat: Number(this.blok.lat),
+          lng: Number(this.blok.lon),
+        },
+      },
+    ];
+  },
+};
 </script>
 
 <style lang="scss">
-
 .map {
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;

@@ -6,10 +6,7 @@
           {{ blok.title }}
         </h2>
         <div class="icon">
-          <icon
-            v-if="blok.icon"
-            :name="blok.icon"
-          />
+          <icon v-if="blok.icon" :name="blok.icon" />
         </div>
       </div>
       <div class="body">
@@ -25,16 +22,15 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .content {
-  background-color: #FFF;
+  background-color: #fff;
   padding: 1.5em;
-  box-shadow: darken($color-bright-bg,5%) 10px 8px;
+  box-shadow: darken($color-bright-bg, 5%) 10px 8px;
   .header {
     display: flex;
     align-items: flex-start;

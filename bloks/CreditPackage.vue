@@ -1,91 +1,103 @@
 <template>
-    <div class="credit-package-item">
-        <div class="price-title">Preis:</div>
-        <div v-if="!hasDiscount" class="price">{{'40€'}}</div>
-        <div v-if="hasDiscount" class="price">{{'10€'}}</div>
-        <div class="rewards-box">
-          <div class="rewards-small-text">{{'erhalte'}}</div>
-          <div class="rewards">{{'500 Credits'}}</div>
-          <div class="rewards"><font-awesome-icon class="icon" icon="coins" /></div>
+  <div class="credit-package-item">
+    <div class="price-title">Preis:</div>
+    <div v-if="!hasDiscount" class="price">{{ "40€" }}</div>
+    <div v-if="hasDiscount" class="price">{{ "10€" }}</div>
+    <div class="rewards-box">
+      <div class="rewards-small-text">{{ "erhalte" }}</div>
+      <div class="rewards">{{ "500 Credits" }}</div>
+      <div class="rewards"><font-awesome-icon class="icon" icon="coins" /></div>
+    </div>
+    <div class="button-container">
+      <div
+        v-if="!buyCreditsDialog"
+        class="button"
+        @click="showBuyCreditsDialog()"
+      >
+        <div class="button-text">
+          {{ "kaufen" }}
         </div>
-          <div class="button-container">
-          <div v-if="!buyCreditsDialog" class="button" @click="showBuyCreditsDialog()">
-            <div class="button-text">
-              {{ 'kaufen' }}
+      </div>
+      <div class="button-dialog-container">
+        <loading-spinner
+          style="margin-top: 7%"
+          v-if="buyLoading"
+          color="#333"
+        />
+      </div>
+      <div v-if="!buyLoading" class="button-dialog-container">
+        <div v-if="buyCreditsDialog">
+          <div class="button-dialog-no" @click="closeBuyCreditsDialog()">
+            <div>
+              {{ "abbrechen" }}
             </div>
           </div>
-          <div class="button-dialog-container"> <loading-spinner style="margin-top: 7%" v-if="buyLoading" color="#333"/></div>
-          <div v-if="!buyLoading" class="button-dialog-container">
-            <div v-if="buyCreditsDialog">
-              <div class="button-dialog-no" @click="closeBuyCreditsDialog()">
-                <div>
-                  {{ 'abbrechen' }}
-                </div>
-              </div>
-              <div class="button-dialog-yes" @click=buyCredits()>
-                  <div>
-                    {{ 'bestätigen' }}
-                  </div>
-              </div>
+          <div class="button-dialog-yes" @click="buyCredits()">
+            <div>
+              {{ "bestätigen" }}
             </div>
           </div>
-          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       buyCreditsDialog: false,
       cancelPackageDialog: false,
-      buyLoading: false
-    }
+      buyLoading: false,
+    };
   },
-  props: ['hasDiscount'],
-  computed: {
-  },
+  props: ["hasDiscount"],
+  computed: {},
   methods: {
     // get credit
-    async buyCredits () {
-      this.buyLoading = true
-      this.buyCreditsDialog = true
+    async buyCredits() {
+      this.buyLoading = true;
+      this.buyCreditsDialog = true;
       // get captcha token
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+      await this.$recaptchaLoaded();
+      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        'g-recaptcha-response': token
-      }
+        "g-recaptcha-response": token,
+      };
       // connector will double-check if discount is valid
-      let payload = { hasDiscount: this.hasDiscount }
+      let payload = { hasDiscount: this.hasDiscount };
       // add captcha token to payload
-      payload = { ...payload, ...captchaData }
-      await this.$store.dispatch('buyCredits', payload)
+      payload = { ...payload, ...captchaData };
+      await this.$store
+        .dispatch("buyCredits", payload)
         .then((response) => {
-          this.buyLoading = false
-          this.buyCreditsDialog = false
-          this.$toast.show('Credits wurden erfolgreich verbucht!', {
-            className: 'goodToast'
-          })
-          this.$emit('reload')
+          this.buyLoading = false;
+          this.buyCreditsDialog = false;
+          this.$toast.show("Credits wurden erfolgreich verbucht!", {
+            className: "goodToast",
+          });
+          this.$emit("reload");
         })
         .catch((error) => {
-          this.buyLoading = false
-          this.buyCreditsDialog = false
+          this.buyLoading = false;
+          this.buyCreditsDialog = false;
           switch (error.response.status) {
             case 401:
-              this.$toast.show('Ermäßigung nicht bestätigt. Kontaktiere bitte den Frontdesk.', {
-                className: 'badToast'
-              })
-              break
+              this.$toast.show(
+                "Ermäßigung nicht bestätigt. Kontaktiere bitte den Frontdesk.",
+                {
+                  className: "badToast",
+                }
+              );
+              break;
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten', {
-                className: 'badToast'
-              })
-              break
+              this.$toast.show("Ein Fehler ist aufgetreten", {
+                className: "badToast",
+              });
+              break;
           }
-        })
+        });
     },
     // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
     // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
@@ -97,18 +109,17 @@ export default {
     //     return ms[0].name
     //   }
     // },
-    showBuyCreditsDialog () {
-      this.buyCreditsDialog = true
+    showBuyCreditsDialog() {
+      this.buyCreditsDialog = true;
     },
-    closeBuyCreditsDialog () {
-      this.buyCreditsDialog = false
-    }
-  }
-}
+    closeBuyCreditsDialog() {
+      this.buyCreditsDialog = false;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .credit-package-item {
   font-size: 1rem;
   font-family: "Roboto Mono", monospace;
@@ -213,34 +224,33 @@ export default {
       text-transform: uppercase;
     }
 
-    .button-dialog-container{
+    .button-dialog-container {
       text-align: center;
 
-    .button-dialog-yes {
-      cursor: pointer;
-      margin-top: 7%;
-      background: $color-success-border;
-      border-radius: 15px;
-      color: white;
-      padding: 7px;
-      font-size: 16px;
-      width: 110px;
-      display: inline-block;
-    }
+      .button-dialog-yes {
+        cursor: pointer;
+        margin-top: 7%;
+        background: $color-success-border;
+        border-radius: 15px;
+        color: white;
+        padding: 7px;
+        font-size: 16px;
+        width: 110px;
+        display: inline-block;
+      }
 
-    .button-dialog-no {
-      cursor: pointer;
-      margin-top: 7%;
-      background: $color-red;
-      border-radius: 15px;
-      color: white;
-      padding: 7px;
-      font-size: 16px;
-      width: 110px;
-      display: inline-block;
-    }
+      .button-dialog-no {
+        cursor: pointer;
+        margin-top: 7%;
+        background: $color-red;
+        border-radius: 15px;
+        color: white;
+        padding: 7px;
+        font-size: 16px;
+        width: 110px;
+        display: inline-block;
+      }
     }
   }
 }
-
 </style>

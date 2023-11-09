@@ -1,14 +1,14 @@
 <template>
   <div>
-    <ul   class="grid-container">
-      <li v-for="i in imageList"  :key="i.uuid" class="grid-image">
-        <a  :href="i.pdf.filename" target="_blank">
-        <img :src="i.image.filename" loading="lazy" >
+    <ul class="grid-container">
+      <li v-for="i in imageList" :key="i.uuid" class="grid-image">
+        <a :href="i.pdf.filename" target="_blank">
+          <img :src="i.image.filename" loading="lazy" />
         </a>
       </li>
       <li></li>
     </ul>
-<!--    <ul
+    <!--    <ul
         class="grid-container">
     </ul>
         <ul>
@@ -35,19 +35,19 @@
 
 <script>
 export default {
-  name: 'PressGallery',
-  props: ['images'],
-  data () {
+  name: "PressGallery",
+  props: ["images"],
+  data() {
     return {
       container: null,
-      currentPosition: 0
-    }
+      currentPosition: 0,
+    };
   },
   computed: {
-    imageList () {
-      return this.images
-    }
-  }
+    imageList() {
+      return this.images;
+    },
+  },
   /*  methods: {
       showModal (src) {
         const modal = document.getElementById('modal')
@@ -96,12 +96,12 @@ export default {
         }
       }
     }*/
-}
+};
 </script>
 
-<style lang="scss"  >
+<style lang="scss">
 // BASIC
-.grid-container{
+.grid-container {
   display: flex;
   flex-wrap: wrap;
   ul {
@@ -124,7 +124,7 @@ export default {
     max-height: 100%;
     min-width: 100%;
     vertical-align: bottom;
-    padding:10px;
+    padding: 10px;
   }
 
   // ADVANCED
@@ -162,7 +162,10 @@ export default {
       min-width: 0;
       &:hover {
         .grid-image {
-          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+            rotate(var(--tw-rotate)) skewX(var(--tw-skew-x))
+            skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+            scaleY(var(--tw-scale-y));
           --transform-scale-x: 1.1;
           --transform-scale-y: 1.1;
           opacity: 0.75;
@@ -182,15 +185,16 @@ export default {
   }
 }
 
-.image-title{
+.image-title {
   color: black;
   font-size: 1.2rem;
 }
 
 .grid-image {
-
   &:hover {
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+      rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+      scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
     --transform-scale-x: 1.25;
     --transform-scale-y: 1.25;
     opacity: 0.75;
@@ -238,7 +242,7 @@ export default {
   }
   .display-image {
     display: flex;
-    .arrow-left{
+    .arrow-left {
       padding-right: 0.5rem;
       color: #ffffff;
       font-size: 3rem;
@@ -249,7 +253,7 @@ export default {
         padding-right: 2.5rem;
       }
     }
-    .arrow-right{
+    .arrow-right {
       padding-left: 0.5rem;
       color: #ffffff;
       font-size: 3rem;
@@ -260,7 +264,7 @@ export default {
         padding-left: 2.5rem;
       }
     }
-    .modal-img{
+    .modal-img {
       object-fit: cover;
       width: 300px;
       @media (min-width: 768px) {
@@ -272,5 +276,4 @@ export default {
     }
   }
 }
-
 </style>

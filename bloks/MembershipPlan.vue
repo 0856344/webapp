@@ -1,116 +1,94 @@
 <template>
-  <div
-    v-editable="blok"
-    class="col"
-  >
+  <div v-editable="blok" class="col">
     <div class="plan">
       <h2 class="title">
         {{ blok.name }}
       </h2>
       <transition name="changeprice">
-        <div
-          v-if="priceView == 'monthly'"
-          class="pricewrapper"
-        >
+        <div v-if="priceView == 'monthly'" class="pricewrapper">
           <div class="price">
             <h4 class="title">
-              {{ $t( "discounted" ) }}
+              {{ $t("discounted") }}
             </h4>
             <div class="pricetag">
-              <div class="price-value">
-                {{ blok.price_reduced }},-
-              </div>
+              <div class="price-value">{{ blok.price_reduced }},-</div>
               <div class="interval">
-                {{ $t( "p.m." ) }}
+                {{ $t("p.m.") }}
               </div>
             </div>
           </div>
           <div class="price">
             <h4 class="title">
-              {{ $t( "regular" ) }}
+              {{ $t("regular") }}
             </h4>
             <div class="pricetag">
-              <div class="price-value">
-                {{ blok.price_regular }},-
-              </div>
+              <div class="price-value">{{ blok.price_regular }},-</div>
               <div class="interval">
-                {{ $t( "p.m." ) }}
+                {{ $t("p.m.") }}
               </div>
             </div>
           </div>
         </div>
-        <div
-          v-else-if="priceView == 'annually'"
-          class="pricewrapper"
-        >
+        <div v-else-if="priceView == 'annually'" class="pricewrapper">
           <div class="price">
             <h4 class="title">
-              {{ $t( "discounted" ) }}
+              {{ $t("discounted") }}
             </h4>
             <div class="pricetag">
-              <div class="price-value">
-                {{ blok.price_reduced_annually }},-
-              </div>
+              <div class="price-value">{{ blok.price_reduced_annually }},-</div>
               <div class="interval">
-                {{ $t( "p.a." ) }}
+                {{ $t("p.a.") }}
               </div>
             </div>
           </div>
           <div class="price">
             <h4 class="title">
-              {{ $t( "regular" ) }}
+              {{ $t("regular") }}
             </h4>
             <div class="pricetag">
-              <div class="price-value">
-                {{ blok.price_regular_annually }},-
-              </div>
+              <div class="price-value">{{ blok.price_regular_annually }},-</div>
               <div class="interval">
-                {{ $t( "p.a." ) }}
+                {{ $t("p.a.") }}
               </div>
             </div>
           </div>
         </div>
       </transition>
       <ul class="feature-list">
-        <li
-          v-for="item in blok.features"
-          :key="item._uid"
-          class="feature"
-        >
+        <li v-for="item in blok.features" :key="item._uid" class="feature">
           {{ item.text }}
         </li>
       </ul>
-      <markdown :value="blok.plan_text" class="plan-text"/>
+      <markdown :value="blok.plan_text" class="plan-text" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok', 'priceView'],
+  props: ["blok", "priceView"],
   computed: {
-    registerLink () {
-      return '#'
-    }
+    registerLink() {
+      return "#";
+    },
   },
   methods: {
-    register () {
-      this.$store.dispatch('setSidebar', 'register')
-    }
-  }
-}
+    register() {
+      this.$store.dispatch("setSidebar", "register");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .col {
   display: flex;
   justify-content: space-between;
   .plan {
-    box-shadow: darken($color-bright-bg,5%) 10px 8px;
+    box-shadow: darken($color-bright-bg, 5%) 10px 8px;
     max-width: 500px;
     padding: 3vw;
-    background-color: #FFF;
+    background-color: #fff;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -141,7 +119,7 @@ export default {
     .pricewrapper {
       display: flex;
       .price {
-        margin-top: .4em;
+        margin-top: 0.4em;
         width: 50%;
         .title {
           margin: 5px 0;
@@ -158,7 +136,7 @@ export default {
           text-decoration: none;
           .price-value {
             font-size: 1.4em;
-            margin-right: .2em;
+            margin-right: 0.2em;
           }
           .interval {
             color: #999;
@@ -173,12 +151,14 @@ export default {
       line-height: 1.5em;
     }
   }
-  .changeprice-enter-active, .changeprice-leave-active {
+  .changeprice-enter-active,
+  .changeprice-leave-active {
     transition: all 0.3s;
   }
-  .changeprice-enter, .changeprice-leave-to {
+  .changeprice-enter,
+  .changeprice-leave-to {
     opacity: 0;
-    transform: translateX(.5em);
+    transform: translateX(0.5em);
   }
 }
 </style>

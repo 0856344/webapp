@@ -1,40 +1,32 @@
 <template>
-<!--  @deprecated: Page unused currently-->
+  <!--  @deprecated: Page unused currently-->
   <div>
     <h2>Credits</h2>
-    <div
-      class="credits"
-    >
+    <div class="credits">
       <div class="myCredits">
         <button
           class="input-button-primary creditsButton"
           @click="$router.push('/de/gutscheine?action=redeem')"
         >
-          {{ $t('redeemGiftCard') }}
+          {{ $t("redeemGiftCard") }}
         </button>
       </div>
-      <div class="logs">
-      </div>
+      <div class="logs"></div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Credits',
-  middleware: 'authenticated',
-  data: () => ({
-  }),
-  async mounted () {
-  },
-  methods: {
-  }
-}
+  name: "Credits",
+  middleware: "authenticated",
+  data: () => ({}),
+  async mounted() {},
+  methods: {},
+};
 </script>
 
 <style lang="scss" scoped>
-
 .myCredits {
   display: flex;
   flex-flow: row nowrap;

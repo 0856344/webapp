@@ -11,13 +11,20 @@
         <pretix-calendar :calendar="blok.pretix_shortform" />
       </div>
       <div v-else class="w-full flex align-middle justify-center">
-        <div class="w-4/5 lg:w-1/2 rounded-md bg-white shadow-sm shadow-blue-700 m-4 py-1 px-2 text-center flex flex-col">
-        <p class="lg:text-xl text-lg font-bold font-mono text-white bg-blue my-2">
-          Danke für dein Interesse an diesem Workshop! </p>
-          <p class="text-lg lg:leading-relaxed leading-tight m-0 mb-2">Derzeit ist kein
-          Termin geplant. Melde dich bei unserem <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a> um auf dem Laufenden zu bleiben.
-        </p>
-      </div>
+        <div
+          class="w-4/5 lg:w-1/2 rounded-md bg-white shadow-sm shadow-blue-700 m-4 py-1 px-2 text-center flex flex-col"
+        >
+          <p
+            class="lg:text-xl text-lg font-bold font-mono text-white bg-blue my-2"
+          >
+            Danke für dein Interesse an diesem Workshop!
+          </p>
+          <p class="text-lg lg:leading-relaxed leading-tight m-0 mb-2">
+            Derzeit ist kein Termin geplant. Melde dich bei unserem
+            <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a> um auf dem
+            Laufenden zu bleiben.
+          </p>
+        </div>
       </div>
     </div>
     <div>
@@ -38,45 +45,45 @@
 </template>
 
 <script>
-import { getMetaTagsForPage } from '@/services/MetaDataService'
+import { getMetaTagsForPage } from "@/services/MetaDataService";
 
 export default {
-  props: ['blok', 'workshopInformation'],
-  data () {
+  props: ["blok", "workshopInformation"],
+  data() {
     return {
-      futureEvents: []
-    }
+      futureEvents: [],
+    };
   },
-  created () {
+  created() {
     this.$store
-      .dispatch('getFutureEvents', this.blok.pretix_shortform)
+      .dispatch("getFutureEvents", this.blok.pretix_shortform)
       .then((res) => {
-        this.futureEvents = res
-      })
+        this.futureEvents = res;
+      });
     return {
-      futureEvents: []
-    }
+      futureEvents: [],
+    };
   },
   computed: {
-    subtitle () {
-      return this.workshopInformation.split('\n')[0].slice(4)
+    subtitle() {
+      return this.workshopInformation.split("\n")[0].slice(4);
     },
-    workShopInfo () {
-      return this.workshopInformation.split('\n').splice(1).join('\n')
+    workShopInfo() {
+      return this.workshopInformation.split("\n").splice(1).join("\n");
     },
-    linktitle () {
-      return this.blok.linktitle
+    linktitle() {
+      return this.blok.linktitle;
     },
-    images () {
+    images() {
       return {
-        items: this.blok.images
-      }
-    }
+        items: this.blok.images,
+      };
+    },
   },
-  head () {
-    return getMetaTagsForPage(this.blok)
-  }
-}
+  head() {
+    return getMetaTagsForPage(this.blok);
+  },
+};
 </script>
 
 <style lang="scss" scoped>

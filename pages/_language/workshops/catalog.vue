@@ -1,21 +1,24 @@
 <template>
   <section class="workshop-overview">
-    <div v-show="!isCalendar" >
+    <div v-show="!isCalendar">
       <!--      <div class="search">
               <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
             </div>-->
       <div class="workshop-list-wrapper" :key="this.filter">
-          <div v-if="fullWorkshops && fullWorkshops.length > 0 && !noResults" class="workshop-list">
-            <transition-group name="list">
-              <workshop-list-item
-                  v-for="item in fullWorkshops"
-                  :blok="item.blok"
-                  :pretix="item.pretix"
-                  :key="item.blok.id"
-                  class="list-item"
-                  :slim="false"
-              ></workshop-list-item>
-            </transition-group>
+        <div
+          v-if="fullWorkshops && fullWorkshops.length > 0 && !noResults"
+          class="workshop-list"
+        >
+          <transition-group name="list">
+            <workshop-list-item
+              v-for="item in fullWorkshops"
+              :blok="item.blok"
+              :pretix="item.pretix"
+              :key="item.blok.id"
+              class="list-item"
+              :slim="false"
+            ></workshop-list-item>
+          </transition-group>
           <!--          <div >
                       <div class="workshop-list-none">
                         <code> {{ $t('noSearchResults') }}</code>
@@ -28,180 +31,210 @@
 </template>
 
 <script>
-import moment from 'moment'
-
 export default {
-  data () {
+  data() {
     return {
       categories: [
-        { key: 'event', name: 'Event', value: false, nameToDisplay: 'Event' },
-        { key: 'workshop', name: 'Workshops', value: false, nameToDisplay: 'Workshops' },
-        { key: 'training', name: 'Einschulungen', value: false, nameToDisplay: 'Einschulungen' },
-        { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false, nameToDisplay: 'Frauen und Technik' },
-        { key: 'for_kids', name: 'for_kids', value: false, nameToDisplay: 'Kinder und Jugendliche' }
+        { key: "event", name: "Event", value: false, nameToDisplay: "Event" },
+        {
+          key: "workshop",
+          name: "Workshops",
+          value: false,
+          nameToDisplay: "Workshops",
+        },
+        {
+          key: "training",
+          name: "Einschulungen",
+          value: false,
+          nameToDisplay: "Einschulungen",
+        },
+        {
+          key: "frauenundtechnik",
+          name: "#frauenundtechnik",
+          value: false,
+          nameToDisplay: "Frauen und Technik",
+        },
+        {
+          key: "for_kids",
+          name: "for_kids",
+          value: false,
+          nameToDisplay: "Kinder und Jugendliche",
+        },
         // { key: 'makemas', name: '#makemas2022', value: false }
       ],
       loading: false,
-      search: '',
+      search: "",
       workshops: [],
       pretixWorkshops: [],
       tags: [],
       tagsCollapsed: false,
       fullWorkshops: [],
-      selectedEvent: '',
+      selectedEvent: "",
       filteredWorkshops: [],
-      filter: '',
+      filter: "",
       noResults: false,
       isCalendar: false, // false = grid , true = calender,
       windowWidth: Infinity,
-      display: 'calendar'
-    }
+      display: "calendar",
+    };
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize)
-    })
-    this.onResize()
+      window.addEventListener("resize", this.onResize);
+    });
+    this.onResize();
   },
-  created () {
-    this.addPretixToStoryblok()
-    this.$watch('categories', (newVal, oldVal) => {
-      this.updateFilter()
-    }, { deep: true })
+  created() {
+    this.addPretixToStoryblok();
+    this.$watch(
+      "categories",
+      (newVal, oldVal) => {
+        this.updateFilter();
+      },
+      { deep: true }
+    );
   },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.onResize)
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize);
   },
   watch: {
-    search () {
-      this.noResults = false
-      this.updateSearch()
-    }
+    search() {
+      this.noResults = false;
+      this.updateSearch();
+    },
   },
   methods: {
-    onResize () {
-      this.windowWidth = window.innerWidth
+    onResize() {
+      this.windowWidth = window.innerWidth;
       if (this.windowWidth <= 1200) {
-        this.display = 'week'
+        this.display = "week";
       } else {
-        this.display = 'calendar'
+        this.display = "calendar";
       }
     },
-    filterByDate () {
-      this.pretixWorkshops.forEach((item) => {
-      })
+    filterByDate() {
+      this.pretixWorkshops.forEach((item) => {});
     },
 
-    addPretixToStoryblok () {
+    addPretixToStoryblok() {
       this.workshops.forEach((item) => {
         this.pretixWorkshops.forEach((pretixItem) => {
-          if (item.content.pretix_shortform && item.content.pretix_shortform === pretixItem[0].slug) {
+          if (
+            item.content.pretix_shortform &&
+            item.content.pretix_shortform === pretixItem[0].slug
+          ) {
             this.fullWorkshops.push({
               blok: item,
-              pretix: pretixItem
-            })
+              pretix: pretixItem,
+            });
           }
-        })
-      })
+        });
+      });
     },
-    updateSearch () {
-      this.filterWorkshopsBySearch()
+    updateSearch() {
+      this.filterWorkshopsBySearch();
     },
-    updateFilter () {
-      this.loading = true
-      this.noResults = false
-      this.selectedEvent = this.selectedCategories()
+    updateFilter() {
+      this.loading = true;
+      this.noResults = false;
+      this.selectedEvent = this.selectedCategories();
       if (this.selectedEvent.length > 1) {
-        this.deselectOldest()
-        this.selectedEvent = this.selectedCategories()
+        this.deselectOldest();
+        this.selectedEvent = this.selectedCategories();
       }
       if (this.selectedEvent.length === 0) {
-        this.filteredWorkshops = []
-        this.search = ''
-        this.filter = ''
+        this.filteredWorkshops = [];
+        this.search = "";
+        this.filter = "";
       }
       if (this.selectedEvent.length === 1) {
-        this.filter = this.selectedEvent[0].name
-        this.filterWorkshopsBySearch()
+        this.filter = this.selectedEvent[0].name;
+        this.filterWorkshopsBySearch();
       }
 
-      this.loading = false
+      this.loading = false;
     },
-    toggleTags () {
-      this.tagsCollapsed = !this.tagsCollapsed
+    toggleTags() {
+      this.tagsCollapsed = !this.tagsCollapsed;
     },
-    filterWorkshopsBySearch () {
-      this.filteredWorkshops = []
+    filterWorkshopsBySearch() {
+      this.filteredWorkshops = [];
       this.fullWorkshops.forEach((item) => {
         if (item.blok.content.title.includes(this.search)) {
-          if (this.filter !== '') {
+          if (this.filter !== "") {
             if (item.blok.content.category === this.filter) {
-              this.filteredWorkshops.push(item)
+              this.filteredWorkshops.push(item);
             } else {
-              this.noResults = true
+              this.noResults = true;
             }
           } else {
-            this.filteredWorkshops.push(item)
+            this.filteredWorkshops.push(item);
           }
         }
-      })
+      });
     },
-    deselectOldest () {
+    deselectOldest() {
       this.categories.forEach((item) => {
         if (item.name === this.filter) {
-          item.value = false
+          item.value = false;
         }
-      })
+      });
     },
-    selectedCategories () {
-      return this.categories.filter((c) => {
-        return (c.value) ? c.name : ''
-      }).map((c) => {
-        return { name: c.name, value: c.value, key: c.key }
-      })
+    selectedCategories() {
+      return this.categories
+        .filter((c) => {
+          return c.value ? c.name : "";
+        })
+        .map((c) => {
+          return { name: c.name, value: c.value, key: c.key };
+        });
     },
-    formatPretixCategoryRequest ($category) {
-      return 'attr[Kategorie]=' + escape($category)
+    formatPretixCategoryRequest($category) {
+      return "attr[Kategorie]=" + escape($category);
     },
-    calenderDisplayOnChange ($displayType) {
-      return $displayType
-    }
+    calenderDisplayOnChange($displayType) {
+      return $displayType;
+    },
   },
   computed: {
-    filters () {
+    filters() {
       return {
         filter_query: {
           component: {
-            in: 'workshop'
-          }
-        }
-      }
-    }
+            in: "workshop",
+          },
+        },
+      };
+    },
   },
-  async asyncData  (context) {
+  async asyncData(context) {
     const filters = {
       filter_query: {
         component: {
-          in: 'workshop'
+          in: "workshop",
+        },
+      },
+    };
+    const workshops = await context.store
+      .dispatch("loadWorkshops", filters)
+      .then((data) => {
+        if (data.stories) {
+          return { workshops: data.stories };
         }
-      }
-    }
-    const workshops = await context.store.dispatch('loadWorkshops', filters).then((data) => {
-      if (data.stories) {
-        return { workshops: data.stories }
-      }
-      return { workshops: [] }
-    })
-    const pretixWorkshops = await context.store.dispatch('getPretixEvents').then((data) => {
-      if (data) {
-        return { pretixWorkshops: data }
-      } else {
-        return { pretixWorkshops: [] }
-      }
-    })
-    return { ...workshops, ...pretixWorkshops }
-  }
-}
+        return { workshops: [] };
+      });
+    const pretixWorkshops = await context.store
+      .dispatch("getPretixEvents")
+      .then((data) => {
+        if (data) {
+          return { pretixWorkshops: data };
+        } else {
+          return { pretixWorkshops: [] };
+        }
+      });
+    return { ...workshops, ...pretixWorkshops };
+  },
+};
 </script>
 
 <style lang="scss">
@@ -326,12 +359,12 @@ export default {
       }
     }
 
-    .list-enter-active, .list-leave-active {
+    .list-enter-active,
+    .list-leave-active {
       transition: all 0.5s;
     }
 
-    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
-    {
+    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
       opacity: 0;
       transform: translateX(30px);
     }
@@ -351,13 +384,13 @@ export default {
     }
 
     .headline {
-      color: #FFF;
+      color: #fff;
       font-weight: bold;
       font-size: 1.8rem;
       @include margin-page-wide();
       margin-bottom: 20px;
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: 0.05em;
       @include media-breakpoint-down(sm) {
         font-size: 1.2rem;
         margin-bottom: 10px;
@@ -371,7 +404,7 @@ export default {
       grid-template-columns: repeat(3, 1fr);
       @include media-breakpoint-down(sm) {
         grid-template-columns: 1fr 1fr;
-        font-size: .85em;
+        font-size: 0.85em;
       }
       @include media-breakpoint-down(xs) {
         grid-template-columns: 1fr;
@@ -380,21 +413,21 @@ export default {
 
       > .tag {
         font-family: $font-mono;
-        color: #FFF;
+        color: #fff;
         user-select: none;
         cursor: pointer;
 
-        input[type=checkbox] {
+        input[type="checkbox"] {
           outline: none;
           -webkit-appearance: none;
           padding: 5px;
-          border: 1px solid #FFF;
+          border: 1px solid #fff;
           border-radius: 3px;
           position: relative;
           top: 0;
 
           &:checked {
-            background-color: #FFF;
+            background-color: #fff;
           }
         }
       }
@@ -405,7 +438,7 @@ export default {
       overflow: hidden;
       position: relative;
       max-height: 1000px;
-      transition: all .3s linear;
+      transition: all 0.3s linear;
       padding-bottom: 30px;
       .expander {
         cursor: pointer;
@@ -413,10 +446,10 @@ export default {
         bottom: 0;
         width: 100%;
         height: 20px;
-        transition: all .3s linear;
+        transition: all 0.3s linear;
 
         &:after {
-          transition: all .3s linear;
+          transition: all 0.3s linear;
           content: "";
           position: absolute;
           bottom: 18px;
@@ -453,7 +486,7 @@ export default {
     margin-top: 1vh;
     margin-bottom: 2vh;
 
-    input[type=text] {
+    input[type="text"] {
       flex: 1;
       display: block;
       width: 100%;
@@ -464,7 +497,7 @@ export default {
       border: none;
     }
 
-    input[type=button] {
+    input[type="button"] {
       font-size: 1.1rem;
       margin-left: 10px;
       text-transform: uppercase;

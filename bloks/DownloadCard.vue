@@ -1,23 +1,29 @@
 <template>
   <div v-editable="blok" class="download-item">
-    <div
-        class="display-grid-item"
-        @click="showModal(blok.file.filename)">
-      <img :src="blok.file.filename" alt="" width="300px" height="330px" class="download-card-image" @click="showModal(blok.file.filename)">
+    <div class="display-grid-item" @click="showModal(blok.file.filename)">
+      <img
+        :src="blok.file.filename"
+        alt=""
+        width="300px"
+        height="330px"
+        class="download-card-image"
+        @click="showModal(blok.file.filename)"
+      />
     </div>
     <a class="filelink" :href="blok.file.filename" target="_blank">
-    <div class="title">
-      <p>
-        {{ blok.name }}
-      </p>
-    </div>
+      <div class="title">
+        <p>
+          {{ blok.name }}
+        </p>
+      </div>
     </a>
-    <div id="modal" class="modal" >
+    <div id="modal" class="modal">
       <div class="modal-display">
-        <a class="xButton" href="javascript:void(0)"
-           @click="closeModal()">&times;</a>
+        <a class="xButton" href="javascript:void(0)" @click="closeModal()"
+          >&times;</a
+        >
         <div class="display-image">
-          <img id="modal-img" class="modal-img"/>
+          <img id="modal-img" class="modal-img" />
         </div>
       </div>
     </div>
@@ -26,27 +32,25 @@
 
 <script>
 export default {
-  props: ['blok'],
-  created () {
-  },
+  props: ["blok"],
+  created() {},
   methods: {
-    showModal (src) {
-      const modal = document.getElementById('modal')
-      modal.style.setProperty('display', 'flex')
-      const modalImg = document.getElementById('modal-img')
-      modalImg.src = src
+    showModal(src) {
+      const modal = document.getElementById("modal");
+      modal.style.setProperty("display", "flex");
+      const modalImg = document.getElementById("modal-img");
+      modalImg.src = src;
     },
-    closeModal () {
-      const modal = document.getElementById('modal')
-      modal.style.setProperty('display', 'none')
-      this.currentPosition = 0
-    }
-  }
-}
+    closeModal() {
+      const modal = document.getElementById("modal");
+      modal.style.setProperty("display", "none");
+      this.currentPosition = 0;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .download-item {
   margin-left: 5%;
   margin-right: 5%;
@@ -68,14 +72,14 @@ export default {
     font-size: 1rem;
     text-transform: uppercase;
     font-weight: bold;
-    margin-bottom: .2rem;
-    p{
+    margin-bottom: 0.2rem;
+    p {
       color: white;
     }
   }
 
   .subtitle {
-    font-size: .75rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -106,7 +110,7 @@ export default {
   }
   .display-image {
     display: flex;
-    .arrow-left{
+    .arrow-left {
       padding-right: 0.5rem;
       color: #ffffff;
       font-size: 3rem;
@@ -117,7 +121,7 @@ export default {
         padding-right: 2.5rem;
       }
     }
-    .arrow-right{
+    .arrow-right {
       padding-left: 0.5rem;
       color: #ffffff;
       font-size: 3rem;
@@ -128,7 +132,7 @@ export default {
         padding-left: 2.5rem;
       }
     }
-    .modal-img{
+    .modal-img {
       object-fit: scale-down;
       width: 300px;
       height: 500px;

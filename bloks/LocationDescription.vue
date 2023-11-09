@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-editable="blok"
-    class="location-description"
-  >
+  <div v-editable="blok" class="location-description">
     <div class="col-left">
       <div>
         <h3 class="headline">
@@ -22,12 +19,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
-
 .location-description {
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;
@@ -40,12 +36,12 @@ export default {
     .col-left {
       flex-basis: 40%;
       .headline {
-          font-size: 3em;
-          max-width: 5em;
-          line-height: 1.25;
-          letter-spacing: .06em;
-          text-transform: uppercase;
-          margin: 0 0 .3em;
+        font-size: 3em;
+        max-width: 5em;
+        line-height: 1.25;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin: 0 0 0.3em;
       }
       .teaser {
         color: $color-orange;
@@ -63,7 +59,7 @@ export default {
     line-height: 1.7;
     .headline {
       font-size: 3em;
-      margin: 1em 0 .3em;
+      margin: 1em 0 0.3em;
       text-transform: uppercase;
     }
     .teaser {
@@ -77,7 +73,7 @@ export default {
       line-height: 1.3;
     }
     .teaser {
-      font-size: .85em;
+      font-size: 0.85em;
     }
   }
 }

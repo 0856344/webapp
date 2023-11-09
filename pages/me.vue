@@ -1,29 +1,50 @@
 <template>
   <div class="profile" v-if="user !== null && member !== null">
     <div class="header">
-      <h1 class="name">{{member.firstName }} {{member.lastName}}</h1>
+      <h1 class="name">{{ member.firstName }} {{ member.lastName }}</h1>
       <!--<h1 class="name">{{ user.profile.firstName }} {{ user.profile.lastName }}</h1> -->
-      <h2 style="display: none;">STAGING</h2>
+      <h2 style="display: none">STAGING</h2>
       <code class="number">#{{ member.memberNumber }}</code>
     </div>
-    <div v-if="!hasCompletedRequiredCourses" class="alert alert-secondary" role="alert">
-      <font-awesome-icon icon="info-circle"/>
-      {{ $t('openSafetyTraining') }}
+    <div
+      v-if="!hasCompletedRequiredCourses"
+      class="alert alert-secondary"
+      role="alert"
+    >
+      <font-awesome-icon icon="info-circle" />
+      {{ $t("openSafetyTraining") }}
     </div>
     <div class="tab-section">
       <div class="tab-section-menu">
-        <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-        <MenuLink v-if="isMember" to="/me/packages" icon="coins">{{ $t('membership') }} & Credits</MenuLink>
-<!--        <MenuLink v-if="!isMember && !hasCompletedOnboarding" to="/wizard/onboarding" icon="user-friends"><span-->
-<!--            class="fat">{{ $t('joinNow') }}</span></MenuLink>-->
-          <MenuLink to="/me/trainings" icon="graduation-cap" style="color: white !important;">
-            <font-awesome-icon :style="{ color: '#E69140' }" v-if="!hasCompletedRequiredCourses" icon="info-circle"/> {{ $t('trainings') }}
-          </MenuLink>
-<!--        <MenuLink to="/me/workshopBookings" icon="hammer">{{ $t('myWorkshops') }}</MenuLink>-->
-        <MenuLink to="/de/gutscheine?action=redeem" icon="money-bill">Gutscheine einlösen</MenuLink>
-        <MenuLink :isActive="$route.name.includes('invoices')" to="/me/invoices" icon="file-invoice">{{ $t('invoices') }}
+        <MenuLink to="/me/" icon="user">{{ $t("myProfile") }}</MenuLink>
+        <MenuLink v-if="isMember" to="/me/packages" icon="coins"
+          >{{ $t("membership") }} & Credits</MenuLink
+        >
+        <!--        <MenuLink v-if="!isMember && !hasCompletedOnboarding" to="/wizard/onboarding" icon="user-friends"><span-->
+        <!--            class="fat">{{ $t('joinNow') }}</span></MenuLink>-->
+        <MenuLink
+          to="/me/trainings"
+          icon="graduation-cap"
+          style="color: white !important"
+        >
+          <font-awesome-icon
+            :style="{ color: '#E69140' }"
+            v-if="!hasCompletedRequiredCourses"
+            icon="info-circle"
+          />
+          {{ $t("trainings") }}
         </MenuLink>
-<!--        <MenuLink to="/me/activities" icon="running">{{ $t('activities') }}</MenuLink>-->
+        <!--        <MenuLink to="/me/workshopBookings" icon="hammer">{{ $t('myWorkshops') }}</MenuLink>-->
+        <MenuLink to="/de/gutscheine?action=redeem" icon="money-bill"
+          >Gutscheine einlösen</MenuLink
+        >
+        <MenuLink
+          :isActive="$route.name.includes('invoices')"
+          to="/me/invoices"
+          icon="file-invoice"
+          >{{ $t("invoices") }}
+        </MenuLink>
+        <!--        <MenuLink to="/me/activities" icon="running">{{ $t('activities') }}</MenuLink>-->
       </div>
       <div class="tab-section-content">
         <NuxtChild :key="$route.params.slug"></NuxtChild>
@@ -33,57 +54,58 @@
 </template>
 
 <script>
-import MenuLink from '@/bloks/MenuLink.vue'
+import MenuLink from "@/bloks/MenuLink.vue";
 
 export default {
-  middleware: 'authenticated',
+  middleware: "authenticated",
   components: { MenuLink },
-  data () {
+  data() {
     return {
       hasCompletedOnboarding: false, // TODO: implement hasCompletedOnboarding function in connector
       hasCompletedRequiredCourses: true,
       test: null,
-      lastName: ''
-    }
+      lastName: "",
+    };
   },
-  created () {
-  },
-  async mounted () {
+  created() {},
+  async mounted() {
     //this.hasCompletedOnboarding = await this.$store.dispatch('hasCompletedOnboarding'
-    this.hasCompletedRequiredCourses = await this.$store.dispatch('hasCompletedRequiredCourses', this.$store.state.member.id)
+    this.hasCompletedRequiredCourses = await this.$store.dispatch(
+      "hasCompletedRequiredCourses",
+      this.$store.state.member.id
+    );
   },
   methods: {
-    getPackage (p) {
-      const data = this.$store.getters.getPackageById(p.package)
-      return { ...p, ...data }
+    getPackage(p) {
+      const data = this.$store.getters.getPackageById(p.package);
+      return { ...p, ...data };
     },
 
-    getWorkshops () {
+    getWorkshops() {
       // let data = this.$store.getters.getMemberCourseById(p);
     },
-    logout () {
-      this.$store.dispatch('logout').then(() => {
-        this.$router.push('/')
-      })
-    }
+    logout() {
+      this.$store.dispatch("logout").then(() => {
+        this.$router.push("/");
+      });
+    },
   },
   computed: {
-    user () {
-      return this.$store.state.user // TODO: remove/edit lambda functions (Requests via Connector)
+    user() {
+      return this.$store.state.user; // TODO: remove/edit lambda functions (Requests via Connector)
     },
-    member () {
-      return this.$store.state.member
+    member() {
+      return this.$store.state.member;
     },
-    isMember () {
+    isMember() {
       // TODO
-      return this.$store.state.user.profile.state === 'active'
-    }
-  }
-}
+      return this.$store.state.user.profile.state === "active";
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .profile {
   min-height: 60vh;
   margin-left: 4%;
@@ -108,7 +130,7 @@ export default {
       padding: 10px;
       border: none;
       outline: none;
-      color: #FFF;
+      color: #fff;
       background-color: $color-orange;
     }
   }
@@ -174,7 +196,7 @@ export default {
         padding: 12px;
 
         &:hover {
-          background-color: darken($color-bright-bg, 5)
+          background-color: darken($color-bright-bg, 5);
         }
 
         &.nuxt-link-exact-active {

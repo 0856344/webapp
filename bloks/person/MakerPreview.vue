@@ -1,12 +1,18 @@
 <template>
   <div v-if="story">
     <div class="preview-wrapper">
-      <div v-if="(maker != null && maker.length !=0)" class="maker-preview">
+      <div v-if="maker != null && maker.length != 0" class="maker-preview">
         <nuxt-link class="story" :to="makerlink">
           <div class="display-maker">
-            <div class="banner" :style="{ 'background-image': 'url(' + $resizeImage(maker.image, '250x250') + ')' }"/>
-             <div class="name">
-                {{ maker.name }}
+            <div
+              class="banner"
+              :style="{
+                'background-image':
+                  'url(' + $resizeImage(maker.image, '250x250') + ')',
+              }"
+            />
+            <div class="name">
+              {{ maker.name }}
             </div>
           </div>
         </nuxt-link>
@@ -18,10 +24,16 @@
       <div v-if="member" class="maker-preview">
         <div class="story">
           <div class="display-maker">
-            <div class="banner" :style="{ 'background-image': 'url(' + $resizeImage(member.image, '250x250') + ')' }"/>
-              <div class="name">
-                {{ member.title}}
-              </div>
+            <div
+              class="banner"
+              :style="{
+                'background-image':
+                  'url(' + $resizeImage(member.image, '250x250') + ')',
+              }"
+            />
+            <div class="name">
+              {{ member.title }}
+            </div>
           </div>
         </div>
       </div>
@@ -34,48 +46,49 @@ export default {
   filters: {
     truncate: function (text, length, suffix) {
       if (text.length > length) {
-        return text.substring(0, length) + suffix
+        return text.substring(0, length) + suffix;
       } else {
-        return text
+        return text;
       }
-    }
+    },
   },
-  props: ['id'],
-  data () {
+  props: ["id"],
+  data() {
     return {
-      story: null
-    }
+      story: null,
+    };
   },
   computed: {
-    maker () {
-      return this.story.content
+    maker() {
+      return this.story.content;
     },
-    member () {
-      return this.id
+    member() {
+      return this.id;
     },
-    makerlink () {
-      return '/de/team/' + this.story.slug
-    }
+    makerlink() {
+      return "/de/team/" + this.story.slug;
+    },
   },
-  created () {
-    this.$store.app.$storyapi.get(`cdn/stories/${this.id}`, {
-      find_by: 'uuid'
-    }).then((res) => {
-      this.story = res.data.story
-    }).catch((e) => {
-    })
+  created() {
+    this.$store.app.$storyapi
+      .get(`cdn/stories/${this.id}`, {
+        find_by: "uuid",
+      })
+      .then((res) => {
+        this.story = res.data.story;
+      })
+      .catch((e) => {});
   },
   methods: {
-    open () {
-      this.$router.push({ path: this.story.full_slug })
-    }
-  }
-}
+    open() {
+      this.$router.push({ path: this.story.full_slug });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
-.display-maker{
+.display-maker {
   @include media-breakpoint-down(sm) {
     background: white;
     padding: 16px;

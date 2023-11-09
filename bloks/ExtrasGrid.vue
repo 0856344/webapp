@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-editable="blok"
-    class="extras-grid-wrapper"
-  >
+  <div v-editable="blok" class="extras-grid-wrapper">
     <div class="headline">
       {{ blok.headline }}
     </div>
@@ -20,12 +17,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .extras-grid-wrapper {
   margin: 2em 0;
   @include media-breakpoint-down(lg) {
@@ -38,7 +34,7 @@ export default {
     line-height: 1.3;
     font-weight: bold;
     font-family: $font-primary;
-    letter-spacing: .05em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     width: 50%;
     @include media-breakpoint-down(lg) {

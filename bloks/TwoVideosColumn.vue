@@ -1,51 +1,45 @@
 <template>
-  <div
-    v-editable="blok"
-    class="two-videos-column"
-    style="margin: 50px 0;"
-  >
-      <h2
-          v-if="blok.headline"
-          class="headline"
-      >
-        <markdown :value="blok.headline" />
-      </h2>
-      <p
-          v-if="blok.text"
-          class="text"
-      >
-        <markdown :value="blok.text" />
-      </p>
-    <div class='wrapper'>
-      <div class='row'>
-        <div class='column column1'>
+  <div v-editable="blok" class="two-videos-column" style="margin: 50px 0">
+    <h2 v-if="blok.headline" class="headline">
+      <markdown :value="blok.headline" />
+    </h2>
+    <p v-if="blok.text" class="text">
+      <markdown :value="blok.text" />
+    </p>
+    <div class="wrapper">
+      <div class="row">
+        <div class="column column1">
           <div v-if="blok.video_1">
             <div class="video">
-              <iframe :src="blok.video_1"
-                      width="100%"
-                      height="480"
-                      title="Video 1"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen/>
+              <iframe
+                :src="blok.video_1"
+                width="100%"
+                height="480"
+                title="Video 1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
             </div>
           </div>
         </div>
-        <div class='column column2'>
+        <div class="column column2">
           <div v-if="blok.video_2">
             <div class="video">
-              <iframe :src="blok.video_2"
-                      width="100%"
-                      height="480"
-                      title="Video 2"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen/>
+              <iframe
+                :src="blok.video_2"
+                width="100%"
+                height="480"
+                title="Video 2"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
             </div>
           </div>
         </div>
       </div>
-      <div class='row'>
-        <div class='column'>
-          <img class="image" width="100%" :src="blok.image">
+      <div class="row">
+        <div class="column">
+          <img class="image" width="100%" :src="blok.image" />
         </div>
       </div>
     </div>
@@ -54,12 +48,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .headline {
   font-size: 1.6em;
   @include media-breakpoint-up(lg) {
@@ -93,7 +86,7 @@ export default {
   font-family: $font-primary;
   line-height: 1.6;
   font-size: 1.1em;
-  letter-spacing: .03em;
+  letter-spacing: 0.03em;
 }
 .row {
   display: flex;

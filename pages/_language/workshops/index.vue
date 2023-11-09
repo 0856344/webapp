@@ -1,87 +1,110 @@
 <template>
   <section class="workshop-overview">
     <div class="machine-filters">
-      <code class="loading" v-if="loading">{{ $t('Loading') }}</code>
-      <div class="tags" :class="(tagsCollapsed ? 'collapsed' : '')">
-        <div class="expander" @click="toggleTags()">
-        </div>
+      <code class="loading" v-if="loading">{{ $t("Loading") }}</code>
+      <div class="tags" :class="tagsCollapsed ? 'collapsed' : ''">
+        <div class="expander" @click="toggleTags()"></div>
         <div class="headline">
-          {{ $t('area') }}
+          {{ $t("area") }}
         </div>
         <div class="tag-list" :key="this.filter">
           <div v-for="c in categories" :key="c.key" class="tag">
-            <checkbox
-                v-model="c.value"
-                class="tag"
-                theme="white"
-            >{{c.nameToDisplay}}</checkbox>
+            <checkbox v-model="c.value" class="tag" theme="white">{{
+              c.nameToDisplay
+            }}</checkbox>
           </div>
         </div>
-        <br>
-        <br>
+        <br />
+        <br />
         <div class="headline">
-          {{ $t('view') }}
+          {{ $t("view") }}
         </div>
         <div class="switch-button">
-          <input class="switch-button-checkbox" type="checkbox" v-model="isCalendar">
+          <input
+            class="switch-button-checkbox"
+            type="checkbox"
+            v-model="isCalendar"
+          />
           <label class="switch-button-label" for="">
-            <span class="switch-button-label-span"> {{ $t('details') }}</span>
+            <span class="switch-button-label-span"> {{ $t("details") }}</span>
           </label>
         </div>
       </div>
       <div v-show="!isCalendar" class="search">
-        <input type="text" :placeholder="[[ $t('searchForWorkshopsAndEvents') ]]" v-model="search">
+        <input
+          type="text"
+          :placeholder="[[$t('searchForWorkshopsAndEvents')]]"
+          v-model="search"
+        />
       </div>
     </div>
-    <div v-show="!isCalendar" >
+    <div v-show="!isCalendar">
       <div class="workshop-list-wrapper" :key="this.filter">
         <div v-if="this.filter || this.search" class="workshop-list">
           <transition-group name="list">
             <workshop-list-item
-                v-for="item in filteredWorkshops"
-                :blok="item.blok"
-                :pretix="item.pretix"
-                :key="item.blok.id"
-                class="list-item"
-                :slim="false"
+              v-for="item in filteredWorkshops"
+              :blok="item.blok"
+              :pretix="item.pretix"
+              :key="item.blok.id"
+              class="list-item"
+              :slim="false"
             ></workshop-list-item>
           </transition-group>
         </div>
-          <div v-else-if="fullWorkshops && fullWorkshops.length > 0" class="workshop-list">
-            <transition-group name="list">
-              <workshop-list-item
-                  v-for="item in fullWorkshops"
-                  :blok="item.blok"
-                  :pretix="item.pretix"
-                  :key="item.blok.id"
-                  class="list-item"
-                  :slim="false"
-              ></workshop-list-item>
-            </transition-group>
-          </div>
+        <div
+          v-else-if="fullWorkshops && fullWorkshops.length > 0"
+          class="workshop-list"
+        >
+          <transition-group name="list">
+            <workshop-list-item
+              v-for="item in fullWorkshops"
+              :blok="item.blok"
+              :pretix="item.pretix"
+              :key="item.blok.id"
+              class="list-item"
+              :slim="false"
+            ></workshop-list-item>
+          </transition-group>
+        </div>
       </div>
     </div>
-    <div v-if="isCalendar"  :key="this.display" >
-      <div :key="this.filter" >
-        <script type="text/javascript" src="https://pretix.eu/widget/v1.de.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://pretix.eu/demo/democon/widget/v1.css">
+    <div v-if="isCalendar" :key="this.display">
+      <div :key="this.filter">
+        <script
+          type="text/javascript"
+          src="https://pretix.eu/widget/v1.de.js"
+        ></script>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://pretix.eu/demo/democon/widget/v1.css"
+        />
         <div id="pretix-container" class="pretix-content">
-          <div v-show="selectedEvent.length !== 0" >
-            <pretix-widget id="pretix" name="pretix" event="https://pretix.eu/grandgarage"
-                           :list-type="this.calenderDisplayOnChange(this.display)"
-                           :filter=this.formatPretixCategoryRequest(this.filter)></pretix-widget>
+          <div v-show="selectedEvent.length !== 0">
+            <pretix-widget
+              id="pretix"
+              name="pretix"
+              event="https://pretix.eu/grandgarage"
+              :list-type="this.calenderDisplayOnChange(this.display)"
+              :filter="this.formatPretixCategoryRequest(this.filter)"
+            ></pretix-widget>
           </div>
-          <div v-show="selectedEvent.length === 0" >
-            <pretix-widget name="pretix"
-                           :list-type="this.calenderDisplayOnChange(this.display)"
-                           event="https://pretix.eu/grandgarage"
+          <div v-show="selectedEvent.length === 0">
+            <pretix-widget
+              name="pretix"
+              :list-type="this.calenderDisplayOnChange(this.display)"
+              event="https://pretix.eu/grandgarage"
             ></pretix-widget>
           </div>
           <noscript>
             <div class="pretix-widget">
               <div class="pretix-widget-info-message">
-                JavaScript is disabled in your browser. To access our ticket shop without JavaScript,
-                please <a target="_blank" href="https://pretix.eu/grandgarage">click here</a>.
+                JavaScript is disabled in your browser. To access our ticket
+                shop without JavaScript, please
+                <a target="_blank" href="https://pretix.eu/grandgarage"
+                  >click here</a
+                >.
               </div>
             </div>
           </noscript>
@@ -92,193 +115,225 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 
 export default {
-  data () {
+  data() {
     return {
       categories: [
-        { key: 'event', name: 'Event', value: false, nameToDisplay: 'Event' },
-        { key: 'workshop', name: 'Workshops', value: false, nameToDisplay: 'Workshops' },
-        { key: 'training', name: 'Einschulungen', value: false, nameToDisplay: 'Einschulungen' },
-        { key: 'frauenundtechnik', name: '#frauenundtechnik', value: false, nameToDisplay: 'Frauen und Technik' },
-        { key: 'for_kids', name: 'for_kids', value: false, nameToDisplay: 'Kinder und Jugendliche' }
+        { key: "event", name: "Event", value: false, nameToDisplay: "Event" },
+        {
+          key: "workshop",
+          name: "Workshops",
+          value: false,
+          nameToDisplay: "Workshops",
+        },
+        {
+          key: "training",
+          name: "Einschulungen",
+          value: false,
+          nameToDisplay: "Einschulungen",
+        },
+        {
+          key: "frauenundtechnik",
+          name: "#frauenundtechnik",
+          value: false,
+          nameToDisplay: "Frauen und Technik",
+        },
+        {
+          key: "for_kids",
+          name: "for_kids",
+          value: false,
+          nameToDisplay: "Kinder und Jugendliche",
+        },
         // { key: 'makemas', name: '#makemas2022', value: false }
       ],
       loading: false,
-      search: '',
+      search: "",
       workshops: [],
       pretixWorkshops: [],
       tags: [],
       tagsCollapsed: false,
       fullWorkshops: [],
-      selectedEvent: '',
+      selectedEvent: "",
       filteredWorkshops: [],
-      filter: '',
+      filter: "",
       isCalendar: false, // false = grid , true = calender,
       windowWidth: Infinity,
-      display: 'calendar'
-    }
+      display: "calendar",
+    };
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize)
-    })
-    this.onResize()
+      window.addEventListener("resize", this.onResize);
+    });
+    this.onResize();
   },
-  created () {
-    this.addPretixToStoryblok()
-    this.$watch('categories', (newVal, oldVal) => {
-      this.updateFilter()
-    }, { deep: true })
+  created() {
+    this.addPretixToStoryblok();
+    this.$watch(
+      "categories",
+      (newVal, oldVal) => {
+        this.updateFilter();
+      },
+      { deep: true }
+    );
   },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.onResize)
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize);
   },
   watch: {
-    search () {
-      this.noResults = false
-      this.updateSearch()
-    }
+    search() {
+      this.noResults = false;
+      this.updateSearch();
+    },
   },
   computed: {
-    filters () {
+    filters() {
       return {
         filter_query: {
           component: {
-            in: 'workshop'
-          }
-        }
-      }
-    }
+            in: "workshop",
+          },
+        },
+      };
+    },
   },
   methods: {
-    onResize () {
-      this.windowWidth = window.innerWidth
+    onResize() {
+      this.windowWidth = window.innerWidth;
       if (this.windowWidth <= 1200) {
-        this.display = 'week'
+        this.display = "week";
       } else {
-        this.display = 'calendar'
+        this.display = "calendar";
       }
     },
-    filterByDate () {
-      this.pretixWorkshops.forEach((item) => {
-      })
+    filterByDate() {
+      this.pretixWorkshops.forEach((item) => {});
     },
     //TODO: use is_future parameter from pretix api
-    addPretixToStoryblok () {
+    addPretixToStoryblok() {
       this.workshops.forEach((item) => {
         this.pretixWorkshops.forEach((pretixItem) => {
-          if (item.content.pretix_shortform && item.content.pretix_shortform === pretixItem[0].slug) {
-            const lastItem = pretixItem[pretixItem.length - 1]
-            const startDate = moment(lastItem.date_from)
+          if (
+            item.content.pretix_shortform &&
+            item.content.pretix_shortform === pretixItem[0].slug
+          ) {
+            const lastItem = pretixItem[pretixItem.length - 1];
+            const startDate = moment(lastItem.date_from);
             if (startDate != null && startDate.isAfter(moment())) {
               this.fullWorkshops.push({
                 blok: item,
-                pretix: pretixItem
-              })
+                pretix: pretixItem,
+              });
             }
           }
-        })
-      })
+        });
+      });
     },
-    updateSearch () {
-      this.filterWorkshopsBySearch()
+    updateSearch() {
+      this.filterWorkshopsBySearch();
     },
-    updateFilter () {
-      this.loading = true
-      this.selectedEvent = this.selectedCategories()
+    updateFilter() {
+      this.loading = true;
+      this.selectedEvent = this.selectedCategories();
       if (this.selectedEvent.length > 1) {
-        this.deselectOldest()
-        this.selectedEvent = this.selectedCategories()
+        this.deselectOldest();
+        this.selectedEvent = this.selectedCategories();
       }
       if (this.selectedEvent.length === 0) {
-        this.filteredWorkshops = []
-        this.search = ''
-        this.filter = ''
+        this.filteredWorkshops = [];
+        this.search = "";
+        this.filter = "";
       }
       if (this.selectedEvent.length === 1) {
-        this.filter = this.selectedEvent[0].name
-        this.filterWorkshopsBySearch()
+        this.filter = this.selectedEvent[0].name;
+        this.filterWorkshopsBySearch();
       }
 
-      this.loading = false
+      this.loading = false;
     },
-    toggleTags () {
-      this.tagsCollapsed = !this.tagsCollapsed
+    toggleTags() {
+      this.tagsCollapsed = !this.tagsCollapsed;
     },
-    filterWorkshopsBySearch () {
-      this.filteredWorkshops = []
+    filterWorkshopsBySearch() {
+      this.filteredWorkshops = [];
       this.fullWorkshops.forEach((item) => {
-        if (this.search !== '') {
+        if (this.search !== "") {
           if (item.blok.content.title.includes(this.search)) {
             // text search AND category filter
-            if (this.filter !== '') {
+            if (this.filter !== "") {
               if (item.blok.content.category === this.filter) {
-                this.filteredWorkshops.push(item)
+                this.filteredWorkshops.push(item);
               }
             } else {
               // only text search
-              this.filteredWorkshops.push(item)
+              this.filteredWorkshops.push(item);
             }
           }
         } else {
           // only category filter
           if (item.blok.content.category === this.filter) {
-            this.filteredWorkshops.push(item)
+            this.filteredWorkshops.push(item);
           }
         }
-      })
+      });
     },
-    deselectOldest () {
+    deselectOldest() {
       this.categories.forEach((item) => {
         if (item.name === this.filter) {
-          item.value = false
+          item.value = false;
         }
-      })
+      });
     },
-    selectedCategories () {
-      return this.categories.filter((c) => {
-        return (c.value) ? c.name : ''
-      }).map((c) => {
-        return { name: c.name, value: c.value, key: c.key }
-      })
+    selectedCategories() {
+      return this.categories
+        .filter((c) => {
+          return c.value ? c.name : "";
+        })
+        .map((c) => {
+          return { name: c.name, value: c.value, key: c.key };
+        });
     },
-    formatPretixCategoryRequest ($category) {
-      return 'attr[Kategorie]=' + escape($category)
+    formatPretixCategoryRequest($category) {
+      return "attr[Kategorie]=" + escape($category);
     },
-    calenderDisplayOnChange ($displayType) {
-      return $displayType
-    }
+    calenderDisplayOnChange($displayType) {
+      return $displayType;
+    },
   },
-  async asyncData  (context) {
+  async asyncData(context) {
     const filters = {
       filter_query: {
         component: {
-          in: 'workshop'
+          in: "workshop",
+        },
+      },
+    };
+    const workshops = await context.store
+      .dispatch("loadWorkshops", filters)
+      .then((data) => {
+        if (data.stories) {
+          return { workshops: data.stories };
         }
-      }
-    }
-    const workshops = await context.store.dispatch('loadWorkshops', filters).then((data) => {
-      if (data.stories) {
-        return { workshops: data.stories }
-      }
-      return { workshops: [] }
-    })
-    const pretixWorkshops = await context.store.dispatch('getPretixEvents').then((data) => {
-      if (data) {
-        return { pretixWorkshops: data }
-      } else {
-        return { pretixWorkshops: [] }
-      }
-    })
-    return { ...workshops, ...pretixWorkshops }
-  }
-}
+        return { workshops: [] };
+      });
+    const pretixWorkshops = await context.store
+      .dispatch("getPretixEvents")
+      .then((data) => {
+        if (data) {
+          return { pretixWorkshops: data };
+        } else {
+          return { pretixWorkshops: [] };
+        }
+      });
+    return { ...workshops, ...pretixWorkshops };
+  },
+};
 </script>
 
 <style lang="scss">
-.pretix-content{
+.pretix-content {
   margin-top: 0;
   margin-bottom: 50px;
   background-color: white;
@@ -404,12 +459,12 @@ export default {
       }
     }
 
-    .list-enter-active, .list-leave-active {
+    .list-enter-active,
+    .list-leave-active {
       transition: all 0.5s;
     }
 
-    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */
-    {
+    .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
       opacity: 0;
       transform: translateX(30px);
     }
@@ -429,13 +484,13 @@ export default {
     }
 
     .headline {
-      color: #FFF;
+      color: #fff;
       font-weight: bold;
       font-size: 1.8rem;
       @include margin-page-wide();
       margin-bottom: 20px;
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: 0.05em;
       @include media-breakpoint-down(sm) {
         font-size: 1.2rem;
         margin-bottom: 10px;
@@ -449,7 +504,7 @@ export default {
       grid-template-columns: repeat(3, 1fr);
       @include media-breakpoint-down(sm) {
         grid-template-columns: 1fr 1fr;
-        font-size: .85em;
+        font-size: 0.85em;
       }
       @include media-breakpoint-down(xs) {
         grid-template-columns: 1fr;
@@ -458,21 +513,21 @@ export default {
 
       > .tag {
         font-family: $font-mono;
-        color: #FFF;
+        color: #fff;
         user-select: none;
         cursor: pointer;
 
-        input[type=checkbox] {
+        input[type="checkbox"] {
           outline: none;
           -webkit-appearance: none;
           padding: 5px;
-          border: 1px solid #FFF;
+          border: 1px solid #fff;
           border-radius: 3px;
           position: relative;
           top: 0;
 
           &:checked {
-            background-color: #FFF;
+            background-color: #fff;
           }
         }
       }
@@ -483,7 +538,7 @@ export default {
       overflow: hidden;
       position: relative;
       max-height: 1000px;
-      transition: all .3s linear;
+      transition: all 0.3s linear;
       padding-bottom: 30px;
       .expander {
         cursor: pointer;
@@ -491,10 +546,10 @@ export default {
         bottom: 0;
         width: 100%;
         height: 20px;
-        transition: all .3s linear;
+        transition: all 0.3s linear;
 
         &:after {
-          transition: all .3s linear;
+          transition: all 0.3s linear;
           content: "";
           position: absolute;
           bottom: 18px;
@@ -531,7 +586,7 @@ export default {
     padding-top: 2vh;
     padding-bottom: 2vh;
 
-    input[type=text] {
+    input[type="text"] {
       flex: 1;
       display: block;
       width: 100%;
@@ -542,7 +597,7 @@ export default {
       border: none;
     }
 
-    input[type=button] {
+    input[type="button"] {
       font-size: 1.1rem;
       margin-left: 10px;
       text-transform: uppercase;

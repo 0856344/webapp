@@ -1,14 +1,8 @@
 <template>
   <div>
-    <h2>{{ $t('myActivities') }}</h2>
-    <loading-spinner
-      v-if="!activities"
-      color="#333"
-    />
-    <div
-      v-if="activities"
-      class="activities"
-    >
+    <h2>{{ $t("myActivities") }}</h2>
+    <loading-spinner v-if="!activities" color="#333" />
+    <div v-if="activities" class="activities">
       <div
         v-for="activity of activities"
         :key="activity.id"
@@ -16,7 +10,7 @@
         @click="showInvoice(activity)"
       >
         <div class="date">
-          {{ new Date(activity.service_date).toLocaleDateString('de-AT') }}
+          {{ new Date(activity.service_date).toLocaleDateString("de-AT") }}
         </div>
         <div class="right">
           <div class="top">
@@ -27,22 +21,20 @@
             <div class="cost">
               {{ parseFloat(activity.cost_brutto).toFixed(2) }}EUR
             </div>
-            <div
-              v-if="activity.invoice_id"
-              class="info"
-            >
+            <div v-if="activity.invoice_id" class="info">
               <template>
-                <span class="link">{{ $t('invoice') }} #{{ activity.invoice_human_readable_id }}</span>
+                <span class="link"
+                  >{{ $t("invoice") }} #{{
+                    activity.invoice_human_readable_id
+                  }}</span
+                >
                 <div class="icon">
                   <font-awesome-icon icon="link" />
                 </div>
               </template>
             </div>
           </div>
-          <div
-            v-if="activity.notes"
-            class="notes"
-          >
+          <div v-if="activity.notes" class="notes">
             {{ activity.notes }}
           </div>
         </div>
@@ -52,32 +44,31 @@
 </template>
 <script>
 export default {
-  name: 'Activities',
-  middleware: 'authenticated',
-  data () {
+  name: "Activities",
+  middleware: "authenticated",
+  data() {
     return {
       activities: null,
-      highlightedId: null
-    }
+      highlightedId: null,
+    };
   },
-  async mounted () {
-    this.activities = await this.$store.dispatch('getActivities')
-    this.activities = this.activities.reverse()
+  async mounted() {
+    this.activities = await this.$store.dispatch("getActivities");
+    this.activities = this.activities.reverse();
   },
   methods: {
-    getDate (date) {
-      return new Date(date)
+    getDate(date) {
+      return new Date(date);
     },
-    showInvoice (activity) {
+    showInvoice(activity) {
       if (activity.invoice_id) {
-        this.$router.push(`invoices?id=${activity.invoice_id}`)
+        this.$router.push(`invoices?id=${activity.invoice_id}`);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
-
 .activities {
   & .activity {
     display: flex;
@@ -149,7 +140,7 @@ export default {
     & .yellow {
       color: $color-orange;
     }
-    & .cost{
+    & .cost {
       min-width: 5em;
     }
     & .info {
