@@ -69,7 +69,7 @@ export default {
           //this.getBookingByMethod('getBookingsBySpace', this.space)
           this.getBookingByMethod('getBookingsByResource', 4049);
         } else if (this.resource) {
-          //console.log('RESOURCE FOUND - booking calender', this.resource)
+          //console.log('RESOURCE FOUND - booking calendar', this.resource)
           this.getBookingByMethod('getBookingsByResource', this.resource);
         }
       } catch (exception) {

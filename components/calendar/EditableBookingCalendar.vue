@@ -234,7 +234,7 @@ export default {
           return false;
         }
 
-        // Check if object already exists, based on the ID, and replace it
+        // Check if object already exists, based on the ID, and replace it Check if object already exists, based on the ID, and replace it
         const index = this.selectedBookings.findIndex(
           (item) => item.id === newBooking.id,
         );
