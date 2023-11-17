@@ -161,7 +161,7 @@ export default {
   overflow: hidden;
   margin: 0 auto;
   .image {
-    height: 20rem;
+    height: 55%;
     width: 294px;
     border-top-left-radius: 10px;
     background-size: cover;
@@ -171,7 +171,7 @@ export default {
 
   .press-information {
     color: black;
-    height: inherit;
+    height: 45%;
     padding: 20px;
     display: flex;
     flex-flow: column;
