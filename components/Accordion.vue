@@ -33,10 +33,10 @@ export default {
     >
       <slot name="header"></slot>
       <span
-        class="absolute top-2 right-4 transition-transform text-base"
+        class="absolute top-2 right-4 transition-transform text-2xl"
         :class="{ 'rotate-180 -translate-y-1': show }"
       >
-        <span id="accordionIcon" class="fa fa-2x fa-angle-down"></span>
+      <font-awesome-icon icon="fa-solid fa-angle-down" />
       </span>
     </div>
     <transition
