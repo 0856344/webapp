@@ -376,7 +376,7 @@ const createStore = () => {
         }
       },
       async getPretixEvents({ state }) {
-        const r = await axios.get(`${baseUrl + '/api/pretix/subevents?cache=false'}`)
+        const r = await axios.get(`${baseUrl + '/api/pretix/subevents'}`)
         if (r.status === 200) {
           return r.data
         }
