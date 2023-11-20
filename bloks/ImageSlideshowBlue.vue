@@ -68,20 +68,18 @@ export default {
   background-color: $color-blue-intro;
   color: #fff;
   .text {
-    padding: 3rem 5rem 0 5rem;
+    padding: 1rem 0 0;
     font-size: 1.8rem;
     @include media-breakpoint-down(md) {
-      font-size: 1.2rem;
-      padding: 2vh 4vw;
+      font-size: 1.4rem;
+      padding: 0;
+      margin-bottom: 0;
     }
     font-family: $font-secondary;
     line-height: 1.4;
     letter-spacing: 1.4px;
     font-weight: bold;
-
-    p {
-      margin: 0;
-    }
+    margin-bottom: -1rem;
   }
   .subtext {
     padding: 1rem 1rem 0 5rem;
@@ -130,19 +128,19 @@ export default {
     margin-left: -30px;
     margin-right: -30px;
     top: 50%;
-    @include media-breakpoint-down(xs) {
-      width: 35px;
-      height: 35px;
-      background-size: 8px;
-      margin-left: 0;
-      margin-right: 0;
-    }
     @include media-breakpoint-down(md) {
       width: 40px;
       height: 40px;
       background-size: 10px;
       margin-left: -0px;
       margin-right: -0px;
+    }
+    @include media-breakpoint-down(xs) {
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-left: 0;
+      margin-right: 0;
     }
   }
 }

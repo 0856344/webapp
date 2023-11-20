@@ -132,6 +132,10 @@ export default {
     font-family: "Chakra Petch", sans-serif;
     margin-top: 10vh;
     margin-left: 3vw;
+    @include media-breakpoint-down(xs) {
+      font-size: 2rem;
+      max-width: 250px;
+    }
   }
   .headline {
     font-family: Chakra Petch;
