@@ -1,15 +1,17 @@
 <template>
-  <markdown :value="blok.text" class="px-4 py-2 lg:px-8 lg:leading-normal leading-relaxed lg:text-lg text-base"/>
+  <markdown
+    :value="blok.text"
+    class="px-4 py-2 lg:px-8 lg:leading-normal leading-relaxed lg:text-lg text-base"
+  />
 </template>
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
-
 .text-blok {
   display: flex;
   .text {

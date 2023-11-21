@@ -1,34 +1,45 @@
 <template>
   <section>
-    <component v-if="story && story.content && story.content.component" :key="story.content._uid" :blok="story.content" :is="story.content.component"></component>
- </section>
+    <component
+      v-if="story && story.content && story.content.component"
+      :key="story.content._uid"
+      :blok="story.content"
+      :is="story.content.component"
+    ></component>
+  </section>
 </template>
 
 <script>
-import storyblokLivePreview from '@/mixins/storyblokLivePreview'
-import { getMetaTagsForPage } from '@/services/MetaDataService'
+import storyblokLivePreview from "@/mixins/storyblokLivePreview";
+import { getMetaTagsForPage } from "@/services/MetaDataService";
 
 export default {
   computed: {
-    pressInfo () {
-      return this.story.content
-    }
+    pressInfo() {
+      return this.story.content;
+    },
   },
-  data () {
+  data() {
     return {
-      story: null
-    }
+      story: null,
+    };
   },
   mixins: [storyblokLivePreview],
-  asyncData (context) {
-    return context.store.dispatch('loadFullPage', context.route.fullPath).then(data => {
-      return { story: data.story }
-    }).catch((e) => {
-      context.error({ statusCode: e.response.status, message: e.response.statusText })
-    })
+  asyncData(context) {
+    return context.store
+      .dispatch("loadFullPage", context.route.fullPath)
+      .then((data) => {
+        return { story: data.story };
+      })
+      .catch((e) => {
+        context.error({
+          statusCode: e.response.status,
+          message: e.response.statusText,
+        });
+      });
   },
-  head () {
-    return getMetaTagsForPage(this.story)
-  }
-}
+  head() {
+    return getMetaTagsForPage(this.story);
+  },
+};
 </script>

@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import bookingCalendar from '@/components/calendar/BookingCalendar.vue';
+import BookingCalendar from '@/components/calendar/BookingCalendar.vue';
 
 export default {
-  components: { bookingCalendar },
+  components: { BookingCalendar },
   props: ['blok'],
 };
 </script>

@@ -1,42 +1,58 @@
 <template>
-    <div v-if="story">
-        <div class="preview-wrapper flex">
-            <div v-if="(maker != null && maker.length !=0)" class="maker-preview">
-                <nuxt-link class="story" :to="makerlink">
-                    <div class="display-maker">
-                        <div class="banner" :style="{ 'background-image': 'url(' + $resizeImage(maker.image, '250x250') + ')' }"/>
-                    </div>
-                </nuxt-link>
-                <div class="name">
-                    {{ maker.name }}
-                </div>
-                <div class="info">
-                    {{ maker.title }}
-                </div>
-                <a class="info" :href="'mailto:'+maker.email">
-                    {{ maker.email }}
-                </a>
-            </div>
-            <div class="w-1/2 px-8" style="display: flex;align-items: center;justify-content: center;">
-                <markdown :value="single_member_text" />
-            </div>
+  <div v-if="story">
+    <div class="preview-wrapper flex">
+      <div v-if="maker != null && maker.length != 0" class="maker-preview">
+        <nuxt-link class="story" :to="makerlink">
+          <div class="display-maker">
+            <div
+              class="banner"
+              :style="{
+                'background-image':
+                  'url(' + $resizeImage(maker.image, '250x250') + ')',
+              }"
+            />
+          </div>
+        </nuxt-link>
+        <div class="name">
+          {{ maker.name }}
         </div>
-    </div>
-    <div v-else>
-        <div class="preview-wrapper">
-            <div v-if="member" class="maker-preview">
-                <div class="story">
-                    <div class="display-maker">
-                        <div v-if="image" class="banner" :style="{ 'background-image': 'url(' + $resizeImage(member.image, '250x250') + ')' }"/>
-                    </div>
-                </div>
-                <div class="name">
-                    {{ member.title }}
-                </div>
-                <markdown class="info" :value="member.text" />
-            </div>
+        <div class="info">
+          {{ maker.title }}
         </div>
+        <a class="info" :href="'mailto:' + maker.email">
+          {{ maker.email }}
+        </a>
+      </div>
+      <div
+        class="w-1/2 px-8"
+        style="display: flex; align-items: center; justify-content: center"
+      >
+        <markdown :value="single_member_text" />
+      </div>
     </div>
+  </div>
+  <div v-else>
+    <div class="preview-wrapper">
+      <div v-if="member" class="maker-preview">
+        <div class="story">
+          <div class="display-maker">
+            <div
+              v-if="image"
+              class="banner"
+              :style="{
+                'background-image':
+                  'url(' + $resizeImage(member.image, '250x250') + ')',
+              }"
+            />
+          </div>
+        </div>
+        <div class="name">
+          {{ member.title }}
+        </div>
+        <markdown class="info" :value="member.text" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -44,46 +60,47 @@ export default {
   filters: {
     truncate: function (text, length, suffix) {
       if (text.length > length) {
-        return text.substring(0, length) + suffix
+        return text.substring(0, length) + suffix;
       } else {
-        return text
+        return text;
       }
-    }
+    },
   },
-  props: ['id', 'single_member_text'],
-  data () {
+  props: ["id", "single_member_text"],
+  data() {
     return {
-      story: null
-    }
+      story: null,
+    };
   },
   computed: {
-    maker () {
-      return this.story.content
+    maker() {
+      return this.story.content;
     },
-    makerlink () {
-      return '/de/team/' + this.story.slug
+    makerlink() {
+      return "/de/team/" + this.story.slug;
     },
-    member () {
-      return this.id
+    member() {
+      return this.id;
     },
-    image () {
-      return this.id.image
-    }
+    image() {
+      return this.id.image;
+    },
   },
-  created () {
+  created() {
     //console.log('single_text', this.single_member_text)
-    this.$store.app.$storyapi.get(`cdn/stories/${this.id}`, {
-      find_by: 'uuid'
-    }).then((res) => {
-      this.story = res.data.story
-    }).catch((e) => {
-    })
-  }
-}
+    this.$store.app.$storyapi
+      .get(`cdn/stories/${this.id}`, {
+        find_by: "uuid",
+      })
+      .then((res) => {
+        this.story = res.data.story;
+      })
+      .catch((e) => {});
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .preview-wrapper {
   width: 100%;
   display: flex;

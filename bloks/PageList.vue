@@ -1,33 +1,28 @@
 <template>
-  <div
-    v-editable="blok"
-    class="page-list"
-  >
+  <div v-editable="blok" class="page-list">
     <page-card
       v-for="i in blok.items"
       :key="i.uid"
       :blok="i"
       class="page-card"
-      :class="{ small : length }"
+      :class="{ small: length }"
     />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
-  created () {
-  },
+  props: ["blok"],
+  created() {},
   computed: {
-    length () {
-      return this.blok.items.length > 2
-    }
-  }
-}
+    length() {
+      return this.blok.items.length > 2;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .page-list {
   display: flex;
   justify-content: center;

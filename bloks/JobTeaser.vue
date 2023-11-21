@@ -1,15 +1,9 @@
 <template>
-  <div
-    v-editable="blok"
-    class="job-teaser"
-  >
+  <div v-editable="blok" class="job-teaser">
     <h2 class="teaser">
       {{ blok.teaser }}
     </h2>
-    <sb-link
-      class="link"
-      :link="blok.link"
-    >
+    <sb-link class="link" :link="blok.link">
       {{ blok.button_text }}
     </sb-link>
   </div>
@@ -17,12 +11,11 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
-
 .job-teaser {
   display: flex;
   align-items: center;

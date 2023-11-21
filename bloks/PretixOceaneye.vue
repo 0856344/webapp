@@ -1,51 +1,58 @@
 <template>
   <section class="oceaneye-overview">
-    <div
-        v-editable="blok"
-        class="pretix-oceaneye"
-    >
-      <link rel="stylesheet" type="text/css" href="https://buchung.grandgarage.eu/oceanEye/widget/v1.css">
-      <script type="text/javascript" src="https://buchung.grandgarage.eu/widget/v1.de-informal.js" async></script>
+    <div v-editable="blok" class="pretix-oceaneye">
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://buchung.grandgarage.eu/oceanEye/widget/v1.css"
+      />
+      <script
+        type="text/javascript"
+        src="https://buchung.grandgarage.eu/widget/v1.de-informal.js"
+        async
+      ></script>
       <div class="container">
-        <div
-            class="col-start"
-        >
-          <h2
-              v-if="blok.headline"
-              class="headline"
-          >
+        <div class="col-start">
+          <h2 v-if="blok.headline" class="headline">
             <markdown :value="blok.headline" />
           </h2>
         </div>
         <div class="col-end">
-          <p
-              v-if="blok.text"
-              class="text"
-          >
+          <p v-if="blok.text" class="text">
             <markdown :value="blok.text" />
           </p>
         </div>
       </div>
       <div class="pretix-content">
         <div>
-          <pretix-widget name="pretix" event="https://buchung.grandgarage.eu/oceanEye/"></pretix-widget>
+          <pretix-widget
+            name="pretix"
+            event="https://buchung.grandgarage.eu/oceanEye/"
+          ></pretix-widget>
         </div>
         <noscript>
           <div class="pretix-widget">
             <div class="pretix-widget-info-message">
-              JavaScript ist in Ihrem Browser deaktiviert. Um unseren Ticket-Shop ohne JavaScript aufzurufen, klicken Sie bitte <a target="_blank" rel="noopener" href="https://buchung.grandgarage.eu/oceanEye/">hier</a>.
+              JavaScript ist in Ihrem Browser deaktiviert. Um unseren
+              Ticket-Shop ohne JavaScript aufzurufen, klicken Sie bitte
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://buchung.grandgarage.eu/oceanEye/"
+                >hier</a
+              >.
             </div>
           </div>
         </noscript>
       </div>
-      </div>
+    </div>
   </section>
 </template>
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
@@ -112,14 +119,14 @@ export default {
       font-family: $font-primary;
       line-height: 1.6;
       font-size: 1.1em;
-      letter-spacing: .03em;
+      letter-spacing: 0.03em;
     }
   }
 }
 .pretix-content {
   display: flex;
   justify-content: center;
-  .pretix-widget-wrapper{
+  .pretix-widget-wrapper {
     a {
       color: $color-secondary;
       text-decoration: none;
@@ -132,8 +139,8 @@ export default {
       border-color: $color-secondary;
     }
     button:hover {
-        background-color: black;
-        border-color: black;
+      background-color: black;
+      border-color: black;
     }
     .pretix-widget-event-week-table {
       margin-top: 3%;
@@ -164,10 +171,10 @@ export default {
         margin-top: 15%;
       }
     }
-    .pretix-widget-event-calendar-previous-month{
+    .pretix-widget-event-calendar-previous-month {
       padding: 10px;
     }
-    .pretix-widget-event-calendar-next-month{
+    .pretix-widget-event-calendar-next-month {
       padding: 10px;
     }
     .pretix-widget .pretix-widget-loading svg {

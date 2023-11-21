@@ -1,10 +1,7 @@
 <template>
   <section class="machine-status-overview">
     <div class="machine-list-wrapper">
-      <div
-        v-if="machines && machines.length > 0"
-        class="machine-list"
-      >
+      <div v-if="machines && machines.length > 0" class="machine-list">
         <transition-group name="list">
           <machine-status-list-item
             v-for="item in machines"
@@ -14,11 +11,8 @@
           />
         </transition-group>
       </div>
-      <div
-        v-else
-        class="machine-list-none"
-      >
-        <code>{{ $t('noSearchResults') }}</code>
+      <div v-else class="machine-list-none">
+        <code>{{ $t("noSearchResults") }}</code>
       </div>
     </div>
   </section>
@@ -26,60 +20,64 @@
 
 <script>
 export default {
-  layout: 'screen',
-  async asyncData (context) {
-    const tags = await context.store.dispatch('loadTags')
+  layout: "screen",
+  async asyncData(context) {
+    const tags = await context.store.dispatch("loadTags");
     const filters = {
       filter_query: {
         component: {
-          in: 'machine'
+          in: "machine",
+        },
+      },
+    };
+    const machines = await context.store
+      .dispatch("findStatusMachines", filters)
+      .then((data) => {
+        if (data.stories) {
+          return { machines: data.stories };
         }
-      }
-    }
-    const machines = await context.store.dispatch('findStatusMachines', filters).then((data) => {
-      if (data.stories) {
-        return { machines: data.stories }
-      }
-      return { machines: [] }
-    })
-    return { tags, ...machines }
+        return { machines: [] };
+      });
+    return { tags, ...machines };
   },
-  data () {
+  data() {
     return {
       loading: false,
-      search: '',
-      tagsCollapsed: true
-    }
+      search: "",
+      tagsCollapsed: true,
+    };
   },
-  computed: {
-  },
+  computed: {},
   watch: {
-    search () {
-      this.update()
-    }
+    search() {
+      this.update();
+    },
   },
-  created () {
-    this.$watch('tags', (newVal, oldVal) => {
-      this.update()
-    }, { deep: true })
+  created() {
+    this.$watch(
+      "tags",
+      (newVal, oldVal) => {
+        this.update();
+      },
+      { deep: true }
+    );
   },
   methods: {
-    update () {
-      this.loading = true
-      this.$store.dispatch('findItems', this.filters).then((data) => {
-        this.loading = false
-        this.machines = data.stories
-      })
+    update() {
+      this.loading = true;
+      this.$store.dispatch("findItems", this.filters).then((data) => {
+        this.loading = false;
+        this.machines = data.stories;
+      });
     },
-    toggleTags () {
-      this.tagsCollapsed = !this.tagsCollapsed
-    }
-  }
-}
+    toggleTags() {
+      this.tagsCollapsed = !this.tagsCollapsed;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .machine-status-overview {
   .loading {
     position: absolute;
@@ -100,7 +98,8 @@ export default {
           margin-bottom: -2em;
         }
       }
-      .list-enter-active, .list-leave-active {
+      .list-enter-active,
+      .list-leave-active {
         transition: all 0.5s;
       }
       .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {

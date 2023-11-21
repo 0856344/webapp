@@ -2,13 +2,9 @@
   <div class="breadcrumbs">
     <div class="content">
       <div class="item">
-        {{ $t('grandGarage') }}
+        {{ $t("grandGarage") }}
       </div>
-      <div
-        v-for="(item, index) in pathItems"
-        :key="index"
-        class="item"
-      >
+      <div v-for="(item, index) in pathItems" :key="index" class="item">
         {{ item }}
       </div>
       <div class="item last">
@@ -21,34 +17,30 @@
 <script charset="utf-8">
 export default {
   computed: {
-    items () {
-      const path = this.$store.state.route.fullPath.split('?')[0]
-      const items = path
-        .replace('-', ' ')
-        .split('/')
-        .slice(2)
-      if (path.endsWith('/')) {
-        items.pop()
+    items() {
+      const path = this.$store.state.route.fullPath.split("?")[0];
+      const items = path.replace("-", " ").split("/").slice(2);
+      if (path.endsWith("/")) {
+        items.pop();
       }
-      return items
+      return items;
     },
-    pathItems () {
-      const items = this.items.slice(0)
-      items.pop()
-      return items
+    pathItems() {
+      const items = this.items.slice(0);
+      items.pop();
+      return items;
     },
-    lastItem () {
+    lastItem() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      return this.items.pop()
-    }
+      return this.items.pop();
+    },
   },
-  created () {},
-  methods: {}
-}
+  created() {},
+  methods: {},
+};
 </script>
 
 <style lang="scss">
-
 .breadcrumbs {
   z-index: 900;
   top: 0;
@@ -60,7 +52,7 @@ export default {
   flex-direction: column;
   justify-content: center;
 
-  @media(max-width: $mobile-small) {
+  @media (max-width: $mobile-small) {
     // width: 30px;
     display: none;
   }

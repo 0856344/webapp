@@ -1,10 +1,6 @@
 <template>
   <div class="loading">
-    <font-awesome-icon
-      class="icon"
-      :color="color"
-      icon="circle-notch"
-    />
+    <font-awesome-icon class="icon" :color="color" icon="circle-notch" />
   </div>
 </template>
 
@@ -13,10 +9,10 @@ export default {
   props: {
     color: {
       required: false,
-      default: 'black'
-    }
-  }
-}
+      default: "black",
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

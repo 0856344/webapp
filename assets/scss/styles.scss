@@ -1,18 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  a {
-    @apply text-orange;
-  }
-}
-
-// COLOR
-.color-secondary {
-  color: $color-secondary
-}
-
 body {
   background-color: $color-bright-bg;
   width: 100%;
@@ -114,7 +99,6 @@ p {
   color: white;
 }
 
-
 // LIST
 ul {
   display: block;
@@ -126,11 +110,13 @@ ul {
   padding-inline-start: 40px;
 }
 
-.content-card, .list-item {
+.content-card,
+.list-item {
   background-color: white;
 }
 
-.content-card:hover, .list-item:hover {
+.content-card:hover,
+.list-item:hover {
   -webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
   box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
 }
@@ -151,7 +137,7 @@ ul {
 
 // main navigation
 .main-nav-item:hover {
-  color: #E69140 !important;
+  color: #e69140 !important;
 }
 
 .login-button button:hover {
@@ -159,7 +145,7 @@ ul {
 }
 
 .dropdown .child a:hover {
-  color: #E69140 !important;
+  color: #e69140 !important;
 }
 
 // cards
@@ -202,7 +188,7 @@ ul {
 .input-button-primary {
   cursor: pointer;
   background-color: $color-secondary;
-  color: #FFF;
+  color: #fff;
   border: 1px solid $color-secondary-border;
   padding: 7px 12px 8px;
   line-height: 1;
@@ -210,7 +196,6 @@ ul {
   align-self: center;
   margin-top: 20px;
 }
-
 
 .input-button-primary:disabled {
   cursor: not-allowed;
@@ -304,9 +289,8 @@ ul {
 }
 
 .clickable-icon:hover {
-  color: $color-secondary
+  color: $color-secondary;
 }
-
 
 // Toasts
 .goodToast {
@@ -321,10 +305,10 @@ ul {
 // Alerts
 .alert {
   position: relative;
-  padding: .75rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   margin-bottom: 1rem;
   border: 1px solid transparent;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 }
 
 .alert-primary {
@@ -335,7 +319,7 @@ ul {
 
 .alert-info {
   color: white;
-  opacity: .8;
+  opacity: 0.8;
   background-color: $color-primary;
   border-color: $color-primary-border;
 }
@@ -358,9 +342,8 @@ ul {
 
 .fade {
   opacity: 0;
-  transition: opacity .15s linear;
+  transition: opacity 0.15s linear;
 }
-
 
 input:invalid {
   background-color: rgba(231, 166, 100, 0);
@@ -385,9 +368,9 @@ input:focus {
   padding: 10px;
   outline: none;
   width: 100%;
-  color: #FFF;
+  color: #fff;
   border: none;
-  background-color: #E69140;
+  background-color: #e69140;
   margin: 0;
   cursor: pointer;
 }
@@ -397,7 +380,8 @@ input:focus {
   background-color: black;
 }
 
-.machine-list, .member-list {
+.machine-list,
+.member-list {
   list-style: none;
 }
 
@@ -476,7 +460,6 @@ table {
 }
 
 .member-portal-table {
-
   thead {
     background-color: black;
     color: white;
@@ -553,7 +536,7 @@ table {
       }
 
       .yellow {
-        background: #ECAB6D;
+        background: #ecab6d;
       }
 
       .green {

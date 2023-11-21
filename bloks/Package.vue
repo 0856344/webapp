@@ -1,15 +1,14 @@
 <template>
   <div>
     <div v-if="userPackage" class="package-item">
-<!--      <div class="icon">-->
-<!--        <font-awesome-icon icon="cube"/>-->
-<!--      </div>-->
+      <!--      <div class="icon">-->
+      <!--        <font-awesome-icon icon="cube"/>-->
+      <!--      </div>-->
       <div class="body">
         <div class="title">
           <div v-if="this.userPackage._embedded" class="interval">
             {{ this.userPackage._embedded.package.name }}
-<!--            {{ this.getMembershipName() }}-->
-
+            <!--            {{ this.getMembershipName() }}-->
           </div>
           <div v-if="this.userPackage.name" class="interval">
             {{ this.userPackage.name }}
@@ -17,74 +16,100 @@
         </div>
         <div class="package">
           <div class="package-date" v-if="this.userPackage.fromDate">
-            <div v-if="untilDate== null">ab&nbsp;</div>
-            {{fromDate}}
+            <div v-if="untilDate == null">ab&nbsp;</div>
+            {{ fromDate }}
             <div v-if="untilDate">&nbsp;-&nbsp;</div>
-            {{untilDate}}
+            {{ untilDate }}
           </div>
-          <div v-if="userPackage.recurringFeePeriod == 'month'" class="interval">
-            {{ $t('interval') }} {{ $t('monthly') }}
+          <div
+            v-if="userPackage.recurringFeePeriod == 'month'"
+            class="interval"
+          >
+            {{ $t("interval") }} {{ $t("monthly") }}
           </div>
           <div v-if="userPackage.recurringFeePeriod == 'year'" class="interval">
-            {{ $t('interval') }}{{ $t('yearly') }}
+            {{ $t("interval") }}{{ $t("yearly") }}
           </div>
-          {{ $t('price') }} {{userPackage.recurringFee}}  {{ $t('euro') }}
-          <div v-if="storage && booked && !untilDate && !cancelPackageDialog" class="button" @click="showCancelPackageDialog()">
-              <div class="button-text">
-              {{ 'kündigen' }}
-              </div>
+          {{ $t("price") }} {{ userPackage.recurringFee }} {{ $t("euro") }}
+          <div
+            v-if="storage && booked && !untilDate && !cancelPackageDialog"
+            class="button"
+            @click="showCancelPackageDialog()"
+          >
+            <div class="button-text">
+              {{ "kündigen" }}
+            </div>
           </div>
-          <div class="button-dialog-container"> <loading-spinner style="margin-top: 7%" v-if="packageLoading" color="#333"/></div>
+          <div class="button-dialog-container">
+            <loading-spinner
+              style="margin-top: 7%"
+              v-if="packageLoading"
+              color="#333"
+            />
+          </div>
           <div v-if="!packageLoading">
             <div class="button-row">
-              <div v-if="storage && booked && !untilDate && cancelPackageDialog">
-                <div class="button-dialog-no" @click="closeCancelPackageDialog()">
+              <div
+                v-if="storage && booked && !untilDate && cancelPackageDialog"
+              >
+                <div
+                  class="button-dialog-no"
+                  @click="closeCancelPackageDialog()"
+                >
                   <div>
-                    {{ 'abbrechen' }}
+                    {{ "abbrechen" }}
                   </div>
                 </div>
-                <div class="button-dialog-yes" @click="cancelStorage(userPackage.id)">
+                <div
+                  class="button-dialog-yes"
+                  @click="cancelStorage(userPackage.id)"
+                >
                   <div>
-                    {{ 'bestätigen' }}
+                    {{ "bestätigen" }}
                   </div>
                 </div>
               </div>
             </div>
-            <div v-if="storage && !booked && !setPackageDialog" class="button" @click="showSetPackageDialog()">
+            <div
+              v-if="storage && !booked && !setPackageDialog"
+              class="button"
+              @click="showSetPackageDialog()"
+            >
               <div class="button-text">
-                {{ 'buchen' }}
+                {{ "buchen" }}
               </div>
             </div>
             <div class="button-row">
               <div v-if="storage && !booked && setPackageDialog">
                 <div class="button-dialog-no" @click="closeSetPackageDialog()">
                   <div>
-                    {{ 'abbrechen' }}
+                    {{ "abbrechen" }}
                   </div>
                 </div>
-                <div class="button-dialog-yes" @click=setPackage(userPackage.id)>
-                    <div>
-                      {{ 'bestätigen' }}
-                    </div>
+                <div
+                  class="button-dialog-yes"
+                  @click="setPackage(userPackage.id)"
+                >
+                  <div>
+                    {{ "bestätigen" }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       setPackageDialog: false,
       cancelPackageDialog: false,
-      packageLoading: false
+      packageLoading: false,
       // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
       // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
       // membershipList: [
@@ -93,62 +118,65 @@ export default {
       //   { id: 2, name: 'SMART GARAGE + Digitallabor & Textilwerkstatt', shortform: 'SG+DT' },
       //   { id: 3, name: 'SMART GARAGE + All inclusive', shortform: 'SG+ALL' }
       // ]
-    }
+    };
   },
-  props: ['userPackage', 'storage', 'booked'],
+  props: ["userPackage", "storage", "booked"],
   computed: {
-    fromDate () {
+    fromDate() {
       if (this.userPackage.fromDate) {
-        return new Date(this.userPackage.fromDate).toLocaleDateString('de-at')
-      } else { return null }
-    },
-    untilDate () {
-      if (this.userPackage.untilDate == null) {
-        return null
+        return new Date(this.userPackage.fromDate).toLocaleDateString("de-at");
+      } else {
+        return null;
       }
-      return new Date(this.userPackage.untilDate).toLocaleDateString('de-at')
-    }//,
+    },
+    untilDate() {
+      if (this.userPackage.untilDate == null) {
+        return null;
+      }
+      return new Date(this.userPackage.untilDate).toLocaleDateString("de-at");
+    }, //,
     // chargedDate () {
     //   return new Date(this.userPackage.chargedUntilDate).toLocaleDateString('de-at')
     // }
   },
   methods: {
-    async setPackage (id) {
-      this.setPackageDialog = true
-      this.packageLoading = true
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+    async setPackage(id) {
+      this.setPackageDialog = true;
+      this.packageLoading = true;
+      await this.$recaptchaLoaded();
+      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        'g-recaptcha-response': token
-      }
+        "g-recaptcha-response": token,
+      };
       // connector will double-check if discount is valid
-      let payload = { id: id }
+      let payload = { id: id };
       // add captcha token to payload
-      payload = { ...payload, ...captchaData }
-      await this.$store.dispatch('setPackage', payload)
+      payload = { ...payload, ...captchaData };
+      await this.$store
+        .dispatch("setPackage", payload)
         .then((response) => {
-          this.packageLoading = false
-          this.closeSetPackageDialog()
-          this.$toast.show('Buchung wurde erfolgreich durchgeführt', {
-            className: 'goodToast'
-          })
-          this.$emit('reload')
+          this.packageLoading = false;
+          this.closeSetPackageDialog();
+          this.$toast.show("Buchung wurde erfolgreich durchgeführt", {
+            className: "goodToast",
+          });
+          this.$emit("reload");
         })
         .catch((error) => {
-          this.packageLoading = false
+          this.packageLoading = false;
           switch (error.response.status) {
             case 404:
-              this.$toast.show('Lagerort bereits ausgebucht!', {
-                className: 'badToast'
-              })
-              break
+              this.$toast.show("Lagerort bereits ausgebucht!", {
+                className: "badToast",
+              });
+              break;
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten', {
-                className: 'badToast'
-              })
-              break
+              this.$toast.show("Ein Fehler ist aufgetreten", {
+                className: "badToast",
+              });
+              break;
           }
-        })
+        });
     },
     // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
     // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
@@ -160,58 +188,58 @@ export default {
     //     return ms[0].name
     //   }
     // },
-    showSetPackageDialog () {
-      this.setPackageDialog = true
+    showSetPackageDialog() {
+      this.setPackageDialog = true;
     },
-    closeSetPackageDialog () {
-      this.setPackageDialog = false
+    closeSetPackageDialog() {
+      this.setPackageDialog = false;
     },
-    showCancelPackageDialog () {
-      this.cancelPackageDialog = true
+    showCancelPackageDialog() {
+      this.cancelPackageDialog = true;
     },
-    closeCancelPackageDialog () {
-      this.cancelPackageDialog = false
+    closeCancelPackageDialog() {
+      this.cancelPackageDialog = false;
     },
 
-    async cancelStorage (memberPackageId) {
-      this.packageLoading = true
-      await this.$recaptchaLoaded()
-      const token = await this.$recaptcha('submit') // Execute reCAPTCHA with action "submit"
+    async cancelStorage(memberPackageId) {
+      this.packageLoading = true;
+      await this.$recaptchaLoaded();
+      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        'g-recaptcha-response': token
-      }
+        "g-recaptcha-response": token,
+      };
       // connector will double-check if discount is valid
-      let payload = { id: memberPackageId }
+      let payload = { id: memberPackageId };
       // add captcha token to payload
-      payload = { ...payload, ...captchaData }
-      await this.$store.dispatch('cancelPackage', payload)
+      payload = { ...payload, ...captchaData };
+      await this.$store
+        .dispatch("cancelPackage", payload)
         .then((response) => {
-          this.packageLoading = false
-          this.closeCancelPackageDialog()
-          this.$toast.show('Kündigung wurde erfolgreich durchgeführt', {
-            className: 'goodToast'
-          })
-          this.$emit('reload')
+          this.packageLoading = false;
+          this.closeCancelPackageDialog();
+          this.$toast.show("Kündigung wurde erfolgreich durchgeführt", {
+            className: "goodToast",
+          });
+          this.$emit("reload");
         })
         .catch((error) => {
-          this.packageLoading = false
-          this.closeCancelPackageDialog()
+          this.packageLoading = false;
+          this.closeCancelPackageDialog();
           switch (error.response.status) {
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten', {
-                className: 'badToast'
-              })
-              break
+              this.$toast.show("Ein Fehler ist aufgetreten", {
+                className: "badToast",
+              });
+              break;
           }
-        })
-    }
-  }
-}
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
-.package-item{
+.package-item {
   font-size: 1rem;
   font-family: "Roboto Mono", monospace;
   line-height: 1;
@@ -223,39 +251,40 @@ export default {
   border-radius: 0.3em;
   max-width: 500px;
   box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.14118);
-  .title{
+  .title {
     font-weight: bold;
     padding-bottom: 10px;
     font-size: 1.3em;
   }
-  .body{
+  .body {
     margin-left: 25px;
-    .package{
-      .package-date{
-        display:flex;
+    .package {
+      .package-date {
+        display: flex;
         padding-bottom: 10px;
         color: $color-secondary;
       }
-      .interval{
+      .interval {
         padding-bottom: 10px;
       }
       .button {
-          cursor: pointer;
-          margin-top: 7%;
-          background: $color-secondary;
-          border-radius: 15px;
-          color: white;
-          padding: 7px;
-          font-size: 16px;
-          width: 110px;
-          text-align: center;
-        }.button-text {
-                 display: inline-block;
-                 text-align: center;
-               }
-        & * {
-          text-transform: uppercase;
-        }
+        cursor: pointer;
+        margin-top: 7%;
+        background: $color-secondary;
+        border-radius: 15px;
+        color: white;
+        padding: 7px;
+        font-size: 16px;
+        width: 110px;
+        text-align: center;
+      }
+      .button-text {
+        display: inline-block;
+        text-align: center;
+      }
+      & * {
+        text-transform: uppercase;
+      }
       .button-row {
         text-align: center;
       }

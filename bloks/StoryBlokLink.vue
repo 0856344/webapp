@@ -11,17 +11,15 @@
     :href="link.cached_url"
     class="link"
     target="_blank"
-  ><slot />
+    ><slot />
   </a>
-  <span v-else><slot />
-  </span>
+  <span v-else><slot /> </span>
 </template>
 
 <script>
 export default {
-  props: ['link']
-}
+  props: ["link"],
+};
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

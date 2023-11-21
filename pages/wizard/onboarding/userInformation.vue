@@ -144,9 +144,11 @@ export default {
         !this.passwordTooShort &&
         this.passwordComplexity
       ) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.onboardingData.userInformation.password = this.password;
         return true;
       } else {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.onboardingData.userInformation.password = null;
         return false;
       }
@@ -167,8 +169,7 @@ export default {
     },
     passwordComplexity() {
       if (this.password) {
-        const passwordRegex =
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*]*$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\x20-\x7E]*$/;
         return passwordRegex.test(this.password);
       } else {
         return false;

@@ -8,88 +8,86 @@
         <div class="space">
           <div class="headline">
             <div>
-            <div class="back" @click="login">
-              <font-awesome-icon icon="angle-left" />
+              <div class="back" @click="login">
+                <font-awesome-icon icon="angle-left" />
+              </div>
+              <span class="text">{{ $t("becomeACommunityPart") }}</span>
             </div>
-              <span class="text">{{ $t('becomeACommunityPart') }}</span>
-            </div>
-            <div
-              class="close"
-              @click="close"
-            >
+            <div class="close" @click="close">
               <font-awesome-icon icon="times" />
             </div>
           </div>
           <div class="info">
-            {{ $t('firstStepsInTheGG') }} </div>
+            {{ $t("firstStepsInTheGG") }}
+          </div>
         </div>
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('firstName') }} </span>
+        <span class="label">{{ $t("firstName") }} </span>
         <input
           v-model="firstName"
-          :class="{ red: invalidFields.includes('firstName')} "
+          :class="{ red: invalidFields.includes('firstName') }"
           type="text"
-          :placeholder= "[[ $t('firstName') ]]"
+          :placeholder="[[$t('firstName')]]"
           @input="checkName"
-        >
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('lastName') }} </span>
+        <span class="label">{{ $t("lastName") }} </span>
         <input
           v-model="lastName"
-          :class="{ red: invalidFields.includes('lastName')}"
+          :class="{ red: invalidFields.includes('lastName') }"
           type="text"
-          :placeholder="[[ $t('lastName') ]]"
+          :placeholder="[[$t('lastName')]]"
           @input="checkName"
-        >
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('email') }} </span>
+        <span class="label">{{ $t("email") }} </span>
         <input
           ref="email"
           v-model="email"
           :class="{ red: invalidFields.includes('email') }"
           type="email"
-          :placeholder= "[[ $t('yourE-mailAddress') ]]"
+          :placeholder="[[$t('yourE-mailAddress')]]"
           @input="checkMail"
-        >
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('address') }}</span>
+        <span class="label">{{ $t("address") }}</span>
         <input
           ref="address"
           v-model="address"
           :class="{ red: invalidFields.includes('address') }"
           type="text"
-          :placeholder= "[[ $t('streetAndHouseNumber') ]]"
+          :placeholder="[[$t('streetAndHouseNumber')]]"
           @input="checkAddress"
-        >
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('city') }}</span>
+        <span class="label">{{ $t("city") }}</span>
         <input
           ref="city"
           v-model="city"
           :class="{ red: invalidFields.includes('city') }"
           type="text"
-          :placeholder= "[[ $t('city') ]]"
+          :placeholder="[[$t('city')]]"
           @input="checkCity"
-        >
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('zipCode') }}</span>
+        <span class="label">{{ $t("zipCode") }}</span>
         <input
           ref="zip"
           v-model="zip"
           :class="{ red: invalidFields.includes('zip') }"
           type="text"
-          :placeholder= "[[ $t('zipCode') ]]"
+          :placeholder="[[$t('zipCode')]]"
           @input="checkZip"
-        >
+        />
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('password') }}</span>
+        <span class="label">{{ $t("password") }}</span>
         <div class="password-wrapper">
           <input
             v-model="password"
@@ -97,25 +95,17 @@
             type="password"
             placeholder=""
             @input="checkPassword"
-          >
-          <div
-            v-if="!passwordValid"
-            class="form-item password-status"
           />
+          <div v-if="!passwordValid" class="form-item password-status" />
         </div>
       </div>
       <div class="form-item">
-        <span class="label">{{ $t('reenterPassword') }}</span>
-        <input
-          v-model="passwordRepeat"
-          type="password"
-          placeholder=""
-        >
+        <span class="label">{{ $t("reenterPassword") }}</span>
+        <input v-model="passwordRepeat" type="password" placeholder="" />
         <div class="password-error">
-          <span
-            v-if="!passwordValid"
-            class="bad"
-          >{{ $t('passwordsDoNotMatch') }}</span>
+          <span v-if="!passwordValid" class="bad">{{
+            $t("passwordsDoNotMatch")
+          }}</span>
         </div>
       </div>
       <div class="checkbox-item">
@@ -125,12 +115,15 @@
             v-model="agb"
             :class="{ red: invalidFields.includes('agb') }"
             type="checkbox"
-          >
+          />
         </div>
-        <label for="agb">{{ $t('iHaveReadThe') }}<nuxt-link
-          target="_blank"
-          to="/de/agb"
-        >{{ $t('conditionsOfParticipation') }} </nuxt-link> {{ $t('andAcceptTheTermsAndConditions') }}</label>
+        <label for="agb"
+          >{{ $t("iHaveReadThe")
+          }}<nuxt-link target="_blank" to="/de/agb"
+            >{{ $t("conditionsOfParticipation") }}
+          </nuxt-link>
+          {{ $t("andAcceptTheTermsAndConditions") }}</label
+        >
       </div>
       <div class="checkbox-item">
         <div class="checkbox-wrapper">
@@ -139,12 +132,15 @@
             v-model="dsg"
             :class="{ red: invalidFields.includes('dsg') }"
             type="checkbox"
-          >
+          />
         </div>
-        <label for="dsg">{{ $t('iHaveReadThe') }}<nuxt-link
-          target="_blank"
-          to="/de/datenschutzerklaerung"
-        >{{ $t('dataPrivacyPolicy') }}</nuxt-link> {{ $t('andAcceptTheTermsAndConditions') }}</label>
+        <label for="dsg"
+          >{{ $t("iHaveReadThe")
+          }}<nuxt-link target="_blank" to="/de/datenschutzerklaerung">{{
+            $t("dataPrivacyPolicy")
+          }}</nuxt-link>
+          {{ $t("andAcceptTheTermsAndConditions") }}</label
+        >
       </div>
       <!--
       <div class="checkbox-item">
@@ -154,10 +150,7 @@
         <label for="newsletter">Ich bin damit einverstanden, Newsletter an meine angegebene E-Mail Adresse zu erhalten.</label>
       </div>
       -->
-      <div
-        v-if="errorMessage"
-        class="form-item error-message"
-      >
+      <div v-if="errorMessage" class="form-item error-message">
         <span />
         <div>
           <span>{{ errorMessage }}</span>
@@ -170,7 +163,7 @@
       </div>
       <div class="form-item button-row">
         <button class="input-button-primary" @click="submit">
-          {{ $t('register') }}
+          {{ $t("register") }}
         </button>
       </div>
     </div>
@@ -178,94 +171,104 @@
 </template>
 
 <script>
-import validator from 'validator'
+import validator from "validator";
 
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      email: '',
-      address: '',
-      city: '',
-      zip: '',
-      password: '',
-      passwordRepeat: '',
-      firstName: '',
-      lastName: '',
+      email: "",
+      address: "",
+      city: "",
+      zip: "",
+      password: "",
+      passwordRepeat: "",
+      firstName: "",
+      lastName: "",
       agb: false,
       dsg: false,
       newsletter: false,
       errorMessage: null,
-      errorDescription: '',
+      errorDescription: "",
       loading: false,
       emailInvalid: false,
-      invalidFields: []
-    }
+      invalidFields: [],
+    };
   },
   computed: {
-    passwordValid () {
-      return this.password === this.passwordRepeat
+    passwordValid() {
+      return this.password === this.passwordRepeat;
     },
-    emailValid () {
-      return validator.isEmail(this.email)
+    emailValid() {
+      return validator.isEmail(this.email);
     },
-    formValid () {
-      return this.passwordValid && this.emailValid && this.agb && this.dsg && this.firstName && this.lastName && this.address && this.city && this.zip
+    formValid() {
+      return (
+        this.passwordValid &&
+        this.emailValid &&
+        this.agb &&
+        this.dsg &&
+        this.firstName &&
+        this.lastName &&
+        this.address &&
+        this.city &&
+        this.zip
+      );
     },
-    showEmailError () {
-      return this.email !== ''
+    showEmailError() {
+      return this.email !== "";
     },
-    showPasswordError () {
-      return this.password !== ''
-    }
+    showPasswordError() {
+      return this.password !== "";
+    },
   },
   methods: {
-    close () {
-      this.$store.dispatch('setSidebar', null)
+    close() {
+      this.$store.dispatch("setSidebar", null);
     },
-    submit () {
+    submit() {
       if (!this.formValid) {
-        this.invalidFields.length = 0
+        this.invalidFields.length = 0;
         if (!this.emailValid) {
           //console.log('### NOT VALID1')
-          this.invalidFields.push('email', true)
+          this.invalidFields.push("email", true);
         }
         if (!this.firstName) {
           //console.log('### NOT VALID2')
-          this.invalidFields.push('firstName', true)
+          this.invalidFields.push("firstName", true);
         }
         if (!this.lastName) {
           //console.log('### NOT VALID3')
-          this.invalidFields.push('lastName', true)
+          this.invalidFields.push("lastName", true);
         }
         if (!this.address) {
           //console.log('### NOT VALID4')
-          this.invalidFields.push('address', true)
+          this.invalidFields.push("address", true);
         }
         if (!this.city) {
           //console.log('### NOT VALID5')
-          this.invalidFields.push('city', true)
+          this.invalidFields.push("city", true);
         }
         if (!this.zip) {
           //console.log('### NOT VALID6')
-          this.invalidFields.push('zip', true)
+          this.invalidFields.push("zip", true);
         }
         if (!this.password) {
           //console.log('### NOT VALID7')
-          this.invalidFields.push('password', true)
+          this.invalidFields.push("password", true);
         }
         if (!this.agb) {
           //console.log('### NOT VALID8')
-          this.invalidFields.push('agb', true)
+          this.invalidFields.push("agb", true);
         }
         if (!this.dsg) {
           //console.log('### NOT VALID9')
-          this.invalidFields.push('dsg', true)
+          this.invalidFields.push("dsg", true);
         }
-        return
+        return;
       }
       //console.log('### VALID')
-      this.loading = true
+      this.loading = true;
       const data = {
         email: this.email,
         password: this.password,
@@ -274,65 +277,69 @@ export default {
           lastName: this.lastName,
           address: this.address,
           city: this.city,
-          zip: this.zip
-        }
-      }
-      this.$store.dispatch('registerUser', data).then((r) => {
-        this.loading = false
-        this.$store.dispatch('setSidebar', 'register-success')
-      }).catch((e) => {
-        this.loading = false
-        if (e.error) {
-          this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"'
-          return
-        }
-        if (e.code) {
-          switch (e.code) {
-            case 'user_exists':
-              this.errorMessage = 'Ein User mit dieser Email Adresse existiert bereits'
-              break
-            case 'invalid_password':
-              this.errorMessage = 'Das Passwort ist zu schwach.'
-              this.errorDescription = e.policy
-              break
-            default:
-              this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.code + '"'
-              break
+          zip: this.zip,
+        },
+      };
+      this.$store
+        .dispatch("registerUser", data)
+        .then((r) => {
+          this.loading = false;
+          this.$store.dispatch("setSidebar", "register-success");
+        })
+        .catch((e) => {
+          this.loading = false;
+          if (e.error) {
+            this.errorMessage = 'Ein Fehler ist aufgetreten: "' + e.error + '"';
+            return;
           }
-        }
-      })
+          if (e.code) {
+            switch (e.code) {
+              case "user_exists":
+                this.errorMessage =
+                  "Ein User mit dieser Email Adresse existiert bereits";
+                break;
+              case "invalid_password":
+                this.errorMessage = "Das Passwort ist zu schwach.";
+                this.errorDescription = e.policy;
+                break;
+              default:
+                this.errorMessage =
+                  'Ein Fehler ist aufgetreten: "' + e.code + '"';
+                break;
+            }
+          }
+        });
     },
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
+    login() {
+      this.$store.dispatch("setSidebar", "login");
     },
-    clearError () {
-      this.errorMessage = null
-      this.errorDescription = ''
+    clearError() {
+      this.errorMessage = null;
+      this.errorDescription = "";
     },
-    checkName () {
-      this.clearError()
+    checkName() {
+      this.clearError();
     },
-    checkMail () {
-      this.clearError()
+    checkMail() {
+      this.clearError();
     },
-    checkAddress () {
-      this.clearError()
+    checkAddress() {
+      this.clearError();
     },
-    checkCity () {
-      this.clearError()
+    checkCity() {
+      this.clearError();
     },
-    checkZip () {
-      this.clearError()
+    checkZip() {
+      this.clearError();
     },
-    checkPassword () {
-      this.clearError()
-    }
-  }
-}
+    checkPassword() {
+      this.clearError();
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .register-form {
   padding: 5vw;
   background-color: $color-bright-bg;
@@ -340,12 +347,14 @@ export default {
     display: flex;
     margin-bottom: 40px;
     & > div {
-      .back, .close {
+      .back,
+      .close {
         display: inline-flex;
       }
-      .back:hover, .close:hover {
+      .back:hover,
+      .close:hover {
         color: $color-orange;
-        cursor:pointer
+        cursor: pointer;
       }
     }
     .headline {
@@ -387,7 +396,7 @@ export default {
     .label {
       font-weight: bold;
       text-transform: uppercase;
-      font-size: .7em;
+      font-size: 0.7em;
     }
     input {
       outline: none;
@@ -410,11 +419,11 @@ export default {
         right: 10px;
         top: 50%;
         background-color: $color-orange;
-        height: .5em;
-        width: .5em;
+        height: 0.5em;
+        width: 0.5em;
         padding: 0;
-        margin-top: -.25em;
-        border-radius: 50%
+        margin-top: -0.25em;
+        border-radius: 50%;
       }
     }
     .password-error {
@@ -427,7 +436,7 @@ export default {
     }
     button {
       background-color: $color-orange;
-      color: #FFF;
+      color: #fff;
       border: 1px solid lighten($color-orange, 10);
       padding: 7px 13px 9px;
       line-height: 1;
@@ -436,14 +445,14 @@ export default {
         background-color: lighten($color-orange, 10);
       }
       &:disabled {
-        background-color: #AAA;
+        background-color: #aaa;
         border-color: #999;
         cursor: not-allowed;
       }
     }
     .bad {
       color: $color-orange;
-      font-size: .7em;
+      font-size: 0.7em;
       font-weight: bold;
     }
   }
@@ -451,7 +460,7 @@ export default {
     padding: 8px 0;
     display: flex;
     .checkbox-wrapper {
-      padding-right: .5em;
+      padding-right: 0.5em;
       outline: none;
       user-select: none;
       max-width: 180px;
@@ -459,8 +468,8 @@ export default {
     label {
       user-select: none;
       flex: 1;
-      font-size: .7em;
-      letter-spacing: .03em;
+      font-size: 0.7em;
+      letter-spacing: 0.03em;
       line-height: 1.2;
       font-weight: 700;
     }
@@ -481,12 +490,12 @@ export default {
         list-style-type: circle;
         padding: 0 0 0 1em;
         > li {
-          margin: .4em 0 0 0;
+          margin: 0.4em 0 0 0;
           > ul {
             padding: 0 0 0 1em;
             list-style-type: circle;
             > li {
-              margin: .4em 0 0 0;
+              margin: 0.4em 0 0 0;
             }
           }
         }

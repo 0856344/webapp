@@ -1,91 +1,98 @@
 <template>
-
-  <div v-editable="blok" class="image-slideshow" >
+  <div v-editable="blok" class="image-slideshow">
     <div v-if="images && images.length > 0">
-      <div v-if="blok.text" class="text"> {{ blok.text }} </div>
+      <div v-if="blok.text" class="text">{{ blok.text }}</div>
       <div v-swiper:swiper="swiperOption">
-        <div class="swiper-wrapper" :class="{ center : length }">
+        <div class="swiper-wrapper" :class="{ center: length }">
           <div
             v-for="s in blok.items"
             :key="s._uid"
             class="swiper-slide"
-            :style="{ 'background-image': 'url(' + $resizeImage(s.image, '500x500') + ')' }"
+            :style="{
+              'background-image':
+                'url(' + $resizeImage(s.image, '500x500') + ')',
+            }"
           />
         </div>
-        <div v-if="!length" class="swiper-button-next"/>
-        <div v-if="!length" class="swiper-button-prev"/>
       </div>
+      <div v-if="!length" class="swiper-button-next" />
+      <div v-if="!length" class="swiper-button-prev" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      images: null
-    }
+      images: null,
+    };
   },
-  mounted () {
-    this.images = this.blok.items
+  mounted() {
+    this.images = this.blok.items;
   },
   computed: {
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 0
+          return 0;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 1
+          return 1;
         } else if (window.innerWidth < 900) {
-          return 2
+          return 2;
         }
       }
-      return 3
+      return 3;
     },
-    length () {
-      return this.blok.items.length < 4
-    }
-  }
-}
+    length() {
+      return this.blok.items.length < 4;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .swiper-wrapper {
-   align-items: center;
+  align-items: center;
 }
 
 .image-slideshow {
   margin: 2em 0;
   color: $color-blue;
+  position: relative; // needed for z-index (blue dashed stripe)
   .text {
-    @include margin-page-middle();
     font-size: 1.8rem;
     font-family: $font-secondary;
     line-height: 1.4;
     letter-spacing: 1.4px;
-    @include media-breakpoint-up(xs){
-      padding: 2rem 0;
+    padding: 3rem 2rem 0;
+    font-weight: bold;
+    margin: 1em 0;
+    @include media-breakpoint-down(md) {
+      font-size: 1.4rem;
+      padding: 1rem 1.5rem;
+      margin: 0;
     }
   }
   .swiper-container {
@@ -93,19 +100,19 @@ export default {
     width: 100%;
     .swiper-slide {
       display: block;
-      background-size: contain;
+      background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      @include media-breakpoint-down(xs){
+      @include media-breakpoint-down(xs) {
         margin: 0 auto;
         display: block;
       }
     }
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       height: 10em;
       padding-bottom: 0;
     }
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       height: 18em;
     }
   }
@@ -115,7 +122,22 @@ export default {
     height: 50px;
     border-radius: 50%;
     background-color: $color-yellow;
+    margin-left: -30px;
+    margin-right: -30px;
     background-size: 12px;
+    top: 50%;
+    @include media-breakpoint-down(md) {
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+    }
+    @include media-breakpoint-down(xs) {
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-right: 0;
+      margin-left: 0;
+    }
   }
 }
 </style>

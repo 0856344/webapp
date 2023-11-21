@@ -56,15 +56,17 @@
       </p>
       <p>
         Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die
-        Freikontingente können nicht ins nächste Monat mitgenommen werden. Die
-        zusätzlich (gekauften) Credits bleiben auch über die Monatsgrenze hinweg
-        erhalten. Weitere Infos >
-        <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.
+        Freikontingente können nicht ins nächste Monat mitgenommen werden.
       </p>
-      <p style="font-size: smaller">
-        Du benötigst zusätzliche Credits? Dann kaufe sie dir gleich unten, oder
-        wechsle deine Mitgliedschaft, indem du eine Mail an den Frontdesk
-        schickst: <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
+      <p>
+        <strong>UNSER TIPP: </strong>Sichere dir vorab zusätzliche Credits —
+        direkt im Bereich ‚Credits kaufen‘ mit einem Klick. Diese zusätzlich
+        (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.
+        Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.
+      </p>
+      <p>
+        Du willst dein Paket wechseln, dann schicke gern ein Mail an den
+        Frontdesk <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
       </p>
       <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">
         <p>
@@ -90,12 +92,6 @@
       <div><loading-spinner v-if="!memberPackages" color="#333" /></div>
       <div style="margin-bottom: 20px" v-if="memberPackages">
         <credit-package v-on:reload="reload" :hasDiscount="hasDiscount" />
-        <p style="font-size: smaller">
-          <u
-            >Hinweis: Credits können für die Arbeitszeit an den Maschinen
-            genutzt werden.</u
-          >
-        </p>
       </div>
     </fieldset>
 
@@ -228,19 +224,15 @@ export default {
         this.$store.state.member.id,
       );
       // update credits status every 30 seconds
-      const reloadCredits = setInterval(() => {
-        if (!this.$store.state.auth) {
-          clearInterval(reloadCredits);
-        } else {
-          this.$store
-            .dispatch('getMemberCredits', this.$store.state.member.id)
-            .then((response) => {
-              this.memberCredits = response;
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }
+      setInterval(() => {
+        this.$store
+          .dispatch("getMemberCredits", this.$store.state.member.id)
+          .then((response) => {
+            this.memberCredits = response;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }, 30000);
     },
     getAllCredits() {

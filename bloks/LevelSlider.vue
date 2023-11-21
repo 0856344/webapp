@@ -22,36 +22,35 @@
         :key="level._uid"
         class="image"
         :src="$resizeImage(level.image, '1800x0')"
-      >
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
 
-  data () {
+  data() {
     return {
       activeLevel: 0,
-      imageStyle: ''
-    }
+      imageStyle: "",
+    };
   },
 
   methods: {
-    setLevel (val) {
-      const number = this.blok.levels.length - 2 - val
+    setLevel(val) {
+      const number = this.blok.levels.length - 2 - val;
       if (number === -1) {
-        return
+        return;
       }
-      this.activeLevel = val
-    }
-  }
-}
+      this.activeLevel = val;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .level-slider {
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;

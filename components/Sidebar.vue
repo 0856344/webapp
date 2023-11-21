@@ -1,33 +1,15 @@
 <template>
   <transition name="fade">
-    <div
-      v-if="sidebar"
-      class="sidebar"
-    >
-      <div
-        class="backdrop"
-        @click="close"
-      />
-      <transition
-        name="slide"
-        appear
-      >
-        <login-form
-          v-if="sidebar === 'login'"
-          class="pane"
-        />
-        <register-form
-          v-else-if="sidebar === 'register'"
-          class="pane"
-        />
+    <div v-if="sidebar" class="sidebar">
+      <div class="backdrop" @click="close" />
+      <transition name="slide" appear>
+        <login-form v-if="sidebar === 'login'" class="pane" />
+        <register-form v-else-if="sidebar === 'register'" class="pane" />
         <register-success-form
           v-else-if="sidebar === 'register-success'"
           class="pane"
         />
-        <recover-form
-          v-else-if="sidebar === 'recover'"
-          class="pane"
-        />
+        <recover-form v-else-if="sidebar === 'recover'" class="pane" />
         <recover-success-form
           v-else-if="sidebar === 'recover-success'"
           class="pane"
@@ -40,25 +22,23 @@
 <script charset="utf-8">
 export default {
   computed: {
-    sidebar () {
-      return this.$store.state.sidebar
-    }
-  },
-  created () {
-  },
-  methods: {
-    close () {
-      this.$store.dispatch('setSidebar', null)
+    sidebar() {
+      return this.$store.state.sidebar;
     },
-    login () {
-      this.$store.dispatch('setSidebar', 'login')
-    }
-  }
-}
+  },
+  created() {},
+  methods: {
+    close() {
+      this.$store.dispatch("setSidebar", null);
+    },
+    login() {
+      this.$store.dispatch("setSidebar", "login");
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .sidebar {
   position: fixed;
   z-index: 5000;
@@ -90,10 +70,12 @@ export default {
   }
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: all .5s;
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s;
 }
-.slide-enter, .slide-leave-to {
+.slide-enter,
+.slide-leave-to {
   opacity: 0;
   transform: translateX(200px);
 }

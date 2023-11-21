@@ -1,63 +1,77 @@
 <template>
-    <div v-editable="blok">
-        <div v-if="machine && (typeof machine === 'object')" class="preview-wrapper">
-            <div class="machine-preview">
-                <nuxt-link class="story" :to="machinelink">
-                    <div class="display-machine">
-                        <div class="banner"
-                             :style="{ 'background-image': 'url(' + $resizeImage(machine.metadata.image, '700x0') + ')' }"/>
-                        <div class="title">
-                            {{ machine.name }}
-                        </div>
-                        <markdown class="machine-tags" :value="this.machine.description"/>
-                        <div class="flex flex-col">
-                            <p class="text-sm"><font-awesome-icon icon="coins"/> {{ costsText }}</p>
-                            <p class="text-sm mt-0"><i>{{noCreditsLeftText}}</i></p>
-                        </div>
-                    </div>
-                </nuxt-link>
+  <div v-editable="blok">
+    <div v-if="machine && typeof machine === 'object'" class="preview-wrapper">
+      <div class="machine-preview">
+        <nuxt-link class="story" :to="machinelink">
+          <div class="display-machine">
+            <div
+              class="banner"
+              :style="{
+                'background-image':
+                  'url(' + $resizeImage(machine.metadata.image, '700x0') + ')',
+              }"
+            />
+            <div class="title">
+              {{ machine.name }}
             </div>
-        </div>
+            <markdown class="machine-tags" :value="this.machine.description" />
+            <div class="flex flex-col">
+              <p class="text-sm">
+                <font-awesome-icon icon="coins" /> {{ costsText }}
+              </p>
+              <p class="text-sm mt-0">
+                <i>{{ noCreditsLeftText }}</i>
+              </p>
+            </div>
+          </div>
+        </nuxt-link>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
   components: {},
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
-      machine: null
-    }
+      machine: null,
+    };
   },
-  async mounted () {
+  async mounted() {
     if (this.machineId) {
-      this.machine = await this.$store.dispatch('getResource', this.machineId)
+      this.machine = await this.$store.dispatch("getResource", this.machineId);
     }
   },
   computed: {
-    machineId () {
-      return this.blok.machine
+    machineId() {
+      return this.blok.machine;
     },
-    machinelink () {
-      return '/de/machines/' + this.machine.metadata.technical_name
+    machinelink() {
+      return "/de/machines/" + this.machine.metadata.technical_name;
     },
-    costsText () {
-      const costs = (Number(this.machine.pricePerTimeBusy * 10).toFixed(0))
-      const pricePerTime = this.machine.pricePerTimeBusySeconds / 60
-      return costs + ' Credits pro ' + pricePerTime + ' Minute(n)'
+    costsText() {
+      const costs = Number(this.machine.pricePerTimeBusy * 10).toFixed(0);
+      const pricePerTime = this.machine.pricePerTimeBusySeconds / 60;
+      return costs + " Credits pro " + pricePerTime + " Minute(n)";
     },
-    noCreditsLeftText () {
-      return 'Ohne Credits ' + this.machine.pricePerTimeBusy + '€ pro ' + this.machine.pricePerTimeBusySeconds / 60 + ' Minute(n)'
-    }
-  }
-}
+    noCreditsLeftText() {
+      return (
+        "Ohne Credits " +
+        this.machine.pricePerTimeBusy +
+        "€ pro " +
+        this.machine.pricePerTimeBusySeconds / 60 +
+        " Minute(n)"
+      );
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .description {
-  font-size: .9rem;
+  font-size: 0.9rem;
   line-height: 2.2;
 }
 
@@ -77,7 +91,7 @@ export default {
 .title {
   font-family: $font-secondary;
   font-size: 1.2rem;
-  margin-bottom: .4em;
+  margin-bottom: 0.4em;
   overflow-wrap: break-word;
 }
 
@@ -85,7 +99,7 @@ export default {
   font-size: 0.9rem;
   color: $color-blue;
   text-transform: uppercase;
-  margin-bottom: .8rem;
+  margin-bottom: 0.8rem;
   letter-spacing: 0.05em;
   font-weight: 400;
   word-wrap: break-word;
@@ -148,7 +162,7 @@ export default {
 }
 
 .preview-wrapper:hover {
-  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2);
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .preview-wrapper {
@@ -157,7 +171,7 @@ export default {
   justify-content: center;
 
   .machine-preview:hover {
-    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, .2) !important;
+    box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2) !important;
   }
 
   .machine-preview {

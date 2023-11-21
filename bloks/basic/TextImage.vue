@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-editable="blok"
-    class="text-image"
-  >
+  <div v-editable="blok" class="text-image">
     <h3 class="title">
       {{ blok.title }}
     </h3>
@@ -11,10 +8,7 @@
         <markdown :value="blok.text" />
       </div>
       <div class="image">
-        <img
-          :src="$resizeImage(blok.image, '700x0')"
-          alt=""
-        >
+        <img :src="$resizeImage(blok.image, '700x0')" alt="" />
       </div>
     </div>
   </div>
@@ -22,12 +16,12 @@
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss">
-@import '/assets/scss/styles';
+@import "/assets/scss/styles";
 
 .text-image {
   min-height: 80vh;

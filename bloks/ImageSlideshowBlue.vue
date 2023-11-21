@@ -1,16 +1,7 @@
 <template>
-  <div
-    v-editable="blok"
-    class="image-slideshow-blue"
-  >
-    <markdown
-      :value="blok.text"
-      class="text"
-    />
-    <div
-        v-if="blok.subtext"
-        class="subtext"
-    >
+  <div v-editable="blok" class="image-slideshow-blue">
+    <markdown :value="blok.text" class="text" />
+    <div v-if="blok.subtext" class="subtext">
       <markdown :value="blok.subtext" />
     </div>
     <div v-swiper:swiper="swiperOption">
@@ -19,83 +10,82 @@
           v-for="s in blok.items"
           :key="s._uid"
           class="swiper-slide"
-          :style="{ 'background-image': 'url(' + $resizeImage(s.image, '300x300') + ')' }"
+          :style="{
+            'background-image': 'url(' + $resizeImage(s.image, '300x300') + ')',
+          }"
         />
       </div>
-      <div class="swiper-button-next" />
-      <div class="swiper-button-prev" />
     </div>
+    <div class="swiper-button-next" />
+    <div class="swiper-button-prev" />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 0
+          return 0;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 500) {
-          return 1
+          return 1;
         } else if (window.innerWidth < 900) {
-          return 2
+          return 2;
         }
       }
-      return 3
-    }
-  }
-}
+      return 3;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .image-slideshow-blue {
   position: relative; // needed for z-index (blue dashed stripe)
   padding: 30px;
   background-color: $color-blue-intro;
-  color: #FFF;
+  color: #fff;
   .text {
-    padding: 3rem 5rem 0 5rem;
+    padding: 1rem 0 0;
     font-size: 1.8rem;
     @include media-breakpoint-down(md) {
-      font-size: 1.2rem;
-      padding: 2vh 4vw;
+      font-size: 1.4rem;
+      padding: 0;
+      margin-bottom: 0;
     }
     font-family: $font-secondary;
     line-height: 1.4;
     letter-spacing: 1.4px;
     font-weight: bold;
-
-    p {
-      margin: 0;
-    }
+    margin-bottom: -1rem;
   }
   .subtext {
     padding: 1rem 1rem 0 5rem;
     font-size: 1.2rem;
     @include media-breakpoint-down(md) {
-      font-size: 1.0rem;
+      font-size: 1rem;
       padding: 2vh 4vw;
     }
     font-family: $font-primary;
@@ -115,16 +105,16 @@ export default {
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      @include media-breakpoint-down(xs){
+      @include media-breakpoint-down(xs) {
         margin: 0 auto;
         display: block;
       }
     }
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       height: 10em;
       padding-bottom: 0;
     }
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       height: 18em;
     }
   }
@@ -135,6 +125,23 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    margin-left: -30px;
+    margin-right: -30px;
+    top: 50%;
+    @include media-breakpoint-down(md) {
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+      margin-left: -0px;
+      margin-right: -0px;
+    }
+    @include media-breakpoint-down(xs) {
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 }
 </style>

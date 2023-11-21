@@ -1,34 +1,42 @@
 <template>
   <div
-      v-if="course && memberCourse"
-      ref="trainingItem"
-      :class="['training-item', { clickable: !memberCourse.is_valid }]"
-      @click="takeQuiz">
+    v-if="course && memberCourse"
+    ref="trainingItem"
+    :class="['training-item', { clickable: !memberCourse.is_valid }]"
+    @click="takeQuiz"
+  >
     <div v-if="isLoading" class="spinnerContainer">
-      <loading-spinner color="white"/>
+      <loading-spinner color="white" />
     </div>
     <div class="body">
       <div class="content">
         <div class="top">
-          <span class="course-heading"><b>{{ course.name }}</b></span>
+          <span class="course-heading"
+            ><b>{{ course.name }}</b></span
+          >
         </div>
         <div class="bottom">
-          <div class="status" v-if="!(this.memberCourse.is_valid)">
-          <div class="left">
-            <font-awesome-icon v-if="this.memberCourse.is_valid" class="green" icon="check-circle"/>
+          <div class="status" v-if="!this.memberCourse.is_valid">
+            <div class="left">
+              <font-awesome-icon
+                v-if="this.memberCourse.is_valid"
+                class="green"
+                icon="check-circle"
+              />
+            </div>
           </div>
-        </div>
-<!--          <div v-if="!this.memberCourse" class="course-info">
+          <!--          <div v-if="!this.memberCourse" class="course-info">
             <button class="input-button-primary" @click="startCourse">
               Kurs starten
             </button>
-          </div>--><div v-if="this.memberCourse.is_valid" class="success">
-          <font-awesome-icon icon="check-circle"/>
-          <div>{{ $t('completed') }}</div>
-        </div>
+          </div>-->
+          <div v-if="this.memberCourse.is_valid" class="success">
+            <font-awesome-icon icon="check-circle" />
+            <div>{{ $t("completed") }}</div>
+          </div>
           <div v-else>
             <div class="startButton">
-              <div>{{ $t('startQuiz') }}</div>
+              <div>{{ $t("startQuiz") }}</div>
             </div>
           </div>
         </div>
@@ -39,52 +47,56 @@
 
 <script>
 export default {
-  props: ['course'],
+  props: ["course"],
   data: () => ({
-    isLoading: false
+    isLoading: false,
   }),
   computed: {
-    memberCourse () {
-      return this.$store.getters.getMemberCourseById(this.course.id)
-    }
+    memberCourse() {
+      return this.$store.getters.getMemberCourseById(this.course.id);
+    },
   },
-  mounted () {
+  mounted() {
     // TODO check if I have permission
-    this.getImage()
+    this.getImage();
   },
 
   methods: {
-    async getImage () {
-      const quiz = await this.$store.dispatch('getQuiz', this.course.id)
+    async getImage() {
+      const quiz = await this.$store.dispatch("getQuiz", this.course.id);
       for (const question of quiz.quiz_questions) {
-        if (question.imagePath.toLowerCase().endsWith('jpeg') || question.imagePath.toLowerCase().endsWith('png')) {
+        if (
+          question.imagePath.toLowerCase().endsWith("jpeg") ||
+          question.imagePath.toLowerCase().endsWith("png")
+        ) {
           if (this.$refs.trainingItem) {
-            this.$refs.trainingItem.style.backgroundImage = `url(${question.imagePath})`
+            this.$refs.trainingItem.style.backgroundImage = `url(${question.imagePath})`;
           }
-          return
+          return;
         }
       }
     },
-    takeQuiz () {
+    takeQuiz() {
       if (this.memberCourse.is_valid) {
-        return
+        return;
       }
-      this.isLoading = true
-      this.$router.push({ path: `/course?id=${this.course.id}` })
+      this.isLoading = true;
+      this.$router.push({ path: `/course?id=${this.course.id}` });
     },
-    startCourse () {
-      this.$store.dispatch('startCourse', { course_id: this.course.id }).then((memberCourse) => {
-        this.$store.dispatch('getMemberCourses').then(() => {
-          this.takeQuiz()
-        })
-      })
-    }
-  }
-}
+    startCourse() {
+      this.$store
+        .dispatch("startCourse", { course_id: this.course.id })
+        .then((memberCourse) => {
+          this.$store.dispatch("getMemberCourses").then(() => {
+            this.takeQuiz();
+          });
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .training-item {
   background-repeat: no-repeat;
   background-size: cover;
@@ -125,56 +137,56 @@ export default {
     .green {
       color: darkgreen;
     }
-  .bottomText {
-    width: 100%;
-    background: black;
-    color: white;
-    height: 7.3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5em;
-    font-family: $font-mono;
-  }
+    .bottomText {
+      width: 100%;
+      background: black;
+      color: white;
+      height: 7.3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      font-family: $font-mono;
+    }
 
-  .startButton {
-    @extend .bottomText;
-  }
+    .startButton {
+      @extend .bottomText;
+    }
 
-  .course-info {
-    @extend .bottomText;
-    background: white;
-    color: black;
-    padding: 1em;
-    font-size: 1rem;
-    border-top: 1px solid black;
-  }
+    .course-info {
+      @extend .bottomText;
+      background: white;
+      color: black;
+      padding: 1em;
+      font-size: 1rem;
+      border-top: 1px solid black;
+    }
 
-  .course-heading {
-    background: white;
-    font-size: 1.5em;
-    font-family: $font-mono;
-  }
+    .course-heading {
+      background: white;
+      font-size: 1.5em;
+      font-family: $font-mono;
+    }
 
-  .success {
-    @extend .bottomText;
-    color: darkgreen;
-    background: white;
-    height: 100%;
-    margin-top: 2em;
+    .success {
+      @extend .bottomText;
+      color: darkgreen;
+      background: white;
+      height: 100%;
+      margin-top: 2em;
 
-    & :first-child {
-      font-size: 1.7em;
-      margin-right: -0.3em;
-      margin-right: 0.3em;
+      & :first-child {
+        font-size: 1.7em;
+        margin-right: -0.3em;
+        margin-right: 0.3em;
+      }
     }
   }
-}
 
-.top {
-  padding: 1em;
-  line-height: 1.8em;
-}
+  .top {
+    padding: 1em;
+    line-height: 1.8em;
+  }
 
   .bottom {
     background: white;
@@ -190,7 +202,7 @@ export default {
   .input-button-primary {
     cursor: pointer;
     background-color: #ff6f00;
-    color: #FFF;
+    color: #fff;
     border: 1px solid #ff8c33;
     padding: 7px 12px 8px;
     line-height: 1;
@@ -228,7 +240,6 @@ export default {
     font-weight: bold;
     // background-color: #ff4400;
   }
-
 }
 
 .clickable {
@@ -239,5 +250,4 @@ export default {
   border-top: 1px solid white;
   background: $color-orange;
 }
-
 </style>

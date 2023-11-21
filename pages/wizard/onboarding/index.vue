@@ -1,6 +1,6 @@
 <template>
   <div class="section onboarding-wizard">
-    <h2>{{ $t('welcomeToTheGG') }}</h2>
+    <h2>{{ $t("welcomeToTheGG") }}</h2>
     <p class="text">
       {{ $t('memberBenefitsText') }}
       <br />
@@ -15,17 +15,17 @@
       {{ $t('#makersgonnamake') }}
     </p>
     <div class="our-rates">
-      <h3>{{ $t('ourRates') }}</h3>
+      <h3>{{ $t("ourRates") }}</h3>
       <ul>
         <li>{{ $t('regular/month') }}</li>
         <li>{{ $t('discounted/month') }} <br /></li>
 
-        <li>{{ $t('specialConditions') }}</li>
+        <li>{{ $t("specialConditions") }}</li>
       </ul>
       * {{ $t('differentCardListing') }}<br />{{ $t('pleaseBringAccordingID') }}
     </div>
     <div class="membership-information">
-      {{ $t('additionalInformationPayment') }}
+      {{ $t("additionalInformationPayment") }}
     </div>
     <!--    <div> {{ $t('inOrderToWorkSafely') }}</div>-->
     <!--    <br>-->

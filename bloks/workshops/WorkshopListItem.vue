@@ -2,59 +2,72 @@
   <nuxt-link :to="'/' + blok.full_slug">
     <div class="workshop-list-item" :class="{ slim: slim }">
       <div class="image">
-        <img :src="$resizeImage(blok.content.image, '400x280')" alt="">
+        <img :src="$resizeImage(blok.content.image, '400x280')" alt="" />
       </div>
       <div class="body">
         <div class="category">
           <div v-if="content.category === 'Einschulungen'">
-            <span>{{ $t('instructions') }}</span>
+            <span>{{ $t("instructions") }}</span>
           </div>
           <div v-if="content.category === 'Event'">
-            <span>{{ $t('event') }}</span>
+            <span>{{ $t("event") }}</span>
           </div>
           <div v-if="content.category === 'meetup'">
-            <span>{{ $t('meetup') }}</span>
+            <span>{{ $t("meetup") }}</span>
           </div>
           <div v-if="content.category === 'Workshops'">
-            <span>{{ $t('workshops') }}</span>
+            <span>{{ $t("workshops") }}</span>
           </div>
           <div v-if="content.category === '#frauenundtechnik'">
-            <span>{{ $t('frauenundtechnik') }}</span>
+            <span>{{ $t("frauenundtechnik") }}</span>
           </div>
           <div v-if="content.category === 'for_kids'">
-            <span>{{ $t('kidsWorkshop') }}</span>
+            <span>{{ $t("kidsWorkshop") }}</span>
           </div>
           <div v-if="content.category === 'makemas'">
-            <span>{{ $t('makemas') }}</span>
+            <span>{{ $t("makemas") }}</span>
           </div>
         </div>
         <div class="title">
           {{ content.title }}
         </div>
         <div v-if="!slim" class="teaser">
-          <markdown :value="teaserText" class="info-text"/>
+          <markdown :value="teaserText" class="info-text" />
         </div>
         <div class="trainer">
           {{ content.trainer }}
         </div>
         <div v-if="content.members_only" class="member">
-          <icon name="user"/>
-          <span>{{ $t('membersOnly') }}</span>
+          <icon name="user" />
+          <span>{{ $t("membersOnly") }}</span>
         </div>
         <div class="workshop-dates" :key="this.eventDates.length">
-          <div v-for="event in eventDates" :key="event.id" class="workshop-date">
+          <div
+            v-for="event in eventDates"
+            :key="event.id"
+            class="workshop-date"
+          >
             <div v-if="!slim || i === 0" class="info-row">
               <div>
-                <div v-for="date in event.dates" :key="date.id" class="info-block">
-                    <div class="col info"><icon name="calendar" class="pr-2"/>{{ date.data }}</div>
-                    <div class="col info"><icon name="clock"  class="pr-2"/>{{date.startTime }} bis {{ date.endTime }} Uhr</div>
+                <div
+                  v-for="date in event.dates"
+                  :key="date.id"
+                  class="info-block"
+                >
+                  <div class="col info">
+                    <icon name="calendar" class="pr-2" />{{ date.data }}
+                  </div>
+                  <div class="col info">
+                    <icon name="clock" class="pr-2" />{{ date.startTime }} bis
+                    {{ date.endTime }} Uhr
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="icon">
-          <icon :name="blok.content.category"/>
+          <icon :name="blok.content.category" />
         </div>
       </div>
     </div>
@@ -62,72 +75,83 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 
 export default {
-  props: ['blok', 'slim', 'pretix'],
-  mounted () {
-    this.formatEventDates()
+  props: ["blok", "slim", "pretix"],
+  mounted() {
+    this.formatEventDates();
   },
-  data () {
+  data() {
     return {
       events: null,
       pretixInfoArray: this.pretix,
       eventDates: [],
-      teaser: '',
-      nextEvent: {}
-    }
+      teaser: "",
+      nextEvent: {},
+    };
   },
   computed: {
-    isCatalog () {
-      if (this.$route.path === '/de/workshops/catalog') {
-        return true
+    isCatalog() {
+      if (this.$route.path === "/de/workshops/catalog") {
+        return true;
       }
-      return false
+      return false;
     },
-    teaserText () {
-      if (this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text['de-informal']) {
-        let text = this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text['de-informal'].split('\n').splice(1).join('\n')
+    teaserText() {
+      if (
+        this.pretixInfoArray[this.pretixInfoArray.length - 1].frontpage_text[
+          "de-informal"
+        ]
+      ) {
+        let text = this.pretixInfoArray[
+          this.pretixInfoArray.length - 1
+        ].frontpage_text["de-informal"]
+          .split("\n")
+          .splice(1)
+          .join("\n");
         // use teaser text to Hard Facts (which is markdown H5 #####)
-        if (text.includes('HARD FACTS')) {
-          text = text.substring(0, text.indexOf('HARD FACTS'))
+        if (text.includes("HARD FACTS")) {
+          text = text.substring(0, text.indexOf("HARD FACTS"));
         }
 
-        return text
+        return text;
       }
-      return ''
+      return "";
     },
-    content () {
-      return this.blok.content
+    content() {
+      return this.blok.content;
     },
-    linktext () {
-      return 'Mehr Infos'
-    }
+    linktext() {
+      return "Mehr Infos";
+    },
   },
   methods: {
-    formatEventDates () {
+    formatEventDates() {
       this.pretix.forEach((item) => {
-        if (item.date_from !== null && moment(item.date_from).isAfter(moment())) {
-          const startDate = moment(item.date_from)
-          const endDate = moment(item.date_to)
-          const eventList = []
+        if (
+          item.date_from !== null &&
+          moment(item.date_from).isAfter(moment())
+        ) {
+          const startDate = moment(item.date_from);
+          const endDate = moment(item.date_to);
+          const eventList = [];
           eventList.push({
-            data: startDate.locale('de').format('L'),
-            startTime: startDate.format('HH:mm'),
-            endTime: endDate.format('HH:mm')
-          })
+            data: startDate.locale("de").format("L"),
+            startTime: startDate.format("HH:mm"),
+            endTime: endDate.format("HH:mm"),
+          });
           this.eventDates.push({
-            dates: eventList
-          })
+            dates: eventList,
+          });
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .workshop-list-item {
   max-height: 700px;
   border-top-left-radius: 10px;
@@ -137,7 +161,7 @@ export default {
   margin-bottom: 25px;
   justify-content: center;
   flex-flow: wrap;
-  overflow:hidden;
+  overflow: hidden;
   &.slim {
     margin-bottom: 0;
 
@@ -183,7 +207,7 @@ export default {
     flex: 2;
     display: flex;
     flex-direction: column;
-    background-color: #FFF;
+    background-color: #fff;
     padding: 1.8rem;
     width: 100%;
 
@@ -194,7 +218,7 @@ export default {
       width: 120px;
 
       svg {
-        fill: #EEE;
+        fill: #eee;
       }
     }
 
@@ -203,7 +227,7 @@ export default {
       z-index: 1;
       font-family: $font-secondary;
       font-size: 1.8rem;
-      margin-bottom: .4rem;
+      margin-bottom: 0.4rem;
       @include media-breakpoint-down(md) {
         font-size: 1.1em;
         font-weight: bold;
@@ -216,8 +240,8 @@ export default {
       z-index: 1;
       font-family: $font-mono;
       font-size: 0.9rem;
-      letter-spacing: .1em;
-      margin-bottom: .3rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
       text-transform: uppercase;
       color: $color-orange;
 
@@ -245,18 +269,19 @@ export default {
       }
     }
 
-    .trainer, .member {
+    .trainer,
+    .member {
       line-height: 1.6;
       font-family: $font-mono;
       font-size: 0.9rem;
       font-weight: bold;
-      margin: .4em 0;
+      margin: 0.4em 0;
     }
 
     .linktext {
       text-transform: uppercase;
       color: $color-blue;
-      margin: 1em 0 .5em;
+      margin: 1em 0 0.5em;
       display: flex;
       align-items: center;
 
@@ -264,7 +289,7 @@ export default {
         border-top: $color-blue 1px solid;
         width: 1em;
         position: relative;
-        margin-right: .3em;
+        margin-right: 0.3em;
 
         &:before {
           position: absolute;
@@ -274,9 +299,9 @@ export default {
           border-right: $color-blue 1px solid;
           transform: rotateZ(45deg);
           transform-origin: top right;
-          height: .3em;
-          width: .3em;
-          margin-top: -.5px;
+          height: 0.3em;
+          width: 0.3em;
+          margin-top: -0.5px;
         }
       }
     }
@@ -286,7 +311,8 @@ export default {
     .image {
       img {
         transform: scale(1.03);
-        transition: transform 400ms cubic-bezier(0.4, 0, 0.25, 1) 0ms, opacity 1s cubic-bezier(0.4, 0, 0.25, 1) 0ms;
+        transition: transform 400ms cubic-bezier(0.4, 0, 0.25, 1) 0ms,
+          opacity 1s cubic-bezier(0.4, 0, 0.25, 1) 0ms;
         background-size: cover;
         overflow: hidden;
         width: 100%;
@@ -306,7 +332,7 @@ export default {
 
 .workshop-dates {
   margin-top: 20px;
-  overflow:scroll;
+  overflow: scroll;
   max-height: 6.5em;
 
   .workshop-date {

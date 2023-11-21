@@ -2,13 +2,13 @@
   <div v-editable="blok" class="feedback-form">
     <no-ssr>
       <div v-if="loading" class="msg">
-        {{ $t('loading') }}
+        {{ $t("loading") }}
       </div>
       <div v-else-if="sent" class="msg">
         <form class="form" @submit.prevent="back">
           <div class="form-item">
             <span />
-            <p>{{ $t('thankYouForYourFeedback') }}</p>
+            <p>{{ $t("thankYouForYourFeedback") }}</p>
           </div>
           <div class="button-row">
             <button type="submit " class="input-button-primary">
@@ -56,7 +56,7 @@
           </div>
         </label>
         <label class="form-item">
-          <span class="label">{{ $t('message') }}</span>
+          <span class="label">{{ $t("message") }}</span>
           <div class="body">
             <textarea v-model="form.msg" class="input-textarea" name="msg" />
           </div>

@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="training"
-    class="training-item"
-  >
+  <div v-if="training" class="training-item">
     <div class="body">
       <div class="content">
         {{ training.title }}
@@ -16,23 +13,24 @@
 
 <script>
 export default {
-  props: ['userTraining'],
+  props: ["userTraining"],
   computed: {
-    training () {
-      return this.$store.getters.getTrainingById(this.userTraining.trainingCourse)
+    training() {
+      return this.$store.getters.getTrainingById(
+        this.userTraining.trainingCourse
+      );
     },
-    date () {
-      return new Date(this.userTraining.date).toLocaleDateString('de-at')
-    }
-  }
-}
+    date() {
+      return new Date(this.userTraining.date).toLocaleDateString("de-at");
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .training-item {
   margin-bottom: 5px;
-  background-color: #FFF;
+  background-color: #fff;
   margin-right: 1em;
   margin-bottom: 1em;
   .body {

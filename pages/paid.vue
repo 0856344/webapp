@@ -1,25 +1,30 @@
 <template>
   <div class="section">
-    <div style="margin: 2em 0;"><img width="80px" src="~/assets/img/icons/thumbs-up.svg" class="decorator"></div>
-    <h2 style="margin: 0;"> {{ $t('purchaseCompleted') }}</h2>
+    <div style="margin: 2em 0">
+      <img
+        width="80px"
+        src="~/assets/img/icons/thumbs-up.svg"
+        class="decorator"
+      />
+    </div>
+    <h2 style="margin: 0">{{ $t("purchaseCompleted") }}</h2>
     <p class="text">
-      {{ $t('receiptAndConfirmationViaMail') }}
+      {{ $t("receiptAndConfirmationViaMail") }}
     </p>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      loading: false
-    }
+      loading: false,
+    };
   },
   computed: {},
-  created () {
-  },
-  methods: {}
-}
+  created() {},
+  methods: {},
+};
 </script>
 
 <style lang="scss">

@@ -1,25 +1,14 @@
 <template>
-  <label
-    class="checkbox"
-    :class="theme"
-  >
-    <input
-      v-model="dvalue"
-      type="checkbox"
-    >
-    <div
-      class="checkmark"
-      :class="{'selected': dvalue}"
-    >
+  <label class="checkbox" :class="theme">
+    <input v-model="dvalue" type="checkbox" />
+    <div class="checkmark" :class="{ selected: dvalue }">
       <svg
         v-if="dvalue"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 230 200"
-      ><path
-        d="M20 130l40 40L200 30"
-        stroke-width="25"
-        fill="none"
-      /></svg>
+      >
+        <path d="M20 130l40 40L200 30" stroke-width="25" fill="none" />
+      </svg>
     </div>
     <slot />
   </label>
@@ -27,23 +16,22 @@
 
 <script>
 export default {
-  props: ['value', 'theme'],
+  props: ["value", "theme"],
   data: () => {
     return {
-      dvalue: false
-    }
+      dvalue: false,
+    };
   },
-  created () {
-    this.dvalue = Boolean(this.value)
-    this.$watch('dvalue', () => {
-      this.$emit('input', this.dvalue)
-    })
-  }
-}
+  created() {
+    this.dvalue = Boolean(this.value);
+    this.$watch("dvalue", () => {
+      this.$emit("input", this.dvalue);
+    });
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .checkbox {
   display: flex;
   user-select: none;
@@ -88,18 +76,18 @@ export default {
   /* white theme*/
   &.white {
     .checkmark {
-      border: 2px solid #FFF;
+      border: 2px solid #fff;
       svg {
         stroke: #000;
       }
       &.selected {
-        background-color: #FFF;
+        background-color: #fff;
         border: none;
       }
     }
     &:hover {
       .checkmark {
-        background-color: #FFF;
+        background-color: #fff;
         border: none;
       }
     }
@@ -110,7 +98,7 @@ export default {
     .checkmark {
       border: 2px solid $color-orange;
       svg {
-        stroke: #FFF;
+        stroke: #fff;
       }
       &.selected {
         background-color: $color-orange;

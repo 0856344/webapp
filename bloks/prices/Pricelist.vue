@@ -99,104 +99,104 @@
 
 <script>
 export default {
-  props: ['priceList'],
-  middleware: 'authenticated',
-  data () {
+  props: ["priceList"],
+  middleware: "authenticated",
+  data() {
     return {
-      search: ''
-    }
+      search: "",
+    };
   },
   computed: {
-    isLoading () {
-      return this.priceList && this.priceList.items.length > 0
+    isLoading() {
+      return this.priceList && this.priceList.items.length > 0;
     },
-    categorizedList () {
+    categorizedList() {
       const hasCategories = this.priceList.items.some((item) => {
-        return item.category !== undefined
-      })
+        return item.category !== undefined;
+      });
       if (hasCategories) {
-        return this.transformArrayToObject(this.filteredPriceListItems)
+        return this.transformArrayToObject(this.filteredPriceListItems);
       }
-      return undefined
+      return undefined;
     },
-    longestLength () {
-      const items = this.priceList.items
-      let longestLength = 0
+    longestLength() {
+      const items = this.priceList.items;
+      let longestLength = 0;
       items.forEach((item) => {
         if (this.priceList.billedInCredits) {
-          const price = Math.ceil(item.price * 10)
+          const price = Math.ceil(item.price * 10);
           if (price.toString().length > longestLength) {
-            longestLength = price.toString().length
+            longestLength = price.toString().length;
           }
         } else {
-          const whole = Math.floor(item.price).toString()
+          const whole = Math.floor(item.price).toString();
           if (whole.length > longestLength) {
-            longestLength = whole.length
+            longestLength = whole.length;
           }
         }
-      })
-      return longestLength
+      });
+      return longestLength;
     },
-    filteredPriceListItems () {
-      const search = this.search.toLowerCase()
+    filteredPriceListItems() {
+      const search = this.search.toLowerCase();
       return this.priceList.items.filter((item) => {
-        return item.name.toLowerCase().includes(search)
-      })
-    }
+        return item.name.toLowerCase().includes(search);
+      });
+    },
   },
   methods: {
-    transformArrayToObject (array) {
+    transformArrayToObject(array) {
       return array.reduce((obj, item) => {
         if (!obj[item.category]) {
-          obj[item.category] = []
+          obj[item.category] = [];
         }
         obj[item.category].push({
           name: item.name,
           price: item.price,
           unit: item.unit,
-          category_description: item.category_description
-        })
-        return obj
-      }, {})
+          category_description: item.category_description,
+        });
+        return obj;
+      }, {});
     },
-    formatPrice (item) {
-      const price = item.price
-      if (typeof price === 'string' || price instanceof String) {
-        return price
+    formatPrice(item) {
+      const price = item.price;
+      if (typeof price === "string" || price instanceof String) {
+        return price;
       } else {
         return (
-          Number(price).toFixed(2).replace('.', ',') + ' / ' + item.unit_name
-        )
+          Number(price).toFixed(2).replace(".", ",") + " / " + item.unit_name
+        );
       }
     },
-    formatPriceHTML (item) {
-      if (item === undefined) return
+    formatPriceHTML(item) {
+      if (item === undefined) return;
       if (this.priceList.billedInCredits) {
-        const price = Math.ceil(item.price * 10).toString()
+        const price = Math.ceil(item.price * 10).toString();
         return `<span class="table-row" aria-label=${price}>
                 <span class="table-cell">${this.padString(price)}</span>
                 <span>&nbsp;/ ${item.unit}</span>
-              </span>`
+              </span>`;
       } else {
-        const price = item.price
-        const whole = Math.floor(price).toString()
-        const decimal = ((price - whole) * 100).toFixed(0)
+        const price = item.price;
+        const whole = Math.floor(price).toString();
+        const decimal = ((price - whole) * 100).toFixed(0);
         return `<span class="table-row" aria-label=${price}>
                 <span class="table-cell">${this.padString(whole)}</span>.
                 <span class="table-cell text-left">${
-                  decimal.length === 1 ? decimal + '0' : decimal
+                  decimal.length === 1 ? decimal + "0" : decimal
                 }</span>
                 <span>&nbsp;/ ${item.unit}</span>
-              </span>`
+              </span>`;
       }
     },
-    padString (str) {
-      let paddedString = str
+    padString(str) {
+      let paddedString = str;
       for (let i = 0; i < this.longestLength - str.length; i++) {
-        paddedString = '&nbsp;' + paddedString
+        paddedString = "&nbsp;" + paddedString;
       }
-      return paddedString
-    }
-  }
-}
+      return paddedString;
+    },
+  },
+};
 </script>

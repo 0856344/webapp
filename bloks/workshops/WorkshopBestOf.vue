@@ -7,7 +7,7 @@
       <div class="subline">
         <sb-link :link="blok.link">
           <div class="arrow" />
-          {{ $t('allCourses') }}
+          {{ $t("allCourses") }}
         </sb-link>
       </div>
     </section>
@@ -20,17 +20,15 @@
       />
     </div>
   </div>
-
 </template>
 
 <script>
 export default {
-  props: ['blok']
-}
+  props: ["blok"],
+};
 </script>
 
 <style lang="scss" scoped>
-
 .workshop-best-of {
   background-color: $color-bright-bg;
   position: relative;
@@ -40,7 +38,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 6% 0 2% 7%;
-    }
+  }
   .headline {
     margin: 0;
     margin-bottom: 30px;
@@ -53,59 +51,59 @@ export default {
     @include media-breakpoint-down(sm) {
       max-width: 50%;
       font-size: 2rem;
-      }
     }
-    .subline {
-      color: $color-orange;
-      display: flex;
-      @include media-breakpoint-up(md) {
-        margin-right: 8%;
-      }
-      @include media-breakpoint-down(sm) {
-        flex-direction: column;
-        .link {
-          margin-top: 2em;
-          margin-left: -1em;
-        }
-      }
-      .hr {
-        flex: 1;
-      }
+  }
+  .subline {
+    color: $color-orange;
+    display: flex;
+    @include media-breakpoint-up(md) {
+      margin-right: 8%;
+    }
+    @include media-breakpoint-down(sm) {
+      flex-direction: column;
       .link {
-        font-size: 1.3rem;
-        font-family: $font-secondary;
-        text-decoration: none;
-        color: #000;
-        .arrow {
-          display: inline-block;
-          position: relative;
-          width: 4em;
-          @include media-breakpoint-down(sm) {
-            width: 55%;
-          }
-          border-top: .1em solid #000;
-          margin: .25em 1em;
-          transition: transform .15s ease-out;
-          &:after {
-            content: "";
-            position: absolute;
-            right: -.1em;
-            top: -.05em;
-            border-top: .1em solid #000;
-            border-right: .1em solid #000;
-            width: .5em;
-            height: .5em;
-            transform-origin: right top;
-            transform: rotate(45deg);
-          }
+        margin-top: 2em;
+        margin-left: -1em;
+      }
+    }
+    .hr {
+      flex: 1;
+    }
+    .link {
+      font-size: 1.3rem;
+      font-family: $font-secondary;
+      text-decoration: none;
+      color: #000;
+      .arrow {
+        display: inline-block;
+        position: relative;
+        width: 4em;
+        @include media-breakpoint-down(sm) {
+          width: 55%;
         }
-        &:hover {
-          .arrow {
-            transform: translateX(.5em);
-          }
+        border-top: 0.1em solid #000;
+        margin: 0.25em 1em;
+        transition: transform 0.15s ease-out;
+        &:after {
+          content: "";
+          position: absolute;
+          right: -0.1em;
+          top: -0.05em;
+          border-top: 0.1em solid #000;
+          border-right: 0.1em solid #000;
+          width: 0.5em;
+          height: 0.5em;
+          transform-origin: right top;
+          transform: rotate(45deg);
+        }
+      }
+      &:hover {
+        .arrow {
+          transform: translateX(0.5em);
         }
       }
     }
+  }
 
   .gg-grid {
     padding: 0 5% 0 5%;

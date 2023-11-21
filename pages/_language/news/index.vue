@@ -1,35 +1,54 @@
 <template>
   <section>
     <div class="blog-wrapper">
-     <img class="blog-header-image" :src="$resizeImage(headerImage, '1600x0')">
-      <div class="blog-header-image">
-      </div>
-      <img class="blog-header-image">
+      <img
+        class="blog-header-image"
+        :src="$resizeImage(headerImage, '1600x0')"
+      />
+      <div class="blog-header-image"></div>
+      <img class="blog-header-image" />
       <div class="blog">
         <div class="headline">
-          <p class="headline-text">{{ $t('blog') }}</p>
+          <p class="headline-text">{{ $t("blog") }}</p>
         </div>
         <div class="news-page">
           <div class="news-feed">
             <div :key="mi.id" class="month" v-for="(month, mi) in items">
               <div class="container">
-                <img src="~/assets/img/icons/megaphone.svg" class="decorator" v-if="mi === 0">
+                <img
+                  src="~/assets/img/icons/megaphone.svg"
+                  class="decorator"
+                  v-if="mi === 0"
+                />
                 <h1 class="title">{{ month.label }}</h1>
               </div>
-              <div class="separator"/>
+              <div class="separator" />
               <div v-if="month.items && month.items.length === 1" class="items">
-                  <div class="item" v-for="(item, ii) in month.items" :key="ii">
-                    <span v-if="item.name !== 'Header'">
-                      <news-feed-item :news="item" :key="item.id" type="horizontal" v-if="item.name !== 'Header'"/>
-                    </span>
-                  </div>
+                <div class="item" v-for="(item, ii) in month.items" :key="ii">
+                  <span v-if="item.name !== 'Header'">
+                    <news-feed-item
+                      :news="item"
+                      :key="item.id"
+                      type="horizontal"
+                      v-if="item.name !== 'Header'"
+                    />
+                  </span>
+                </div>
               </div>
-              <div v-else-if="month.items && month.items.length >= 1" class="items">
-                  <div class="item" v-for="(item, ii) in month.items" :key="ii">
-                    <span v-if="item.name !== 'Header'">
-                      <news-feed-item :news="item" :key="item.id" type="vertical" v-if="item.name !== 'Header'"/>
-                    </span>
-                  </div>
+              <div
+                v-else-if="month.items && month.items.length >= 1"
+                class="items"
+              >
+                <div class="item" v-for="(item, ii) in month.items" :key="ii">
+                  <span v-if="item.name !== 'Header'">
+                    <news-feed-item
+                      :news="item"
+                      :key="item.id"
+                      type="vertical"
+                      v-if="item.name !== 'Header'"
+                    />
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -40,120 +59,128 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 
 export default {
-  props: ['blok'],
-  data () {
+  props: ["blok"],
+  data() {
     return {
       news: [],
       page: [],
       root: null,
       loading: false,
       sources: [
-        { name: 'magazin3', key: 'm3', selected: false },
-        { name: 'youtube', key: 'yt', selected: false },
-        { name: 'facebook', key: 'fb', selected: false },
-        { name: 'twitter', key: 'tw', selected: false },
-        { name: 'instagram', key: 'ig', selected: false }
+        { name: "magazin3", key: "m3", selected: false },
+        { name: "youtube", key: "yt", selected: false },
+        { name: "facebook", key: "fb", selected: false },
+        { name: "twitter", key: "tw", selected: false },
+        { name: "instagram", key: "ig", selected: false },
       ],
-      url: null
-    }
+      url: null,
+    };
   },
-  async mounted () {
-    window.scrollTo(0, 0)
+  async mounted() {
+    window.scrollTo(0, 0);
   },
-  async asyncData (context) {
+  async asyncData(context) {
     const filters = {
       filter_query: {
         component: {
-          in: 'news-overview'
+          in: "news-overview",
+        },
+      },
+    };
+    const news = await context.store
+      .dispatch("findNews", filters)
+      .then((data) => {
+        return data.stories;
+      });
+    await context.store
+      .dispatch("getVotesByUuids", { uuids: news.map((o) => o.uuid) })
+      .then((r) => {
+        for (const [key, value] of Object.entries(r)) {
+          news.forEach((newsEntry) => {
+            if (newsEntry.uuid === key) {
+              newsEntry.count = value;
+            }
+          });
         }
-      }
-    }
-    const news = await context.store.dispatch('findNews', filters).then(data => {
-      return data.stories
-    })
-    await context.store.dispatch('getVotesByUuids', { uuids: news.map(o => o.uuid) }).then(r => {
-      for (const [key, value] of Object.entries(r)) {
-        news.forEach(newsEntry => {
-          if (newsEntry.uuid === key) {
-            newsEntry.count = value
-          }
-        })
-      }
-    })
-    const page = await context.store.dispatch('loadPage', '/news').catch(e => {
-      context.error({
-        statusCode: e.response.status,
-        message: e.response.statusText
-      })
-    })
-    return { news, page }
+      });
+    const page = await context.store
+      .dispatch("loadPage", "/news")
+      .catch((e) => {
+        context.error({
+          statusCode: e.response.status,
+          message: e.response.statusText,
+        });
+      });
+    return { news, page };
   },
   methods: {
-    update () {
-      this.loading = true
-      this.$store.dispatch('findNews', this.filters).then(data => {
-        this.loading = false
-        this.news = data.stories
-      }).catch((e) => {
-        this.loading = false
-      })
-    }
+    update() {
+      this.loading = true;
+      this.$store
+        .dispatch("findNews", this.filters)
+        .then((data) => {
+          this.loading = false;
+          this.news = data.stories;
+        })
+        .catch((e) => {
+          this.loading = false;
+        });
+    },
   },
   computed: {
-    headerImage () {
-      return this.page.story.content.image
+    headerImage() {
+      return this.page.story.content.image;
     },
-    items () {
-      const list = []
-      let temp = []
-      let currentMonth = null
-      let m = null
+    items() {
+      const list = [];
+      let temp = [];
+      let currentMonth = null;
+      let m = null;
       if (!this.news || !this.news.length || this.news.length === 0) {
-        return []
+        return [];
       }
 
       this.news.forEach((n) => {
         // n.count = this.votes[n.uuid];
         if (currentMonth !== moment(n.content.datetime).month()) {
           if (currentMonth != null) {
-            list.push({ items: temp, label: m.locale('de-at').format('MMMM') })
-            temp = []
+            list.push({ items: temp, label: m.locale("de-at").format("MMMM") });
+            temp = [];
           }
-          m = moment(n.content.datetime)
-          currentMonth = m.month()
+          m = moment(n.content.datetime);
+          currentMonth = m.month();
         }
 
-        if (n.name === 'Header') {
-          this.url = n.content.image
+        if (n.name === "Header") {
+          this.url = n.content.image;
         }
-        temp.push({ type: 'item', ...n })
-      })
-      list.push({ items: temp, label: m.locale('de-at').format('MMMM') })
-      return list
+        temp.push({ type: "item", ...n });
+      });
+      list.push({ items: temp, label: m.locale("de-at").format("MMMM") });
+      return list;
     },
-    filters () {
+    filters() {
       const sources = this.sources
-        .filter(i => i.selected)
-        .map(i => i.key)
-        .join(',')
+        .filter((i) => i.selected)
+        .map((i) => i.key)
+        .join(",");
       // eslint-disable-next-line camelcase
       const filter_query = {
-        component: { in: 'news-overview' }
-      }
+        component: { in: "news-overview" },
+      };
       if (sources) {
-        filter_query.source = { in: sources }
+        filter_query.source = { in: sources };
       }
-      return { filter_query }
-    }
-  }
-}
+      return { filter_query };
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-
 .blog-wrapper {
   padding-left: 15%;
   padding-top: 15%;

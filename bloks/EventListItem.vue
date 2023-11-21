@@ -1,14 +1,8 @@
 <template>
-  <sb-link
-    :link="content.link"
-    target="_blank"
-  >
+  <sb-link :link="content.link" target="_blank">
     <div class="event-list-item">
       <div class="image">
-        <img
-          :src="$resizeImage(content.image, '380x280')"
-          alt=""
-        >
+        <img :src="$resizeImage(content.image, '380x280')" alt="" />
       </div>
       <div class="body">
         <div class="subtitle">
@@ -34,20 +28,19 @@
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    content () {
-      return this.blok.content
+    content() {
+      return this.blok.content;
     },
-    linktext () {
-      return this.content.linktext || 'Mehr Infos'
-    }
-  }
-}
+    linktext() {
+      return this.content.linktext || "Mehr Infos";
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .event-list-item {
   color: #000;
   display: flex;
@@ -73,7 +66,7 @@ export default {
     flex: 2;
     display: flex;
     flex-direction: column;
-    background-color: #FFF;
+    background-color: #fff;
     padding: 1.8rem;
     @include media-breakpoint-down(sm) {
       margin-left: 2%;
@@ -81,13 +74,13 @@ export default {
     .title {
       font-family: $font-secondary;
       font-size: 2rem;
-      margin-bottom: .4rem;
+      margin-bottom: 0.4rem;
     }
     .subtitle {
       font-family: $font-mono;
       font-size: 0.9rem;
-      letter-spacing: .1em;
-      margin-bottom: .3rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
       text-transform: uppercase;
       color: $color-orange;
     }
@@ -106,19 +99,19 @@ export default {
       font-family: $font-mono;
       font-size: 0.9rem;
       font-weight: bold;
-      margin: .4em 0;
+      margin: 0.4em 0;
     }
     .linktext {
       text-transform: uppercase;
       color: $color-blue;
-      margin: 1em 0 .5em;
+      margin: 1em 0 0.5em;
       display: flex;
       align-items: center;
       .link-arrow {
         border-top: $color-blue 1px solid;
         width: 1em;
         position: relative;
-        margin-right: .3em;
+        margin-right: 0.3em;
         &:before {
           position: absolute;
           right: 0;
@@ -127,11 +120,10 @@ export default {
           border-right: $color-blue 1px solid;
           transform: rotateZ(45deg);
           transform-origin: top right;
-          height: .3em;
-          width: .3em;
-          margin-top: -.5px;
+          height: 0.3em;
+          width: 0.3em;
+          margin-top: -0.5px;
         }
-
       }
     }
   }

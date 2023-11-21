@@ -6,65 +6,65 @@
     <div v-swiper:swiper="swiperOption">
       <div class="swiper-wrapper">
         <div
-            v-for="s in footer.items"
-            :key="s._uid"
-            class="swiper-slide"
-            :style="{ 'background-image': 'url(' + $resizeImage(s.image, '700x0') + ')' }"
+          v-for="s in footer.items"
+          :key="s._uid"
+          class="swiper-slide"
+          :style="{
+            'background-image': 'url(' + $resizeImage(s.image, '700x0') + ')',
+          }"
         />
       </div>
       <div class="swiper-button-next" />
       <div class="swiper-button-prev" />
     </div>
-    <markdown
-        :value="footer.reference"
-        class="reference"
-    />
+    <markdown :value="footer.reference" class="reference" />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    footer () {
-      return this.blok
+    footer() {
+      return this.blok;
     },
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
         if (window.innerWidth < 786) {
-          return 0
+          return 0;
         }
       }
-      return 30
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 786) {
-          return 1
+        if (window.innerWidth < 500) {
+          return 1;
+        } else if (window.innerWidth < 900) {
+          return 2;
         }
       }
-      return 3
-    }
-  }
-}
+      return 3;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 .swiper-wrapper.center {
   @include media-breakpoint-up(sm) {
     justify-content: center;
@@ -73,6 +73,7 @@ export default {
 
 .team-image-slider {
   color: $color-blue;
+  position: relative; // needed for z-index (blue dashed stripe)
   .text {
     @include margin-page-wide;
     padding: 5rem 0 0;
@@ -106,6 +107,19 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    top: 50%;
+    @include media-breakpoint-down(md) {
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+    }
+    @include media-breakpoint-down(xs) {
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-right: 20px;
+      margin-left: 20px;
+    }
   }
   .reference {
     @include margin-page-wide;

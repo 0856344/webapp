@@ -52,14 +52,14 @@
               @click="gotoASUorOpenLogin()"
             >
               <font-awesome-icon icon="arrow-circle-right" />
-              {{ $t('startSafetyTraining') }}
+              {{ $t("startSafetyTraining") }}
             </button>
             <button
               v-else-if="index > 0"
               class="input-button-primary"
               @click="back()"
             >
-              {{ $t('back') }}
+              {{ $t("back") }}
             </button>
             <button
               v-if="activeStep !== 'confirmation'"
@@ -106,7 +106,7 @@ export default {
       passwordCheck: false,
       mailCheck: false,
       MemberType,
-      steps: ['userInformation', 'contact', 'image', 'payment', 'confirmation'],
+      steps: ["userInformation", "contact", "image", "payment", "confirmation"],
       onboardingData: {
         //image: null,
         image64: null,
@@ -374,7 +374,7 @@ export default {
     // sets this.mailCheck to true, if e-mail address is valid for registration
     async checkLoginDataAndProceed() {
       this.loadingEmail = true;
-      this.loadingCheckEmailStatus = 'Prüfe E-Mail Adresse...';
+      this.loadingCheckEmailStatus = "Prüfe Passwort und E-Mail Adresse...";
       let payload = {
         email: this.onboardingData.userInformation.email,
         password: this.onboardingData.userInformation.password,
@@ -385,18 +385,18 @@ export default {
       };
       // get captcha token for password check
       await this.$recaptchaLoaded();
-      let token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
+      let token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
       let captchaData = {
-        'g-recaptcha-response': token,
+        "g-recaptcha-response": token,
       };
       payload = { ...payload, ...captchaData };
       const isPasswordValid = await this.checkPassword(payload);
       if (isPasswordValid) {
         // renew captcha token for email check
         await this.$recaptchaLoaded();
-        token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
+        token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
         captchaData = {
-          'g-recaptcha-response': token,
+          "g-recaptcha-response": token,
         };
         payload = { ...payload, ...captchaData };
         await this.checkMail(payload);
@@ -406,7 +406,7 @@ export default {
     },
     async checkPassword(payload) {
       try {
-        const r = await this.$store.dispatch('checkPassword', payload);
+        await this.$store.dispatch("checkPassword", payload);
         return true;
       } catch (e) {
         const errorStatus = e?.response?.status;
@@ -416,13 +416,13 @@ export default {
         if (errorStatus) {
           switch (errorStatus) {
             case 400:
-              this.$toast.show('Passwort ist zu schwach.', {
-                theme: 'bubble',
+              this.$toast.show("Passwort ist zu schwach.", {
+                theme: "bubble",
               });
               break;
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
-                theme: 'bubble',
+              this.$toast.show("Ein Fehler ist aufgetreten. ", e.code, {
+                theme: "bubble",
               });
               break;
           }
@@ -432,8 +432,8 @@ export default {
     },
     async checkMail(payload) {
       try {
-        const r = await this.$store.dispatch('checkMail', payload);
-        this.loadingCheckEmailStatus = 'E-Mail Adresse ist verfügbar';
+        await this.$store.dispatch("checkMail", payload);
+        this.loadingCheckEmailStatus = "E-Mail Adresse ist verfügbar";
 
         await new Promise((resolve) => {
           setTimeout(() => {
@@ -457,23 +457,23 @@ export default {
           switch (errorStatus) {
             case 401:
               this.$toast.show(
-                'Ein User mit dieser Email Adresse existiert bereits.',
+                "Ein User mit dieser Email Adresse existiert bereits.",
                 {
-                  theme: 'bubble',
-                },
+                  theme: "bubble",
+                }
               );
               break;
             case 429:
               this.$toast.show(
-                'E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.',
+                "E-Mail-Verifizierung nicht möglich. Bitte warten, um Fehler zu vermeiden.",
                 {
-                  theme: 'bubble',
-                },
+                  theme: "bubble",
+                }
               );
               break;
             default:
-              this.$toast.show('Ein Fehler ist aufgetreten. ', e.code, {
-                theme: 'bubble',
+              this.$toast.show("Ein Fehler ist aufgetreten. ", e.code, {
+                theme: "bubble",
               });
               break;
           }
@@ -502,7 +502,7 @@ export default {
         hasBillingAddress:
           this.onboardingData.contactInformation.hasBillingAddress,
       };
-      if (this.onboardingData.userInformation.gender !== 'empty') {
+      if (this.onboardingData.userInformation.gender !== "empty") {
         memberDataBasic = {
           ...memberDataBasic,
           gender: this.onboardingData.userInformation.gender,
@@ -606,9 +606,9 @@ export default {
       memberData = { ...memberData, packageData };
       // get captcha token
       await this.$recaptchaLoaded();
-      const token = await this.$recaptcha('submit'); // Execute reCAPTCHA with action "submit"
+      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
       const captchaData = {
-        'g-recaptcha-response': token,
+        "g-recaptcha-response": token,
       };
       // add captcha token to memberData
       memberData = { ...memberData, ...captchaData };
@@ -621,7 +621,7 @@ export default {
       this.loading = true;
       //  create Fabman member and set membership
       this.$store
-        .dispatch('createMember', memberData)
+        .dispatch("createMember", memberData)
         .then((r) => {
           // register Auth0
           const registerAuth0Data = {
@@ -636,11 +636,11 @@ export default {
             },
           };
           this.$store
-            .dispatch('registerUser', registerAuth0Data)
+            .dispatch("registerUser", registerAuth0Data)
             .then((r) => {
               this.loadNextPage();
               this.loading = false;
-              this.$store.dispatch('setSidebar', 'register-success');
+              this.$store.dispatch("setSidebar", "register-success");
             })
             .catch((e) => {
               this.loading = false;
@@ -651,12 +651,12 @@ export default {
               }
               if (e.code) {
                 switch (e.code) {
-                  case 'user_exists':
+                  case "user_exists":
                     this.errorMessage =
-                      'Ein User mit dieser Email Adresse existiert bereits';
+                      "Ein User mit dieser Email Adresse existiert bereits";
                     break;
-                  case 'invalid_password':
-                    this.errorMessage = 'Das Passwort ist zu schwach.';
+                  case "invalid_password":
+                    this.errorMessage = "Das Passwort ist zu schwach.";
                     this.errorDescription = e.policy;
                     break;
                   default:
@@ -668,8 +668,8 @@ export default {
             });
         })
         .catch((e) => {
-          this.$toast.show('Ein Fehler ist aufgetreten ', e.code, {
-            theme: 'bubble',
+          this.$toast.show("Ein Fehler ist aufgetreten ", e.code, {
+            theme: "bubble",
           });
         });
     },
@@ -712,7 +712,7 @@ export default {
 
           &:before {
             z-index: -1;
-            content: '';
+            content: "";
             position: absolute;
             margin-top: -3px;
             top: 50%;

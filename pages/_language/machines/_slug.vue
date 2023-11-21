@@ -5,22 +5,22 @@
 </template>
 
 <script>
-import storyblokLivePreview from '@/mixins/storyblokLivePreview'
+import storyblokLivePreview from "@/mixins/storyblokLivePreview";
 
 export default {
-  data () {
-    return {}
+  data() {
+    return {};
   },
   mixins: [storyblokLivePreview],
   computed: {
-    machine () {
-      return this.story.content
-    }
+    machine() {
+      return this.story.content;
+    },
   },
-  asyncData (context) {
-    return context.store.dispatch('loadMachineItem', context.params.slug)
-  }
-}
+  asyncData(context) {
+    return context.store.dispatch("loadMachineItem", context.params.slug);
+  },
+};
 </script>
 
 <style lang="scss" scoped>

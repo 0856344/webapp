@@ -1,94 +1,82 @@
 <template>
-  <div
-      class="image-slideshow"
-  >
+  <div class="image-slideshow">
     <div v-swiper:swiper="swiperOption">
-      <div
-          class="swiper-wrapper"
-          :class="{ center : length }"
-      >
-        <div
-            v-for="s in items"
-            :key="s"
-            class="swiper-slide"
-        >
+      <div class="swiper-wrapper" :class="{ center: length }">
+        <div v-for="s in items" :key="s" class="swiper-slide">
           <nuxt-link :to="localePath('/de/press/' + s.slug)">
             <div class="press-post-preview">
-              <div class="image" :style="{ 'background-image': 'url(' + s.content.Image + ')' }">
-              </div>
+              <div
+                class="image"
+                :style="{ 'background-image': 'url(' + s.content.Image + ')' }"
+              ></div>
               <div class="press-information">
                 <div class="title">
-                  {{s.content.Title}}
+                  {{ s.content.Title }}
                 </div>
                 <div class="date">
-                  {{s.content.Date.slice(0,11)}}
+                  {{ s.content.Date.slice(0, 11) }}
                 </div>
               </div>
             </div>
           </nuxt-link>
         </div>
       </div>
-      <div
-          v-if="!length"
-          class="swiper-button-next"
-      />
-      <div
-          v-if="!length"
-          class="swiper-button-prev"
-      />
     </div>
+    <div v-if="!length" class="swiper-button-next" />
+    <div v-if="!length" class="swiper-button-prev" />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['items'],
+  props: ["items"],
   computed: {
-    swiperOption () {
+    swiperOption() {
       return {
         slidesPerView: this.num,
         spaceBetween: this.spaceBetween,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: true
+          disableOnInteraction: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      };
     },
-    spaceBetween () {
+    spaceBetween() {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 600) {
-          return 0
+        if (window.innerWidth < 500) {
+          return 10;
         }
       }
-      return 10
+      return 30;
     },
-    num () {
+    num() {
       if (process.client && window && window.innerWidth) {
-        if (window.innerWidth < 900 && window.innerWidth > 600) {
-          return 2
-        }
-        if (window.innerWidth < 600) {
-          return 1
+        if (window.innerWidth < 500) {
+          return 1;
+        } else if (window.innerWidth < 950) {
+          return 2;
+        } else if (window.innerWidth < 1250) {
+          return 3;
         }
       }
-      return 3
+      return 4;
     },
-    length () {
-      return this.items.length < 4
-    }
-  }
-}
+    length() {
+      return this.items.length < 4;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.swiper-slide{
-  width: 300px !important;
-  margin-left: 30px !important;
-}
+//.swiper-slide{
+//  width: 294px !important;
+//  margin-left: 30px !important;
+//}
 .swiper-wrapper.center {
   @include media-breakpoint-up(sm) {
     justify-content: center;
@@ -99,12 +87,10 @@ export default {
   // TODO: Fix mobile view
   color: $color-blue;
   margin-top: 2rem;
-  @include media-breakpoint-down(sm){
-    height: 10em;
+  height: 18em;
+  position: relative;
+  @include media-breakpoint-down(sm) {
     padding-bottom: 0;
-  }
-  @include media-breakpoint-down(md){
-    height: 18em;
   }
   .text {
     @include margin-page-middle();
@@ -115,20 +101,30 @@ export default {
     letter-spacing: 1.4px;
   }
   .swiper-container {
-    height: 25em;
+    width: 100%;
+    height: auto;
     .swiper-slide {
       display: block;
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      @include media-breakpoint-down(md){
-        height: 300px !important;
-        margin-left: -20px;
+      //@include media-breakpoint-down(md){
+      //  height: 300px !important;
+      //  margin-left: -20px;
+      //}
+      @include media-breakpoint-down(xs) {
+        margin: 0 auto;
       }
     }
-    padding-bottom: 60px;
-    @include media-breakpoint-down(md){
-      height: 50vh !important;
+    //@include media-breakpoint-down(md){
+    //  height: 50vh !important;
+    //}
+    @include media-breakpoint-down(sm) {
+      height: 10em;
+      padding-bottom: 0;
+    }
+    @include media-breakpoint-down(md) {
+      height: 18em;
     }
   }
   .swiper-button-prev,
@@ -138,20 +134,35 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    margin-left: -30px;
+    margin-right: -30px;
+    top: 50%;
+    @include media-breakpoint-down(md) {
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+      margin: 0;
+    }
+    @include media-breakpoint-down(xs) {
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin: 0;
+    }
   }
 }
 .press-post-preview {
-
   border-radius: 10px;
   background: #fdfdfc;
-  width: 300px;
-  height: 24rem;
+  width: 294px;
+  height: 20rem;
   display: flex;
   flex-flow: column;
   overflow: hidden;
+  margin: 0 auto;
   .image {
-    height: 20rem;
-    width: 300px;
+    height: 55%;
+    width: 294px;
     border-top-left-radius: 10px;
     background-size: cover;
     object-fit: cover;
@@ -160,9 +171,9 @@ export default {
 
   .press-information {
     color: black;
-    height: inherit;
+    height: 45%;
     padding: 20px;
-    display:flex;
+    display: flex;
     flex-flow: column;
     justify-content: space-between;
     .title {
@@ -173,9 +184,10 @@ export default {
   &:hover {
     .image {
       transform: scale(1.03);
-      transition: transform 400ms cubic-bezier(0.4, 0, 0.25, 1) 0ms, opacity 1s cubic-bezier(0.4, 0, 0.25, 1) 0ms;
+      transition: transform 400ms cubic-bezier(0.4, 0, 0.25, 1) 0ms,
+        opacity 1s cubic-bezier(0.4, 0, 0.25, 1) 0ms;
       background-size: cover;
-      width: 300px;
+      width: 294px;
       overflow: hidden;
       background-color: rgba(19, 17, 19, 0.41);
       position: relative;

@@ -2,25 +2,16 @@
   <div>
     <div class="machine-list-item">
       <div class="image">
-        <machine-status
-          :id="fabmanId"
-          class="status"
-        />
-        <img
-          :src="$resizeImage(content.image, '430x430')"
-          alt=""
-        >
+        <machine-status :id="fabmanId" class="status" />
+        <img :src="$resizeImage(content.image, '430x430')" alt="" />
       </div>
       <div class="body">
         <div class="title">
           {{ content.title }}
         </div>
         <div class="tags">
-          <span
-            v-for="(tag, index) in tags"
-            :key="index"
-          >
-            {{ tag }}<span v-if="index+1 < tags.length">, </span>
+          <span v-for="(tag, index) in tags" :key="index">
+            {{ tag }}<span v-if="index + 1 < tags.length">, </span>
           </span>
         </div>
         <div class="teaser">
@@ -32,29 +23,28 @@
 </template>
 
 <script>
-import MachineStatus from '@/bloks/machines/MachineStatus.vue'
+import MachineStatus from "@/bloks/machines/MachineStatus.vue";
 
 export default {
   components: {
-    MachineStatus
+    MachineStatus,
   },
-  props: ['blok'],
+  props: ["blok"],
   computed: {
-    fabmanId () {
-      return this.blok.content.machine_status_items[0].fabmanId
+    fabmanId() {
+      return this.blok.content.machine_status_items[0].fabmanId;
     },
-    content () {
-      return this.blok.content
+    content() {
+      return this.blok.content;
     },
-    tags () {
-      return this.blok.tag_list
-    }
-  }
-}
+    tags() {
+      return this.blok.tag_list;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 a {
   text-decoration: none;
   color: #000;
@@ -82,19 +72,19 @@ a {
     .title {
       font-family: $font-secondary;
       font-size: 1rem;
-      margin-bottom: .4em;
+      margin-bottom: 0.4em;
       height: 3em;
     }
     .tags {
       font-size: 0.9rem;
       color: $color-blue;
       text-transform: uppercase;
-      margin-bottom: .8rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 0.05em;
       font-weight: 400;
     }
     .subtitle {
-      margin:  0 0 1em 0;
+      margin: 0 0 1em 0;
     }
     .teaser {
       font-family: $font-mono;

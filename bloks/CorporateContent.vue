@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-editable="blok"
-    class="corporate-content"
-  >
+  <div v-editable="blok" class="corporate-content">
     <div class="header">
       <div class="headline">
         {{ blok.headline }}
@@ -16,10 +13,7 @@
         <markdown :value="blok.text" />
       </div>
       <div class="img">
-        <img
-          :src="blok.image"
-          alt=""
-        >
+        <img :src="blok.image" alt="" />
       </div>
     </div>
   </div>
@@ -27,14 +21,12 @@
 
 <script>
 export default {
-  props: ['blok'],
-  methods: {
-  }
-}
+  props: ["blok"],
+  methods: {},
+};
 </script>
 
 <style lang="scss">
-
 .corporate-content {
   display: flex;
   flex-direction: column;
@@ -68,5 +60,4 @@ export default {
     }
   }
 }
-
 </style>

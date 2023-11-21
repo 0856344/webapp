@@ -1,7 +1,7 @@
 const axios = require('axios');
 // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
-const storyblokToken = '1IsgW07t4t5sm0UzdHAD6gtt';
-const googleId = 'UA-202640934-1';
+const storyblokToken = '1IsgW07t4t5sm0UzdHAD6gtt'
+const googleId = 'UA-202640934-1'
 
 module.exports = {
   i18n: {
@@ -11,8 +11,8 @@ module.exports = {
         iso: 'de-DE',
         name: 'DE',
         file: 'de.json',
-        path: '',
-      }, //,
+        path: ''
+      }//,
       // {
       //   code: 'en',
       //   iso: 'en-US',
@@ -21,9 +21,9 @@ module.exports = {
       //   path: 'en'
       // }
     ],
-    defaultLocale: 'de',
+    defaultLocale: "de",
     lazy: true,
-    langDir: '~/locales/',
+    langDir: "~/locales/",
     vueI18n: {
       fallbackLocale: 'de',
     },
@@ -38,15 +38,15 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: 'GRAND GARAGE',
+    title: "GRAND GARAGE",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: 'description',
-        name: 'description',
+        hid: "description",
+        name: "description",
         content:
-          'Ein Makerspace in der Tabakfabrik Linz. Von der Schweißwerkstatt über CNC-Fräsen bis hin zu 3D-Druckern ist alles in unserer Werkstatt vorhanden.',
+          "Ein Makerspace in der Tabakfabrik Linz. Von der Schweißwerkstatt über CNC-Fräsen bis hin zu 3D-Druckern ist alles in unserer Werkstatt vorhanden.",
       },
     ],
     link: [
@@ -59,19 +59,19 @@ module.exports = {
   },
   proxy: {
     '/.netlify': {
-      // TODO no used anymore - deprecated?
       target: 'http://localhost:9000',
-      pathRewrite: { '^/.netlify/functions': '' },
-    },
+      pathRewrite: { '^/.netlify/functions': '' }
+    }
   },
   buildModules: [
     [
-      'storyblok-nuxt',
-      { accessToken: storyblokToken, cacheProvider: 'memory' },
+      "storyblok-nuxt",
+      { accessToken: storyblokToken, cacheProvider: "memory" },
     ],
-    '@nuxtjs/proxy',
-    ['@nuxtjs/google-analytics'],
-    ['@nuxtjs/style-resources'],
+    "@nuxtjs/proxy",
+    "@nuxtjs/tailwindcss",
+    ["@nuxtjs/google-analytics"],
+    ["@nuxtjs/style-resources"],
   ],
   /**
    * Importing scss
@@ -80,36 +80,35 @@ module.exports = {
   css: [
     '@/assets/scss/styles.scss',
     'swiper/dist/css/swiper.css',
-    '@fortawesome/fontawesome-svg-core/styles.css',
+    '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   styleResources: {
     scss: ['@/assets/scss/variables.scss', '@/assets/scss/mixins.scss'],
   },
   modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/sentry',
-    '@nuxtjs/toast',
-    //'@nuxtjs/eslint-module',
-    '@nuxtjs/robots',
-    'nuxt-i18n',
+    "@nuxtjs/sentry",
+    "@nuxtjs/toast",
+    "@nuxtjs/eslint-module",
+    "@nuxtjs/robots",
+    "nuxt-i18n",
   ],
   sentry: {
     config: {}, // Additional config
   },
   toast: {
-    position: 'top-center',
+    position: "top-center",
     duration: 5000,
     theme: 'toasted-primary',
   },
   plugins: [
-    '~/plugins/init',
-    '~/plugins/components',
-    '~/plugins/helper',
-    '~/plugins/map',
-    '~/plugins/libs',
-    '~/plugins/routersync',
-    '~/plugins/fontawesome.js',
-    '~/plugins/getActiveBreakpoint.client.js',
+    "~/plugins/init",
+    "~/plugins/components",
+    "~/plugins/helper",
+    "~/plugins/map",
+    "~/plugins/libs",
+    "~/plugins/routersync",
+    "~/plugins/fontawesome.js",
+    "~/plugins/getActiveBreakpoint.client.js",
     //'~/plugins/snow.js',
     { src: '~/plugins/components-nossr', ssr: false },
   ],
@@ -120,12 +119,12 @@ module.exports = {
     middleware: 'router',
   },
   generate: {
-    target: 'static',
+    target: "static",
     routes: function (callback) {
       const token = storyblokToken;
       const perPage = 100;
       const version =
-        process.env.NODE_ENV === 'development' ? 'draft' : 'published';
+        process.env.NODE_ENV === "development" ? "draft" : "published";
       const time = new Date().getTime();
 
       const page = 1;
@@ -134,12 +133,12 @@ module.exports = {
       // Call first Page of the Links API: https://www.storyblok.com/docs/Delivery-Api/Links
       axios
         .get(
-          `https://api.storyblok.com/v1/cdn/links?token=${token}&version=${version}&per_page=${perPage}&page=${page}&ts=${time}`,
+          `https://api.storyblok.com/v1/cdn/links?token=${token}&version=${version}&per_page=${perPage}&page=${page}&ts=${time}`
         )
         .then((res) => {
           Object.keys(res.data.links).forEach((key) => {
-            if (res.data.links[key].slug !== 'home') {
-              routes.push('/' + res.data.links[key].slug);
+            if (res.data.links[key].slug !== "home") {
+              routes.push("/" + res.data.links[key].slug);
             }
           });
 
@@ -155,8 +154,8 @@ module.exports = {
           for (let page = 2; page <= maxPage; page++) {
             contentRequests.push(
               axios.get(
-                `https://api.storyblok.com/v1/cdn/links?token=${token}&version=${version}&per_page=${perPage}&page=${page}`,
-              ),
+                `https://api.storyblok.com/v1/cdn/links?token=${token}&version=${version}&per_page=${perPage}&page=${page}`
+              )
             );
           }
 
@@ -167,14 +166,14 @@ module.exports = {
               axios.spread((...requests) => {
                 requests.forEach((request) => {
                   Object.keys(request.data.links).forEach((key) => {
-                    if (request.data.links[key].slug !== 'home') {
-                      routes.push('/' + request.data.links[key].slug);
+                    if (request.data.links[key].slug !== "home") {
+                      routes.push("/" + request.data.links[key].slug);
                     }
                   });
                 });
 
                 callback(null, routes);
-              }),
+              })
             )
             .catch(callback);
         });
@@ -183,7 +182,7 @@ module.exports = {
   /*
    ** Customize the progress bar color
    */
-  loading: { color: '#ff6f00' },
+  loading: { color: "#ff6f00" },
   /*
    ** Build configuration
    */
@@ -192,12 +191,10 @@ module.exports = {
     postcss: {
       postcssOptions: {
         plugins: {
-          tailwindcss: {},
-          autoprefixer: {},
           // Removed calc because its conflict with postcss8 + swiperjs
           cssnano: {
             preset: [
-              'default',
+              "default",
               {
                 calc: false,
               },
@@ -213,9 +210,9 @@ module.exports = {
     disabled: () => {
       // eslint-disable-next-line no-unused-vars
       const hasAcceptedAnalyticsCookie = localStorage.getItem(
-        'hasAcceptedAnalyticsCookie',
+        "hasAcceptedAnalyticsCookie"
       );
-      if (hasAcceptedAnalyticsCookie === 'true') {
+      if (hasAcceptedAnalyticsCookie === "true") {
         return false;
       } else {
         return true;
