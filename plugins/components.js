@@ -234,7 +234,6 @@ Vue.component('alert', Alert)
 Vue.component('big-loading-spinner', BigLoadingSpinner)
 Vue.component('loading-spinner-inline', LoadingSpinnerInline)
 Vue.component('loading-spinner-button', LoadingSpinnerButton)
-// eslint-disable-next-line vue/no-reserved-component-names
-Vue.component('spacer', Spacer)
+Vue.component('storyblok-spacer', Spacer)
 Vue.component('vue-tour', VueTour)
 Vue.component('modal', Modal)

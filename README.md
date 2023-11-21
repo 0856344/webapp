@@ -9,16 +9,16 @@ It includes a memberportal for the services at Grand Garage, a makerspace in Lin
 
 ## Tech Stack
 
-| Platform  | Description / Link                                                                                                 |
-| --------- | ------------------------------------------------------------------------------------------------------------------ |
-| NuxtJs    | a higher-level framework of the JS-framework [vuejs](https://vuejs.org/) / [official website](https://nuxtjs.org/) |
-| Storyblok | a modern headless CMS / [official website](www.storyblok.com)                                                      |
-| Netlify   | a build and deployment platform / [official website](https://www.netlify.com/with/vue/)                            |
+| Platform     | Description / Link                                                                                                 |
+|--------------| ------------------------------------------------------------------------------------------------------------------ |
+| NuxtJs v2.16 | a higher-level framework of the JS-framework [vuejs](https://vuejs.org/) / [official website](https://nuxtjs.org/) |
+| Storyblok    | a modern headless CMS / [official website](www.storyblok.com)                                                      |
+| Netlify      | a build and deployment platform / [official website](https://www.netlify.com/with/vue/)                            |
 
 ## Requirements
   | Tool     | Description / Link                                                    |
   |----------|-----------------------------------------------------------------------|
-  | NodeJS   | [NodeJs](https://nodejs.org/en)                                       |
+  | Node v18 | [NodeJs](https://nodejs.org/en)                                       |
   | IDE      | [VS Code ](https://code.visualstudio.com/) with the [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) extension or WebStorm/[PHPStorm](https://www.jetbrains.com/phpstorm/)                                                                |
   | Terminal | [VS Code's integrated terminal](https://code.visualstudio.com/docs/terminal/basics) or [PHPStorm terminal](https://www.jetbrains.com/help/phpstorm/terminal-emulator.html) |
 
