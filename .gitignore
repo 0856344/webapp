@@ -16,3 +16,5 @@ dist
 # HTTPS Proxy certificates
 localhost.pem
 localhost-key.pem
+
+launch.json
