@@ -2,49 +2,25 @@
   <div class="profile" v-if="user !== null && member !== null">
     <div class="header">
       <h1 class="name">{{ member.firstName }} {{ member.lastName }}</h1>
-      <!--<h1 class="name">{{ user.profile.firstName }} {{ user.profile.lastName }}</h1> -->
       <h2 style="display: none">STAGING</h2>
       <code class="number">#{{ member.memberNumber }}</code>
     </div>
-    <div
-      v-if="!hasCompletedRequiredCourses"
-      class="alert alert-secondary"
-      role="alert"
-    >
+    <div v-if="!hasCompletedRequiredCourses" class="alert alert-secondary" role="alert">
       <font-awesome-icon icon="info-circle" />
-      {{ $t("openSafetyTraining") }}
+      {{ $t('openSafetyTraining') }}
     </div>
     <div class="tab-section">
       <div class="tab-section-menu">
-        <MenuLink to="/me/" icon="user">{{ $t("myProfile") }}</MenuLink>
-        <MenuLink v-if="isMember" to="/me/packages" icon="coins"
-          >{{ $t("membership") }} & Credits</MenuLink
-        >
-        <!--        <MenuLink v-if="!isMember && !hasCompletedOnboarding" to="/wizard/onboarding" icon="user-friends"><span-->
-        <!--            class="fat">{{ $t('joinNow') }}</span></MenuLink>-->
-        <MenuLink
-          to="/me/trainings"
-          icon="graduation-cap"
-          style="color: white !important"
-        >
-          <font-awesome-icon
-            :style="{ color: '#E69140' }"
-            v-if="!hasCompletedRequiredCourses"
-            icon="info-circle"
-          />
-          {{ $t("trainings") }}
+        <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
+        <MenuLink v-if="isMember" to="/me/packages" icon="coins">{{ $t('membership') }} & Credits</MenuLink>
+        <MenuLink to="/me/trainings" icon="graduation-cap" style="color: white !important">
+          <font-awesome-icon :style="{ color: '#E69140' }" v-if="!hasCompletedRequiredCourses" icon="info-circle" />
+          {{ $t('trainings') }}
         </MenuLink>
-        <!--        <MenuLink to="/me/workshopBookings" icon="hammer">{{ $t('myWorkshops') }}</MenuLink>-->
-        <MenuLink to="/de/gutscheine?action=redeem" icon="money-bill"
-          >Gutscheine einlösen</MenuLink
-        >
-        <MenuLink
-          :isActive="$route.name.includes('invoices')"
-          to="/me/invoices"
-          icon="file-invoice"
-          >{{ $t("invoices") }}
+        <MenuLink to="/de/gutscheine?action=redeem" icon="money-bill">Gutscheine einlösen</MenuLink>
+        <MenuLink :isActive="$route.name.includes('invoices')" to="/me/invoices" icon="file-invoice"
+          >{{ $t('invoices') }}
         </MenuLink>
-        <!--        <MenuLink to="/me/activities" icon="running">{{ $t('activities') }}</MenuLink>-->
       </div>
       <div class="tab-section-content">
         <NuxtChild :key="$route.params.slug"></NuxtChild>
@@ -54,169 +30,169 @@
 </template>
 
 <script>
-import MenuLink from "@/bloks/MenuLink.vue";
+  import MenuLink from '@/bloks/MenuLink.vue'
 
-export default {
-  middleware: "authenticated",
-  components: { MenuLink },
-  data() {
-    return {
-      hasCompletedOnboarding: false, // TODO: implement hasCompletedOnboarding function in connector
-      hasCompletedRequiredCourses: true,
-      test: null,
-      lastName: "",
-    };
-  },
-  created() {},
-  async mounted() {
-    //this.hasCompletedOnboarding = await this.$store.dispatch('hasCompletedOnboarding'
-    this.hasCompletedRequiredCourses = await this.$store.dispatch(
-      "hasCompletedRequiredCourses",
-      this.$store.state.member.id
-    );
-  },
-  methods: {
-    getPackage(p) {
-      const data = this.$store.getters.getPackageById(p.package);
-      return { ...p, ...data };
+  export default {
+    middleware: 'authenticated',
+    components: { MenuLink },
+    data() {
+      return {
+        hasCompletedOnboarding: false, // TODO: implement hasCompletedOnboarding function in connector
+        hasCompletedRequiredCourses: true,
+        test: null,
+        lastName: '',
+      }
     },
+    created() {},
+    async mounted() {
+      //this.hasCompletedOnboarding = await this.$store.dispatch('hasCompletedOnboarding'
+      this.hasCompletedRequiredCourses = await this.$store.dispatch(
+        'hasCompletedRequiredCourses',
+        this.$store.state.member.id,
+      )
+    },
+    methods: {
+      getPackage(p) {
+        const data = this.$store.getters.getPackageById(p.package)
+        return { ...p, ...data }
+      },
 
-    getWorkshops() {
-      // let data = this.$store.getters.getMemberCourseById(p);
+      getWorkshops() {
+        // let data = this.$store.getters.getMemberCourseById(p);
+      },
+      logout() {
+        this.$store.dispatch('logout').then(() => {
+          this.$router.push('/')
+        })
+      },
     },
-    logout() {
-      this.$store.dispatch("logout").then(() => {
-        this.$router.push("/");
-      });
+    computed: {
+      user() {
+        return this.$store.state.user // TODO: remove/edit lambda functions (Requests via Connector)
+      },
+      member() {
+        return this.$store.state.member
+      },
+      isMember() {
+        // TODO
+        return this.$store.state.user.profile.state === 'active'
+      },
     },
-  },
-  computed: {
-    user() {
-      return this.$store.state.user; // TODO: remove/edit lambda functions (Requests via Connector)
-    },
-    member() {
-      return this.$store.state.member;
-    },
-    isMember() {
-      // TODO
-      return this.$store.state.user.profile.state === "active";
-    },
-  },
-};
+  }
 </script>
 
 <style lang="scss">
-.profile {
-  min-height: 60vh;
-  margin-left: 4%;
-  margin-right: 4%;
+  .profile {
+    min-height: 60vh;
+    margin-left: 4%;
+    margin-right: 4%;
 
-  .header {
-    margin: 2em 0;
+    .header {
+      margin: 2em 0;
 
-    h1 {
-      margin: 0;
-    }
+      h1 {
+        margin: 0;
+      }
 
-    display: flex;
-
-    .spacer {
-      flex: 1;
-    }
-
-    .logout-button {
-      cursor: pointer;
-      font-weight: bold;
-      padding: 10px;
-      border: none;
-      outline: none;
-      color: #fff;
-      background-color: $color-orange;
-    }
-  }
-
-  .name {
-    display: inline-block;
-  }
-
-  .number {
-    margin: 0 10px;
-    color: #999;
-  }
-
-  .item-list {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  .menuLink {
-    @include media-breakpoint-down(sm) {
-      justify-content: center;
-      border-bottom: 2px solid #696969;
-      min-width: 260px;
-    }
-  }
-
-  .tab-section {
-    display: flex;
-    @include media-breakpoint-down(sm) {
       display: flex;
-      justify-content: center;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+
+      .spacer {
+        flex: 1;
+      }
+
+      .logout-button {
+        cursor: pointer;
+        font-weight: bold;
+        padding: 10px;
+        border: none;
+        outline: none;
+        color: #fff;
+        background-color: $color-orange;
+      }
     }
 
-    .tab-section-menu {
-      padding-top: 20px;
-      width: 240px;
-      flex: 1;
+    .name {
+      display: inline-block;
+    }
 
+    .number {
+      margin: 0 10px;
+      color: #999;
+    }
+
+    .item-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .menuLink {
       @include media-breakpoint-down(sm) {
-        padding: 0;
-        margin-bottom: 100px;
+        justify-content: center;
+        border-bottom: 2px solid #696969;
+        min-width: 260px;
+      }
+    }
+
+    .tab-section {
+      display: flex;
+      @include media-breakpoint-down(sm) {
         display: flex;
         justify-content: center;
         flex-direction: column;
         align-items: center;
         text-align: center;
+      }
+
+      .tab-section-menu {
+        padding-top: 20px;
+        width: 240px;
+        flex: 1;
+
+        @include media-breakpoint-down(sm) {
+          padding: 0;
+          margin-bottom: 100px;
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+
+          a {
+            text-align: center;
+          }
+        }
+
+        .submenu {
+          padding-left: 2.5em;
+        }
 
         a {
-          text-align: center;
+          color: #000;
+          display: block;
+          padding: 12px;
+
+          &:hover {
+            background-color: darken($color-bright-bg, 5);
+          }
+
+          &.nuxt-link-exact-active {
+            color: $color-orange;
+          }
         }
       }
 
-      .submenu {
-        padding-left: 2.5em;
-      }
-
-      a {
-        color: #000;
-        display: block;
-        padding: 12px;
-
-        &:hover {
-          background-color: darken($color-bright-bg, 5);
-        }
-
-        &.nuxt-link-exact-active {
-          color: $color-orange;
+      .tab-section-content {
+        padding-left: 20px;
+        flex: 3;
+        @include media-breakpoint-down(sm) {
+          padding: 0 15px;
         }
       }
     }
 
-    .tab-section-content {
-      padding-left: 20px;
-      flex: 3;
-      @include media-breakpoint-down(sm) {
-        padding: 0 15px;
-      }
+    .fat {
+      color: $color-blue-alt;
+      font-weight: bolder;
     }
   }
-
-  .fat {
-    color: $color-blue-alt;
-    font-weight: bolder;
-  }
-}
 </style>
