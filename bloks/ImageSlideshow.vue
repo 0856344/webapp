@@ -14,9 +14,9 @@
             }"
           />
         </div>
+        <div v-if="!length" class="swiper-button-next" />
+        <div v-if="!length" class="swiper-button-prev" />
       </div>
-      <div v-if="!length" class="swiper-button-next" />
-      <div v-if="!length" class="swiper-button-prev" />
     </div>
   </div>
 </template>
@@ -122,8 +122,6 @@ export default {
     height: 50px;
     border-radius: 50%;
     background-color: $color-yellow;
-    margin-left: -30px;
-    margin-right: -30px;
     background-size: 12px;
     top: 50%;
     @include media-breakpoint-down(md) {

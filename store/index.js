@@ -797,6 +797,7 @@ const createStore = () => {
             per_page: 50,
             version: version,
             cv: state.cacheVersion,
+            sort_by: 'content.Date:desc',
           })
           .then(res => {
             return res.data
