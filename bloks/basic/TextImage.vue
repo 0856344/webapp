@@ -24,7 +24,6 @@ export default {
 @import "/assets/scss/styles";
 
 .text-image {
-  min-height: 80vh;
   @include media-breakpoint-down(lg) {
     @include margin-page-wide;
   }
