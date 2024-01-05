@@ -154,16 +154,21 @@ export default {
         "getMemberPackages",
         this.$store.state.member.id
       );
+      this.memberPackages = this.memberPackages.filter((p) => {
+        // filter old packages
+          if (p.untilDate) {
+            const packageDate = new Date(p.untilDate)
+            const currentDate = new Date();
+            if (packageDate.getTime() < currentDate.getTime()) {
+              return false;
+            }
+          }
+          return true
+      })
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
       this.membership = this.memberPackages.filter((p) => {
-        // filter old packages
-        const packageDate = new Date(p.untilDate)
-        const currentDate = new Date();
-        if (packageDate.getTime() < currentDate.getTime()) {
-          return false;
-        }
         const metadata = p._embedded.package.metadata;
         if (metadata?.shortform === "DISCOUNT") {
           this.discount = p;
