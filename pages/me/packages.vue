@@ -158,7 +158,12 @@ export default {
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
       this.membership = this.memberPackages.filter((p) => {
-        //console.log('package: ', p._embedded.package.metadata)
+        // filter old packages
+        const packageDate = new Date(p.untilDate)
+        const currentDate = new Date();
+        if (packageDate.getTime() < currentDate.getTime()) {
+          return false;
+        }
         const metadata = p._embedded.package.metadata;
         if (metadata?.shortform === "DISCOUNT") {
           this.discount = p;
