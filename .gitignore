@@ -18,3 +18,10 @@ localhost.pem
 localhost-key.pem
 
 launch.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
