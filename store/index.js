@@ -10,7 +10,6 @@ const origin = process.client ? window.location.origin : process.env.ORIGIN;
 console.log('### Nuxt environment is: ' + process.env.NUXT_ENV_ENVIRONMENT);
 
 let tmpAuth = null;
-let tmpVersion = null;
 
 // Define auth0 routes depending on your environment
 switch (process.env.NUXT_ENV_ENVIRONMENT) {
@@ -22,7 +21,6 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       responseType: 'token id_token',
       redirectUri: origin + '/auth',
     });
-    tmpVersion = process.env.CONNECTOR_API_URL_DEVELOP;
     // set public captcha site key (develop)
     process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG';
     break;
@@ -34,7 +32,6 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       responseType: 'token id_token',
       redirectUri: origin + '/auth',
     });
-    tmpVersion = process.env.CONNECTOR_API_URL_STAGING;
     // set public captcha site key (develop)
     process.env.RECAPTCHA_SITE_KEY = '6LcCmxwlAAAAAODPzi76Kz7J0sCG9LZWozPrYDwG';
     break;
@@ -46,7 +43,6 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
       responseType: 'token id_token',
       redirectUri: origin + '/auth',
     });
-    tmpVersion = process.env.CONNECTOR_API_URL;
     // set public captcha site key (production)
     // TODO: use functions for keys needed while runtime (https://answers.netlify.com/t/support-guide-how-do-i-keep-my-api-keys-tokens-safe-using-netlify-functions/293)
     // env variables stored on netlify are only available during build
@@ -54,7 +50,10 @@ switch (process.env.NUXT_ENV_ENVIRONMENT) {
 }
 
 const webAuth = tmpAuth;
-const version = tmpVersion;
+
+const currentDate = new Date();
+const formattedDate = currentDate.toISOString().split('T')[0];
+const version = process.env.NUXT_ENV_CONNECTOR_URL + '_' + formattedDate;
 
 const baseUrl = process.env.NUXT_ENV_CONNECTOR_URL
   ? process.env.NUXT_ENV_CONNECTOR_URL
@@ -163,7 +162,8 @@ const createStore = () => {
       },
     },
     actions: {
-      nuxtServerInit({ state }, context) {},
+      nuxtServerInit({ state }, context) {
+      },
       init({ state, dispatch }, context) {
         const chain = []
         if (!state.auth) {
@@ -396,7 +396,6 @@ const createStore = () => {
           });
       },
       getUser({ state, commit, dispatch }) {
-        // DONE - remove lambda function -  @see https://grandgarage.atlassian.net/browse/HP-317
         handler(state.auth.accessToken, {}, (error, response) => {
           if (error) {
             console.error('Error handle Token:', error);
@@ -464,6 +463,7 @@ const createStore = () => {
         return new Promise((resolve, reject) => {
           webAuth.parseHash({ hash }, function (err, authResult) {
             if (err) {
+              console.log('Auth Error', err, authResult)
               return reject(err);
             }
 
@@ -547,9 +547,14 @@ const createStore = () => {
               email: context.email,
               password: context.password,
             },
-            function (err, r) {
-              if (err) reject(err);
-              resolve(r);
+            function (err, authResult) {
+              if (err) {
+                console.error('Error during login:', err);
+                reject(err);
+              } else {
+                console.log('Successful login:', authResult);
+                resolve(authResult);
+              }
             },
           );
         });
