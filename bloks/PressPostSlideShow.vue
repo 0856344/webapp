@@ -21,9 +21,9 @@
           </nuxt-link>
         </div>
       </div>
+      <div v-if="!length" class="swiper-button-next" />
+      <div v-if="!length" class="swiper-button-prev" />
     </div>
-    <div v-if="!length" class="swiper-button-next" />
-    <div v-if="!length" class="swiper-button-prev" />
   </div>
 </template>
 
@@ -134,8 +134,6 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
-    margin-left: -30px;
-    margin-right: -30px;
     top: 50%;
     @include media-breakpoint-down(md) {
       width: 40px;
