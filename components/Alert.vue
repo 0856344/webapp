@@ -14,7 +14,7 @@
             <span v-html="message" class="alert-message"></span>
           </span>
         </span>
-        <span>
+        <span v-show="closeable">
           <span class="close-button" @click="toggle">
             <svg
               class="fill-current h-6 w-6"
@@ -60,6 +60,10 @@ export default {
       type: String,
       default: 'info-circle',
     },
+    closeable: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

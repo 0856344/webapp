@@ -126,6 +126,7 @@
     },
     computed: {
       allowedBookingHours() {
+        // TODO - get information from fabman
         return BOOKING_LOCK.limitInHours
       },
       hasUser() {
@@ -175,7 +176,7 @@
         this.saveBooking(calEvent)
       },
       onEventDragCreate(calEvent) {
-        console.log('onEventDragCreate', calEvent)
+        //console.log('onEventDragCreate', calEvent)
         this.saveBooking(calEvent)
       },
       mapBooking(calEvent) {
@@ -233,8 +234,8 @@
       isBookingValid(newBooking) {
         let alertMsg = null
 
+        // Check date format
         if (!helper.isValidDate(newBooking.fromDateTime) || !helper.isValidDate(newBooking.untilDateTime)) {
-          // Wrong date format
           console.log(
             'Wrong date format given. (fromDate, untilDate)',
             newBooking.fromDateTime,
@@ -242,13 +243,17 @@
           )
           return false
         }
-        if (this.hoursExceeded(newBooking, this.allowedBookingHours)) {
+
+        // Check hours limitation
+        if (this.hoursExceededPerDay(newBooking, this.allowedBookingHours)) {
           // Do not save this booking
           // TODO - Get allowed limitation from fabman package/space
           //const memberPackages = this.$store.getters.getMemberPackages();
-          alertMsg = 'In deinem Paket enthaltenes Stundenkontingent: ' + this.allowedBookingHours + 'h'
+          alertMsg = 'Erlaubte Stunden pro Tag: ' + this.allowedBookingHours + 'h'
           this.invalidDate = newBooking
         }
+
+        // Check overlapping
         for (const booking of this.bookings) {
           if (this.dateOverlaps(booking, newBooking) === true) {
             // Do not save this booking
@@ -257,6 +262,8 @@
 
             break
           }
+
+          // Check if in past
           if (helper.dateIsInPast(new Date(newBooking.fromDateTime))) {
             console.log('NOT ALLOWED: is in PAST')
             // Do not save this booking
@@ -278,11 +285,32 @@
         }
         return true
       },
-      hoursExceeded(booking, allowedHours) {
-        const differenceInHours = helper.timeDifferenceInHours(booking.untilDateTime, booking.fromDateTime)
-        console.log('hours', differenceInHours)
+      hoursExceededPerDay(booking, allowedHours) {
+        let allBookings = this.bookings.concat(this.selectedBookings);
+        const bookingsOnSameDay = allBookings.filter((otherBooking) => {
+          // Check if the other booking is on the same day as the target booking
+          const bookingDate = new Date(booking.fromDateTime).toDateString();
+          const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
+          return bookingDate === otherBookingDate;
+        });
 
-        return differenceInHours > allowedHours
+        // Calculate the total booked hours on the same day
+        const totalBookedHours = bookingsOnSameDay.reduce((totalHours, otherBooking) => {
+          const differenceInHours = helper.timeDifferenceInHours(
+            otherBooking.fromDateTime,
+            otherBooking.untilDateTime
+          );
+          return totalHours + differenceInHours;
+        }, 0);
+
+        // Calculate the difference in hours for the current booking
+        const differenceInHours = helper.timeDifferenceInHours(
+          booking.fromDateTime,
+          booking.untilDateTime
+        );
+
+        // Check if the total booked hours exceed the allowed hours
+        return totalBookedHours + differenceInHours > allowedHours;
       },
       storeBookings(bookings) {
         // Save selected bookings in the global store

@@ -51,6 +51,13 @@ export const helper = {
     })
     return isAllowed
   },
+  // // Calculate the time difference in hours
+  // timeDifferenceInHours(endTime, startTime) {
+  //   const endDateTime = new Date(endTime);
+  //   const startDateTime = new Date(startTime);
+  //   const timeDifference = endDateTime - startDateTime;
+  //   return timeDifference / (1000 * 60 * 60); // Convert milliseconds to hours
+  // },
   isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   },
@@ -76,7 +83,10 @@ export const helper = {
     return parsedDate < currentDate
   },
   timeDifferenceInHours(startDate, endDate) {
-    return Math.abs(startDate - endDate) / 36e5 //36e5 is the scientific notation for 60*60*1000
+    // Make sure given params are in date format
+    const endDateTime = new Date(endDate);
+    const startDateTime = new Date(startDate);
+    return Math.abs(startDateTime - endDateTime) / 36e5 //36e5 is the scientific notation for 60*60*1000
   },
   dateIsBeforeCurrentInHours(date, hours = 24) {
     // Make sure given date is in Date format
