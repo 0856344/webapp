@@ -113,6 +113,10 @@ const createStore = () => {
       getTrainingById: (state) => (id) => {
         return state.fabman.trainings.find((t) => t.id === id);
       },
+      userHasBeenLoaded: (state) => {
+        // Every member should have a package
+        return !!state.member && !!state.memberPackages;
+      }
     },
     filters: {
       truncate: function (text, length, suffix) {
@@ -396,24 +400,31 @@ const createStore = () => {
           });
       },
       getUser({ state, commit, dispatch }) {
-        handler(state.auth.accessToken, {}, (error, response) => {
-          if (error) {
-            console.error('Error handle Token:', error);
-          } else {
-            const jwtEmail = JSON.parse(response.body);
-            dispatch('getMemberByEmail', { email: jwtEmail }).then(
-              (memberData) => {
+        return new Promise((resolve, reject) => {
+          handler(state.auth.accessToken, {}, async (error, response) => {
+            if (error) {
+              console.error('Error handle Token:', error);
+              reject(error);
+            } else {
+              try {
+                const jwtEmail = JSON.parse(response.body);
+                const memberData = await dispatch('getMemberByEmail', { email: jwtEmail });
                 commit('setMember', memberData);
+
                 if (memberData.id) {
-                  dispatch('getMemberPackages', memberData.id).then(
-                    (memberPackagesData) => {
-                      commit('setMemberPackages', memberPackagesData);
-                    },
-                  );
+                  const memberPackagesData = await dispatch('getMemberPackages', memberData.id);
+                  commit('setMemberPackages', memberPackagesData);
+
+                  resolve(memberData); // Resolve with memberData after packages are loaded
+                } else {
+                  resolve(memberData); // Resolve without memberPackagesData
                 }
-              },
-            );
-          }
+              } catch (err) {
+                console.error('Error in getUser:', err);
+                reject(err);
+              }
+            }
+          });
         });
       },
       async getMemberByEmail({ commit }, email) {

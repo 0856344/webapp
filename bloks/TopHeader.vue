@@ -135,7 +135,7 @@ export default {
       return !!this.$store.state.auth;
     },
     hasUser() {
-      return !!this.$store.state.member;
+      return this.$store.getters.userHasBeenLoaded;
     },
     devWarning() {
       return process.env.NODE_ENV === 'development' ? 'DEV' : null;
