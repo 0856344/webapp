@@ -34,12 +34,6 @@
         :is="i.component"
         :key="i.uid"
       />
-      <component
-        v-for="i in blok.contentBloks"
-        :blok="i"
-        :is="i.component"
-        :key="i.uid"
-      />
     </div>
   </div>
 </template>
