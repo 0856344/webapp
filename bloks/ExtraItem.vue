@@ -1,15 +1,15 @@
 <template>
   <div v-editable="blok">
-    <div class="content">
-      <div class="header">
-        <h2 class="title">
+    <div class="p-4 bg-white shadow-md shadow-gray-300">
+      <div class="flex items-start font-sans-secondary text-blue-500 relative">
+        <h2 class="m-0">
           {{ blok.title }}
         </h2>
-        <div class="icon">
+        <div v-if="blok.icon" class="fill-white absolute -right-6 -top-6 bg-orange rounded-full w-8 h-8 flex items-center justify-center">
           <icon v-if="blok.icon" :name="blok.icon" />
         </div>
       </div>
-      <div class="body">
+      <div class="text-base">
         <markdown
           v-if="blok.description"
           class="text"
@@ -26,35 +26,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.content {
-  background-color: #fff;
-  padding: 1.5em;
-  box-shadow: darken($color-bright-bg, 5%) 10px 8px;
-  .header {
-    display: flex;
-    align-items: flex-start;
-    .title {
-      flex: 5;
-      font-weight: normal;
-      margin: 0;
-      font-family: $font-secondary;
-      color: #0069aa;
-      min-height: 2em;
-    }
-    .icon {
-      flex: 1;
-      text-align: right;
-      svg {
-        height: 2em;
-        fill: $color-orange;
-      }
-    }
-  }
-  .body {
-    font-size: 1rem;
-    letter-spacing: 0.03em;
-    line-height: 1.4;
-  }
+<style scoped>
+ ::v-deep p:last-child {
+  margin-bottom: 0;
 }
 </style>
