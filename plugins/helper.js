@@ -41,6 +41,7 @@ export const helper = {
     let isAllowed = true
     filteredMemberPackages.forEach(memberPackage => {
       if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
+        // Smart Garage member are not allowed to book machines due to https://grandgarage.eu/de/mitgliedschaften (checked on 17.1.2024)
         isAllowed = false
         return isAllowed
       }

@@ -151,10 +151,15 @@ export default {
       this.loading = true;
       this.loadingAvailableStorage = true;
       await this.loadCreditStatus();
-      this.memberPackages = await this.$store.dispatch(
-        'getMemberPackages',
-        this.$store.state.member.id,
-      );
+
+      // Fetch packages from store
+      this.memberPackages = this.$store.getters.getMemberPackages();
+      if(!this.memberPackages) {
+        this.memberPackages = await this.$store.dispatch(
+          'getMemberPackages',
+          this.$store.state.member.id,
+        );
+      }
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package

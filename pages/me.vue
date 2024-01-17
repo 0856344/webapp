@@ -79,6 +79,7 @@ export default {
       'hasCompletedRequiredCourses',
       this.$store.state.member.id,
     );
+    await this.loadMemberSpaces()
   },
   methods: {
     logout() {
@@ -86,6 +87,11 @@ export default {
         this.$router.push('/');
       });
     },
+    async loadMemberSpaces() {
+      let spaces = await this.$store.dispatch('getSpaces');
+      console.log('spaces', spaces)
+      // TODO - filter member spaces
+    }
   },
   computed: {
     member() {
@@ -95,7 +101,7 @@ export default {
       const memberPackages = this.$store.getters.getMemberPackages();
 
       return helper.isAllowedToBook(memberPackages);
-    },
+    }
   },
 };
 </script>

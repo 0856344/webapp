@@ -412,12 +412,13 @@ const createStore = () => {
                 commit('setMember', memberData);
 
                 if (memberData.id) {
+                  // Store memberPackages
                   const memberPackagesData = await dispatch('getMemberPackages', memberData.id);
                   commit('setMemberPackages', memberPackagesData);
 
-                  resolve(memberData); // Resolve with memberData after packages are loaded
+                  resolve(memberData);
                 } else {
-                  resolve(memberData); // Resolve without memberPackagesData
+                  resolve(memberData);
                 }
               } catch (err) {
                 console.error('Error in getUser:', err);
@@ -501,6 +502,11 @@ const createStore = () => {
             return r.data.data;
           }
         });
+      },
+      getSpaces({ state }, id) {
+        return axios.get(connectorBaseUrl + '/v1/fabman/spaces').then(result => {
+          return result.data
+        })
       },
       getMaterials({ state }, id) {
         return axios.get(connectorBaseUrl + '/products/materials').then((result) => {
