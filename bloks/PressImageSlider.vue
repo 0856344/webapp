@@ -16,8 +16,8 @@
           </div>
         </div>
       </div>
-      <div v-if="!length" class="swiper-button-next" />
-      <div v-if="!length" class="swiper-button-prev" />
+      <div class="swiper-button-next" />
+      <div class="swiper-button-prev" />
     </div>
   </div>
 </template>

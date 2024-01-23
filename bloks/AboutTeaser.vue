@@ -96,6 +96,9 @@ export default {
       display: flex;
       align-items: flex-start;
       margin: 50px 70px 0;
+      @include media-breakpoint-down(sm) {
+        margin: 50px 10px 0;
+      }
 
       .headline {
         font-size: 1.4em;
@@ -147,7 +150,7 @@ export default {
           margin: 2% 0 2% 0;
         }
         @include media-breakpoint-down(md) {
-          margin: 3% 15% 10%;
+          margin: 3% 7% 10%;
           font-size: 0.9em;
           line-height: 1.6;
         }

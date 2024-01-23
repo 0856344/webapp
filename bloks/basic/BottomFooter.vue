@@ -363,6 +363,9 @@ export default {
     }
     .background-footer-content {
       padding: 20px;
+      @include media-breakpoint-down(xs) {
+        padding: 0;
+      }
       position: relative;
       z-index: 1;
       .newsletter-footer {
@@ -471,7 +474,6 @@ export default {
               }
             }
           }
-          padding: 15px;
           h4 {
             text-transform: uppercase;
           }

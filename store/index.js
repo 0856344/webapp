@@ -542,9 +542,32 @@ const createStore = () => {
               name: machine.name,
               price: machine.pricePerTimeBusy,
               seconds: machine.pricePerTimeBusySeconds,
+            }
+          })
+        return cMachines
+      },
+      async getMachineStates({ state }, id) {
+        const result = await axios.get(
+          connectorBaseUrl + "/v1/fabman/resources"
+        );
+        const machineStates = result.data
+          .map((machine) => {
+            return {
+              id: machine.id,
+              state: machine.state,
             };
-          });
-        return cMachines;
+          })
+          .reduce((acc, machine) => {
+            acc[machine.id] = machine.state;
+            return acc;
+          }, {});
+        return machineStates;
+      },
+      // @deprecated
+      // TODO - delete if deprecated
+      async startOnboarding({ commit }, data) {
+        const res = await connector.post('/member/startOnboarding', data)
+        return res.data
       },
       async hasCompletedOnboarding() {
         const res = await connector.get('/member/hasCompletedOnboarding');
@@ -1033,7 +1056,7 @@ const createStore = () => {
         return this.$storyapi
           .get('cdn/datasource_entries', {
             datasource: source,
-            cv: state.cacheVersion,
+            cv: Date.now(),
           })
           .then(res => {
             return res.data

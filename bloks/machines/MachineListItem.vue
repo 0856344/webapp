@@ -1,120 +1,47 @@
 <template>
-  <div>
-    <nuxt-link v-if="content.hasContent" :to="'/' + blok.full_slug">
-      <div class="machine-list-item">
-        <div class="image">
-          <img :src="$resizeImage(content.image, '450x450')" alt="" />
-        </div>
-        <div class="body">
-          <div class="title">
-            {{ content.title }}
-          </div>
-          <div class="machine-tags">
-            <span :key="tag.id" v-for="(tag, index) in tags">
-              {{ tag }}<span v-if="index + 1 < tags.length">, </span>
-            </span>
-          </div>
-          <div class="teaser">
-            <markdown :value="content.teaser" />
-          </div>
-        </div>
-      </div>
-    </nuxt-link>
-    <div v-else class="machine-list-item">
-      <div class="image">
+  <nuxt-link :to="`/${blok.full_slug ?? $route.params.language + 'machines'}`">
+    <div class="flex flex-col p-10 sm:p-6 min-w-full">
+      <div class="relative flex flex-col items-center">
         <img :src="$resizeImage(content.image, '450x450')" alt="" />
-      </div>
-      <div class="body">
-        <div class="title">
-          {{ content.title }}
-        </div>
-        <div class="machine-tags">
-          <span :key="tag.id" v-for="(tag, index) in tags">
-            {{ tag }}<span v-if="index + 1 < tags.length">, </span>
+        <div
+          v-show="this.state.machines !== this.state.operational"
+          class="absolute top-1 left-1 bg-orange text-white px-2 py-1 rounded-md mt-1 text-sm flex items-center gap-1">
+          <font-awesome-icon icon="fa-triangle-exclamation" class="text-lg drop-shadow" />
+          <span v-show="this.state.machines > 1"
+            >{{ `${this.state.operational} von ${this.state.machines} online` }}
           </span>
+          <span v-show="this.state.machines <= 1" class="drop-shadow">Offline</span>
         </div>
-        <div class="teaser">
-          <markdown :value="content.teaser" />
+      </div>
+      <div class="">
+        <h3 class="text-gray-900 font-sans-secondary my-2 break-words">
+          {{ content.title }}
+        </h3>
+        <div class="text-sm uppercase flex flex-wrap gap-1">
+          <span class="bg-blue rounded-md text-white px-1" :key="tag.id" v-for="tag in tags">
+            {{ tag }}
+          </span>
         </div>
       </div>
     </div>
-  </div>
+  </nuxt-link>
 </template>
 
 <script>
-export default {
-  props: ["blok"],
-  computed: {
-    content() {
-      return this.blok.content;
+  export default {
+    props: ['blok', 'state'],
+    computed: {
+      content() {
+        return this.blok.content
+      },
+      tags() {
+        return this.blok.tag_list
+      },
     },
-    tags() {
-      return this.blok.tag_list;
-    },
-  },
-};
-</script>
-
-<style lang="scss" scoped>
-a {
-  text-decoration: none;
-  color: #000;
-  &:active,
-  &:focus {
-    color: #000;
-  }
-}
-
-.machine-list-item {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 25px;
-  .image {
-    flex: 1;
-    padding-top: 1.4em;
-    img {
-      display: block;
-      width: 100%;
-    }
-  }
-  .body {
-    flex: 2;
-    padding: 20px 0;
-    .title {
-      font-family: $font-secondary;
-      font-size: 1.2rem;
-      margin-bottom: 0.4em;
-      overflow-wrap: break-word;
-    }
-    .machine-tags {
-      font-size: 0.9rem;
-      color: $color-blue;
-      text-transform: uppercase;
-      margin-bottom: 0.8rem;
-      letter-spacing: 0.05em;
-      font-weight: 400;
-      word-wrap: break-word;
-    }
-    .subtitle {
-      margin: 0 0 1em 0;
-    }
-    .teaser {
-      font-family: $font-mono;
-      line-height: 2.2;
-      font-size: 0.9rem;
-    }
-    .cta {
-      text-transform: uppercase;
-      font-weight: bold;
-      font-size: 0.9rem;
-      font-family: $font-secondary;
-      letter-spacing: 0.05rem;
-      padding: 25px 0;
-      a {
-        color: $color-blue;
-        text-decoration: none;
+    data() {
+      return {
+        showTooltip: false,
       }
-    }
+    },
   }
-}
-</style>
+</script>
