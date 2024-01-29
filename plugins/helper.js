@@ -52,13 +52,6 @@ export const helper = {
     })
     return isAllowed
   },
-  // // Calculate the time difference in hours
-  // timeDifferenceInHours(endTime, startTime) {
-  //   const endDateTime = new Date(endTime);
-  //   const startDateTime = new Date(startTime);
-  //   const timeDifference = endDateTime - startDateTime;
-  //   return timeDifference / (1000 * 60 * 60); // Convert milliseconds to hours
-  // },
   isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   },

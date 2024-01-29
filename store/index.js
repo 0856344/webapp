@@ -257,6 +257,10 @@ const createStore = () => {
         const res = await connector.get(`/v1/fabman/members/${id}/packages`);
         return res.data;
       },
+      async getTrainedResources({ state }, memberId) {
+        const res = await connector.get(`/v1/fabman/members/${memberId}/trained-resources`);
+        return res.data;
+      },
       async getMemberCredits({ state }, id) {
         const res = await connector.get(`/v1/fabman/members/${id}/credits`);
         return res.data;
@@ -517,16 +521,6 @@ const createStore = () => {
         return axios.get(connectorBaseUrl + '/v1/fabman/resources').then(result => {
           return result.data
         })
-      },
-      async getChargeableMachines({ state }, id) {
-        //TODO never used - delete if deprecated
-        const result = await axios.get(
-          connectorBaseUrl + '/v1/fabman/resources',
-        );
-        const cMachines = result.data.filter((machine) => {
-          return machine.pricePerTimeBusy > 0;
-        });
-        return cMachines;
       },
       async getMachinePrices({ state }, id) {
         const result = await axios.get(

@@ -287,7 +287,6 @@ export default {
         machineCalender &&
         typeof machineCalender.fetchBookings === 'function'
       ) {
-        //TODO - await
         setTimeout(() => {
           machineCalender.fetchBookings();
           machineCalender.resetBookings(true);
@@ -360,6 +359,59 @@ export default {
     },
   },
   methods: {
+    async fetchMachines() {
+      this.loadingMachines = true;
+      await this.$store
+        .dispatch('getMachines')
+        .then(async (res) => {
+          // Filter non visible and non bookable machines
+          const filteredMachines = res.filter(function (machine) {
+            return machine.visibleForMembers && machine.canBeBooked && machine.state === 'active';
+          });
+
+          // Filter machines by member trainings
+          const trainedMachines = await this.getTrainedMachines(this.member.id)
+          const memberMachines = filteredMachines.filter(function (machine) {
+            if(!machine.requiresTraining){
+              // Ignore of machines doesn't require a training
+              return machine
+            }
+            return trainedMachines.includes(machine.id);
+          });
+
+          // Add dropdown labels to machine
+          let spaces = await this.$store.dispatch('getSpaces');
+          memberMachines.map(function (machine) {
+            machine.machineLabel = machine.name;
+            const space = spaces.find(space => space.id === machine.space);
+            if(space) {
+              machine.spaceName = space.name;
+              machine.machineLabel += ' ('+machine.spaceName+')'
+            }
+            return machine;
+          });
+          this.machines = memberMachines;
+        })
+        .catch((error) => {
+          console.log('Error! Could not load machines', error);
+        })
+        .finally(() => {
+          this.loadingMachines = false;
+        });
+    },
+    async getTrainedMachines(memberId) {
+      return this.$store
+        .dispatch('getTrainedResources', memberId)
+        .then((res) => {
+          return res
+        })
+        .catch((error) => {
+          console.log('Error! Could not load machine trainings for member', error);
+        })
+        .finally(() => {
+          this.loadingCancel = null;
+        });
+    },
     getBookingStateClass(booking) {
       switch (booking.state) {
         case 'confirmed':
@@ -452,30 +504,6 @@ export default {
     durationAsString(fromDate, untilDate) {
       const hours = this.durationInHours(fromDate, untilDate);
       return hours === 1 ? 'eine Stunde' : hours + ' Stunden';
-    },
-    async fetchMachines() {
-      this.loadingMachines = true;
-      await this.$store
-        .dispatch('getMachines')
-        .then((res) => {
-          // Filter non visible machines
-          const filteredMachines = res.filter(function (machine) {
-            return machine.visibleForMembers && machine.canBeBooked;
-          });
-
-          // Add dropdown label to machine
-          filteredMachines.map(function (machine) {
-            machine.machineLabel = machine.name;
-            return machine;
-          });
-          this.machines = filteredMachines;
-        })
-        .catch((error) => {
-          console.log('Error! Could not load machines', error);
-        })
-        .finally(() => {
-          this.loadingMachines = false;
-        });
     },
     hasBeenCanceled(state) {
       return state === FABMAN_BOOKING_STATE.cancelled;

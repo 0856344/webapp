@@ -79,7 +79,8 @@ export default {
       'hasCompletedRequiredCourses',
       this.$store.state.member.id,
     );
-    await this.loadMemberSpaces()
+    // TODO - Load allowed spaces for member - can't be done right now: no relation between package <-> space
+    //await this.loadMemberSpaces()
   },
   methods: {
     logout() {
@@ -88,9 +89,10 @@ export default {
       });
     },
     async loadMemberSpaces() {
-      let spaces = await this.$store.dispatch('getSpaces');
-      console.log('spaces', spaces)
-      // TODO - filter member spaces
+      // TODO - filter machines by accessible spaces - can't be done right now: no relation between package <-> space
+      //const memberPackages = this.$store.getters.getMemberPackages();
+      //const filteredMemberPackages = memberPackages.filter(item => !helper.dateIsInPast(item?.chargedUntilDate))
+      //let spaces = await this.$store.dispatch('getSpaces');
     }
   },
   computed: {
