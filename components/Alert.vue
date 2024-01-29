@@ -10,8 +10,8 @@
       >
         <span>
           <span class="block sm:inline">
-            <font-awesome-icon :icon="icon"></font-awesome-icon>&nbsp;
-            <span v-html="message" class="alert-message"></span>
+            <font-awesome-icon :icon="icon"></font-awesome-icon><p v-if="headline.length > 0" style="display:inline;padding: 0 0 0 10px;margin: 0;">{{ headline }}</p>
+            <span v-html="message" class="alert-message fasdfsf"></span>
           </span>
         </span>
         <span v-show="closeable">
@@ -47,6 +47,11 @@ export default {
     message: {
       type: String,
       required: true,
+    },
+    headline: {
+      type: String,
+      required: false,
+      default: ''
     },
     color: {
       type: String,

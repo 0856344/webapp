@@ -37,7 +37,7 @@
               d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
             />
           </svg>
-          <loading-spinner-inline v-if="isLoading" class="pl-2" />
+          <loading-spinner-inline v-if="isLoading" class="pl-2"/>
           <svg
             v-show="isFirstVisit"
             xmlns="http://www.w3.org/2000/svg"
@@ -54,16 +54,16 @@
           </p>
         </h2>
       </div>
-      <br />
+      <br/>
       <fieldset class="p-4">
         <legend>Neue Reservierung</legend>
         <p>Hier kannst du eine Maschine buchen.</p>
         <div>
           <div class="flex-1 mr-6 mb-4">
             <label
-              >Maschine<small v-if="machines && machines.length > 0"
-                >({{ machines.length }})&nbsp;</small
-              ></label
+            >Maschine<small v-if="machines && machines.length > 0"
+            >({{ machines.length }})&nbsp;</small
+            ></label
             >
             <v-select
               id="v-step-1"
@@ -75,11 +75,17 @@
             >
             </v-select>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
+              <Alert :show="openingHoursText.length > 0" :message="openingHoursText" :headline="'Öffnungszeiten'" icon='info-circle'></Alert>
               <editable-booking-calendar
                 ref="machineCalender"
                 class="pt-6"
                 :resource="this.selectedMachine.id"
                 :member="this.member"
+                :earliestHour=this.selectedSpace.earliestHour
+                :latestHour=this.selectedSpace.latestHour
+                :bookingSlotsPerHour=this.selectedSpace.bookingSlotsPerHour
+                :bookingMaxMinutesPerMemberDay="this.selectedSpace.bookingMaxMinutesPerMemberDay"
+                :bookingMaxMinutesPerMemberWeek="this.selectedSpace.bookingMaxMinutesPerMemberWeek"
                 @reload="fetchBookings(member.id)"
               ></editable-booking-calendar>
             </span>
@@ -106,7 +112,7 @@
         </div>
       </fieldset>
 
-      <br />
+      <br/>
 
       <fieldset id="v-step-0" class="table-fieldset">
         <legend>Deine Reservierungen</legend>
@@ -133,73 +139,40 @@
             style="margin: auto"
           >
             <thead>
-              <tr>
-                <th class="activity-date">Startzeit</th>
-                <th class="activity-amount">Dauer</th>
-                <th class="activity-status">Maschine</th>
-                <th class="activity-description">Status</th>
-                <th class="activity-description">Stornieren</th>
-              </tr>
+            <tr>
+              <th class="activity-date">Startzeit</th>
+              <th class="activity-amount">Dauer</th>
+              <th class="activity-status">Maschine</th>
+              <th class="activity-description">Status</th>
+              <th class="activity-description">Stornieren</th>
+            </tr>
             </thead>
             <tbody>
-              <tr v-for="booking of displayedBookings" :key="booking.id">
-                <td class="activity-date">
-                  {{
-                    new Date(booking.fromDateTime).toLocaleDateString('de-AT')
-                  }}
-                </td>
-                <td class="activity-amount">
-                  {{
-                    durationAsString(
-                      new Date(booking.fromDateTime),
-                      new Date(booking.untilDateTime),
-                    )
-                  }}
-                </td>
-                <td class="activity-status">
-                  {{ booking.resource.name }}
-                </td>
-                <td class="invoice-status">
-                  <div
-                    v-if="booking.state"
-                    class="bubble"
-                    :class="getBookingStateClass(booking)"
-                  >
-                    {{ getBookingStateText(booking) }}
-                  </div>
-                </td>
-                <td class="invoice-status">
-                  <div v-if="loadingCancel && booking.id === loadingCancel">
-                    <loading-spinner-inline v-if="true" />
-                  </div>
-                  <div
-                    v-else-if="
-                      !hasBeenCanceled(booking?.state) &&
-                      !isInPast(booking?.fromDateTime) &&
-                      !isInPast(booking?.untilDateTime)
-                    "
-                  >
-                    <span
-                      v-if="
-                        !beforeHours(booking?.fromDateTime, bookingLockHours)
-                      "
-                    >
-                      <button
-                        class="cancelButton"
-                        @click="startCancellation(booking)"
-                      >
-                        <font-awesome-icon
-                          :class="{ active: infoModalOpen }"
-                          icon="trash"
-                        />
+            <tr v-for="booking of displayedBookings" :key="booking.id">
+              <td class="activity-date">{{ new Date(booking.fromDateTime).toLocaleDateString('de-AT') }}</td>
+              <td class="activity-amount">
+                {{ durationAsString(new Date(booking.fromDateTime), new Date(booking.untilDateTime),) }}
+              </td>
+              <td class="activity-status">
+                {{ booking.resource.name }}
+              </td>
+              <td class="invoice-status">
+                <div v-if="booking.state" class="bubble" :class="getBookingStateClass(booking)">{{ getBookingStateText(booking) }}</div>
+              </td>
+              <td class="invoice-status">
+                <div v-if="loadingCancel && booking.id === loadingCancel">
+                  <loading-spinner-inline v-if="true"/>
+                </div>
+                <div v-else-if="!hasBeenCanceled(booking?.state) &&!isInPast(booking?.fromDateTime) &&!isInPast(booking?.untilDateTime)">
+                    <span v-if="!beforeHours(booking?.fromDateTime, bookingLockHours)">
+                      <button class="cancelButton" @click="startCancellation(booking)">
+                        <font-awesome-icon :class="{ active: infoModalOpen }" icon="trash"/>
                       </button>
                     </span>
-                    <span v-else class="mute-text"
-                      >nur {{ bookingLockHours }}h im voraus möglich</span
-                    >
-                  </div>
-                </td>
-              </tr>
+                  <span v-else class="mute-text">nur {{ bookingLockHours }}h im voraus möglich</span>
+                </div>
+              </td>
+            </tr>
             </tbody>
             <div class="text-center bg-white py-2">
               <button
@@ -207,18 +180,18 @@
                 @click="previousPage"
                 :disabled="currentPage === 1"
               >
-                <font-awesome-icon icon="arrow-circle-left" />
+                <font-awesome-icon icon="arrow-circle-left"/>
               </button>
               <button
                 class="pagination-button"
                 @click="nextPage"
                 :disabled="currentPage === totalPages"
               >
-                <font-awesome-icon icon="arrow-circle-right" />
+                <font-awesome-icon icon="arrow-circle-right"/>
               </button>
               <div>
                 <small class="mute-text"
-                  >{{ currentPage }} / {{ totalPages }}</small
+                >{{ currentPage }} / {{ totalPages }}</small
                 >
               </div>
             </div>
@@ -232,7 +205,7 @@
 
 <script>
 import Vue from 'vue';
-import { helper } from '~/plugins/helper';
+import {helper} from '~/plugins/helper';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import EditableBookingCalendar from '@/components/calendar/EditableBookingCalendar.vue';
@@ -240,17 +213,17 @@ import VueTour from 'vue-tour';
 import 'vue-tour/dist/vue-tour.css';
 import Modal from '@/components/modals/Modal.vue';
 import moment from 'moment/moment';
-import { FABMAN_BOOKING_STATE, BOOKING_LOCK } from '@/services/constants.js';
+import {FABMAN_BOOKING_STATE} from '@/services/constants.js';
 import Cookies from 'js-cookie';
+import Alert from '@/components/Alert.vue'
 
 Vue.use(VueTour);
 
 export default {
   name: 'bookings',
   middleware: 'authenticated',
-  // eslint-disable-next-line vue/no-unused-components
-  components: { EditableBookingCalendar, vSelect, Modal },
-  data() {
+  components: {EditableBookingCalendar, vSelect, Modal, Alert},
+  data () {
     return {
       isFirstVisit: false,
       isMobile: false,
@@ -267,6 +240,7 @@ export default {
       bookings: [],
       selectedMachine: null,
       steps: null,
+      memberSpaces: [],
       tourOptions: {
         labels: {
           buttonSkip: 'Überspringen',
@@ -277,16 +251,35 @@ export default {
       },
       currentPage: 1,
       rowsPerPage: 8,
+      selectedSpace: {
+        openingHours: [],
+        earliestHour: 9,
+        latestHour: 24,
+        bookingExclusiveMinutes: 30,
+        bookingLockInHours: 24,
+        bookingMaxMinutesPerMemberDay: 60,
+        bookingMaxMinutesPerMemberWeek: null,
+        bookingRefundable: true,
+        bookingSlotsPerHour: 1,
+        bookingTermsOfService: null,
+        bookingWindowMaxDays: 7,
+        bookingWindowMinHours: 2,
+      }
     };
   },
   watch: {
-    selectedMachine(value) {
+    selectedMachine (machine) {
+      // Get corresponding SPACE of the machine
+      if (machine) {
+        let selectedSpace = this.memberSpaces.find(space => {
+          return machine.space === space.id
+        })
+        this.generateSpace(selectedSpace)
+      }
+
       // Call method in child component
       const machineCalender = this.$refs.machineCalender;
-      if (
-        machineCalender &&
-        typeof machineCalender.fetchBookings === 'function'
-      ) {
+      if (machineCalender && typeof machineCalender.fetchBookings === 'function') {
         setTimeout(() => {
           machineCalender.fetchBookings();
           machineCalender.resetBookings(true);
@@ -294,12 +287,12 @@ export default {
       }
     },
   },
-  created() {
+  created () {
     this.isMobile = helper.isMobile();
 
     this.steps = this.createTourText();
   },
-  async mounted() {
+  async mounted () {
     // Load machines
     await this.fetchMachines();
 
@@ -313,20 +306,40 @@ export default {
     }
   },
   computed: {
-    bookingLockHours() {
-      return BOOKING_LOCK.cancellationInHours;
+    openingHoursText () {
+      if(this.selectedSpace.openingHours.length === 0)
+        return ''
+
+      let msg = ''
+      for(let i=0; this.selectedSpace.openingHours.length>i; i++) {
+        if(!this.selectedSpace.openingHours[i].fromTime || !this.selectedSpace.openingHours[i].untilTime){
+          // Hide opening hours if one is NULL (mostly it's then 24/7)
+          return ''
+        }
+        msg += '<ul class="weekday">'
+        msg += '<li><b>' + this.selectedSpace.openingHours[i].dayOfWeek + '</b></li>';
+        msg += '<li>Von: ' + this.selectedSpace.openingHours[i].fromTime + '</li>';
+        msg += '<li>Bis: ' + this.selectedSpace.openingHours[i].untilTime + '</li>';
+        msg += '</ul>'
+      }
+
+      return msg
     },
-    tourStep2Text() {
+    bookingLockHours () {
+      // TODO - Get bookingLockInHours by each bookings.resource
+      return this.selectedSpace.bookingLockInHours;
+    },
+    tourStep2Text () {
       return this.isMobile
         ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Doppelklicke auf einen Zeitslot, um eine Buchung zu erstellen."
         : "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.";
     },
-    tourStep3Text() {
+    tourStep3Text () {
       return this.isMobile
         ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Halte eine Buchung gedrückt, um einen Termin wieder zu entfernen."
         : "<b>Reservierung löschen</b> <br><hr class='m-1'>Halte die Maustaste am gewünschten Zeitslot gedrückt, um einen Termin wieder zu entfernen.";
     },
-    newBookings() {
+    newBookings () {
       const bookings = this.$store.getters.getSelectedBookings;
       const readableBookings = bookings.slice();
       readableBookings.map(function (booking) {
@@ -339,27 +352,67 @@ export default {
       });
       return readableBookings;
     },
-    isLoading() {
+    isLoading () {
       return (
         this.loadingBookings ||
         this.loadingMachines ||
         this.loadingCancel !== null
       );
     },
-    member() {
+    member () {
       return this.$store.state.member;
     },
-    displayedBookings() {
+    displayedBookings () {
       const startIndex = (this.currentPage - 1) * this.rowsPerPage;
       const endIndex = startIndex + this.rowsPerPage;
       return this.bookings.slice(startIndex, endIndex);
     },
-    totalPages() {
+    totalPages () {
       return Math.ceil(this.bookings.length / this.rowsPerPage);
     },
   },
   methods: {
-    async fetchMachines() {
+    generateSpace (spaceResponse) {
+      if ('_embedded' in spaceResponse && 'openingHours' in spaceResponse._embedded) {
+        // Create readable object
+        const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+        this.selectedSpace.bookingExclusiveMinutes = spaceResponse.bookingExclusiveMinutes
+        this.selectedSpace.bookingLockInHours = spaceResponse.bookingLockInHours
+        this.selectedSpace.bookingMaxMinutesPerMemberDay = spaceResponse.bookingMaxMinutesPerMemberDay
+        this.selectedSpace.bookingMaxMinutesPerMemberWeek = spaceResponse.bookingMaxMinutesPerMemberWeek
+        this.selectedSpace.bookingRefundable = spaceResponse.bookingRefundable
+        this.selectedSpace.bookingSlotsPerHour = spaceResponse.bookingSlotsPerHour
+        this.selectedSpace.bookingTermsOfService = spaceResponse.bookingTermsOfService
+        this.selectedSpace.bookingWindowMaxDays = spaceResponse.bookingWindowMaxDays
+        this.selectedSpace.bookingWindowMinHours = spaceResponse.bookingWindowMinHours
+
+        // Remember for better performance
+        let allBeginHours = []
+        let allEndHours = []
+
+        // Replace day of week number with german spelling
+        this.selectedSpace.openingHours = spaceResponse._embedded.openingHours
+        this.selectedSpace.openingHours.forEach((openingHour) => {
+          openingHour.dayOfWeek = daysOfWeek[openingHour.dayOfWeek - 1];
+          allBeginHours.push(openingHour.fromTime)
+          allEndHours.push(openingHour.untilTime)
+        });
+
+        // Find the earliest hour
+        if(!allBeginHours.includes(null)) {
+          this.selectedSpace.earliestHour = helper.getEarliestStringTimeAsInt(allBeginHours)
+        }
+
+        // Find latest hour
+        if(!allEndHours.includes(null)) {
+          this.selectedSpace.latestHour = helper.getLatestStringTimeAsInt(allEndHours)
+        }
+
+      } else {
+        this.selectedSpace = null;
+      }
+    },
+    async fetchMachines () {
       this.loadingMachines = true;
       await this.$store
         .dispatch('getMachines')
@@ -372,8 +425,8 @@ export default {
           // Filter machines by member trainings
           const trainedMachines = await this.getTrainedMachines(this.member.id)
           const memberMachines = filteredMachines.filter(function (machine) {
-            if(!machine.requiresTraining){
-              // Ignore of machines doesn't require a training
+            if (!machine.requiresTraining) {
+              // Show machines without training - remove if business logic will change
               return machine
             }
             return trainedMachines.includes(machine.id);
@@ -381,12 +434,16 @@ export default {
 
           // Add dropdown labels to machine
           let spaces = await this.$store.dispatch('getSpaces');
+          let self = this;
           memberMachines.map(function (machine) {
             machine.machineLabel = machine.name;
             const space = spaces.find(space => space.id === machine.space);
-            if(space) {
+            if (space) {
               machine.spaceName = space.name;
-              machine.machineLabel += ' ('+machine.spaceName+')'
+              machine.machineLabel += ' (' + machine.spaceName + ')'
+              if (!self.memberSpaces.some(existingSpace => existingSpace.id === space.id)) {
+                self.memberSpaces.push(space)
+              }
             }
             return machine;
           });
@@ -399,7 +456,7 @@ export default {
           this.loadingMachines = false;
         });
     },
-    async getTrainedMachines(memberId) {
+    async getTrainedMachines (memberId) {
       return this.$store
         .dispatch('getTrainedResources', memberId)
         .then((res) => {
@@ -412,7 +469,7 @@ export default {
           this.loadingCancel = null;
         });
     },
-    getBookingStateClass(booking) {
+    getBookingStateClass (booking) {
       switch (booking.state) {
         case 'confirmed':
           return 'green';
@@ -422,7 +479,7 @@ export default {
           return 'bubble grey';
       }
     },
-    getBookingStateText(booking) {
+    getBookingStateText (booking) {
       switch (booking.state) {
         case 'confirmed':
           return 'Gebucht';
@@ -432,26 +489,26 @@ export default {
           return '';
       }
     },
-    previousPage() {
+    previousPage () {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
     },
-    nextPage() {
+    nextPage () {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
       }
     },
-    openModal() {
+    openModal () {
       this.modalOpen = true;
     },
-    confirmModal() {
+    confirmModal () {
       this.saveEvents();
     },
-    closeModal() {
+    closeModal () {
       this.modalOpen = false;
     },
-    openInfoModal(
+    openInfoModal (
       text,
       submitMethod = null,
       headline = 'Bestätigen',
@@ -469,10 +526,10 @@ export default {
         }, duration);
       }
     },
-    confirmInfoModal() {
+    confirmInfoModal () {
       this.cancelBooking(this.selectedTableBooking.id);
     },
-    closeInfoModal() {
+    closeInfoModal () {
       this.infoModalOpen = false;
       setTimeout(() => {
         this.infoModalSubmitMethod = '';
@@ -480,13 +537,13 @@ export default {
         this.infoModalHeadline = '';
       }, 1000);
     },
-    isInPast(date) {
+    isInPast (date) {
       return helper.dateIsInPast(date);
     },
-    beforeHours(date, hours = 24) {
+    beforeHours (date, hours = 24) {
       return helper.dateIsBeforeCurrentInHours(date, hours);
     },
-    saveEvents() {
+    saveEvents () {
       this.closeModal();
 
       // Call method in child component
@@ -498,17 +555,17 @@ export default {
         machineCalender.writeBookingsToFabman();
       }
     },
-    durationInHours(fromDate, untilDate) {
+    durationInHours (fromDate, untilDate) {
       return parseInt(helper.getDifferenceInHours(fromDate, untilDate));
     },
-    durationAsString(fromDate, untilDate) {
+    durationAsString (fromDate, untilDate) {
       const hours = this.durationInHours(fromDate, untilDate);
       return hours === 1 ? 'eine Stunde' : hours + ' Stunden';
     },
-    hasBeenCanceled(state) {
+    hasBeenCanceled (state) {
       return state === FABMAN_BOOKING_STATE.cancelled;
     },
-    startCancellation(booking) {
+    startCancellation (booking) {
       this.selectedTableBooking = booking;
       this.openInfoModal(
         'Möchtest du die ausgewählte Reservierung wirklich stornieren?',
@@ -516,7 +573,7 @@ export default {
         'Stornieren?',
       );
     },
-    async cancelBooking(id) {
+    async cancelBooking (id) {
       if (!id) {
         id = this?.selectedTableBooking.id;
       }
@@ -534,7 +591,7 @@ export default {
           this.loadingCancel = null;
         });
     },
-    async fetchBookings(memberId) {
+    async fetchBookings (memberId) {
       if (!memberId) {
         memberId = this.member.id;
       }
@@ -551,14 +608,14 @@ export default {
           this.loadingBookings = false;
         });
     },
-    startTour() {
+    startTour () {
       // Start introduction tour
       this.$tours.myTour.scrollToOptions = {
         behavior: 'instant',
       };
       this.$tours.myTour.start();
     },
-    createTourText() {
+    createTourText () {
       return [
         {
           target: '#v-step-0',
@@ -599,14 +656,20 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.custom-svg-style {
-  width: 100px;
-  height: 100px;
-  fill: blue;
+::v-deep .alert-message
+{
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+}
+::v-deep .weekday
+{
+  list-style-type: none;
 }
 .table-fieldset {
   padding: 1rem;
 }
+
 button:disabled svg {
   color: grey;
 }
@@ -628,33 +691,43 @@ button:disabled svg {
   color: lightgrey;
   cursor: pointer;
 }
+
 .cancelButton {
   color: grey;
 }
+
 .cancelButton:hover {
   color: black;
 }
+
 .cancelButton:active {
   color: $color-secondary;
 }
+
 .icon-button:hover {
   fill: $color-secondary;
 }
+
 .icon-button-secondary:hover {
   fill: #0c0c0c;
 }
+
 .button-group {
   justify-content: end;
 }
+
 .v-step {
   background: black !important;
 }
+
 .spin-animation {
   animation: rotate 1s linear infinite;
 }
+
 .demo-button {
   height: 1em;
 }
+
 .info-arrow {
   height: 1.8em;
   transform: rotate(102deg);
@@ -713,6 +786,7 @@ button:disabled svg {
     justify-content: center;
   }
 }
+
 .jump-animation {
   animation: jump 1s 3;
   transform-origin: center;

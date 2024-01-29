@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import moment from 'moment'
 import IBAN from 'iban'
-import { PACKAGES_SHORT_FORMS } from '@/services/constants.js'
+import {PACKAGES_SHORT_FORMS} from '@/services/constants.js'
 
 Vue.prototype.$resizeImage = function (str, param) {
   if (str?.filename) {
@@ -34,7 +34,7 @@ Vue.filter('machinePricePerTimeText', function (machine) {
 })
 
 export const helper = {
-  isAllowedToBook(memberPackages) {
+  isAllowedToBook (memberPackages) {
     // Check only active packages
     const filteredMemberPackages = memberPackages.filter(item => !this.dateIsInPast(item?.chargedUntilDate))
 
@@ -52,13 +52,13 @@ export const helper = {
     })
     return isAllowed
   },
-  isMobile() {
+  isMobile () {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   },
-  isValidDate(date) {
+  isValidDate (date) {
     return date instanceof Date && !isNaN(date)
   },
-  dateIsInPast(date) {
+  dateIsInPast (date) {
     let parsedDate
 
     // Make sure given date is in Date format
@@ -76,13 +76,13 @@ export const helper = {
 
     return parsedDate < currentDate
   },
-  timeDifferenceInHours(startDate, endDate) {
+  timeDifferenceInHours (startDate, endDate) {
     // Make sure given params are in date format
     const endDateTime = new Date(endDate);
     const startDateTime = new Date(startDate);
     return Math.abs(startDateTime - endDateTime) / 36e5 //36e5 is the scientific notation for 60*60*1000
   },
-  dateIsBeforeCurrentInHours(date, hours = 24) {
+  dateIsBeforeCurrentInHours (date, hours = 24) {
     // Make sure given date is in Date format
     if (typeof date === 'string') {
       date = new Date(date)
@@ -98,7 +98,7 @@ export const helper = {
 
     return timeDifference < millisecondsInHours
   },
-  dateRangeOverlaps(aStart, aEnd, bStart, bEnd) {
+  dateRangeOverlaps (aStart, aEnd, bStart, bEnd) {
     if (aStart <= bStart && bStart <= aEnd) return true // b starts in a
     if (aStart <= bEnd && bEnd <= aEnd) return true // b ends in a
     if (bStart < aStart && aEnd < bEnd) return true // a in b
@@ -106,7 +106,40 @@ export const helper = {
     // No overlapping found
     return false
   },
-  multipleDateRangeOverlaps(timeEntries) {
+  getEarliestStringTimeAsInt (timeStringArray) {
+    // e.g. timeArray = ["09:00", "10:00", "11:00"] will return 9 as integer
+    let earliestStringHour = timeStringArray.reduce((minTime, currentTime) => {
+      // Convert time strings to Date objects
+      const minDate = new Date(`1970-01-01T${minTime}`);
+      const currentDate = new Date(`1970-01-01T${currentTime}`);
+
+      // Compare Date objects
+      return minDate < currentDate ? minTime : currentTime;
+    }, timeStringArray[0]);
+
+    return this.convertTimeStringToInteger(earliestStringHour)
+  },
+  getLatestStringTimeAsInt (timeStringArray) {
+    // e.g. timeArray = ["17:00", "18:00", "00:00"] will return 24
+    let latestStringHour = timeStringArray.reduce((maxTime, currentTime) => {
+      // Convert time strings to Date objects
+      const maxDate = new Date(`1970-01-01T${maxTime}`);
+      const currentDate = new Date(`1970-01-01T${currentTime}`);
+
+      // Compare Date objects
+      return maxDate > currentDate ? maxTime : currentTime;
+    }, timeStringArray[0]);
+
+    return this.convertTimeStringToInteger(latestStringHour)
+  },
+  convertTimeStringToInteger (timeString) {
+    if (timeString === "24:00" || timeString === "00:00") {
+      return 24;
+    } else {
+      return parseInt(timeString.split(":")[0], 10);
+    }
+  },
+  multipleDateRangeOverlaps (timeEntries) {
     let i = 0
     let j = 0
     const timeIntervals = timeEntries.filter(
@@ -129,7 +162,7 @@ export const helper = {
       }
     return false
   },
-  validateEmail(email) {
+  validateEmail (email) {
     if (!email) {
       return false
     }
@@ -137,14 +170,14 @@ export const helper = {
       /^(([^<>()[\],;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
     return regex.test(String(email).toLowerCase())
   },
-  validateIban(iban) {
+  validateIban (iban) {
     if (!iban) {
       return false
     }
     iban = iban.replace(/\s/g, '') // Remove spaces
     return IBAN.isValid(iban)
   },
-  getDifferenceInHours(fromDate, unitDate) {
+  getDifferenceInHours (fromDate, unitDate) {
     let diff = (fromDate.getTime() - unitDate.getTime()) / 1000
     diff /= 60 * 60
     return Math.abs(Math.round(diff))
