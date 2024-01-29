@@ -7,7 +7,7 @@
     </div>
     <div class="right-content">
       <markdown :value="this.workShopInfo" class="info-text" />
-      <div v-if="futureEvents && futureEvents.length > 0">
+      <div v-if="futureEvents && futureEvents.length > 0" class="flex self-center my-6" >
         <pretix-calendar :calendar="blok.pretix_shortform" />
       </div>
       <div v-else class="w-full flex align-middle justify-center">
@@ -136,7 +136,6 @@ export default {
           line-height: 1.7;
           font-size: 1rem;
           margin: 0 0 0 5%;
-          margin: 0 0 0 5%;
         }
       }
 
@@ -152,7 +151,6 @@ export default {
           margin-left: 25%;
         }
         color: #fff;
-        padding: 0.7em 0.8em;
         padding: 0.7em 0.8em;
         font-weight: 800;
       }

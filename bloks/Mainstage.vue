@@ -94,8 +94,11 @@ export default {
           font-size: 1.5rem;
           line-height: 1.3;
           font-family: $font-mono;
-          @include media-breakpoint-down(sm) {
+          @include media-breakpoint-down(md) {
             font-size: 1.2rem;
+          }
+          @include media-breakpoint-down(xs) {
+            font-size: 1rem;
           }
         }
         .title {
@@ -105,6 +108,9 @@ export default {
           z-index: 9;
           @include media-breakpoint-down(md) {
             font-size: 3rem;
+          }
+          @include media-breakpoint-down(xs) {
+            font-size: 2rem;
           }
         }
         .teaser,

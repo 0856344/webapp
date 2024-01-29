@@ -154,7 +154,7 @@ export default {
     .pretix-widget-event-availability-reserved {
       background-color: $color-yellow !important;
     }
-    width: 70vw;
+    width: 100vw;
     max-width: 1000px;
     background: white;
     .pretix-widget {

@@ -14,18 +14,18 @@
         src="https://buchung.grandgarage.eu/widget/v1.de-informal.js"
         async
       ></script>
-      <div class="container">
-        <div class="col-start">
-          <h2 v-if="blok && blok.headline" class="headline">
-            <markdown :value="blok.headline" />
-          </h2>
-        </div>
-        <div class="col-end" v-if="blok && blok.text">
-          <p v-if="blok.text" class="text">
-            <markdown :value="blok.text" />
-          </p>
-        </div>
-      </div>
+<!--      <div class="container">-->
+<!--        <div class="col-start">-->
+<!--          <h2 v-if="blok && blok.headline" class="headline">-->
+<!--            <markdown :value="blok.headline" />-->
+<!--          </h2>-->
+<!--        </div>-->
+<!--        <div class="col-end" v-if="blok && blok.text">-->
+<!--          <p v-if="blok.text" class="text">-->
+<!--            <markdown :value="blok.text" />-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="pretix-content">
         <div>
           <pretix-widget name="pretix" :event="pretixEvent"></pretix-widget>
@@ -202,13 +202,13 @@ export default {
       td.pretix-widget-has-events.pretix-widget-day-availability-reserved {
       background-color: black !important;
     }
-    width: 70vw;
+    width: 100vw;
     max-width: 1000px;
     background: white;
     .pretix-widget {
       border: none;
       .pretix-widget-event-calendar {
-        padding-top: 50px;
+        padding: 10px 20px;
       }
       .pretix-widget-event-calendar-table tr td {
         border: solid 1px rgba(0, 0, 0, 0.1);

@@ -59,7 +59,7 @@ export default {
 
 <style lang="scss">
 .machine-header {
-  @include media-breakpoint-down(lg) {
+  @include media-breakpoint-up(md) {
     @include margin-page-wide;
   }
   height: calc(50vh - 89px);

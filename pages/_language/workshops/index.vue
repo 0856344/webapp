@@ -301,7 +301,7 @@
 <style lang="scss">
   .pretix-content {
     margin-top: 0;
-    margin-bottom: 50px;
+    //margin-bottom: 50px;
     background-color: white;
   }
 
