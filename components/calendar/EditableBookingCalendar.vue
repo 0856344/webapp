@@ -272,7 +272,7 @@ export default {
         }
       }
       if (this.invalidDate) {
-        this.showAlert(alertMsg, '#f55252fc', 'exclamation', 10000000) // Show for 10 seconds
+        this.showAlert(alertMsg, '#f55252fc', 'exclamation') // Show for 10 seconds
 
         console.log('INVALID DATE', this.invalidDate)
         // There are errors - do not save and reset anything
