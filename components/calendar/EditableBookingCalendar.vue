@@ -165,13 +165,13 @@ export default {
     eventChanged (calEvent) {
       if (calEvent.originalEvent) {
         // Replace new event with the old one
-        console.log('Event changed', calEvent)
+        //console.log('Event changed', calEvent)
         this.eventDeleted(calEvent.originalEvent)
         this.saveBooking(calEvent.event)
       }
     },
     onEventCreate (calEvent) {
-      console.log('onEventCreate', calEvent)
+      //console.log('onEventCreate', calEvent)
       this.saveBooking(calEvent)
     },
     onEventDragCreate (calEvent) {

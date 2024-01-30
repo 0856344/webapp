@@ -43,6 +43,12 @@ Make sure you use a supported NodeJS Version in all of your Terminal sessions. N
 
 Another reason for the error message could be that nuxt-production is not loading properly anymore
 
+##### Auth0 Login Error: Unable to configure verification page
+
+It looks like other users have experienced this as a result of 3rd party cookie blocking in Safari, and possibly Firefox.
+You can confirm this by setting up a custom domain and seeing if that fixes the issue.
+https://community.auth0.com/t/unable-to-configure-verification-page-in-firefox-while-i-am-getting-access-token-in-chrome/103158
+
 ## Start
 
 ```

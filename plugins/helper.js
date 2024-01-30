@@ -37,15 +37,18 @@ export const helper = {
   isAllowedToBook (memberPackages) {
     // Check only active packages
     const filteredMemberPackages = memberPackages.filter(item => !this.dateIsInPast(item?.chargedUntilDate))
-
+    console.log('memberPackages', filteredMemberPackages)
     let isAllowed = true
     filteredMemberPackages.forEach(memberPackage => {
+      //if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
       if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
         // Smart Garage member are not allowed to book machines due to https://grandgarage.eu/de/mitgliedschaften (checked on 17.1.2024)
+        console.log('smartgarage detected', memberPackage?._embedded?.package?.metadata)
         isAllowed = false
         return isAllowed
       }
       if (memberPackage?._embedded?.package?.allowsBooking === false) {
+        console.log('package allows booking', memberPackage?._embedded?.package?.allowsBooking)
         isAllowed = false
         return isAllowed
       }
