@@ -1,16 +1,16 @@
 <template>
   <div v-if="machine" v-editable="machine" class="machine-page">
-    <machine-header :story="story" />
+    <machine-header :story="story"/>
     <div class="machine-teaser">
       <div class="body">
         <div class="image">
-          <img :src="$resizeImage(machine.image, '700x0')" alt="" />
+          <img :src="$resizeImage(machine.image, '700x0')" alt=""/>
         </div>
         <div class="description text" v-if="!this.machines">
-          <markdown :value="machine.details" />
+          <markdown :value="machine.details"/>
         </div>
         <div class="description text" v-if="this.machines">
-          <markdown :value="machine.details + machineCosts" />
+          <markdown :value="machine.details + machineCosts"/>
         </div>
       </div>
     </div>
@@ -28,8 +28,8 @@
               class="status"
               :name="m.name"
             />
-            <booking-calendar :resource="m.fabmanId" />
-            <div class="flex justify-center mt-2 mb-4">
+            <booking-calendar :resource="m.fabmanId"/>
+            <div v-show="canSeeBookings" class="flex justify-center mt-2 mb-4">
               <button
                 class="gg-button flex"
                 @click="$router.push('/me/bookings/')"
@@ -57,7 +57,7 @@
       </div>
     </div>
     <div class="body">
-      <image-slideshow :blok="images" />
+      <image-slideshow :blok="images"/>
     </div>
     <div v-if="machine.links && machine.links.length > 0" class="body">
       <h3 class="blue">Links</h3>
@@ -77,7 +77,8 @@
 import MachineStatus from '@/bloks/machines/MachineStatus.vue';
 import BookingCalendar from '@/components/calendar/BookingCalendar.vue';
 import MachineHeader from '@/bloks/machines/MachineHeader.vue';
-import { getMetaTagsForPage } from '@/services/MetaDataService';
+import {getMetaTagsForPage} from '@/services/MetaDataService';
+import {helper} from "~/plugins/helper";
 
 export default {
   components: {
@@ -86,16 +87,16 @@ export default {
     BookingCalendar,
   },
   props: ['story'],
-  data() {
+  data () {
     return {
       machines: [],
     };
   },
   computed: {
-    machine() {
+    machine () {
       return this.story.content;
     },
-    machineCosts() {
+    machineCosts () {
       // Maschinen werden momentan via Fabman ID aus Storyblok identifiziert
       // Im 1755 Fabman Account unterscheiden sich die IDs zum Produktivsystem - daher werden die Kosten in der lokalen Entwicklung nicht angezeigt
       // Es sollte stattdessen eine "shortform" wie bei den Mitgliedschaften verwendet werden
@@ -134,26 +135,26 @@ export default {
         return '';
       }
     },
-    tags() {
+    tags () {
       return this.story.tag_list;
     },
-    hasUser() {
+    hasUser () {
       return !!this.$store.state.member;
     },
-    singleMachine() {
+    singleMachine () {
       return (
         this.machine &&
         this.machine.machine_status_items &&
         this.machine.machine_status_items.length === 1
       );
     },
-    images() {
+    images () {
       return {
         items: this.machine.images,
       };
     },
   },
-  async mounted() {
+  async mounted () {
     for (const machineItem of this.machine.machine_status_items) {
       const machineResource = await this.$store.dispatch(
         'getResource',
@@ -162,9 +163,23 @@ export default {
       this.machines.push(machineResource);
     }
   },
-  head() {
+  head () {
     return getMetaTagsForPage(this.machine);
   },
+  methods: {
+    async canSeeBookings () {
+      let memberPackages = this.$store.getters.getMemberPackages();
+      if (!memberPackages) {
+        let member = this.$store.getters.getMember();
+        memberPackages = await this.$store.dispatch(
+          'getMemberPackages',
+          member.id,
+        );
+      }
+
+      return helper.isAllowedToBook(memberPackages);
+    },
+  }
 };
 </script>
 
@@ -283,6 +298,7 @@ export default {
         }
       }
     }
+
     .blue {
       @include media-breakpoint-down(lg) {
         @include margin-page-wide;
@@ -291,6 +307,7 @@ export default {
         margin: 1em 4% 0;
       }
     }
+
     .link-list {
       color: $color-blue;
       display: block;

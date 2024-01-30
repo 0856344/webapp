@@ -197,7 +197,7 @@ export default {
       this.fetchingBookings = true
       //this.resource = 3136 //TODO for debugging - remove!
       if (this.space === 'smartgarage') {
-        // TODO
+        // TODO - Deprecated
         //console.log('SPACE FOUND - booking calender', this.space)
         //this.getBookingByMethod('getBookingsBySpace', this.space)
         this.getBookingByMethod('getBookingsByResource', 4049)

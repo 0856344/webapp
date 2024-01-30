@@ -104,6 +104,9 @@ const createStore = () => {
       getMemberCourses: (state) => () => {
         return state.memberCourses;
       },
+      getMember: (state) => () => {
+        return state.member;
+      },
       getMemberPackages: (state) => () => {
         return state.memberPackages;
       },
