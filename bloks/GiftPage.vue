@@ -342,7 +342,7 @@ export default {
       // eslint-disable-next-line no-prototype-builtins
       if (to.hasOwnProperty("origin")) {
         this.origin = to.origin;
-      } 
+      }
       if (
         // eslint-disable-next-line no-prototype-builtins
         to.hasOwnProperty("action") &&

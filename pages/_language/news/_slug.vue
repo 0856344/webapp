@@ -191,11 +191,8 @@ export default {
   font-size: 1.2rem;
   @include media-breakpoint-down(md) {
     font-size: 1rem;
-    margin: 1em 0 20px 3%;
   }
   @include media-breakpoint-down(xs) {
-    margin-left: 6%;
-
     font-size: 1rem;
   }
   p {
@@ -204,7 +201,7 @@ export default {
 }
 
 .body {
-  @include media-breakpoint-down(lg) {
+  @include media-breakpoint-up(md) {
     @include margin-page-wide;
   }
 }
