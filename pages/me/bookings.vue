@@ -75,7 +75,14 @@
             >
             </v-select>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
-              <Alert :show="openingHoursText.length > 0" :message="openingHoursText" :headline="'Öffnungszeiten'" icon='info-circle'></Alert>
+              <Alert
+                :show="openingHoursText.length > 0"
+                :customCssClass="'flex flex-row list-none'"
+                :message="openingHoursText"
+                :headline="'Öffnungszeiten'"
+                :closeable="true"
+                icon='info-circle'
+              ></Alert>
               <editable-booking-calendar
                 ref="machineCalender"
                 class="pt-6"
@@ -251,26 +258,14 @@ export default {
       },
       currentPage: 1,
       rowsPerPage: 8,
-      selectedSpace: {
-        openingHours: [],
-        earliestHour: 9,
-        latestHour: 24,
-        bookingExclusiveMinutes: 30,
-        bookingLockInHours: 24,
-        bookingMaxMinutesPerMemberDay: 60,
-        bookingMaxMinutesPerMemberWeek: null,
-        bookingRefundable: true,
-        bookingSlotsPerHour: 1,
-        bookingTermsOfService: null,
-        bookingWindowMaxDays: 7,
-        bookingWindowMinHours: 2,
-      }
+      selectedSpace: {}
     };
   },
   watch: {
     selectedMachine (machine) {
       // Get corresponding SPACE of the machine
       if (machine) {
+        this.resetSpace()
         let selectedSpace = this.memberSpaces.find(space => {
           return machine.space === space.id
         })
@@ -307,23 +302,23 @@ export default {
   },
   computed: {
     openingHoursText () {
-      if(this.selectedSpace.openingHours.length === 0)
+      if (this.selectedSpace.openingHours.length === 0)
         return ''
 
-      let msg = ''
-      for(let i=0; this.selectedSpace.openingHours.length>i; i++) {
-        if(!this.selectedSpace.openingHours[i].fromTime || !this.selectedSpace.openingHours[i].untilTime){
+      let msg = '<span class="flex">'
+      for (let i = 0; this.selectedSpace.openingHours.length > i; i++) {
+        if (!this.selectedSpace.openingHours[i].fromTime || !this.selectedSpace.openingHours[i].untilTime) {
           // Hide opening hours if one is NULL (mostly it's then 24/7)
           return ''
         }
         msg += '<ul class="weekday">'
-        msg += '<li><b>' + this.selectedSpace.openingHours[i].dayOfWeek + '</b></li>';
+        msg += '<li><b>' + this.selectedSpace.openingHours[i].weekday + '</b></li>';
         msg += '<li>Von: ' + this.selectedSpace.openingHours[i].fromTime + '</li>';
         msg += '<li>Bis: ' + this.selectedSpace.openingHours[i].untilTime + '</li>';
         msg += '</ul>'
       }
 
-      return msg
+      return msg + '</span>'
     },
     bookingLockHours () {
       // TODO - Get bookingLockInHours by each bookings.resource
@@ -372,6 +367,22 @@ export default {
     },
   },
   methods: {
+    resetSpace () {
+      this.selectedSpace = {
+        openingHours: [],
+        earliestHour: 9,
+        latestHour: 24,
+        bookingExclusiveMinutes: 30,
+        bookingLockInHours: 24,
+        bookingMaxMinutesPerMemberDay: 60,
+        bookingMaxMinutesPerMemberWeek: null,
+        bookingRefundable: true,
+        bookingSlotsPerHour: 1,
+        bookingTermsOfService: null,
+        bookingWindowMaxDays: 7,
+        bookingWindowMinHours: 2,
+      }
+    },
     generateSpace (spaceResponse) {
       if ('_embedded' in spaceResponse && 'openingHours' in spaceResponse._embedded) {
         // Create readable object
@@ -393,18 +404,18 @@ export default {
         // Replace day of week number with german spelling
         this.selectedSpace.openingHours = spaceResponse._embedded.openingHours
         this.selectedSpace.openingHours.forEach((openingHour) => {
-          openingHour.dayOfWeek = daysOfWeek[openingHour.dayOfWeek - 1];
+          openingHour.weekday = daysOfWeek[openingHour.dayOfWeek - 1];
           allBeginHours.push(openingHour.fromTime)
           allEndHours.push(openingHour.untilTime)
         });
 
         // Find the earliest hour
-        if(!allBeginHours.includes(null)) {
+        if (!allBeginHours.includes(null)) {
           this.selectedSpace.earliestHour = helper.getEarliestStringTimeAsInt(allBeginHours)
         }
 
         // Find latest hour
-        if(!allEndHours.includes(null)) {
+        if (!allEndHours.includes(null)) {
           this.selectedSpace.latestHour = helper.getLatestStringTimeAsInt(allEndHours)
         }
 
@@ -656,16 +667,10 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-::v-deep .alert-message
-{
-  display: flex;
-  flex-direction: row;
+::v-deep .weekday {
   list-style-type: none;
 }
-::v-deep .weekday
-{
-  list-style-type: none;
-}
+
 .table-fieldset {
   padding: 1rem;
 }

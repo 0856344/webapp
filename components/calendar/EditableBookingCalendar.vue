@@ -5,7 +5,7 @@
       <button
         v-if="this.selectedBookings.length > 0 || invalidDate"
         @click="resetBookings() && this.$emit('reload')"
-        class="gg-button flex">
+        class="gg-button-danger flex">
         <svg
           style="fill: white"
           :class="{ 'spin-animation': fetchingBookings }"
@@ -272,7 +272,7 @@ export default {
         }
       }
       if (this.invalidDate) {
-        this.showAlert(alertMsg, '#f55252fc', 'exclamation') // Show for 10 seconds
+        this.showAlert(alertMsg, '#f55252fc', 'exclamation', 10000000) // Show for 10 seconds
 
         console.log('INVALID DATE', this.invalidDate)
         // There are errors - do not save and reset anything
@@ -523,5 +523,11 @@ export default {
   to {
     transform: rotate(360deg);
   }
+}
+.input-button-primary {
+  background-color: rgb(41, 149, 79);
+  border: 1px solid rgb(21, 141, 63);
+  color: white;
+  border-radius: 4px;
 }
 </style>

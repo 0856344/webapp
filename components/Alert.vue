@@ -5,13 +5,14 @@
         v-if="!closed"
         :style="{ backgroundColor: color }"
         class="fade-transition info-box flex text-white justify-between align-middle border px-4 py-3 rounded relative my-3"
+        :class="customCssClass"
         role="alert"
         style="min-height: 60px"
       >
         <span>
           <span class="block sm:inline">
-            <font-awesome-icon :icon="icon"></font-awesome-icon><p v-if="headline.length > 0" style="display:inline;padding: 0 0 0 10px;margin: 0;">{{ headline }}</p>
-            <span v-html="message" class="alert-message fasdfsf"></span>
+            <font-awesome-icon :icon="icon"></font-awesome-icon><span v-show="headline.length > 0" style="display:inline;padding: 0 0 0 10px;margin: 0;">{{ headline }}</span>
+            <span v-html="message" class="alert-message"></span>
           </span>
         </span>
         <span v-show="closeable">
@@ -49,6 +50,11 @@ export default {
       required: true,
     },
     headline: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    customCssClass: {
       type: String,
       required: false,
       default: ''
