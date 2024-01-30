@@ -1,13 +1,13 @@
 <template>
   <div v-editable="blok" class="faq-block">
-    <div class="downloads">
-      <div class="headline">
-        {{ $t("downloads") }}
-      </div>
-      <div class="download-list">
-        <download-item v-for="i in blok.downloads" :key="i.uid" :blok="i" />
-      </div>
-    </div>
+<!--    <div class="downloads">-->
+<!--      <div class="headline">-->
+<!--        {{ $t("downloads") }}-->
+<!--      </div>-->
+<!--      <div class="download-list">-->
+<!--        <download-item v-for="i in blok.downloads" :key="i.uid" :blok="i" />-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="faqs">
       <h3><span id="general"></span>{{ $t("general") }}</h3>
       <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" />

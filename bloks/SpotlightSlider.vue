@@ -108,6 +108,18 @@ export default {
     border-radius: 50%;
     background-color: $color-yellow;
     background-size: 12px;
+    @include media-breakpoint-down(md) {
+      width: 40px;
+      height: 40px;
+      background-size: 10px;
+    }
+    @include media-breakpoint-down(xs) {
+      width: 35px;
+      height: 35px;
+      background-size: 8px;
+      margin-right: 0;
+      margin-left: 0;
+    }
   }
 }
 </style>

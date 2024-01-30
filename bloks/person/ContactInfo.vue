@@ -40,6 +40,9 @@ export default {
   }
   .banner-spacer {
     height: 15vh;
+    @include media-breakpoint-down(sm) {
+      height: 5vh;
+    }
   }
   .info {
     display: flex;
