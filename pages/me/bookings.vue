@@ -258,7 +258,20 @@ export default {
       },
       currentPage: 1,
       rowsPerPage: 8,
-      selectedSpace: {}
+      selectedSpace: {
+        openingHours: [],
+        earliestHour: 9,
+        latestHour: 24,
+        bookingExclusiveMinutes: 30,
+        bookingLockInHours: 24,
+        bookingMaxMinutesPerMemberDay: 60,
+        bookingMaxMinutesPerMemberWeek: null,
+        bookingRefundable: true,
+        bookingSlotsPerHour: 1,
+        bookingTermsOfService: null,
+        bookingWindowMaxDays: 7,
+        bookingWindowMinHours: 2
+      }
     };
   },
   watch: {
