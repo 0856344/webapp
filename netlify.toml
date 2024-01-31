@@ -2,6 +2,7 @@
 [build]
   publish = "dist"
   functions = "functions/"
+  node_version = "18"
 
 [[plugins]]
   package = "netlify-plugin-inline-functions-env"
