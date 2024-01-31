@@ -37,8 +37,7 @@ export const helper = {
   isAllowedToBook (memberPackages) {
     // Check only active packages
     const filteredMemberPackages = memberPackages.filter(item => !this.dateIsInPast(item?.chargedUntilDate))
-    console.log('memberPackages', filteredMemberPackages)
-    let isAllowed = true
+    let isAllowed = false
     filteredMemberPackages.forEach(memberPackage => {
       //if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
       if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
@@ -47,9 +46,9 @@ export const helper = {
         isAllowed = false
         return isAllowed
       }
-      if (memberPackage?._embedded?.package?.allowsBooking === false) {
-        console.log('package allows booking', memberPackage?._embedded?.package?.allowsBooking)
-        isAllowed = false
+      if (memberPackage?._embedded?.package?.allowsBooking === true) {
+        // If there is at least one package where allowsBooking is enabled, member is allowed to book
+        isAllowed = true
         return isAllowed
       }
     })
