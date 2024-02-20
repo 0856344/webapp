@@ -16,7 +16,7 @@
     </div>
     <div class="body">
       <div class="inner-body">
-        <div v-if="hasUser" class="machine-list">
+        <div v-if="hasUser" class="machine-list flex flex-wrap gap-12 sm:px-3">
           <div
             :key="m.id"
             v-for="m in machine.machine_status_items"

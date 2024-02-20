@@ -125,9 +125,9 @@ export default {
     padding: 0;
   }
 
-  .vuecal {
-    @include media-breakpoint-down(sm) {
-      height: 75vh !important;
+  .vuecal__no-event {
+    @include media-breakpoint-down(xs){
+      font-size: 0.7rem;
     }
   }
 }

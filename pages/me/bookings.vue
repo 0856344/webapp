@@ -72,6 +72,7 @@
               v-model="selectedMachine"
               label="machineLabel"
               placeholder="Maschine wählen"
+              class="mt-3"
             >
             </v-select>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
@@ -151,6 +152,7 @@
               <th class="activity-amount">Dauer</th>
               <th class="activity-status">Maschine</th>
               <th class="activity-description">Status</th>
+              <th class="block lg:hidden activity-description"></th> <!-- empty cell so that arrangement is more beautiful in mobile view-->
               <th class="activity-description">Stornieren</th>
             </tr>
             </thead>
@@ -166,6 +168,7 @@
               <td class="invoice-status">
                 <div v-if="booking.state" class="bubble" :class="getBookingStateClass(booking)">{{ getBookingStateText(booking) }}</div>
               </td>
+              <td class="block lg:hidden activity-description"></td> <!-- empty cell so that arrangement is more beautiful in mobile view-->
               <td class="invoice-status">
                 <div v-if="loadingCancel && booking.id === loadingCancel">
                   <loading-spinner-inline v-if="true"/>
@@ -763,6 +766,22 @@ button:disabled svg {
   }
 }
 
+@include media-breakpoint-down(md) {
+  .member-portal-table {
+    tr {
+      padding: 0.6rem 0.1rem;
+
+      th {
+        min-width: 135px !important;
+      }
+
+      td {
+        min-width: 130px !important;
+      }
+    }
+  }
+}
+
 @include media-breakpoint-down(xs) {
   .demo-button {
     height: 80px;
@@ -787,16 +806,14 @@ button:disabled svg {
 
       tr {
         padding: 0.6rem 0.1rem;
+      }
+      th {
+        min-width: 110px;
+      }
 
-        th {
-          min-width: 200px;
-        }
-
-        td {
-          min-width: 200px;
-          display: flex;
-          justify-content: center;
-        }
+      td {
+        min-width: 110px;
+        justify-content: flex-start
       }
     }
   }

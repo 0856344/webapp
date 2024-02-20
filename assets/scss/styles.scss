@@ -477,6 +477,7 @@ table {
 }
 
 .member-portal-table {
+  margin: auto;
   thead {
     background-color: black;
     color: white;
@@ -487,6 +488,7 @@ table {
     font-weight: 600;
 
     tr {
+      min-width: $table-cell-min-width;
       padding: 0.75rem 1.25rem;
       display: flex;
       justify-content: flex-start;
@@ -496,6 +498,7 @@ table {
         justify-content: center;
         padding-left: 1rem;
         padding-right: 1rem;
+        flex: 1;
       }
     }
   }
@@ -586,11 +589,8 @@ table {
 }
 
 //Mobile
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(md) {
   .member-portal-table {
-    margin-left: -8%;
-    margin-right: -8%;
-
     thead {
       padding: 0.75rem 0;
       font-size: 0.8rem;
@@ -605,6 +605,7 @@ table {
           width: 50%;
           padding-left: 0.5rem;
           padding-right: 0.5rem;
+          flex: unset;
         }
 
         .activity-date {
@@ -661,7 +662,6 @@ table {
       font-weight: 500;
 
       tr {
-        padding: 0.75rem 0;
         display: flex;
         flex-wrap: wrap;
 
@@ -758,6 +758,19 @@ table {
     }
   }
 }
+
+@include media-breakpoint-down(sm) {
+  .member-portal-table {
+    th {
+      min-width: 110px !important;
+    }
+
+    td {
+      min-width: 110px !important;
+      justify-content: flex-start
+    }
+  }
+};
 
 // Colors
 .bg-white {
