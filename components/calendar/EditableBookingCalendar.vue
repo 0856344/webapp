@@ -55,7 +55,7 @@
         @event-create="onEventCreate"
         @event-delete="eventDeleted"
         @event-change="eventChanged"
-        style="height: 52vh"
+        style="height: fit-content"
         class="vuecal--blue-theme vuecal--full-height-delete"
         active-view="day"
         :disable-views="['years', 'year', 'month', 'week']"
@@ -82,7 +82,7 @@
         :snap-to-time="bookingSlotInMinutes"
         @event-change="eventChanged"
         @event-delete="eventDeleted"
-        style="height: 58vh"
+        style="height: fit-content"
         class="vuecal--blue-theme vuecal--full-height-delete"
         default-view="week"
         :events="events"
@@ -473,11 +473,11 @@ export default {
     padding: 0;
   }
 
-  .vuecal {
-    @include media-breakpoint-down(sm) {
-      height: 75vh !important;
-    }
-  }
+  //.vuecal {
+  //  @include media-breakpoint-down(sm) {
+  //    height: 75vh !important;
+  //  }
+  //}
 }
 
 .w-100 {
@@ -554,4 +554,5 @@ export default {
   color: white;
   border-radius: 4px;
 }
+
 </style>

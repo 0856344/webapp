@@ -27,7 +27,7 @@
         <h2 class="m-0 mr-2 text-2xl flex items-center">
           {{ $t('machineBookings') }}
           <svg
-            class="cursor-pointer icon-button-secondary inline-block w-5 h-5 ml-1 fill-secondary demo-button"
+            class="cursor-pointer icon-button-secondary inline-block w-7 h-7 ml-1 fill-secondary demo-button"
             :class="{ 'jump-animation': isFirstVisit }"
             xmlns="http://www.w3.org/2000/svg"
             @click="startTour"
@@ -59,7 +59,7 @@
         <legend>Neue Reservierung</legend>
         <p>Hier kannst du eine Maschine buchen.</p>
         <div>
-          <div class="flex-1 mr-6 mb-4">
+          <div class="flex-1 mb-4">
             <label
             >Maschine<small v-if="machines && machines.length > 0"
             >({{ machines.length }})&nbsp;</small
@@ -106,7 +106,7 @@
                 <svg
                   class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
                   xmlns="http://www.w3.org/2000/svg"
-                  height="1em"
+                  height="2em"
                   viewBox="0 0 448 512"
                 >
                   <path
@@ -130,7 +130,7 @@
               style="fill: white"
               :class="{ 'spin-animation': loadingBookings }"
               xmlns="http://www.w3.org/2000/svg"
-              height="1em"
+              height="2em"
               viewBox="0 0 512 512"
             >
               <path
@@ -321,13 +321,13 @@ export default {
       if (this.selectedSpace.openingHours.length === 0)
         return ''
 
-      let msg = '<span class="flex">'
+      let msg = '<span class="flex flex-wrap gap-y-2 gap-x-5 ms-4 justify-around">'
       for (let i = 0; this.selectedSpace.openingHours.length > i; i++) {
         if (!this.selectedSpace.openingHours[i].fromTime || !this.selectedSpace.openingHours[i].untilTime) {
           // Hide opening hours if one is NULL (mostly it's then 24/7)
           return ''
         }
-        msg += '<ul class="weekday">'
+        msg += '<ul class="weekday p-0">'
         msg += '<li><b>' + this.selectedSpace.openingHours[i].weekday + '</b></li>';
         msg += '<li>Von: ' + this.selectedSpace.openingHours[i].fromTime + '</li>';
         msg += '<li>Bis: ' + this.selectedSpace.openingHours[i].untilTime + '</li>';
@@ -746,7 +746,7 @@ button:disabled svg {
 }
 
 .demo-button {
-  height: 1em;
+  height: 2em;
 }
 
 .info-arrow {
@@ -784,8 +784,7 @@ button:disabled svg {
 
 @include media-breakpoint-down(xs) {
   .demo-button {
-    height: 80px;
-    width: 50px;
+    height: 1em;
   }
   .info-arrow {
     height: 80px;
