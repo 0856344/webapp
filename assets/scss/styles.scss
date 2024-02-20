@@ -772,23 +772,6 @@ table {
   }
 };
 
-// Colors
-.bg-white {
-  background-color: white;
-}
-
-.bg-black {
-  background-color: black;
-}
-
-.bg-gray-100 {
-  background-color: $color-gray-100;
-}
-
-.border-gray-100 {
-  border-color: $color-gray-100;
-}
-
 // Shadows
 .shadow-sm {
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05)

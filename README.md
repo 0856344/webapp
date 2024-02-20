@@ -155,7 +155,6 @@ Check how to connect Bloks [here](https://grandgarage.atlassian.net/wiki/spaces/
 Make sure you use a supported NodeJS Version in all of your Terminal sessions. Node Version can be switches by using [NVM](https://github.com/nvm-sh/nvm).
 
 ### Can't login on localhost
-![img.png](./assets/img/local_error.png)
 
 Make sure connector.dev.grandgarage.eu is accessible (run docker or see connector readme) and that you are using the secure localhost:3010 port (proxy).
 
