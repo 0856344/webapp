@@ -444,7 +444,7 @@ export default {
       await this.$store
         .dispatch('getMachines')
         .then(async (res) => {
-          // Filter non visible and non bookable machines
+          // Filter non-visible and non-bookable machines
           const filteredMachines = res.filter(function (machine) {
             return machine.visibleForMembers && machine.canBeBooked && machine.state === 'active';
           });

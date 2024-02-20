@@ -152,14 +152,11 @@ export default {
       this.loadingAvailableStorage = true;
       await this.loadCreditStatus();
 
-      // Fetch packages from store
-      this.memberPackages = this.$store.getters.getMemberPackages();
-      if(!this.memberPackages) {
-        this.memberPackages = await this.$store.dispatch(
-          'getMemberPackages',
-          this.$store.state.member.id,
-        );
-      }
+      this.memberPackages = await this.$store.dispatch(
+        'getMemberPackages',
+        this.$store.state.member.id,
+      );
+
       this.memberPackages = this.memberPackages.filter((p) => {
         // filter old packages
         if (p.untilDate) {

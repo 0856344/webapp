@@ -55,7 +55,8 @@ export const helper = {
     return isAllowed
   },
   isMobile () {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    return mediaQuery.matches;
   },
   isValidDate (date) {
     return date instanceof Date && !isNaN(date)

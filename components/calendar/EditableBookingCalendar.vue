@@ -298,7 +298,6 @@ export default {
       let allBookings = this.bookings.concat(this.selectedBookings);
       const bookingsOnSameDay = allBookings.filter((otherBooking) => {
         // Check if the other booking is on the same day as the target booking
-        console.log('booking/other', booking, otherBooking)
         const bookingDate = new Date(booking.fromDateTime).toDateString();
         const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
         return  (bookingDate === otherBookingDate) && (booking.member === otherBooking.member);
