@@ -107,7 +107,7 @@ import Alert from '@/components/Alert.vue'
 export default {
   name: 'editable-booking-calendar',
   components: {VueCal, Alert},
-  props: ['resource', 'space', 'member', 'earliestHour', 'latestHour', 'bookingSlotsPerHour','bookingMaxMinutesPerMemberDay', 'bookingMaxMinutesPerMemberWeek'],
+  props: ['resource', 'space', 'member', 'earliestHour', 'latestHour', 'bookingSlotsPerHour', 'bookingMaxMinutesPerMemberDay', 'bookingMaxMinutesPerMemberWeek'],
   data () {
     return {
       isMobile: false,
@@ -133,7 +133,7 @@ export default {
     },
     events () {
       return this.bookings.map(booking => {
-        if(booking?.member?.id === this.member.id) {
+        if (booking?.member?.id === this.member.id) {
           return {
             title: booking?.member?.firstName ? booking.member.firstName : "Yours",
             class: 'reserved-by-member',
@@ -164,11 +164,14 @@ export default {
     await this.fetchBookings()
   },
   methods: {
-    createNewEvent (startDateTime, durationInMinutes = 120) {
+    createNewEvent (startDateTime) {
+
       // Round start time to the nearest hour
-      this.$refs.editableVueCal.createEvent(helper.roundToNearestHour(startDateTime), durationInMinutes, {
-        class: 'blue-event',
-      })
+      if (startDateTime) {
+        this.$refs.editableVueCal.createEvent(helper.roundToNearestHour(startDateTime), 60, {
+          class: 'blue-event',
+        })
+      }
     },
     eventDeleted (calEvent) {
       //console.log('Event deleted', calEvent);
@@ -286,7 +289,7 @@ export default {
       if (this.invalidDate) {
         this.showAlert(alertMsg, '#f55252fc', 'exclamation') // Show for 10 seconds
 
-        console.log('INVALID DATE', this.invalidDate)
+        //console.log('INVALID DATE', this.invalidDate)
         // There are errors - do not save and reset anything
         this.resetBookings()
 
@@ -300,7 +303,7 @@ export default {
         // Check if the other booking is on the same day as the target booking
         const bookingDate = new Date(booking.fromDateTime).toDateString();
         const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
-        return  (bookingDate === otherBookingDate) && (booking.member === otherBooking.member);
+        return (bookingDate === otherBookingDate) && (booking.member === otherBooking.member);
       });
 
       // Calculate the total booked hours on the same day
@@ -519,6 +522,7 @@ export default {
   width: 100%;
   height: 20%;
 }
+
 .reserved-by-member {
   background-color: rgba(41, 149, 79, 0.8);
   color: white;
@@ -547,6 +551,7 @@ export default {
     transform: rotate(360deg);
   }
 }
+
 .input-button-primary {
   background-color: rgb(41, 149, 79);
   border: 1px solid rgb(21, 141, 63);
