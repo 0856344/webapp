@@ -32,7 +32,7 @@
             <div v-show="canSeeBookings" class="flex justify-center mt-2 mb-4">
               <button
                 class="gg-button flex"
-                @click="$router.push('/me/bookings/')"
+                @click="redirectToBookingsWithId(m.fabmanId)"
               >
                 <span class="pr-2">zur Reservierung</span>
                 <svg
@@ -167,6 +167,10 @@ export default {
     return getMetaTagsForPage(this.machine);
   },
   methods: {
+    redirectToBookingsWithId(id) {
+      // Use $router.push to navigate to /me/bookings/:id
+      this.$router.push(`/me/bookings/${id}`);
+    },
     async canSeeBookings () {
       let memberPackages = this.$store.getters.getMemberPackages();
       if (!memberPackages) {

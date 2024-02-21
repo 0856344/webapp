@@ -24,6 +24,7 @@
       </modal>
       <v-tour name="myTour" :steps="steps" :options="tourOptions"></v-tour>
       <div class="flex items-center mb-1">
+        <p>ID: {{ $route.params.id }}</p>
         <h2 class="m-0 mr-2 text-2xl flex items-center">
           {{ $t('machineBookings') }}
           <svg
