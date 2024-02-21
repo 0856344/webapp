@@ -125,8 +125,8 @@ export default {
   },
   computed: {
     bookingSlotInMinutes () {
-      // Convert from hours to minutes
-      return this.bookingSlotsPerHour * 60
+      // Convert into minutes | Fabman: 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+      return  60 / this.bookingSlotsPerHour
     },
     hasUser () {
       return !!this.$store.state.member
@@ -193,7 +193,7 @@ export default {
       //console.log('onEventDragCreate', calEvent)
       this.saveBooking(calEvent)
     },
-    mapBooking (calEvent) {
+    mapToFabmanBooking (calEvent) {
       // Format a calendar event to a booking object
       return {
         id: calEvent._eid,
@@ -223,7 +223,7 @@ export default {
     },
     saveBooking (calEvent) {
       if (calEvent && calEvent._eid) {
-        const newBooking = this.mapBooking(calEvent)
+        const newBooking = this.mapToFabmanBooking(calEvent)
 
         if (!this.isBookingValid(newBooking)) {
           return false
@@ -297,13 +297,16 @@ export default {
       }
       return true
     },
-    hoursExceededPerDay (booking, allowedHours) {
+    hoursExceededPerDay (mappedBooking, allowedHours) {
       let allBookings = this.bookings.concat(this.selectedBookings);
       const bookingsOnSameDay = allBookings.filter((otherBooking) => {
         // Check if the other booking is on the same day as the target booking
-        const bookingDate = new Date(booking.fromDateTime).toDateString();
+        const bookingDate = new Date(mappedBooking.fromDateTime).toDateString();
         const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
-        return (bookingDate === otherBookingDate) && (booking.member === otherBooking.member);
+        const newBookingMemberId = parseInt(mappedBooking.member)
+        const otherBookingMemberId = typeof otherBooking === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member)
+
+        return (bookingDate === otherBookingDate) && (newBookingMemberId === otherBookingMemberId)
       });
 
       // Calculate the total booked hours on the same day
@@ -317,8 +320,8 @@ export default {
 
       // Calculate the difference in hours for the current booking
       const differenceInHours = helper.timeDifferenceInHours(
-        booking.fromDateTime,
-        booking.untilDateTime
+        mappedBooking.fromDateTime,
+        mappedBooking.untilDateTime
       );
 
       // Check if the total booked hours exceed the allowed hours
@@ -332,7 +335,7 @@ export default {
       this.$store.commit('setSelectedBookings', bookings)
     },
     removeBooking (calEvent) {
-      const removedBooking = this.mapBooking(calEvent)
+      const removedBooking = this.mapToFabmanBooking(calEvent)
       this.selectedBookings = this.selectedBookings.filter(function (booking) {
         return booking.id !== removedBooking.id
       })

@@ -270,7 +270,7 @@ export default {
         bookingMaxMinutesPerMemberDay: 60,
         bookingMaxMinutesPerMemberWeek: null,
         bookingRefundable: true,
-        bookingSlotsPerHour: 1,
+        bookingSlotsPerHour: 1, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
         bookingTermsOfService: null,
         bookingWindowMaxDays: 7,
         bookingWindowMinHours: 2
@@ -285,7 +285,7 @@ export default {
         let selectedSpace = this.memberSpaces.find(space => {
           return machine.space === space.id
         })
-        this.generateSpace(selectedSpace)
+        this.mapFabmanSpace(selectedSpace)
       }
 
       // Call method in child component
@@ -393,32 +393,32 @@ export default {
         bookingMaxMinutesPerMemberDay: 60,
         bookingMaxMinutesPerMemberWeek: null,
         bookingRefundable: true,
-        bookingSlotsPerHour: 1,
+        bookingSlotsPerHour: 1, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
         bookingTermsOfService: null,
         bookingWindowMaxDays: 7,
         bookingWindowMinHours: 2,
       }
     },
-    generateSpace (spaceResponse) {
-      if ('_embedded' in spaceResponse && 'openingHours' in spaceResponse._embedded) {
+    mapFabmanSpace (fabmanSpace) {
+      if ('_embedded' in fabmanSpace && 'openingHours' in fabmanSpace._embedded) {
         // Create readable object
         const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
-        this.selectedSpace.bookingExclusiveMinutes = spaceResponse.bookingExclusiveMinutes
-        this.selectedSpace.bookingLockInHours = spaceResponse.bookingLockInHours
-        this.selectedSpace.bookingMaxMinutesPerMemberDay = spaceResponse.bookingMaxMinutesPerMemberDay
-        this.selectedSpace.bookingMaxMinutesPerMemberWeek = spaceResponse.bookingMaxMinutesPerMemberWeek
-        this.selectedSpace.bookingRefundable = spaceResponse.bookingRefundable
-        this.selectedSpace.bookingSlotsPerHour = spaceResponse.bookingSlotsPerHour
-        this.selectedSpace.bookingTermsOfService = spaceResponse.bookingTermsOfService
-        this.selectedSpace.bookingWindowMaxDays = spaceResponse.bookingWindowMaxDays
-        this.selectedSpace.bookingWindowMinHours = spaceResponse.bookingWindowMinHours
+        this.selectedSpace.bookingExclusiveMinutes = fabmanSpace.bookingExclusiveMinutes
+        this.selectedSpace.bookingLockInHours = fabmanSpace.bookingLockInHours
+        this.selectedSpace.bookingMaxMinutesPerMemberDay = fabmanSpace.bookingMaxMinutesPerMemberDay
+        this.selectedSpace.bookingMaxMinutesPerMemberWeek = fabmanSpace.bookingMaxMinutesPerMemberWeek
+        this.selectedSpace.bookingRefundable = fabmanSpace.bookingRefundable
+        this.selectedSpace.bookingSlotsPerHour = fabmanSpace.bookingSlotsPerHour
+        this.selectedSpace.bookingTermsOfService = fabmanSpace.bookingTermsOfService
+        this.selectedSpace.bookingWindowMaxDays = fabmanSpace.bookingWindowMaxDays
+        this.selectedSpace.bookingWindowMinHours = fabmanSpace.bookingWindowMinHours
 
         // Remember for better performance
         let allBeginHours = []
         let allEndHours = []
 
         // Replace day of week number with german spelling
-        this.selectedSpace.openingHours = spaceResponse._embedded.openingHours
+        this.selectedSpace.openingHours = fabmanSpace._embedded.openingHours
         this.selectedSpace.openingHours.forEach((openingHour) => {
           openingHour.weekday = daysOfWeek[openingHour.dayOfWeek - 1];
           allBeginHours.push(openingHour.fromTime)
