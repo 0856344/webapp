@@ -471,12 +471,6 @@ export default {
   @include media-breakpoint-down(sm) {
     padding: 0;
   }
-
-  //.vuecal {
-  //  @include media-breakpoint-down(sm) {
-  //    height: 75vh !important;
-  //  }
-  //}
 }
 
 .w-100 {
@@ -500,6 +494,10 @@ export default {
   &.lunch {
     background: repeating-linear-gradient(45deg, transparent, transparent 10px, #f2f2f2 10px, #f2f2f2 20px);
   }
+}
+
+.vuecal__cells.month-view .vuecal__cell, .vuecal__cells.year-view .vuecal__cell {
+  height: 50px;
 }
 
 .reserved {
