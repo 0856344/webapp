@@ -261,7 +261,7 @@ export default {
       let alertMsg = null
 
       // TODO
-      // Check if booking is in booking window ('bookingWindowMaxDays', 'bookingWindowMinHours')
+      // Check if booking is in fabman booking-window ('bookingWindowMaxDays', 'bookingWindowMinHours')
 
       // Check date format
       if (!helper.isValidDate(newBooking.fromDateTime) || !helper.isValidDate(newBooking.untilDateTime)) {

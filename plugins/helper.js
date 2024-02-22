@@ -102,8 +102,8 @@ export const helper = {
     return timeDifference < millisecondsInHours
   },
   dateRangeOverlaps (aStart, aEnd, bStart, bEnd) {
-    if (aStart <= bStart && bStart <= aEnd) return true // b starts in a
-    if (aStart <= bEnd && bEnd <= aEnd) return true // b ends in a
+    if (aStart < bStart && bStart < aEnd) return true // b starts in a
+    if (aStart < bEnd && bEnd < aEnd) return true // b ends in a
     if (bStart < aStart && aEnd < bEnd) return true // a in b
 
     // No overlapping found
