@@ -24,7 +24,6 @@
       </modal>
       <v-tour name="myTour" :steps="steps" :options="tourOptions"></v-tour>
       <div class="flex items-center mb-1">
-        <p>ID: {{ $route.params.id }}</p>
         <h2 class="m-0 mr-2 text-2xl flex items-center">
           {{ $t('machineBookings') }}
           <svg
@@ -92,9 +91,12 @@
                 :member="this.member"
                 :earliestHour=this.selectedSpace.earliestHour
                 :latestHour=this.selectedSpace.latestHour
+                :hiddenWeekdays="this.selectedSpace.hiddenWeekdays"
                 :bookingSlotsPerHour=this.selectedSpace.bookingSlotsPerHour
                 :bookingMaxMinutesPerMemberDay="this.selectedSpace.bookingMaxMinutesPerMemberDay"
                 :bookingMaxMinutesPerMemberWeek="this.selectedSpace.bookingMaxMinutesPerMemberWeek"
+                :bookingWindowMaxDays="this.selectedSpace.bookingWindowMaxDays"
+                :bookingWindowMinHours="this.selectedSpace.bookingWindowMinHours"
                 @reload="fetchBookings(member.id)"
               ></editable-booking-calendar>
             </span>
@@ -158,8 +160,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="booking of displayedBookings" :key="booking.id">
-              <td class="activity-date">{{ new Date(booking.fromDateTime).toLocaleDateString('de-AT') }}</td>
+            <tr v-for="booking of displayedBookings" :key="booking.id" :class="{ 'text-gray-300': isInPast(booking?.fromDateTime) }">
+              <td class="activity-date">
+                {{ new Date(booking.fromDateTime).toLocaleString('de-AT', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: false, // Use 24-hour format
+              }) }}
+              </td>
               <td class="activity-amount">
                 {{ durationAsString(new Date(booking.fromDateTime), new Date(booking.untilDateTime),) }}
               </td>
@@ -224,7 +235,7 @@ import VueTour from 'vue-tour';
 import 'vue-tour/dist/vue-tour.css';
 import Modal from '@/components/modals/Modal.vue';
 import moment from 'moment/moment';
-import {FABMAN_BOOKING_STATE} from '@/services/constants.js';
+import {FABMAN_BOOKING_STATE, FABMAN_DEFAULT_SPACE} from '@/services/constants.js';
 import Cookies from 'js-cookie';
 import Alert from '@/components/Alert.vue'
 
@@ -264,17 +275,18 @@ export default {
       rowsPerPage: 8,
       selectedSpace: {
         openingHours: [],
-        earliestHour: 9,
-        latestHour: 24,
-        bookingExclusiveMinutes: 30,
-        bookingLockInHours: 24,
-        bookingMaxMinutesPerMemberDay: 60,
-        bookingMaxMinutesPerMemberWeek: null,
-        bookingRefundable: true,
-        bookingSlotsPerHour: 1, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
-        bookingTermsOfService: null,
-        bookingWindowMaxDays: 7,
-        bookingWindowMinHours: 2
+        earliestHour: FABMAN_DEFAULT_SPACE.earliestHour,
+        latestHour: FABMAN_DEFAULT_SPACE.latestHour,
+        hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
+        bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
+        bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
+        bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+        bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+        bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
+        bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+        bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
+        bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
+        bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours
       }
     };
   },
@@ -387,43 +399,48 @@ export default {
     resetSpace () {
       this.selectedSpace = {
         openingHours: [],
-        earliestHour: 9,
-        latestHour: 24,
-        bookingExclusiveMinutes: 30,
-        bookingLockInHours: 24,
-        bookingMaxMinutesPerMemberDay: 60,
-        bookingMaxMinutesPerMemberWeek: null,
-        bookingRefundable: true,
-        bookingSlotsPerHour: 1, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
-        bookingTermsOfService: null,
-        bookingWindowMaxDays: 7,
-        bookingWindowMinHours: 2,
+        earliestHour: FABMAN_DEFAULT_SPACE.earliestHour,
+        latestHour: FABMAN_DEFAULT_SPACE.latestHour,
+        hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
+        bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
+        bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
+        bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+        bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+        bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
+        bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+        bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
+        bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
+        bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours
       }
     },
     mapFabmanSpace (fabmanSpace) {
       if ('_embedded' in fabmanSpace && 'openingHours' in fabmanSpace._embedded) {
+        //console.log('fabmanSpace', fabmanSpace)
         // Create readable object
         const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
         this.selectedSpace.bookingExclusiveMinutes = fabmanSpace.bookingExclusiveMinutes
-        this.selectedSpace.bookingLockInHours = fabmanSpace.bookingLockInHours
+        this.selectedSpace.bookingLockInHours = fabmanSpace.bookingLockInHours === null ? 0 : fabmanSpace.bookingLockInHours
         this.selectedSpace.bookingMaxMinutesPerMemberDay = fabmanSpace.bookingMaxMinutesPerMemberDay
         this.selectedSpace.bookingMaxMinutesPerMemberWeek = fabmanSpace.bookingMaxMinutesPerMemberWeek
         this.selectedSpace.bookingRefundable = fabmanSpace.bookingRefundable
         this.selectedSpace.bookingSlotsPerHour = fabmanSpace.bookingSlotsPerHour
         this.selectedSpace.bookingTermsOfService = fabmanSpace.bookingTermsOfService
-        this.selectedSpace.bookingWindowMaxDays = fabmanSpace.bookingWindowMaxDays
-        this.selectedSpace.bookingWindowMinHours = fabmanSpace.bookingWindowMinHours
+        this.selectedSpace.bookingWindowMaxDays = fabmanSpace.bookingWindowMaxDays === null ? FABMAN_DEFAULT_SPACE.bookingWindowMaxDays : fabmanSpace.bookingWindowMaxDays
+        this.selectedSpace.bookingWindowMinHours = fabmanSpace.bookingWindowMinHours === null ? FABMAN_DEFAULT_SPACE.bookingWindowMinHours : fabmanSpace.bookingWindowMinHours
 
         // Remember for better performance
         let allBeginHours = []
         let allEndHours = []
+        let weekdays = []
 
         // Replace day of week number with german spelling
         this.selectedSpace.openingHours = fabmanSpace._embedded.openingHours
+        console.log('openingHours', this.selectedSpace.openingHours)
         this.selectedSpace.openingHours.forEach((openingHour) => {
           openingHour.weekday = daysOfWeek[openingHour.dayOfWeek - 1];
           allBeginHours.push(openingHour.fromTime)
           allEndHours.push(openingHour.untilTime)
+          weekdays.push(openingHour.dayOfWeek)
         });
 
         // Find the earliest hour
@@ -435,6 +452,10 @@ export default {
         if (!allEndHours.includes(null)) {
           this.selectedSpace.latestHour = helper.getLatestStringTimeAsInt(allEndHours)
         }
+
+        // Find hidden weekdays
+        const allWeekdays = [1,2,3,4,5,6,7]
+        this.selectedSpace.hiddenWeekdays = allWeekdays.filter(day => !weekdays.includes(day));
 
       } else {
         this.selectedSpace = null;
@@ -498,13 +519,17 @@ export default {
         });
     },
     getBookingStateClass (booking) {
+      if(this.isInPast(booking?.fromDateTime)){
+        return 'bg-gray-300'
+      }
+
       switch (booking.state) {
         case 'confirmed':
           return 'green';
         case 'cancelled':
           return 'red';
         default:
-          return 'bubble grey';
+          return 'gray';
       }
     },
     getBookingStateText (booking) {
@@ -584,7 +609,7 @@ export default {
       }
     },
     durationInHours (fromDate, untilDate) {
-      return parseInt(helper.getDifferenceInHours(fromDate, untilDate));
+      return parseFloat(helper.getDifferenceInHours(fromDate, untilDate));
     },
     durationAsString (fromDate, untilDate) {
       const hours = this.durationInHours(fromDate, untilDate);
@@ -693,7 +718,7 @@ export default {
 }
 
 button:disabled svg {
-  color: grey;
+  color: gray;
 }
 
 .pagination-button {

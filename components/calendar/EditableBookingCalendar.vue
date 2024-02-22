@@ -62,7 +62,7 @@
         :events="events"
         events-count-on-year-view
         locale="de"
-        :hide-weekdays="[]"
+        :hide-weekdays="hiddenWeekdays"
         :time-from="earliestHour * 60"
         :time-to="latestHour * 60"
         :time-step="60"/>
@@ -88,7 +88,7 @@
         :events="events"
         events-count-on-year-view
         locale="de"
-        :hide-weekdays="[]"
+        :hide-weekdays="hiddenWeekdays"
         :time-from="earliestHour * 60"
         :time-to="latestHour * 60"
         :time-step="60"
@@ -107,7 +107,19 @@ import Alert from '@/components/Alert.vue'
 export default {
   name: 'editable-booking-calendar',
   components: {VueCal, Alert},
-  props: ['resource', 'space', 'member', 'earliestHour', 'latestHour', 'bookingSlotsPerHour', 'bookingMaxMinutesPerMemberDay', 'bookingMaxMinutesPerMemberWeek'],
+  props: [
+    'resource',
+    'space',
+    'member',
+    'earliestHour',
+    'latestHour',
+    'hiddenWeekdays',
+    'bookingSlotsPerHour',
+    'bookingMaxMinutesPerMemberDay',
+    'bookingMaxMinutesPerMemberWeek',
+    'bookingWindowMaxDays',
+    'bookingWindowMinHours'
+  ],
   data () {
     return {
       isMobile: false,
@@ -126,7 +138,7 @@ export default {
   computed: {
     bookingSlotInMinutes () {
       // Convert into minutes | Fabman: 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
-      return  60 / this.bookingSlotsPerHour
+      return 60 / this.bookingSlotsPerHour
     },
     hasUser () {
       return !!this.$store.state.member
@@ -248,6 +260,9 @@ export default {
     isBookingValid (newBooking) {
       let alertMsg = null
 
+      // TODO
+      // Check if booking is in booking window ('bookingWindowMaxDays', 'bookingWindowMinHours')
+
       // Check date format
       if (!helper.isValidDate(newBooking.fromDateTime) || !helper.isValidDate(newBooking.untilDateTime)) {
         console.log(
@@ -258,10 +273,17 @@ export default {
         return false
       }
 
-      // Check hours limitation
+      // Check daily limitation
       if (this.hoursExceededPerDay(newBooking, (this.bookingMaxMinutesPerMemberDay / 60))) {
         // Do not save this booking
         alertMsg = 'Erlaubte Stunden pro Tag: ' + (this.bookingMaxMinutesPerMemberDay / 60) + 'h'
+        this.invalidDate = newBooking
+      }
+
+      // Check weekly limitation
+      if (this.hoursExceededPerWeek(newBooking, (this.bookingMaxMinutesPerMemberWeek / 60))) {
+        // Do not save this booking
+        alertMsg = 'Erlaubte Stunden pro Woche: ' + (this.bookingMaxMinutesPerMemberWeek / 60) + 'h'
         this.invalidDate = newBooking
       }
 
@@ -277,7 +299,6 @@ export default {
 
         // Check if in past
         if (helper.dateIsInPast(new Date(newBooking.fromDateTime))) {
-          console.log('NOT ALLOWED: is in PAST')
           // Do not save this booking
           alertMsg =
             alertMsg != null ? alertMsg + ' | Datum liegt in der Vergangenheit.' : 'Datum liegt in der Vergangenheit.'
@@ -311,6 +332,37 @@ export default {
 
       // Calculate the total booked hours on the same day
       const totalBookedHours = bookingsOnSameDay.reduce((totalHours, otherBooking) => {
+        const differenceInHours = helper.timeDifferenceInHours(
+          otherBooking.fromDateTime,
+          otherBooking.untilDateTime
+        );
+        return totalHours + differenceInHours;
+      }, 0);
+
+      // Calculate the difference in hours for the current booking
+      const differenceInHours = helper.timeDifferenceInHours(
+        mappedBooking.fromDateTime,
+        mappedBooking.untilDateTime
+      );
+
+      // Check if the total booked hours exceed the allowed hours
+      return totalBookedHours + differenceInHours > allowedHours;
+    },
+    hoursExceededPerWeek (mappedBooking, allowedHours) {
+      let allBookings = this.bookings.concat(this.selectedBookings);
+
+      // Filter bookings for the same week
+      const bookingsOnSameWeek = allBookings.filter((otherBooking) => {
+        const bookingWeek = helper.getWeekNumber(new Date(mappedBooking.fromDateTime));
+        const otherBookingWeek = helper.getWeekNumber(new Date(otherBooking.fromDateTime));
+        const newBookingMemberId = parseInt(mappedBooking.member);
+        const otherBookingMemberId = typeof otherBooking === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member);
+
+        return (bookingWeek === otherBookingWeek) && (newBookingMemberId === otherBookingMemberId);
+      });
+
+      // Calculate the total booked hours in the same week
+      const totalBookedHours = bookingsOnSameWeek.reduce((totalHours, otherBooking) => {
         const differenceInHours = helper.timeDifferenceInHours(
           otherBooking.fromDateTime,
           otherBooking.untilDateTime

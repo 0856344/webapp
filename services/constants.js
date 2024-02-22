@@ -19,3 +19,18 @@ export const FABMAN_BOOKING_STATE = {
   cancelled: 'cancelled',
   confirmed: 'confirmed',
 };
+
+export const FABMAN_DEFAULT_SPACE = {
+  earliestHour: 9,
+  latestHour: 24,
+  hiddenWeekdays: [1,7], // Monday and Sunday
+  bookingExclusiveMinutes: 15,
+  bookingLockInHours: 24,
+  bookingMaxMinutesPerMemberDay: 60,
+  bookingMaxMinutesPerMemberWeek: 180,
+  bookingRefundable: true,
+  bookingSlotsPerHour: 1, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+  bookingTermsOfService: null,
+  bookingWindowMaxDays: 30,
+  bookingWindowMinHours: 2
+};

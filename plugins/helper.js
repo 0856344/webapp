@@ -183,7 +183,7 @@ export const helper = {
   getDifferenceInHours (fromDate, unitDate) {
     let diff = (fromDate.getTime() - unitDate.getTime()) / 1000
     diff /= 60 * 60
-    return Math.abs(Math.round(diff))
+    return Math.abs(diff)
   },
   /**
    * Get machine credits value
@@ -225,6 +225,18 @@ export const helper = {
   getLastDayOfMonth: month => {
     const today = new Date()
     return new Date(today.getFullYear(), month + 1, 0)
+  },
+  getWeekNumber(date) {
+    // Copy the date so we don't modify the original
+    const newDate = new Date(date);
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Sunday is 0, Monday is 1, and so on
+    newDate.setDate(newDate.getDate() + 4 - (newDate.getDay() || 7));
+    // Get first day of year
+    const yearStart = new Date(newDate.getFullYear(), 0, 1);
+    // Calculate full weeks to nearest Thursday
+    const weekNumber = Math.ceil((((newDate - yearStart) / 86400000) + 1) / 7);
+    return weekNumber;
   },
   getDefaultDateFormat: date => {
     const d = new Date(date)
