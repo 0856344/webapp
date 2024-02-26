@@ -388,7 +388,6 @@ export default {
         mappedBooking.untilDateTime
       );
 
-      console.log('totalBookedHours, differenceInHours, allowedHours', totalBookedHours, differenceInHours, allowedHours)
       // Check if the total booked hours exceed the allowed hours
       return totalBookedHours + differenceInHours > allowedHours;
     },
