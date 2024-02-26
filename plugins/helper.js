@@ -85,6 +85,34 @@ export const helper = {
     const startDateTime = new Date(startDate);
     return Math.abs(startDateTime - endDateTime) / 36e5 //36e5 is the scientific notation for 60*60*1000
   },
+  dateIsWithinDaysInFuture (date, days) {
+
+    if (!this.isValidDate(date)) {
+      console.log('Error in timeDifferenceInHours(): Invalid date format or type', date)
+      return false
+    }
+
+    // Calculate the future date by adding the given days
+    const currentDate = new Date();
+    const maxDaysInFutureDate = new Date(currentDate.getTime() + days * 24 * 60 * 60 * 1000);
+
+    // Check if the future date is within bookingWindowMaxDays
+   return date <= maxDaysInFutureDate;
+  },
+  dateIsAtLeastHoursInFuture (date, hours) {
+
+    if (!this.isValidDate(date)) {
+      console.log('Error in timeDifferenceInHours(): Invalid date format or type', date)
+      return false
+    }
+
+    // Calculate the future date by adding the given hours
+    const currentDate = new Date();
+    const minimumHoursInFutureDate = new Date(currentDate.getTime() + hours * 60 * 60 * 1000);
+
+    // Check if the future date is within bookingWindowMaxDays
+    return date >= minimumHoursInFutureDate;
+  },
   dateIsBeforeCurrentInHours (date, hours = 24) {
     // Make sure given date is in Date format
     if (typeof date === 'string') {
@@ -226,7 +254,7 @@ export const helper = {
     const today = new Date()
     return new Date(today.getFullYear(), month + 1, 0)
   },
-  getWeekNumber(date) {
+  getWeekNumber (date) {
     // Copy the date so we don't modify the original
     const newDate = new Date(date);
     // Set to nearest Thursday: current date + 4 - current day number

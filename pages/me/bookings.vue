@@ -435,7 +435,6 @@ export default {
 
         // Replace day of week number with german spelling
         this.selectedSpace.openingHours = fabmanSpace._embedded.openingHours
-        console.log('openingHours', this.selectedSpace.openingHours)
         this.selectedSpace.openingHours.forEach((openingHour) => {
           openingHour.weekday = daysOfWeek[openingHour.dayOfWeek - 1];
           allBeginHours.push(openingHour.fromTime)

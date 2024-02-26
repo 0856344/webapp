@@ -260,9 +260,6 @@ export default {
     isBookingValid (newBooking) {
       let alertMsg = null
 
-      // TODO
-      // Check if booking is in fabman booking-window ('bookingWindowMaxDays', 'bookingWindowMinHours')
-
       // Check date format
       if (!helper.isValidDate(newBooking.fromDateTime) || !helper.isValidDate(newBooking.untilDateTime)) {
         console.log(
@@ -271,6 +268,20 @@ export default {
           newBooking.untilDateTime,
         )
         return false
+      }
+
+      // Check if the new booking is at least bookingWindowMinHours in the future
+      if(!helper.dateIsAtLeastHoursInFuture(newBooking.fromDateTime, this.bookingWindowMinHours)) {
+        // Do not save this booking
+        alertMsg = 'Es kann frühestens in ' + this.bookingWindowMinHours + 'h reserviert werden'
+        this.invalidDate = newBooking
+      }
+
+      // Check if the new booking is within bookingWindowMaxDays in the future
+      if(!helper.dateIsWithinDaysInFuture(newBooking.fromDateTime, this.bookingWindowMaxDays)) {
+        // Do not save this booking
+        alertMsg = 'Reservierungen sind max. ' + this.bookingWindowMaxDays + ' Tage im Voraus möglich'
+        this.invalidDate = newBooking
       }
 
       // Check daily limitation
@@ -416,7 +427,6 @@ export default {
             if (data.statusCode && data.statusCode >= 300) {
               console.log('error', data)
             }
-            console.log('Reservierungen wurden erstellt!')
             this.showAlert('Reservierung erfolgreich erstellt!', '#29954f', 'check')
           })
           .catch(error => {
