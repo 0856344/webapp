@@ -331,12 +331,13 @@ export default {
     },
     hoursExceededPerDay (mappedBooking, allowedHours) {
       let allBookings = this.bookings.concat(this.selectedBookings);
+
       const bookingsOnSameDay = allBookings.filter((otherBooking) => {
         // Check if the other booking is on the same day as the target booking
         const bookingDate = new Date(mappedBooking.fromDateTime).toDateString();
         const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
         const newBookingMemberId = parseInt(mappedBooking.member)
-        const otherBookingMemberId = typeof otherBooking === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member)
+        const otherBookingMemberId = typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member) // TODO - Bugfix - is null
 
         return (bookingDate === otherBookingDate) && (newBookingMemberId === otherBookingMemberId)
       });
@@ -367,7 +368,7 @@ export default {
         const bookingWeek = helper.getWeekNumber(new Date(mappedBooking.fromDateTime));
         const otherBookingWeek = helper.getWeekNumber(new Date(otherBooking.fromDateTime));
         const newBookingMemberId = parseInt(mappedBooking.member);
-        const otherBookingMemberId = typeof otherBooking === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member);
+        const otherBookingMemberId = typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member);
 
         return (bookingWeek === otherBookingWeek) && (newBookingMemberId === otherBookingMemberId);
       });
@@ -387,6 +388,7 @@ export default {
         mappedBooking.untilDateTime
       );
 
+      console.log('totalBookedHours, differenceInHours, allowedHours', totalBookedHours, differenceInHours, allowedHours)
       // Check if the total booked hours exceed the allowed hours
       return totalBookedHours + differenceInHours > allowedHours;
     },
