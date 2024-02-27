@@ -263,10 +263,9 @@ export default {
           border-radius: 10px;
           text-align: center;
         }
-        .machine-list-warning span:hover {
+        .machine-list-warning span {
           cursor: pointer;
           color: $color-orange;
-          text-decoration: underline;
         }
       }
     }
