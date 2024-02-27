@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import moment from 'moment'
 import IBAN from 'iban'
-import {PACKAGES_SHORT_FORMS} from '@/services/constants.js'
+//import {PACKAGES_SHORT_FORMS} from '@/services/constants.js'
 
 Vue.prototype.$resizeImage = function (str, param) {
   if (str?.filename) {
@@ -39,13 +39,13 @@ export const helper = {
     const filteredMemberPackages = memberPackages.filter(item => !this.dateIsInPast(item?.chargedUntilDate))
     let isAllowed = false
     filteredMemberPackages.forEach(memberPackage => {
-      //if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
-      if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
-        // Smart Garage member are not allowed to book machines due to https://grandgarage.eu/de/mitgliedschaften (checked on 17.1.2024)
-        console.log('smartgarage detected', memberPackage?._embedded?.package?.metadata)
-        isAllowed = false
-        return isAllowed
-      }
+      // Deprecated - smartgarage is now allowed to book again
+      // if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
+      //   // Smart Garage member are not allowed to book machines due to https://grandgarage.eu/de/mitgliedschaften (checked on 17.1.2024)
+      //   console.log('smartgarage detected', memberPackage?._embedded?.package?.metadata)
+      //   isAllowed = false
+      //   return isAllowed
+      // }
       if (memberPackage?._embedded?.package?.allowsBooking === true) {
         // If there is at least one package where allowsBooking is enabled, member is allowed to book
         isAllowed = true

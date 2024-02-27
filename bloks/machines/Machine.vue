@@ -30,12 +30,10 @@
             />
             <booking-calendar :resource="m.fabmanId"/>
             <div v-show="canSeeBookings" class="flex justify-center mt-2 mb-4">
-              <button
-                class="gg-button flex"
-                @click="redirectToBookingsWithId(m.fabmanId)"
-              >
-                <span class="pr-2">zur Reservierung</span>
+              <NuxtLink class="gg-button flex text-white" :to="{ path: '/me/bookings', query: { resource: m.fabmanId }}">
+                zur {{ $t('machineBooking') }}
                 <svg
+                  class="pl-2"
                   style="fill: white"
                   xmlns="http://www.w3.org/2000/svg"
                   height="1em"
@@ -45,7 +43,7 @@
                     d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM281 385c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l71-71L136 280c-13.3 0-24-10.7-24-24s10.7-24 24-24l182.1 0-71-71c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L393 239c9.4 9.4 9.4 24.6 0 33.9L281 385z"
                   />
                 </svg>
-              </button>
+              </NuxtLink>
             </div>
           </div>
         </div>
@@ -167,10 +165,6 @@ export default {
     return getMetaTagsForPage(this.machine);
   },
   methods: {
-    redirectToBookingsWithId(id) {
-      // Use $router.push to navigate to /me/bookings/:id
-      this.$router.push(`/me/bookings/${id}`);
-    },
     async canSeeBookings () {
       let memberPackages = this.$store.getters.getMemberPackages();
       if (!memberPackages) {
