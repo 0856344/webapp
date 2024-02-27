@@ -320,6 +320,11 @@ export default {
     // Load machines
     await this.fetchMachines();
 
+    if(this.$route.query?.resource && this.machines.length > 0) {
+      // Machine has been already selected by user on detail page (Machine.vue)
+      this.selectedMachine = this.machines.find(machine => machine.id.toString() === this.$route.query.resource)
+    }
+
     // Load machine bookings
     await this.fetchBookings(this.member.id);
 
@@ -415,7 +420,7 @@ export default {
     },
     mapFabmanSpace (fabmanSpace) {
       if ('_embedded' in fabmanSpace && 'openingHours' in fabmanSpace._embedded) {
-        //console.log('fabmanSpace', fabmanSpace)
+
         // Create readable object
         const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
         this.selectedSpace.bookingExclusiveMinutes = fabmanSpace.bookingExclusiveMinutes
