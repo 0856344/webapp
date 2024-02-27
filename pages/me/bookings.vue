@@ -55,7 +55,7 @@
         </h2>
       </div>
       <br/>
-      <fieldset class="p-4">
+      <fieldset class="p-4 text-left">
         <legend>Neue Reservierung</legend>
         <p>Hier kannst du eine Maschine buchen.</p>
         <div>

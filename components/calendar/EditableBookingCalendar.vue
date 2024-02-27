@@ -62,6 +62,7 @@
         :events="events"
         events-count-on-year-view
         locale="de"
+        :weekday-format="'long'"
         :hide-weekdays="hiddenWeekdays"
         :time-from="earliestHour * 60"
         :time-to="latestHour * 60"
@@ -69,7 +70,7 @@
       <vue-cal
         v-else
         ref="editableVueCal"
-        xsmall
+        full
         today-button
         :editable-events="{
           title: false,
@@ -88,6 +89,7 @@
         :events="events"
         events-count-on-year-view
         locale="de"
+        :monthday-format="'long'"
         :hide-weekdays="hiddenWeekdays"
         :time-from="earliestHour * 60"
         :time-to="latestHour * 60"
@@ -559,6 +561,7 @@ export default {
   padding: 5px;
   opacity: 0.8;
   font-weight: bold;
+  font-size: 14px;
 
   &.lunch {
     background: repeating-linear-gradient(45deg, transparent, transparent 10px, #f2f2f2 10px, #f2f2f2 20px);
