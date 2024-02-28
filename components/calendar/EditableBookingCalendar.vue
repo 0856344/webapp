@@ -55,21 +55,22 @@
         @event-create="onEventCreate"
         @event-delete="eventDeleted"
         @event-change="eventChanged"
-        style="height: 52vh"
+        style="height: fit-content"
         class="vuecal--blue-theme vuecal--full-height-delete"
         active-view="day"
         :disable-views="['years', 'year', 'month', 'week']"
         :events="events"
         events-count-on-year-view
         locale="de"
-        :hide-weekdays="[]"
+        :weekday-format="'long'"
+        :hide-weekdays="hiddenWeekdays"
         :time-from="earliestHour * 60"
         :time-to="latestHour * 60"
         :time-step="60"/>
       <vue-cal
         v-else
         ref="editableVueCal"
-        xsmall
+        full
         today-button
         :editable-events="{
           title: false,
@@ -82,13 +83,14 @@
         :snap-to-time="bookingSlotInMinutes"
         @event-change="eventChanged"
         @event-delete="eventDeleted"
-        style="height: 58vh"
+        style="height: fit-content"
         class="vuecal--blue-theme vuecal--full-height-delete"
         default-view="week"
         :events="events"
         events-count-on-year-view
         locale="de"
-        :hide-weekdays="[]"
+        :monthday-format="'long'"
+        :hide-weekdays="hiddenWeekdays"
         :time-from="earliestHour * 60"
         :time-to="latestHour * 60"
         :time-step="60"
@@ -107,7 +109,19 @@ import Alert from '@/components/Alert.vue'
 export default {
   name: 'editable-booking-calendar',
   components: {VueCal, Alert},
-  props: ['resource', 'space', 'member', 'earliestHour', 'latestHour', 'bookingSlotsPerHour','bookingMaxMinutesPerMemberDay', 'bookingMaxMinutesPerMemberWeek'],
+  props: [
+    'resource',
+    'space',
+    'member',
+    'earliestHour',
+    'latestHour',
+    'hiddenWeekdays',
+    'bookingSlotsPerHour',
+    'bookingMaxMinutesPerMemberDay',
+    'bookingMaxMinutesPerMemberWeek',
+    'bookingWindowMaxDays',
+    'bookingWindowMinHours'
+  ],
   data () {
     return {
       isMobile: false,
@@ -125,15 +139,15 @@ export default {
   },
   computed: {
     bookingSlotInMinutes () {
-      // Convert from hours to minutes
-      return this.bookingSlotsPerHour * 60
+      // Convert into minutes | Fabman: 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+      return 60 / this.bookingSlotsPerHour
     },
     hasUser () {
       return !!this.$store.state.member
     },
     events () {
       return this.bookings.map(booking => {
-        if(booking?.member?.id === this.member.id) {
+        if (booking?.member?.id === this.member.id) {
           return {
             title: booking?.member?.firstName ? booking.member.firstName : "Yours",
             class: 'reserved-by-member',
@@ -164,11 +178,14 @@ export default {
     await this.fetchBookings()
   },
   methods: {
-    createNewEvent (startDateTime, durationInMinutes = 120) {
+    createNewEvent (startDateTime) {
+
       // Round start time to the nearest hour
-      this.$refs.editableVueCal.createEvent(helper.roundToNearestHour(startDateTime), durationInMinutes, {
-        class: 'blue-event',
-      })
+      if (startDateTime) {
+        this.$refs.editableVueCal.createEvent(helper.roundToNearestHour(startDateTime), 60, {
+          class: 'blue-event',
+        })
+      }
     },
     eventDeleted (calEvent) {
       //console.log('Event deleted', calEvent);
@@ -190,7 +207,7 @@ export default {
       //console.log('onEventDragCreate', calEvent)
       this.saveBooking(calEvent)
     },
-    mapBooking (calEvent) {
+    mapToFabmanBooking (calEvent) {
       // Format a calendar event to a booking object
       return {
         id: calEvent._eid,
@@ -220,7 +237,7 @@ export default {
     },
     saveBooking (calEvent) {
       if (calEvent && calEvent._eid) {
-        const newBooking = this.mapBooking(calEvent)
+        const newBooking = this.mapToFabmanBooking(calEvent)
 
         if (!this.isBookingValid(newBooking)) {
           return false
@@ -255,10 +272,31 @@ export default {
         return false
       }
 
-      // Check hours limitation
+      // Check if the new booking is at least bookingWindowMinHours in the future
+      if(!helper.dateIsAtLeastHoursInFuture(newBooking.fromDateTime, this.bookingWindowMinHours)) {
+        // Do not save this booking
+        alertMsg = 'Es kann frühestens in ' + this.bookingWindowMinHours + 'h reserviert werden'
+        this.invalidDate = newBooking
+      }
+
+      // Check if the new booking is within bookingWindowMaxDays in the future
+      if(!helper.dateIsWithinDaysInFuture(newBooking.fromDateTime, this.bookingWindowMaxDays)) {
+        // Do not save this booking
+        alertMsg = 'Reservierungen sind max. ' + this.bookingWindowMaxDays + ' Tage im Voraus möglich'
+        this.invalidDate = newBooking
+      }
+
+      // Check daily limitation
       if (this.hoursExceededPerDay(newBooking, (this.bookingMaxMinutesPerMemberDay / 60))) {
         // Do not save this booking
         alertMsg = 'Erlaubte Stunden pro Tag: ' + (this.bookingMaxMinutesPerMemberDay / 60) + 'h'
+        this.invalidDate = newBooking
+      }
+
+      // Check weekly limitation
+      if (this.hoursExceededPerWeek(newBooking, (this.bookingMaxMinutesPerMemberWeek / 60))) {
+        // Do not save this booking
+        alertMsg = 'Erlaubte Stunden pro Woche: ' + (this.bookingMaxMinutesPerMemberWeek / 60) + 'h'
         this.invalidDate = newBooking
       }
 
@@ -274,7 +312,6 @@ export default {
 
         // Check if in past
         if (helper.dateIsInPast(new Date(newBooking.fromDateTime))) {
-          console.log('NOT ALLOWED: is in PAST')
           // Do not save this booking
           alertMsg =
             alertMsg != null ? alertMsg + ' | Datum liegt in der Vergangenheit.' : 'Datum liegt in der Vergangenheit.'
@@ -286,7 +323,7 @@ export default {
       if (this.invalidDate) {
         this.showAlert(alertMsg, '#f55252fc', 'exclamation') // Show for 10 seconds
 
-        console.log('INVALID DATE', this.invalidDate)
+        //console.log('INVALID DATE', this.invalidDate)
         // There are errors - do not save and reset anything
         this.resetBookings()
 
@@ -294,14 +331,17 @@ export default {
       }
       return true
     },
-    hoursExceededPerDay (booking, allowedHours) {
+    hoursExceededPerDay (mappedBooking, allowedHours) {
       let allBookings = this.bookings.concat(this.selectedBookings);
+
       const bookingsOnSameDay = allBookings.filter((otherBooking) => {
         // Check if the other booking is on the same day as the target booking
-        console.log('booking/other', booking, otherBooking)
-        const bookingDate = new Date(booking.fromDateTime).toDateString();
+        const bookingDate = new Date(mappedBooking.fromDateTime).toDateString();
         const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
-        return  (bookingDate === otherBookingDate) && (booking.member === otherBooking.member);
+        const newBookingMemberId = parseInt(mappedBooking.member)
+        const otherBookingMemberId = typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member) // TODO - Bugfix - is null
+
+        return (bookingDate === otherBookingDate) && (newBookingMemberId === otherBookingMemberId)
       });
 
       // Calculate the total booked hours on the same day
@@ -315,8 +355,39 @@ export default {
 
       // Calculate the difference in hours for the current booking
       const differenceInHours = helper.timeDifferenceInHours(
-        booking.fromDateTime,
-        booking.untilDateTime
+        mappedBooking.fromDateTime,
+        mappedBooking.untilDateTime
+      );
+
+      // Check if the total booked hours exceed the allowed hours
+      return totalBookedHours + differenceInHours > allowedHours;
+    },
+    hoursExceededPerWeek (mappedBooking, allowedHours) {
+      let allBookings = this.bookings.concat(this.selectedBookings);
+
+      // Filter bookings for the same week
+      const bookingsOnSameWeek = allBookings.filter((otherBooking) => {
+        const bookingWeek = helper.getWeekNumber(new Date(mappedBooking.fromDateTime));
+        const otherBookingWeek = helper.getWeekNumber(new Date(otherBooking.fromDateTime));
+        const newBookingMemberId = parseInt(mappedBooking.member);
+        const otherBookingMemberId = typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member);
+
+        return (bookingWeek === otherBookingWeek) && (newBookingMemberId === otherBookingMemberId);
+      });
+
+      // Calculate the total booked hours in the same week
+      const totalBookedHours = bookingsOnSameWeek.reduce((totalHours, otherBooking) => {
+        const differenceInHours = helper.timeDifferenceInHours(
+          otherBooking.fromDateTime,
+          otherBooking.untilDateTime
+        );
+        return totalHours + differenceInHours;
+      }, 0);
+
+      // Calculate the difference in hours for the current booking
+      const differenceInHours = helper.timeDifferenceInHours(
+        mappedBooking.fromDateTime,
+        mappedBooking.untilDateTime
       );
 
       // Check if the total booked hours exceed the allowed hours
@@ -330,7 +401,7 @@ export default {
       this.$store.commit('setSelectedBookings', bookings)
     },
     removeBooking (calEvent) {
-      const removedBooking = this.mapBooking(calEvent)
+      const removedBooking = this.mapToFabmanBooking(calEvent)
       this.selectedBookings = this.selectedBookings.filter(function (booking) {
         return booking.id !== removedBooking.id
       })
@@ -359,7 +430,6 @@ export default {
             if (data.statusCode && data.statusCode >= 300) {
               console.log('error', data)
             }
-            console.log('Reservierungen wurden erstellt!')
             this.showAlert('Reservierung erfolgreich erstellt!', '#29954f', 'check')
           })
           .catch(error => {
@@ -472,12 +542,6 @@ export default {
   @include media-breakpoint-down(sm) {
     padding: 0;
   }
-
-  .vuecal {
-    @include media-breakpoint-down(sm) {
-      height: 75vh !important;
-    }
-  }
 }
 
 .w-100 {
@@ -497,10 +561,15 @@ export default {
   padding: 5px;
   opacity: 0.8;
   font-weight: bold;
+  font-size: 14px;
 
   &.lunch {
     background: repeating-linear-gradient(45deg, transparent, transparent 10px, #f2f2f2 10px, #f2f2f2 20px);
   }
+}
+
+.vuecal__cells.month-view .vuecal__cell, .vuecal__cells.year-view .vuecal__cell {
+  height: 50px;
 }
 
 .reserved {
@@ -520,6 +589,7 @@ export default {
   width: 100%;
   height: 20%;
 }
+
 .reserved-by-member {
   background-color: rgba(41, 149, 79, 0.8);
   color: white;
@@ -548,10 +618,12 @@ export default {
     transform: rotate(360deg);
   }
 }
+
 .input-button-primary {
   background-color: rgb(41, 149, 79);
   border: 1px solid rgb(21, 141, 63);
   color: white;
   border-radius: 4px;
 }
+
 </style>

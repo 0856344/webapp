@@ -119,6 +119,7 @@
                   {{ getInvoiceStateText(invoice) }}
                 </div>
               </td>
+              <td class="block lg:hidden activity-description"></td>
               <td @click="getPdf(invoice)" class="invoice-download">
                 <div class="text-center">
                   <loading-spinner

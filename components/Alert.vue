@@ -5,11 +5,11 @@
         v-if="!closed"
         :style="{ backgroundColor: color }"
         class="fade-transition info-box flex text-white justify-between align-middle border px-4 py-3 rounded relative my-3"
-        :class="customCssClass"
+        :class="[customCssClass, icon === 'info-circle' ? 'text-center' : 'text-left']"
         role="alert"
         style="min-height: 60px"
       >
-        <span>
+        <span class="flex-1">
           <span class="block sm:inline">
             <font-awesome-icon :icon="icon"></font-awesome-icon><span v-show="headline.length > 0" style="display:inline;padding: 0 0 0 10px;margin: 0;">{{ headline }}</span>
             <span v-html="message" class="alert-message"></span>
@@ -92,7 +92,6 @@ export default {
 <style scoped lang="scss">
 .info-box {
   display: flex;
-  align-items: center;
   opacity: 0.9;
   transition: 0.3s;
 }

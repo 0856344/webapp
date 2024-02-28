@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import moment from 'moment'
 import IBAN from 'iban'
-import {PACKAGES_SHORT_FORMS} from '@/services/constants.js'
+//import {PACKAGES_SHORT_FORMS} from '@/services/constants.js'
 
 Vue.prototype.$resizeImage = function (str, param) {
   if (str?.filename) {
@@ -39,13 +39,11 @@ export const helper = {
     const filteredMemberPackages = memberPackages.filter(item => !this.dateIsInPast(item?.chargedUntilDate))
     let isAllowed = false
     filteredMemberPackages.forEach(memberPackage => {
-      //if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
-      if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
-        // Smart Garage member are not allowed to book machines due to https://grandgarage.eu/de/mitgliedschaften (checked on 17.1.2024)
-        console.log('smartgarage detected', memberPackage?._embedded?.package?.metadata)
-        isAllowed = false
-        return isAllowed
-      }
+      // DEPRECATED - Bookings are allowed for every space now (checked on 28.2.2024)
+      // if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
+      //   isAllowed = false
+      //   return isAllowed
+      // }
       if (memberPackage?._embedded?.package?.allowsBooking === true) {
         // If there is at least one package where allowsBooking is enabled, member is allowed to book
         isAllowed = true
@@ -55,7 +53,8 @@ export const helper = {
     return isAllowed
   },
   isMobile () {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    return mediaQuery.matches;
   },
   isValidDate (date) {
     return date instanceof Date && !isNaN(date)
@@ -84,6 +83,34 @@ export const helper = {
     const startDateTime = new Date(startDate);
     return Math.abs(startDateTime - endDateTime) / 36e5 //36e5 is the scientific notation for 60*60*1000
   },
+  dateIsWithinDaysInFuture (date, days) {
+
+    if (!this.isValidDate(date)) {
+      console.log('Error in timeDifferenceInHours(): Invalid date format or type', date)
+      return false
+    }
+
+    // Calculate the future date by adding the given days
+    const currentDate = new Date();
+    const maxDaysInFutureDate = new Date(currentDate.getTime() + days * 24 * 60 * 60 * 1000);
+
+    // Check if the future date is within bookingWindowMaxDays
+   return date <= maxDaysInFutureDate;
+  },
+  dateIsAtLeastHoursInFuture (date, hours) {
+
+    if (!this.isValidDate(date)) {
+      console.log('Error in timeDifferenceInHours(): Invalid date format or type', date)
+      return false
+    }
+
+    // Calculate the future date by adding the given hours
+    const currentDate = new Date();
+    const minimumHoursInFutureDate = new Date(currentDate.getTime() + hours * 60 * 60 * 1000);
+
+    // Check if the future date is within bookingWindowMaxDays
+    return date >= minimumHoursInFutureDate;
+  },
   dateIsBeforeCurrentInHours (date, hours = 24) {
     // Make sure given date is in Date format
     if (typeof date === 'string') {
@@ -101,8 +128,8 @@ export const helper = {
     return timeDifference < millisecondsInHours
   },
   dateRangeOverlaps (aStart, aEnd, bStart, bEnd) {
-    if (aStart <= bStart && bStart <= aEnd) return true // b starts in a
-    if (aStart <= bEnd && bEnd <= aEnd) return true // b ends in a
+    if (aStart < bStart && bStart < aEnd) return true // b starts in a
+    if (aStart < bEnd && bEnd < aEnd) return true // b ends in a
     if (bStart < aStart && aEnd < bEnd) return true // a in b
 
     // No overlapping found
@@ -182,7 +209,7 @@ export const helper = {
   getDifferenceInHours (fromDate, unitDate) {
     let diff = (fromDate.getTime() - unitDate.getTime()) / 1000
     diff /= 60 * 60
-    return Math.abs(Math.round(diff))
+    return Math.abs(diff)
   },
   /**
    * Get machine credits value
@@ -224,6 +251,18 @@ export const helper = {
   getLastDayOfMonth: month => {
     const today = new Date()
     return new Date(today.getFullYear(), month + 1, 0)
+  },
+  getWeekNumber (date) {
+    // Copy the date so we don't modify the original
+    const newDate = new Date(date);
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Sunday is 0, Monday is 1, and so on
+    newDate.setDate(newDate.getDate() + 4 - (newDate.getDay() || 7));
+    // Get first day of year
+    const yearStart = new Date(newDate.getFullYear(), 0, 1);
+    // Calculate full weeks to nearest Thursday
+    const weekNumber = Math.ceil((((newDate - yearStart) / 86400000) + 1) / 7);
+    return weekNumber;
   },
   getDefaultDateFormat: date => {
     const d = new Date(date)

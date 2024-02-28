@@ -15,7 +15,7 @@
           </p>
           <ul
             v-show="data?.length > 0"
-            class="flex flex-col rounded data-field text-sm list-disc text-left p-4"
+            class="flex flex-col rounded data-field bg-gray-100 text-sm list-disc text-left p-4"
           >
             <li v-for="item in data" :key="item.id" class="mb-2">
               {{ item.value }}
@@ -103,6 +103,5 @@ export default {
 }
 .data-field {
   padding: 1em 1em 1em 2em;
-  background-color: #e8e8e8;
 }
 </style>

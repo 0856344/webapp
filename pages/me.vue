@@ -152,7 +152,7 @@ export default {
     }
 
     .menuLink {
-      @include media-breakpoint-down(sm) {
+      @include media-breakpoint-down(lg) {
         justify-content: center;
         border-bottom: 2px solid #696969;
         min-width: 260px;
@@ -161,7 +161,7 @@ export default {
 
     .tab-section {
       display: flex;
-      @include media-breakpoint-down(sm) {
+      @include media-breakpoint-down(lg) {
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -174,7 +174,7 @@ export default {
         width: 240px;
         flex: 1;
 
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-down(lg) {
           padding: 0;
           margin-bottom: 100px;
           display: flex;
@@ -211,7 +211,7 @@ export default {
         padding-left: 20px;
         flex: 3;
         @include media-breakpoint-down(sm) {
-          padding: 0 15px;
+          padding-left: 0;
         }
       }
     }

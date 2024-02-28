@@ -42,7 +42,18 @@ export default {
       return !!this.$store.state.member;
     },
     events() {
-      return this.bookings.map((booking) => {
+      return this.bookings.map(booking => {
+        if (booking?.member?.id === this.$store.state.member.id) {
+          return {
+            title: booking?.member?.firstName ? booking.member.firstName : "Yours",
+            class: 'reserved-by-member',
+            start: moment(booking.fromDateTime).format('YYYY-MM-DD HH:mm'),
+            end: moment(booking.untilDateTime).format('YYYY-MM-DD HH:mm'),
+            background: true,
+            state: 'reserved',
+            member: this.$store.state.member.id
+          }
+        }
         return {
           title: 'reserviert',
           class: 'reserved',
@@ -50,8 +61,9 @@ export default {
           end: moment(booking.untilDateTime).format('YYYY-MM-DD HH:mm'),
           background: true,
           state: 'reserved',
-        };
-      });
+          member: booking?.member?.id
+        }
+      })
     },
   },
   async created() {
@@ -125,9 +137,9 @@ export default {
     padding: 0;
   }
 
-  .vuecal {
-    @include media-breakpoint-down(sm) {
-      height: 75vh !important;
+  .vuecal__no-event {
+    @include media-breakpoint-down(xs){
+      font-size: 0.7rem;
     }
   }
 }
@@ -153,6 +165,18 @@ export default {
     );
   color: #484848;
   border: 1px solid rgb(255 162 2 / 74%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+}
+
+.reserved-by-member {
+  background-color: rgba(41, 149, 79, 0.8);
+  color: white;
+  border: 1px solid rgb(21, 141, 63, 0.8);
   display: flex;
   flex-direction: column;
   justify-content: center;

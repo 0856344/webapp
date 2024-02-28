@@ -183,6 +183,9 @@ ul {
   font-size: 16px;
   padding: 8px 16px;
 }
+.gg-button a{
+  color: white;
+}
 .gg-button:hover {
   background-color: rgba(104, 201, 223, 0.8);
 }
@@ -477,6 +480,7 @@ table {
 }
 
 .member-portal-table {
+  margin: auto;
   thead {
     background-color: black;
     color: white;
@@ -487,15 +491,18 @@ table {
     font-weight: 600;
 
     tr {
+      min-width: $table-cell-min-width;
       padding: 0.75rem 1.25rem;
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
+      align-items: center;
 
       th {
         min-width: $table-cell-min-width;
         justify-content: center;
         padding-left: 1rem;
         padding-right: 1rem;
+        flex: 1;
       }
     }
   }
@@ -519,9 +526,9 @@ table {
 
       td {
         min-width: $table-cell-min-width;
-        justify-content: center;
         padding-left: 1rem;
         padding-right: 1rem;
+        flex: 1;
       }
 
       .result {
@@ -530,6 +537,10 @@ table {
 
       .total {
         text-align: right;
+      }
+      .invoice-status {
+        display: flex;
+        justify-content: center;
       }
 
       .bubble {
@@ -586,11 +597,8 @@ table {
 }
 
 //Mobile
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(md) {
   .member-portal-table {
-    margin-left: -8%;
-    margin-right: -8%;
-
     thead {
       padding: 0.75rem 0;
       font-size: 0.8rem;
@@ -605,6 +613,7 @@ table {
           width: 50%;
           padding-left: 0.5rem;
           padding-right: 0.5rem;
+          flex: unset;
         }
 
         .activity-date {
@@ -645,7 +654,6 @@ table {
 
         .invoice-status {
           order: 4;
-          text-align: right;
           margin-left: 0;
         }
 
@@ -661,7 +669,6 @@ table {
       font-weight: 500;
 
       tr {
-        padding: 0.75rem 0;
         display: flex;
         flex-wrap: wrap;
 
@@ -669,6 +676,7 @@ table {
           width: 50%;
           padding-left: 0.5rem;
           padding-right: 0.5rem;
+          flex: unset;
         }
 
         .activity-date {
@@ -759,22 +767,18 @@ table {
   }
 }
 
-// Colors
-.bg-white {
-  background-color: white;
-}
+@include media-breakpoint-down(sm) {
+  .member-portal-table {
+    th {
+      min-width: 110px !important;
+    }
 
-.bg-black {
-  background-color: black;
-}
-
-.bg-gray-100 {
-  background-color: $color-gray-100;
-}
-
-.border-gray-100 {
-  border-color: $color-gray-100;
-}
+    td {
+      min-width: 110px !important;
+      justify-content: flex-start
+    }
+  }
+};
 
 // Shadows
 .shadow-sm {
