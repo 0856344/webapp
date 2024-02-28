@@ -57,7 +57,7 @@
       <br/>
       <fieldset class="p-4 text-left">
         <legend>Neue Reservierung</legend>
-        <p>Hier kannst du eine Maschine buchen.</p>
+        <p>Hier kannst du Geräte reservieren. <br><small>Bitte beachte, dass die Reservierung nach {{ expiredReservationInMinutes }}min verfällt, wenn du nicht erscheinst.</small></p>
         <div>
           <div class="flex-1 mb-4">
             <label
@@ -317,11 +317,11 @@ export default {
     this.steps = this.createTourText();
   },
   async mounted () {
-    // Load machines
+    // Load machines, which are bookable for this member (depends on space and required trainings)
     await this.fetchMachines();
 
+    // Check if user has already selected a machine on another page (e.g. Machine.vue) by query param
     if(this.$route.query?.resource && this.machines.length > 0) {
-      // Machine has been already selected by user on detail page (Machine.vue)
       this.selectedMachine = this.machines.find(machine => machine.id.toString() === this.$route.query.resource)
     }
 
@@ -335,6 +335,9 @@ export default {
     }
   },
   computed: {
+    expiredReservationInMinutes() {
+      return this.selectedSpace ? this.selectedSpace.bookingExclusiveMinutes : 15
+    },
     openingHoursText () {
       if (this.selectedSpace.openingHours.length === 0)
         return ''

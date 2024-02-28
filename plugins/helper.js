@@ -39,10 +39,8 @@ export const helper = {
     const filteredMemberPackages = memberPackages.filter(item => !this.dateIsInPast(item?.chargedUntilDate))
     let isAllowed = false
     filteredMemberPackages.forEach(memberPackage => {
-      // Deprecated - smartgarage is now allowed to book again
+      // DEPRECATED - Bookings are allowed for every space now (checked on 28.2.2024)
       // if (memberPackage?._embedded?.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.smart_garage) {
-      //   // Smart Garage member are not allowed to book machines due to https://grandgarage.eu/de/mitgliedschaften (checked on 17.1.2024)
-      //   console.log('smartgarage detected', memberPackage?._embedded?.package?.metadata)
       //   isAllowed = false
       //   return isAllowed
       // }
