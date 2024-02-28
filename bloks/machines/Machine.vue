@@ -294,6 +294,10 @@ export default {
           -moz-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
           box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
         }
+        .machine-list-warning span {
+          cursor: pointer;
+          color: $color-orange;
+        }
       }
     }
 
