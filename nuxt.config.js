@@ -51,7 +51,6 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
-      { rel: 'icon', type: 'image/x-icon', href: '/gg-logo.svg' },
     ],
     htmlAttrs: {
       lang: 'de',
