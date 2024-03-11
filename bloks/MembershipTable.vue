@@ -74,7 +74,7 @@ export default {
       breakpoint: "",
       isMobile: false,
       //keys of features that will be marked as "coming soon"
-      comingSoon: ["desk", "reservation"],
+      comingSoon: ["desk"],
     };
   },
   //get the array of feature description string values from the datasource
