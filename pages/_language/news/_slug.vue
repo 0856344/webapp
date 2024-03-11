@@ -110,14 +110,19 @@ export default {
   props: ["blok"],
   mixins: [storyblokLivePreview],
   created() {
-    this.$store.app.$storyapi
-      .get(`cdn/stories/${this.id}`, {
-        find_by: "uuid",
-      })
-      .then((res) => {
-        this.story = res.data.story;
-      })
-      .catch((e) => {});
+    if (this.id) {
+      this.$store.app.$storyapi
+          .get(`cdn/stories/${this.id}`, {
+            find_by: "uuid",
+          })
+          .then((res) => {
+            this.story = res.data.story;
+          })
+          .catch((e) => {
+            // Hier könnten Sie den Fehler besser handhaben
+            console.error(e);
+          });
+    }
   },
   data() {
     return {
