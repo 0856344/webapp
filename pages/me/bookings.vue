@@ -707,7 +707,7 @@ export default {
         {
           target: '#v-step-2',
           content:
-            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
+            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle jetzt deine gewünschte Maschine aus.",
           offset: -300,
           background: '#000',
         },
