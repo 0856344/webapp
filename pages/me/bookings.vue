@@ -306,6 +306,7 @@ export default {
           return machine.space === space.id
         })
         this.mapFabmanSpace(selectedSpace)
+        //console.log('this.selectedSpace', this.selectedSpace)
       }
 
       // Call method in child component
@@ -425,7 +426,7 @@ export default {
         hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
         bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
         bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
-        bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+        bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberDay,
         bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
         bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
         bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
@@ -441,8 +442,8 @@ export default {
         const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
         this.selectedSpace.bookingExclusiveMinutes = fabmanSpace.bookingExclusiveMinutes
         this.selectedSpace.bookingLockInHours = fabmanSpace.bookingLockInHours === null ? 0 : fabmanSpace.bookingLockInHours
-        this.selectedSpace.bookingMaxMinutesPerMemberDay = fabmanSpace.bookingMaxMinutesPerMemberDay
-        this.selectedSpace.bookingMaxMinutesPerMemberWeek = fabmanSpace.bookingMaxMinutesPerMemberWeek
+        this.selectedSpace.bookingMaxMinutesPerMemberDay = fabmanSpace.bookingMaxMinutesPerMemberDay === null ? FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberDay : fabmanSpace.bookingMaxMinutesPerMemberDay
+        this.selectedSpace.bookingMaxMinutesPerMemberWeek = fabmanSpace.bookingMaxMinutesPerMemberWeek === null ? FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek : fabmanSpace.bookingMaxMinutesPerMemberWeek
         this.selectedSpace.bookingRefundable = fabmanSpace.bookingRefundable
         this.selectedSpace.bookingSlotsPerHour = fabmanSpace.bookingSlotsPerHour
         this.selectedSpace.bookingTermsOfService = fabmanSpace.bookingTermsOfService
