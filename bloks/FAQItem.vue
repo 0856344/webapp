@@ -18,7 +18,7 @@
                   <dc:type
                     rdf:resource="http://purl.org/dc/dcmitype/StillImage"
                   />
-                  <dc:title />
+                  <dc:title/>
                 </cc:Work>
               </rdf:RDF>
             </metadata>
@@ -112,7 +112,7 @@
       </div>
       <div v-collapse-content class="content">
         <div class="inner-content">
-          <markdown :value="blok.answer" />
+          <markdown :value="blok.answer"/>
         </div>
       </div>
     </v-collapse-wrapper>
@@ -122,14 +122,29 @@
 <script>
 export default {
   props: ["blok", "anchor"],
-  data() {
+  data () {
     return {
       active: false,
     };
   },
+  created () {
+
+  },
+  mounted () {
+    this.checkAnchor();
+  },
   methods: {
-    updateStatus(e) {
+    updateStatus (e) {
       this.active = e.status;
+    },
+    checkAnchor() {
+      if (window.location?.hash && this.anchor?.length > 0) {
+        if (window.location.hash === '#' + this.anchor) {
+          // Anchor link item found
+          this.active = true;
+          this.$refs.wrapper.toggle();
+        }
+      }
     },
   },
 };
@@ -141,19 +156,23 @@ $faq-margin-left: 2em;
 .faq-item {
   margin-bottom: 5px;
   align-items: flex-start;
+
   .toggle-title {
     padding: 20px;
     font-family: $font-secondary;
     cursor: pointer;
     display: flex;
+
     .title {
       flex: 1;
       font-size: 1.4em;
       color: $color-orange;
       transition: all 0.3s linear;
     }
+
     .chevron {
       min-width: $faq-margin-left;
+
       .chevron-icon {
         height: 1rem;
         margin-bottom: 2px;
@@ -162,15 +181,18 @@ $faq-margin-left: 2em;
         margin: 0.2em 0;
       }
     }
+
     &.active {
       .chevron-icon {
         transform: rotateX(180deg);
         fill: #000;
       }
+
       .title {
         color: #000;
       }
     }
+
     @include media-breakpoint-down(sm) {
       padding: 2vh 0;
       .title {
@@ -178,31 +200,38 @@ $faq-margin-left: 2em;
       }
     }
   }
+
   .content {
     line-height: 1.4;
     margin-left: $faq-margin-left;
     @include media-breakpoint-down(sm) {
       margin-left: 0;
     }
+
     .image {
       width: 100%;
       display: block;
     }
+
     .header {
       padding: 20px 0;
       display: flex;
+
       .col-title {
         flex: 1;
+
         .title {
           font-family: $font-secondary;
           color: $color-blue-alt;
           font-size: 1.6rem;
           margin-bottom: 5px;
         }
+
         .subtitle {
           font-size: 1rem;
         }
       }
+
       .col-button {
         .apply-button {
           font-size: 1.2rem;
@@ -216,16 +245,19 @@ $faq-margin-left: 2em;
         }
       }
     }
+
     &.v-collapse-content {
       max-height: 0;
       transition: max-height 0.3s ease-out;
       overflow: hidden;
       padding: 0;
     }
+
     &.v-collapse-content-end {
       transition: max-height 0.3s ease-in;
       max-height: 200vh;
     }
+
     .inner-content {
       padding: 0 20px 20px 20px;
     }

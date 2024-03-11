@@ -57,7 +57,14 @@
       <br/>
       <fieldset class="p-4 text-left">
         <legend>Neue Reservierung</legend>
-        <p>Hier kannst du Geräte reservieren. <br><small>Bitte beachte, dass die Reservierung nach {{ expiredReservationInMinutes }}min verfällt, wenn du nicht erscheinst.</small></p>
+        <p>Hier kannst du Geräte reservieren. <br><small>Bitte beachte, dass die Reservierung nach {{ expiredReservationInMinutes }}min verfällt, wenn du nicht erscheinst.</small>
+        <span class="flex-1">
+          <span class="block sm:inline">
+                <a  target="_blank" @click="redirectToUrl(FAQUrl)" title="Zu den FAQs">
+                  <font-awesome-icon id="v-step-0" class="cursor-pointer pagination-button" icon="info-circle" :class="{ 'jump-animation': isFirstVisit }"/>
+                </a>
+          </span>
+        </span>
         <div>
           <div class="flex-1 mb-4">
             <label
@@ -66,7 +73,7 @@
             ></label
             >
             <v-select
-              id="v-step-1"
+              id="v-step-2"
               :loading="loadingMachines"
               :options="machines"
               v-model="selectedMachine"
@@ -75,7 +82,7 @@
               class="mt-3"
             >
             </v-select>
-            <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
+            <span v-if="selectedMachine" id="v-step-3" class="v-step-4">
               <Alert
                 :show="openingHoursText.length > 0"
                 :customCssClass="'flex flex-row list-none'"
@@ -102,7 +109,7 @@
             </span>
             <div v-if="selectedMachine" class="flex justify-end">
               <button
-                class="input-button-primary v-step-4 shadow-md"
+                class="input-button-primary v-step-5 shadow-md"
                 @click="openModal"
                 :disabled="this.$store.getters.getSelectedBookings.length <= 0"
               >
@@ -125,7 +132,7 @@
 
       <br/>
 
-      <fieldset id="v-step-0" class="table-fieldset">
+      <fieldset id="v-step-1" class="table-fieldset">
         <legend>Deine Reservierungen</legend>
         <div class="flex pb-2 button-group">
           <button @click="fetchBookings(member.id)" class="gg-button flex">
@@ -335,6 +342,9 @@ export default {
     }
   },
   computed: {
+    FAQUrl() {
+      return '/de/faq#gibt-es-fuer-die-maschinen-ein-reservierungssystem'
+    },
     expiredReservationInMinutes() {
       return this.selectedSpace ? this.selectedSpace.bookingExclusiveMinutes : 15
     },
@@ -404,6 +414,9 @@ export default {
     },
   },
   methods: {
+    redirectToUrl(url) {
+      this.$router.push({ path: url });
+    },
     resetSpace () {
       this.selectedSpace = {
         openingHours: [],
@@ -680,31 +693,38 @@ export default {
         {
           target: '#v-step-0',
           content:
-            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
+            "<b>FAQs</b> <br><hr class='m-1'> Hier findest du alle wichtigen Informationen zum Thema Reservierung.",
           offset: -300,
           background: '#000',
         },
         {
           target: '#v-step-1',
           content:
-            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
+            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
           offset: -300,
           background: '#000',
         },
         {
           target: '#v-step-2',
+          content:
+            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle zuerst deine gewünschte Maschine aus.",
+          offset: -300,
+          background: '#000',
+        },
+        {
+          target: '#v-step-3',
           content: this.tourStep2Text,
           offset: -100,
           background: '#000',
         },
         {
-          target: '.v-step-3',
+          target: '.v-step-4',
           content: this.tourStep3Text,
           offset: -100,
           background: '#000',
         },
         {
-          target: '.v-step-4',
+          target: '.v-step-5',
           content:
             "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
           offset: -300,
@@ -764,6 +784,7 @@ button:disabled svg {
 
 .icon-button-secondary:hover {
   fill: #0c0c0c;
+  color: black;
 }
 
 .button-group {

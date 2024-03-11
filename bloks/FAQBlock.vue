@@ -2,25 +2,25 @@
   <div v-editable="blok" class="faq-block">
     <div class="faqs">
       <h3><span id="general"></span>{{ $t("general") }}</h3>
-      <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
+      <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
       <br />
       <h3><span id="membership"></span>{{ $t("membership") }}</h3>
-      <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
+      <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
       <br />
       <h3 v-if="workshopQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("workshop") }}
       </h3>
-      <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
+      <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
       <br />
       <h3 v-if="giftCardQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("giftCard") }}
       </h3>
-      <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
+      <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
       <br />
       <h3 v-if="creditsQuestions.length > 0">
         <span id="credits"></span> {{ $t("credits") }}
       </h3>
-      <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
+      <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
     </div>
   </div>
 </template>
@@ -53,9 +53,31 @@ export default {
       });
     },
     generateAnchor(title) {
-      // Remove spaces, special chars and convert to lowercase for a clean anchor link
-      const cleanedTitle = title.replace(/[?;.,]+/g, '').toLowerCase();
-      return cleanedTitle.replace(/\s+/g, '-');
+      return title
+        .replace(/\u00e4/g, "ae") // ä
+        .replace(/\u00c4/g, "ae") // Ä
+        .replace(/\u00fc/g, "ue") // ü
+        .replace(/\u00dc/g, "ue") // Ü
+        .replace(/\u00d6/g, "ue") // Ö
+        .replace(/\u00f6/g, "ue") // ö
+        .replace(/\u00df/g, "ss") // ß
+        .replace(/[^\w\s]/g, '') // Remove non-word characters (excluding spaces)
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .toLowerCase();
+    },
+    scrollToElement(title) {
+      const anchor = this.generateAnchor(title);
+      const element = document.getElementById(anchor);
+
+      if (element) {
+        const offset = 80; // Adjust this value according to your navigation bar height
+        const offsetTop = element.offsetTop - offset;
+
+        window.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth',
+        });
+      }
     },
   },
 };
@@ -67,6 +89,7 @@ h3 {
   padding: 20px;
   background: white;
   margin-left: 20px;
+  scroll-margin-top: 80px;
 }
 
 h3 span {

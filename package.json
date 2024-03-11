@@ -5,9 +5,9 @@
   "author": "CAP.future GmbH",
   "license": "MIT",
   "scripts": {
-    "nuxt-local": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://connector.dev.grandgarage.eu NUXT_ENV_AUTH0_URL_DEVELOP=https://gg-develop.eu.auth0.com NUXT_ENV_ORIGIN_DEVELOP=https://localhost:3010 nuxt",
-    "nuxt-develop": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://develop.connector.grandgarage.eu NUXT_ENV_AUTH0_URL_DEVELOP=https://gg-develop.eu.auth0.com NUXT_ENV_ORIGIN_DEVELOP=https://develop.grandgarage.eu nuxt",
-    "nuxt-staging": "NUXT_ENV_ENVIRONMENT=staging NUXT_ENV_CONNECTOR_URL=https://staging.connector.grandgarage.eu NUXT_ENV_AUTH0_URL_STAGING=https://gg-staging.eu.auth0.com NUXT_ENV_ORIGIN_STAGING=https://staging.grandgarage.eu nuxt",
+    "nuxt-local": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://connector.dev.grandgarage.eu NUXT_ENV_AUTH0_URL=https://gg-develop.eu.auth0.com NUXT_ENV_ORIGIN=https://localhost:3010 nuxt",
+    "nuxt-develop": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://develop.connector.grandgarage.eu NUXT_ENV_AUTH0_URL=https://gg-develop.eu.auth0.com NUXT_ENV_ORIGIN=https://develop.grandgarage.eu nuxt",
+    "nuxt-staging": "NUXT_ENV_ENVIRONMENT=staging NUXT_ENV_CONNECTOR_URL=https://staging.connector.grandgarage.eu NUXT_ENV_AUTH0_URL=https://gg-staging.eu.auth0.com NUXT_ENV_ORIGIN=https://staging.grandgarage.eu nuxt",
     "nuxt-production": "NUXT_ENV_ENVIRONMENT=production NUXT_ENV_CONNECTOR_URL=https://connector.grandgarage.eu NUXT_ENV_AUTH0_URL=https://grandgarage.eu.auth0.com NUXT_ENV_ORIGIN=https://grandgarage.eu nuxt",
     "generate": "NUXT_ENV_ENVIRONMENT=production nuxt generate",
     "generate-develop": "NUXT_ENV_ENVIRONMENT=develop NUXT_ENV_CONNECTOR_URL=https://develop.connector.grandgarage.eu nuxt generate",

@@ -20,22 +20,8 @@ export const getUserFromLocalStorage = () => {
   return token || undefined
 }
 export function handler(token, context, callback) {
-  let origin
-  let jwksUri
-  switch (process.env.NUXT_ENV_ENVIRONMENT) {
-    case 'local':
-    case 'develop':
-      jwksUri = `${process.env.NUXT_ENV_AUTH0_URL_DEVELOP}/.well-known/jwks.json`
-      origin = process.env.NUXT_ENV_ORIGIN_DEVELOP
-      break
-    case 'staging':
-      jwksUri = `${process.env.NUXT_ENV_AUTH0_URL_STAGING}/.well-known/jwks.json`
-      origin = process.env.NUXT_ENV_ORIGIN_STAGING
-      break
-    default:
-      jwksUri = `${process.env.NUXT_ENV_AUTH0_URL}/.well-known/jwks.json`
-      origin = process.env.NUXT_ENV_ORIGIN
-  }
+  let jwksUri = `${process.env.NUXT_ENV_AUTH0_URL}/.well-known/jwks.json`
+  let origin = process.env.NUXT_ENV_ORIGIN
 
   const jwt = require('jsonwebtoken')
   const axios = require('axios')
