@@ -11,7 +11,7 @@
     <div class="top">
       <!--<a :href="link" target="_blank">-->
       <Nuxt-link
-        :to="{ path: './' + news.slug }"
+        :to="generateLink(news.slug)"
         class="link"
         :disabled="news.slug == undefined"
       >
@@ -40,7 +40,7 @@
       <!--<a :href="link" target="_blank">
         <nuxt-link :to="{ path: '/news/detail', query: { item: news }}" class="link">-->
       <nuxt-link
-        :to="{ path: './' + news.slug }"
+        :to="generateLink(news.slug)"
         class="link"
         :disabled="news.slug == undefined"
       >
@@ -77,7 +77,7 @@
     <div class="top">
       <!--<a :href="link" target="_blank">-->
       <Nuxt-link
-        :to="{ path: './' + news.slug }"
+        :to="generateLink(news.slug)"
         class="link"
         :disabled="news.slug == undefined"
       >
@@ -105,7 +105,7 @@
     <div class="bot">
       <!--<a :href="link" target="_blank">
         <nuxt-link :to="{ path: '/news/detail', query: { item: news }}" class="link">-->
-      <nuxt-link :to="{ path: './' + news.slug }" class="link">
+      <nuxt-link :to="generateLink(news.slug)" class="link">
         <div class="link">
           <div v-if="news.content.voting" class="voting-icon">
             <a @click="vote"
@@ -149,6 +149,14 @@ export default {
   components: { VotingButton },
   props: {
     news: {},
+  },
+  methods: {
+    // method is required so that news-slug also works
+    // when you go to the blog page via BestOfBlog.
+    generateLink(slug) {
+      const basePath = '/de/news/';
+      return basePath + slug;
+    }
   },
   asyncData(context) {},
   data() {
