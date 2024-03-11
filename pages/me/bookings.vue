@@ -306,7 +306,7 @@ export default {
           return machine.space === space.id
         })
         this.mapFabmanSpace(selectedSpace)
-        //console.log('this.selectedSpace', this.selectedSpace)
+        console.log('space', this.selectedSpace)
       }
 
       // Call method in child component
