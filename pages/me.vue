@@ -17,11 +17,11 @@
       <div class="tab-section">
         <div class="tab-section-menu">
           <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-<!--          <MenuLink-->
-<!--            v-show="canSeeBookings"-->
-<!--            to="/me/bookings/"-->
-<!--            icon="calendar"-->
-<!--          >{{ $t('machineBooking') }}</MenuLink>-->
+          <MenuLink
+            v-show="canSeeBookings"
+            to="/me/bookings/"
+            icon="calendar"
+          >{{ $t('machineBooking') }}</MenuLink>
           <MenuLink to="/me/packages" icon="coins"
           >{{ $t('membership') }} & Credits
           </MenuLink>
