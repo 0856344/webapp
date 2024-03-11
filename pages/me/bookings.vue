@@ -61,7 +61,7 @@
         <div>
           <div class="flex-1 mb-4">
             <label
-            >Maschine<small v-if="machines && machines.length > 0"
+            >Maschine&nbsp;<small v-if="machines && machines.length > 0"
             >({{ machines.length }})&nbsp;</small
             ></label
             >

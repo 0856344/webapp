@@ -1,34 +1,26 @@
 <template>
   <div v-editable="blok" class="faq-block">
-<!--    <div class="downloads">-->
-<!--      <div class="headline">-->
-<!--        {{ $t("downloads") }}-->
-<!--      </div>-->
-<!--      <div class="download-list">-->
-<!--        <download-item v-for="i in blok.downloads" :key="i.uid" :blok="i" />-->
-<!--      </div>-->
-<!--    </div>-->
     <div class="faqs">
       <h3><span id="general"></span>{{ $t("general") }}</h3>
-      <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" />
+      <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
       <br />
       <h3><span id="membership"></span>{{ $t("membership") }}</h3>
-      <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" />
+      <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
       <br />
       <h3 v-if="workshopQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("workshop") }}
       </h3>
-      <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" />
+      <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
       <br />
       <h3 v-if="giftCardQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("giftCard") }}
       </h3>
-      <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" />
+      <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
       <br />
       <h3 v-if="creditsQuestions.length > 0">
         <span id="credits"></span> {{ $t("credits") }}
       </h3>
-      <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" />
+      <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)"/>
     </div>
   </div>
 </template>
@@ -59,6 +51,11 @@ export default {
       return this.blok.faqs.filter((item) => {
         return item.category === category ? item : "";
       });
+    },
+    generateAnchor(title) {
+      // Remove spaces, special chars and convert to lowercase for a clean anchor link
+      const cleanedTitle = title.replace(/[?;.,]+/g, '').toLowerCase();
+      return cleanedTitle.replace(/\s+/g, '-');
     },
   },
 };

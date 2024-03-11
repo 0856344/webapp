@@ -106,7 +106,7 @@
             </g>
           </svg>
         </div>
-        <div class="title">
+        <div class="title" :id="anchor">
           {{ blok.question }}
         </div>
       </div>
@@ -121,7 +121,7 @@
 
 <script>
 export default {
-  props: ["blok"],
+  props: ["blok", "anchor"],
   data() {
     return {
       active: false,
