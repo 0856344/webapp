@@ -65,6 +65,7 @@
                 </a>
           </span>
         </span>
+        </p>
         <div>
           <div class="flex-1 mb-4">
             <label
@@ -633,7 +634,25 @@ export default {
     },
     durationAsString (fromDate, untilDate) {
       const hours = this.durationInHours(fromDate, untilDate);
-      return hours === 1 ? 'eine Stunde' : hours + ' Stunden';
+
+      // Extract hours and minutes
+      const wholeHours = Math.floor(hours);
+      const remainingMinutes = Math.round((hours - wholeHours) * 60);
+
+      let result = '';
+      if (wholeHours > 0) {
+        result += `${wholeHours}h ${wholeHours === 1 ? '' : 'n'}`;
+      }
+
+      if (remainingMinutes > 0) {
+        if (result.length > 0) {
+          result += ' ';
+        }
+
+        result += `${remainingMinutes}min`;
+      }
+
+      return result.length > 0 ? result : 'weniger als eine Stunde';
     },
     hasBeenCanceled (state) {
       return state === FABMAN_BOOKING_STATE.cancelled;
