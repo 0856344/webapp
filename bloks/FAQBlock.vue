@@ -30,7 +30,7 @@ export default {
   props: ["blok"],
   mounted() {
       // Checks whether a hash is present in the URL
-      if (window.location.hash) {
+      if (window?.location?.hash) {
         const hash = window.location.hash.substring(1); // Removes the '#'
         this.scrollToElement(hash);
       }

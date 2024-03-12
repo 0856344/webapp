@@ -331,15 +331,23 @@ export default {
       }
       return true
     },
+    getBookingMember() {
+
+    },
     hoursExceededPerDay (mappedBooking, allowedHours) {
+      // TODO - refactoring
       let allBookings = this.bookings.concat(this.selectedBookings);
 
       const bookingsOnSameDay = allBookings.filter((otherBooking) => {
         // Check if the other booking is on the same day as the target booking
         const bookingDate = new Date(mappedBooking.fromDateTime).toDateString();
         const otherBookingDate = new Date(otherBooking.fromDateTime).toDateString();
-        const newBookingMemberId = parseInt(mappedBooking.member)
-        const otherBookingMemberId = typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member) // TODO - Bugfix - is null
+        const newBookingMemberId = mappedBooking.member === null ? null : parseInt(mappedBooking.member)
+        const otherBookingMemberId = otherBooking.member === null ? null : ( typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member))
+        if(newBookingMemberId === null || otherBookingMemberId === null){
+          // null-member means admin-only booking
+          return false;
+        }
 
         return (bookingDate === otherBookingDate) && (newBookingMemberId === otherBookingMemberId)
       });
@@ -363,14 +371,20 @@ export default {
       return totalBookedHours + differenceInHours > allowedHours;
     },
     hoursExceededPerWeek (mappedBooking, allowedHours) {
+      // TODO - refactoring
       let allBookings = this.bookings.concat(this.selectedBookings);
 
       // Filter bookings for the same week
       const bookingsOnSameWeek = allBookings.filter((otherBooking) => {
         const bookingWeek = helper.getWeekNumber(new Date(mappedBooking.fromDateTime));
         const otherBookingWeek = helper.getWeekNumber(new Date(otherBooking.fromDateTime));
-        const newBookingMemberId = parseInt(mappedBooking.member);
-        const otherBookingMemberId = typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member);
+        const newBookingMemberId = mappedBooking.member === null ? null : parseInt(mappedBooking.member);
+        const otherBookingMemberId = otherBooking.member === null ? null : (typeof otherBooking.member === 'object' ? parseInt(otherBooking.member.id) : parseInt(otherBooking.member));
+
+        if(newBookingMemberId === null || otherBookingMemberId === null){
+          // null-member means admin-only booking
+          return false;
+        }
 
         return (bookingWeek === otherBookingWeek) && (newBookingMemberId === otherBookingMemberId);
       });
