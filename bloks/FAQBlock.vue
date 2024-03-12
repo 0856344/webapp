@@ -5,7 +5,7 @@
       <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
       <br />
       <h3><span id="membership"></span>{{ $t("membership") }}</h3>
-      <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
+      <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
       <br />
       <h3 v-if="workshopQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("workshop") }}
@@ -28,6 +28,13 @@
 <script>
 export default {
   props: ["blok"],
+  mounted() {
+      // Checks whether a hash is present in the URL
+      if (window.location.hash) {
+        const hash = window.location.hash.substring(1); // Removes the '#'
+        this.scrollToElement(hash);
+      }
+  },
   computed: {
     memberQuestions() {
       //return this.filterFaqs('general')
@@ -65,19 +72,23 @@ export default {
         .replace(/\s+/g, '-') // Replace spaces with hyphens
         .toLowerCase();
     },
-    scrollToElement(title) {
-      const anchor = this.generateAnchor(title);
-      const element = document.getElementById(anchor);
+    scrollToElement(anchor) {
+      // Introduce a delay to ensure the DOM has fully loaded
+      setTimeout(() => {
+        const element = document.getElementById(anchor);
 
-      if (element) {
-        const offset = 80; // Adjust this value according to your navigation bar height
-        const offsetTop = element.offsetTop - offset;
+        if (element) {
+          const viewportHeight = window.innerHeight;
+          const elementTop = element.getBoundingClientRect().top + window.scrollY;
+          const elementHeight = element.offsetHeight;
+          const centerPosition = elementTop - ((viewportHeight / 2) - (elementHeight / 2));
 
-        window.scrollTo({
-          top: offsetTop,
-          behavior: 'smooth',
-        });
-      }
+          window.scrollTo({
+            top: centerPosition,
+            behavior: 'smooth',
+          });
+        }
+      }, 100);
     },
   },
 };
