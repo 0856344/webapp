@@ -74,7 +74,7 @@
             ></label
             >
             <v-select
-              id="v-step-2"
+              id="v-step-1"
               :loading="loadingMachines"
               :options="machines"
               v-model="selectedMachine"
@@ -83,7 +83,7 @@
               class="mt-3"
             >
             </v-select>
-            <span v-if="selectedMachine" id="v-step-3" class="v-step-4">
+            <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
               <Alert
                 :show="openingHoursText.length > 0"
                 :customCssClass="'flex flex-row list-none'"
@@ -110,7 +110,7 @@
             </span>
             <div v-if="selectedMachine" class="flex justify-end">
               <button
-                class="input-button-primary v-step-5 shadow-md"
+                class="input-button-primary v-step-4 shadow-md"
                 @click="openModal"
                 :disabled="this.$store.getters.getSelectedBookings.length <= 0"
               >
@@ -133,7 +133,7 @@
 
       <br/>
 
-      <fieldset id="v-step-1" class="table-fieldset">
+      <fieldset id="v-step-5" class="table-fieldset">
         <legend>Deine Reservierungen</legend>
         <div class="flex pb-2 button-group">
           <button @click="fetchBookings(member.id)" class="gg-button flex">
@@ -719,33 +719,33 @@ export default {
         {
           target: '#v-step-1',
           content:
-            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '#v-step-2',
-          content:
             "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle jetzt deine gewünschte Maschine aus.",
           offset: -300,
           background: '#000',
         },
         {
-          target: '#v-step-3',
+          target: '#v-step-2',
           content: this.tourStep2Text,
           offset: -100,
           background: '#000',
         },
         {
-          target: '.v-step-4',
+          target: '.v-step-3',
           content: this.tourStep3Text,
           offset: -100,
           background: '#000',
         },
         {
-          target: '.v-step-5',
+          target: '.v-step-4',
           content:
             "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
+          offset: -300,
+          background: '#000',
+        },
+        {
+          target: '#v-step-5',
+          content:
+            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
           offset: -300,
           background: '#000',
         },
