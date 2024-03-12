@@ -168,6 +168,12 @@ $faq-margin-left: 2em;
   border: solid 1px #e8e8e8
 }
 
+.faq-item:hover {
+  background-color: white;
+  border: solid 1px #e8e8e8;
+  border-radius: .375rem;
+}
+
 .faq-item {
   margin-bottom: 5px;
   align-items: flex-start;
