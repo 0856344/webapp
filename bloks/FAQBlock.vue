@@ -2,25 +2,25 @@
   <div v-editable="blok" class="faq-block">
     <div class="faqs">
       <h3><span id="general"></span>{{ $t("general") }}</h3>
-      <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
-      <br />
+      <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
+      <br/>
       <h3><span id="membership"></span>{{ $t("membership") }}</h3>
       <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
-      <br />
+      <br/>
       <h3 v-if="workshopQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("workshop") }}
       </h3>
-      <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
-      <br />
+      <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
+      <br/>
       <h3 v-if="giftCardQuestions.length > 0">
         <span id="workshop_giftCard"></span>{{ $t("giftCard") }}
       </h3>
-      <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
-      <br />
+      <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
+      <br/>
       <h3 v-if="creditsQuestions.length > 0">
         <span id="credits"></span> {{ $t("credits") }}
       </h3>
-      <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems"/>
+      <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
     </div>
   </div>
 </template>
@@ -28,38 +28,37 @@
 <script>
 export default {
   props: ["blok"],
-  mounted() {
-      // Checks whether a hash is present in the URL
-      if (window?.location?.hash) {
-        const hash = window.location.hash.substring(1); // Removes the '#'
-        this.scrollToElement(hash);
-      }
+  mounted () {
+    // Checks whether a hash is present in the URL
+    if (window?.location?.hash) {
+      const hash = window.location.hash.substring(1); // Removes the '#'
+      this.scrollToElement(hash);
+    }
   },
   computed: {
-    memberQuestions() {
-      //return this.filterFaqs('general')
+    memberQuestions () {
       return this.filterFaqs("member");
     },
-    generalQuestions() {
+    generalQuestions () {
       return this.filterFaqs("general");
     },
-    workshopQuestions() {
+    workshopQuestions () {
       return this.filterFaqs("workshop");
     },
-    giftCardQuestions() {
+    giftCardQuestions () {
       return this.filterFaqs("giftCard");
     },
-    creditsQuestions() {
+    creditsQuestions () {
       return this.filterFaqs("credits");
     },
   },
   methods: {
-    filterFaqs(category) {
+    filterFaqs (category) {
       return this.blok.faqs.filter((item) => {
         return item.category === category ? item : "";
       });
     },
-    generateAnchor(title) {
+    generateAnchor (title) {
       return title
         .replace(/\u00e4/g, "ae") // ä
         .replace(/\u00c4/g, "ae") // Ä
@@ -72,7 +71,7 @@ export default {
         .replace(/\s+/g, '-') // Replace spaces with hyphens
         .toLowerCase();
     },
-    scrollToElement(anchor) {
+    scrollToElement (anchor) {
       // Introduce a delay to ensure the DOM has fully loaded
       setTimeout(() => {
         const element = document.getElementById(anchor);

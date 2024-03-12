@@ -1,5 +1,5 @@
 <template>
-  <div v-editable="blok" class="faq-item">
+  <div v-editable="blok" class="faq-item" @click="addQueryParam()">
     <v-collapse-wrapper ref="wrapper" @afterToggle="updateStatus">
       <div v-collapse-toggle class="toggle-title" :class="{ active }">
         <div class="chevron">
@@ -144,6 +144,15 @@ export default {
           this.active = true;
           this.$refs.wrapper.toggle();
         }
+      }
+    },
+    addQueryParam () {
+      if (this.anchor && this.anchor.length > 0) {
+        // Construct the new URL with the anchor parameter
+        const newUrl = `${window.location.origin}${window.location.pathname}#${this.anchor}`;
+
+        // Use the pushState method to update the URL without reloading the page
+        window.history.pushState({ path: newUrl }, "", newUrl);
       }
     },
   },
