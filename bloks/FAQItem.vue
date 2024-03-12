@@ -170,7 +170,6 @@ $faq-margin-left: 2em;
 
 .faq-item:hover {
   background-color: white;
-  border: solid 1px #e8e8e8;
   border-radius: .375rem;
 }
 
