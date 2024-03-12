@@ -224,15 +224,12 @@ export default {
     async fetchBookings () {
       this.bookings = []
       this.fetchingBookings = true
-      //this.resource = 3136 //TODO for debugging - remove!
-      if (this.space === 'smartgarage') {
-        // TODO - Deprecated
-        //console.log('SPACE FOUND - booking calender', this.space)
-        //this.getBookingByMethod('getBookingsBySpace', this.space)
-        this.getBookingByMethod('getBookingsByResource', 4049)
-      } else if (this.resource) {
-        //console.log('RESOURCE FOUND - booking calendar', this.resource)
-        this.getBookingByMethod('getBookingsByResource', this.resource)
+      if (this.resource) {
+        try {
+          this.getBookingByMethod('getBookingsByResource', this.resource)
+        } catch (exception) {
+          console.log('exception', exception);
+        }
       }
     },
     saveBooking (calEvent) {

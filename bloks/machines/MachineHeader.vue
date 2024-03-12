@@ -17,7 +17,7 @@
         {{ machine.title }}
       </div>
       <machine-status
-        v-if="singleMachine && hasUser && hasBridge"
+        v-if="hasFabmanId && singleMachine && hasUser && hasBridge"
         :id="machine.machine_status_items[0].fabmanId"
         class="status"
       />
@@ -42,6 +42,10 @@ export default {
     },
     hasUser() {
       return !!this.$store.state.member;
+    },
+    hasFabmanId() {
+      // Check if the property path exists and its value is not null or empty
+      return this.machine?.machine_status_items?.[0]?.fabmanId && this.machine.machine_status_items[0].fabmanId
     },
     singleMachine() {
       return (

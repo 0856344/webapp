@@ -6,7 +6,10 @@
     <div v-if="name" class="machine-name">
       {{ name }}
     </div>
-    <div v-if="resource" class="resource">
+    <div v-if="isLoading">
+      <loading-spinner color="#333" />
+    </div>
+    <div v-else-if="resource" class="resource">
       <div v-if="resource.state === 'active'">
         <div v-if="resource.offline">
           {{ $t("offline") }}
@@ -30,9 +33,6 @@
         {{ resource.state }}
       </div>
     </div>
-    <div v-else>
-      <loading-spinner color="#333" />
-    </div>
   </div>
 </template>
 
@@ -42,9 +42,13 @@ export default {
   data() {
     return {
       resource: null,
+      loading: false,
     };
   },
   computed: {
+    isLoading () {
+      return this.loading
+    },
     color() {
       if (!this.resource) {
         return "#FFF";
@@ -68,7 +72,9 @@ export default {
     },
   },
   async created() {
-    this.resource = await this.$store.dispatch("getResource", this.id);
+    this.loading = true;
+    this.resource = await this.$store.dispatch("getResource", this.id)
+      .finally(this.loading = false);
   },
 };
 </script>

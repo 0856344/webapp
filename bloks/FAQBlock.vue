@@ -1,25 +1,24 @@
 <template>
   <div v-editable="blok" class="faq-block">
     <div class="faqs">
-      <h3><span id="general"></span>{{ $t("general") }}</h3>
+      <h2><span id="general"></span>{{ $t("general") }}</h2>
+      <hr>
       <faq-item v-for="i in generalQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
       <br/>
-      <h3><span id="membership"></span>{{ $t("membership") }}</h3>
+      <h2><span id="membership"></span>{{ $t("membership") }}</h2>
+      <hr>
       <faq-item v-for="i in memberQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
       <br/>
-      <h3 v-if="workshopQuestions.length > 0">
-        <span id="workshop_giftCard"></span>{{ $t("workshop") }}
-      </h3>
+      <h2 v-if="workshopQuestions.length > 0"><span id="workshop_giftCard"></span>{{ $t("workshop") }}</h2>
+      <hr>
       <faq-item v-for="i in workshopQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
       <br/>
-      <h3 v-if="giftCardQuestions.length > 0">
-        <span id="workshop_giftCard"></span>{{ $t("giftCard") }}
-      </h3>
+      <h2 v-if="giftCardQuestions.length > 0"><span id="workshop_giftCard"></span>{{ $t("giftCard") }}</h2>
+      <hr>
       <faq-item v-for="i in giftCardQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
       <br/>
-      <h3 v-if="creditsQuestions.length > 0">
-        <span id="credits"></span> {{ $t("credits") }}
-      </h3>
+      <h2 v-if="creditsQuestions.length > 0"><span id="credits"></span> {{ $t("credits") }}</h2>
+      <hr>
       <faq-item v-for="i in creditsQuestions" :key="i.uid" :blok="i" :anchor="generateAnchor(i.question)" ref="faqItems" @c="scrollToElement($t('i.question'))"/>
     </div>
   </div>
@@ -94,15 +93,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h3 {
+h2 {
   position: relative;
-  padding: 20px;
-  background: white;
-  margin-left: 20px;
   scroll-margin-top: 80px;
 }
 
-h3 span {
+h2 span {
   position: absolute;
   top: -100px;
 }

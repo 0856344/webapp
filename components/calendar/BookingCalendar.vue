@@ -28,20 +28,26 @@ import 'vue-cal/dist/vuecal.css';
 
 export default {
   name: 'booking-calendar',
-  components: { VueCal },
-  props: ['resource', 'space'],
-  data() {
+  components: {VueCal},
+  props: {
+    space: [String, Number],
+    resource: {
+      type: [String, Number],
+      required: true
+    },
+  },
+  data () {
     return {
       isLoading: false,
-      bookings: null,
+      bookings: [],
       showAlert: false,
     };
   },
   computed: {
-    hasUser() {
+    hasUser () {
       return !!this.$store.state.member;
     },
-    events() {
+    events () {
       return this.bookings.map(booking => {
         if (booking?.member?.id === this.$store.state.member.id) {
           return {
@@ -66,42 +72,30 @@ export default {
       })
     },
   },
-  async created() {
-    await this.getBookings();
+  async created () {
+    await this.fetchBookings();
   },
   methods: {
-    async getBookings() {
+    async fetchBookings () {
       this.bookings = [];
-      this.isLoading = true;
-      //this.resource = 3136 //TODO for debugging - remove!
-      try {
-        if (this.space === 'smartgarage') {
-          // TODO
-          //console.log('SPACE FOUND - booking calender', this.space)
-          //this.getBookingByMethod('getBookingsBySpace', this.space)
-          this.getBookingByMethod('getBookingsByResource', 4049);
-        } else if (this.resource) {
-          //console.log('RESOURCE FOUND - booking calendar', this.resource)
-          this.getBookingByMethod('getBookingsByResource', this.resource);
+      if (this.resource) {
+        try {
+          await this.getBookingByMethod('getBookingsByResource', this.resource)
+        } catch (exception) {
+          console.log('exception', exception);
         }
-      } catch (exception) {
-        console.log('exception', exception);
-        this.createAlert('error');
       }
     },
-    createAlert(message, color = '#f55252fc') {
-      this.showAlert = true;
-      this.openInfoBox(message, '#f55252fc');
-    },
-    getBookingByMethod(method, id) {
-      this.$store
+    getBookingByMethod (method, id) {
+      this.isLoading = true;
+      return this.$store
         .dispatch(method, id)
         .then((data) => {
           if (data.statusCode && data.statusCode >= 300) {
             console.error('error', data);
           } else {
             const bookings = Object.assign([], data);
-            this.bookings = bookings.filter(function (booking) {
+            this.bookings =  bookings.filter(function (booking) {
               return booking.state && booking.state !== 'cancelled';
             });
           }
@@ -138,7 +132,7 @@ export default {
   }
 
   .vuecal__no-event {
-    @include media-breakpoint-down(xs){
+    @include media-breakpoint-down(xs) {
       font-size: 0.7rem;
     }
   }
@@ -155,14 +149,13 @@ export default {
 }
 
 .reserved {
-  background: #fff7f0
-    repeating-linear-gradient(
+  background: #fff7f0 repeating-linear-gradient(
       -45deg,
       rgba(255, 162, 87, 0.25),
       rgba(255, 162, 87, 0.25) 5px,
       rgba(255, 255, 255, 0) 5px,
       rgba(255, 255, 255, 0) 15px
-    );
+  );
   color: #484848;
   border: 1px solid rgb(255 162 2 / 74%);
   display: flex;

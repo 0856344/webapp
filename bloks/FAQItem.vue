@@ -1,5 +1,5 @@
 <template>
-  <div v-editable="blok" class="faq-item" @click="addQueryParam()">
+  <div v-editable="blok" class="faq-item" :class="{ 'bg-white rounded-md light-border': isActive }" @click="addQueryParam()">
     <v-collapse-wrapper ref="wrapper" @afterToggle="updateStatus">
       <div v-collapse-toggle class="toggle-title" :class="{ active }">
         <div class="chevron">
@@ -127,11 +127,13 @@ export default {
       active: false,
     };
   },
-  created () {
-
-  },
   mounted () {
     this.checkAnchor();
+  },
+  computed: {
+    isActive () {
+     return this.active
+    },
   },
   methods: {
     updateStatus (e) {
@@ -161,6 +163,10 @@ export default {
 
 <style lang="scss">
 $faq-margin-left: 2em;
+
+.light-border {
+  border: solid 1px #e8e8e8
+}
 
 .faq-item {
   margin-bottom: 5px;
