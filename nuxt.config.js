@@ -62,7 +62,13 @@ module.exports = {
     },
   },
   buildModules: [
-    ['storyblok-nuxt', { accessToken: storyblokToken, cacheProvider: 'memory' }],
+    ['storyblok-nuxt', {
+    accessToken: storyblokToken,
+      cacheProvider: 'memory',
+      apiOptions: {
+        region: "eu",
+      },
+    }],
     '@nuxtjs/proxy',
     '@nuxtjs/tailwindcss',
     ['@nuxtjs/google-analytics'],
