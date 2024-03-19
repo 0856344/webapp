@@ -51,7 +51,7 @@
         </div>
         <div v-else class="machine-list">
           <div class="machine-list-warning">
-            {{ $t('machineViewRestriction') }}
+            {{ $t( "machineViewRestriction" ) }} <span @click="login">Hier zum Login</span>
           </div>
         </div>
       </div>
@@ -167,6 +167,9 @@ export default {
     return getMetaTagsForPage(this.machine);
   },
   methods: {
+    login () {
+      this.$store.dispatch('setSidebar', 'login');
+    },
     async canSeeBookings () {
       let memberPackages = this.$store.getters.getMemberPackages();
       if (!memberPackages) {
@@ -286,19 +289,19 @@ export default {
         }
 
         .machine-list-warning {
-          max-width: 400px;
+          max-width: 600px;
           padding: 20px 50px;
-          background-color: $color-orange;
-          color: white;
           border-radius: 10px;
           text-align: center;
-          -webkit-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
-          -moz-box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
-          box-shadow: 2px 2px 10px -4px rgba(66, 66, 66, 1);
         }
         .machine-list-warning span {
           cursor: pointer;
           color: $color-orange;
+          .machine-list-warning span:hover {
+            cursor: pointer;
+            color: $color-orange;
+            text-decoration: underline;
+          }
         }
       }
     }
