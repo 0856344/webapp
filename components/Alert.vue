@@ -7,7 +7,6 @@
         class="fade-transition info-box flex text-white justify-between align-middle border px-4 py-3 rounded relative my-3"
         :class="[customCssClass, icon === 'info-circle' ? 'text-center' : 'text-left']"
         role="alert"
-        style="min-height: 60px"
       >
         <span class="flex-1">
           <span class="block sm:inline">

@@ -68,12 +68,10 @@
         </p>
         <div>
           <div class="flex-1 mb-4">
-            <label
-            >Maschine&nbsp;<small v-if="machines && machines.length > 0"
-            >({{ machines.length }})&nbsp;</small
-            ></label
-            >
+            <label>Maschine&nbsp;<small v-if="machines && !noMachinesAvailable">({{ machines.length }})&nbsp;</small></label>
             <v-select
+              :disabled="noMachinesAvailable"
+              :class="{ 'disabled': noMachinesAvailable }"
               id="v-step-1"
               :loading="loadingMachines"
               :options="machines"
@@ -83,6 +81,14 @@
               class="mt-3"
             >
             </v-select>
+            <Alert v-if="!loadingMachines"
+                   :show="noMachinesAvailable"
+                   :message="'Du hast noch keine Maschine freigeschaltet. Besuche zuerst eine MSU.'"
+                   :icon="'info-circle'"
+                   :color="'#e69140'"
+                   :customCssClass="'min-h-0'">
+
+            </Alert>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
               <Alert
                 :show="openingHoursText.length > 0"
@@ -343,6 +349,9 @@ export default {
     }
   },
   computed: {
+    noMachinesAvailable() {
+      return this.machines.length === 0
+    },
     FAQUrl() {
       return '/de/faq#gibt-es-fuer-die-maschinen-ein-reservierungssystem'
     },
@@ -908,5 +917,9 @@ button:disabled svg {
   50% {
     transform: translateY(-10px);
   }
+}
+
+.disabled {
+  color: #b1b1b1
 }
 </style>
