@@ -1,133 +1,26 @@
 <template>
-  <div v-editable="blok" class="info-box">
-    <div class="box-content">
-      <div class="row">
-        <h2 v-if="blok.title" class="title">
-          {{ blok.title }}
-        </h2>
-      </div>
-      <div class="row">
-        <div class="text">
-          <markdown :value="blok.text" />
-          <div class="image">
-            <img :src="$resizeImage(blok.image, '500x0')" alt="" />
+  <div v-editable="blok" class="info-box flex bg-white justify-between items-center px-4 py-3 relative my-3">
+    <div class="box-content flex flex-col my-2.5">
+      <div v-if="blok.title" class="relative text-lg font-bold leading-6 tracking-wide flex">
+        <div>
+          <div class="block sm:inline">
+            <font-awesome-icon icon="info-circle" class="icon text-orange-500"></font-awesome-icon>
           </div>
         </div>
+        <span class="ml-2">{{ blok.title }}</span>
+      </div>
+      <div v-if="blok.text">
+        <span>
+          <p class="text-base leading-7 tracking-normal mt-0"><markdown :value="blok.text" /></p>
+        </span>
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
 export default {
   props: ['blok'],
-  methods: {
-    register() {
-      this.$store.dispatch('setSidebar', 'register');
-    },
-  },
 };
 </script>
-
-<style lang="scss">
-.info-box {
-  .box-content {
-    margin: 50px 0;
-    @include margin-page-middle();
-    display: flex;
-    flex-direction: column;
-    .title {
-      position: relative;
-      font-size: 2.8rem;
-      line-height: 1.5;
-      font-weight: bold;
-      font-family: $font-primary;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      width: 50%;
-    }
-    .row {
-      display: flex;
-      flex-direction: column;
-      .image {
-        flex: 1;
-        img {
-          display: block;
-          max-width: 100%;
-          height: auto;
-          max-height: 30vh;
-        }
-      }
-      .text {
-        flex: 2;
-        padding: 0 5%;
-        p {
-          font-size: 1rem;
-          letter-spacing: 0.03em;
-          line-height: 1.4;
-          margin-top: 0;
-        }
-        .register-button {
-          button {
-            outline: none;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #fff;
-            border: none;
-            padding: 15px;
-            background-color: $color-orange;
-            margin: 1em 0;
-          }
-        }
-      }
-    }
-  }
-}
-
-/*
-.info-box {
-  height: 100vh;
-  color: #000;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: center;
-  .box-content {
-    position: relative;
-    height: 100%;
-    display: flex;
-    .col-start {
-      flex: 9;
-      display: flex;
-      align-items: flex-start;
-      .circle {
-        position: absolute;
-        stroke: $color-yellow;
-        left: 0;
-        transform: scale(3) translateX(20px) translateY(20px);
-        z-index: -1;
-      }
-      .dot {
-        position: absolute;
-        right: 0;
-        transform: scale(1.2) translateX(-75px) translateY(-200px);
-        z-index: 2;
-      }
-    }
-    .col-end {
-      flex: 16;
-      display: flex;
-      align-items: flex-end;
-      .text {
-        padding: 5rem;
-        font-weight: normal;
-        font-family: $font-primary;
-        line-height: 1.8;
-        font-size: 1.1rem;
-      }
-    }
-  }
-}
-*/
-</style>

@@ -24,6 +24,13 @@
           </label>
         </div>
       </div>
+      <div v-if="story">
+        <info-box
+            :key="p.id"
+            v-for="p in workshop.body"
+            :blok="p"
+        ></info-box>
+      </div>
       <div v-show="!isCalendar" class="search">
         <input type="text" :placeholder="[[$t('searchForWorkshopsAndEvents')]]" v-model="search" />
       </div>
@@ -88,9 +95,11 @@
 </template>
 
 <script>
-  import moment from 'moment'
+  import moment from 'moment';
+  import storyblokLivePreview from "@/mixins/storyblokLivePreview";
 
   export default {
+    mixins: [storyblokLivePreview],
     data() {
       return {
         categories: [
@@ -134,6 +143,7 @@
         isCalendar: false, // false = grid , true = calender,
         windowWidth: Infinity,
         display: 'calendar',
+        story: null,
       }
     },
     mounted() {
@@ -170,6 +180,9 @@
             },
           },
         }
+      },
+      workshop() {
+        return this.story.content;
       },
     },
     methods: {
@@ -293,7 +306,15 @@
           return { pretixWorkshops: [] }
         }
       })
-      return { ...workshops, ...pretixWorkshops }
+      const page = await context.store
+          .dispatch("loadPage", "/workshops")
+          .catch((e) => {
+            context.error({
+              statusCode: e.response.status,
+              message: e.response.statusText,
+            });
+          });
+      return { ...page, ...workshops, ...pretixWorkshops }
     },
   }
 </script>
