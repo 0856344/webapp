@@ -148,7 +148,9 @@ export default {
   },
   computed: {
     logos() {
-      return this.shuffle(this.$store.state.settings.footer_logos);
+      return this.$store.state.settings.footer_logos
+      // Removed shuffle
+      //return this.shuffle(this.$store.state.settings.footer_logos);
     },
     marqueeDuration() {
       // velocity is 100px/s
