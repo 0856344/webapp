@@ -3,7 +3,7 @@
     <div class="pre-footer">
       <div class="pre-footer-top">
         <div class="logo">
-          <img src="~/assets/img/icons/gg-logo.svg" alt />
+          <img :src="bottomLogoUrl" alt />
         </div>
       </div>
       <div class="pre-footer-bottom">
@@ -155,6 +155,9 @@ export default {
     marqueeDuration() {
       // velocity is 100px/s
       return (this.logos.length * this.logoWidth) / 100;
+    },
+    bottomLogoUrl() {
+      return this.$store.state.settings.bottom_logo.filename;
     },
   },
   methods: {
