@@ -49,7 +49,7 @@ export default {
     },
     events () {
       return this.bookings.map(booking => {
-        if (booking?.member?.id === this.$store.state.member.id) {
+        if (booking?.member?.id === this.$store.state.member?.id) {
           return {
             title: booking?.member?.firstName ? booking.member.firstName : "Yours",
             class: 'reserved-by-member',
