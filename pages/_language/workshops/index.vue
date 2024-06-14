@@ -103,6 +103,12 @@
     data() {
       return {
         categories: [
+        {
+            key: 'for_kids',
+            name: 'for_kids',
+            value: false,
+            nameToDisplay: 'Kinder und Jugendliche',
+          },
           { key: 'event', name: 'Event', value: false, nameToDisplay: 'Event' },
           {
             key: 'workshop',
@@ -116,19 +122,6 @@
             value: false,
             nameToDisplay: 'Einschulungen',
           },
-          {
-            key: 'frauenundtechnik',
-            name: '#frauenundtechnik',
-            value: false,
-            nameToDisplay: 'Frauen und Technik',
-          },
-          {
-            key: 'for_kids',
-            name: 'for_kids',
-            value: false,
-            nameToDisplay: 'Kinder und Jugendliche',
-          },
-          // { key: 'makemas', name: '#makemas2022', value: false }
         ],
         loading: false,
         search: '',
@@ -212,6 +205,15 @@
               }
             }
           })
+        })
+        this.fullWorkshops = this.fullWorkshops.sort((a, b) => {
+          if (a.blok.content.category === 'for_kids' && b.blok.content.category !== 'for_kids') {
+            return -1
+          } else if (a.blok.content.category !== 'for_kids' && b.blok.content.category === 'for_kids') {
+            return 1
+          } else {
+            return 0
+          }
         })
       },
       updateSearch() {
@@ -490,9 +492,8 @@
         @include margin-page-wide();
         display: grid;
         max-width: 70em;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         @include media-breakpoint-down(sm) {
-          grid-template-columns: 1fr 1fr;
           font-size: 0.85em;
         }
         @include media-breakpoint-down(xs) {
