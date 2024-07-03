@@ -73,6 +73,7 @@ module.exports = {
     '@nuxtjs/tailwindcss',
     ['@nuxtjs/google-analytics'],
     ['@nuxtjs/style-resources'],
+    ['nuxt-ackee']
   ],
   /**
    * Importing scss
@@ -89,6 +90,12 @@ module.exports = {
   modules: ['@nuxtjs/sentry', '@nuxtjs/toast', '@nuxtjs/eslint-module', '@nuxtjs/robots', 'nuxt-i18n'],
   sentry: {
     config: {}, // Additional config
+  },
+  ackee: {
+    server: 'https://analytics.grandgarage.eu',
+    domainId: '53840d56-e0ef-43d5-96e3-3f344749f5d3',
+    ignoreLocalhost: false, // defaults to true
+    detailed: true // defaults to false
   },
   toast: {
     position: 'top-center',

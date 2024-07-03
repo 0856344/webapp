@@ -52,8 +52,6 @@
       if (hasAcceptedAnalyticsCookie === 'true') {
         this.$store.commit('setAnalyticsCookie', 'true')
       }
-      const ackeeTracker = require('ackee-tracker')
-      ackeeTracker.create('https://analytics.grandgarage.eu').record('53840d56-e0ef-43d5-96e3-3f344749f5d3')
     },
   }
 </script>
