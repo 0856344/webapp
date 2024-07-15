@@ -78,7 +78,7 @@ export default {
 }
 
 .image-slideshow {
-  margin: 2em 0;
+  margin: 1em 0 2em 0;
   color: $color-blue;
   position: relative; // needed for z-index (blue dashed stripe)
   .text {
@@ -86,7 +86,7 @@ export default {
     font-family: $font-secondary;
     line-height: 1.4;
     letter-spacing: 1.4px;
-    padding: 3rem 2rem 0;
+    padding: 0 1em;
     font-weight: bold;
     margin: 1em 0;
     @include media-breakpoint-down(md) {

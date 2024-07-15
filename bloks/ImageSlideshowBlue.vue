@@ -67,7 +67,8 @@ export default {
 <style lang="scss" scoped>
 .image-slideshow-blue {
   position: relative; // needed for z-index (blue dashed stripe)
-  padding: 30px;
+  margin: 1em 0 2em 0;
+  padding: 0 1em;
   background-color: $color-blue-intro;
   color: #fff;
   .text {

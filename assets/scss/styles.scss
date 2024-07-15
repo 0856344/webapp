@@ -10,26 +10,6 @@ body {
   padding: 0;
 }
 
-.flex-row {
-  flex-direction: row;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.list-none {
-  list-style-type: none;
-}
-
-.list-disc {
-  list-style-type: disc;
-}
-
-.list-decimal {
-  list-style-type: decimal;
-}
-
 
 .swiper-slide {
   display: none;
@@ -42,10 +22,6 @@ body {
 .mute-text {
   color: #4747479c;
   font-size: 0.7em;
-}
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 
 h2 {

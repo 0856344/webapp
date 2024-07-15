@@ -30,6 +30,7 @@ import FAQItem from '@/bloks/FAQItem.vue'
 import DownloadItem from '@/bloks/basic/DownloadItem.vue'
 import LocationDescription from '@/bloks/LocationDescription.vue'
 import FeedbackForm from '@/bloks/FeedbackForm.vue'
+import Heading from '@/bloks/basic/Heading.vue'
 
 import TeamMember from '@/bloks/person/TeamMember.vue'
 import TeamMemberPreview from '@/bloks/person/TeamMemberPreview.vue'
@@ -239,3 +240,4 @@ Vue.component('loading-spinner-button', LoadingSpinnerButton)
 Vue.component('storyblok-spacer', Spacer)
 Vue.component('vue-tour', VueTour)
 Vue.component('modal', Modal)
+Vue.component('heading', Heading)
