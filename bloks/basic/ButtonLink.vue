@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 py-2 lg:py-4 bg-white"
+    class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 py-2 lg:py-4 bg-white lg:mx-6"
     v-if="
       !blok.conditional ||
       (blok.conditional &&

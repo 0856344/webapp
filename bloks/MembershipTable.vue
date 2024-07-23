@@ -1,21 +1,21 @@
 <template>
-  <div v-editable="blok" class="mt-2">
+  <div v-editable="blok" class="mt-2 flex flex-col w-full justify-center px-4">
     <div
       id="plans"
-      class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-1 lg:h-[58rem] py-2 mb-2 lg:py-6 px-4"
+      class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-2 lg:h-[52rem] py-2 mb-2 lg:py-6 px-2"
     >
-      <div v-if="!isMobile" class="grid grid-rows-plan w-full">
+      <div v-if="!isMobile" class="grid grid-rows-plan">
         <!---First DIV acts as placeholder for missing header row-->
         <div class="">&nbsp;</div>
         <div
           v-for="item in featureStrings"
           :key="item._uid"
-          class="inline-flex items-center px-2 py-1 text-sm border-b-2 border-b-gray-900 hyphens-auto"
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
         >
           {{ item }}
         </div>
         <div
-          class="inline-flex items-center px-2 py-1 text-sm border-b-2 border-b-gray-900 hyphens-auto"
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
         >
           <span>{{ $t("creditsDescription") }}</span>
         </div>
