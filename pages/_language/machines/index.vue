@@ -78,23 +78,33 @@
       toggleTags() {
         this.tagsCollapsed = !this.tagsCollapsed
       },
+      getOnRequestState(id) {
+        const onRequestMachines = {
+          3788: 'KUKA KR 5-2 arc HW',
+          3817: 'Universal Robotics UR 5e',
+        }
+        return !!onRequestMachines[id]
+      },
       getMachineState(statusItemArray) {
         if (statusItemArray.length === 0) {
           return { machines: 0, operational: 0 }
         } else if (statusItemArray.length === 1) {
-          return { machines: 1, operational: this.states[statusItemArray[0].fabmanId] !== 'locked' ? 1 : 0 }
-        } else if(statusItemArray.length > 1) {
-          return statusItemArray
-            .reduce(
-              (acc, item) => {
-                if (this.states[item.fabmanId] !== 'locked') {
-                  acc.operational++
-                }
-                acc.machines++
-                return acc
-              },
-              { machines: 0, operational: 0 },
-            )
+          return {
+            machines: 1,
+            operational: this.states[statusItemArray[0].fabmanId] !== 'locked' ? 1 : 0,
+            onRequest: this.getOnRequestState(statusItemArray[0].fabmanId),
+          }
+        } else if (statusItemArray.length > 1) {
+          return statusItemArray.reduce(
+            (acc, item) => {
+              if (this.states[item.fabmanId] !== 'locked') {
+                acc.operational++
+              }
+              acc.machines++
+              return acc
+            },
+            { machines: 0, operational: 0 },
+          )
         }
       },
     },

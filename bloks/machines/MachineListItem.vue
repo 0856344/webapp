@@ -4,13 +4,15 @@
       <div class="relative flex flex-col items-center">
         <img :src="$resizeImage(content.image, '450x450')" alt="" />
         <div
-          v-show="this.state.machines !== this.state.operational"
-          class="absolute top-1 left-1 bg-orange text-white px-2 py-1 rounded-md mt-1 text-sm flex items-center gap-1">
+          v-show="this.state.machines !== this.state.operational || this.state.onRequest"
+          class="absolute top-1 left-1 text-white px-2 py-1 rounded-md mt-1 text-sm flex items-center gap-1"
+          :class="[this.state.onRequest == true ? 'bg-blue' : 'bg-orange']">
           <font-awesome-icon icon="fa-triangle-exclamation" class="text-lg drop-shadow" />
-          <span v-show="this.state.machines > 1"
+          <span v-show="this.state.machines > 1 && !this.state.onRequest"
             >{{ `${this.state.operational} von ${this.state.machines} online` }}
           </span>
-          <span v-show="this.state.machines <= 1" class="drop-shadow">Offline</span>
+          <span v-show="this.state.machines <= 1&& !this.state.onRequest" class="drop-shadow">Offline</span>
+          <span v-show="this.state.onRequest" class="drop-shadow">Auf Anfrage</span>
         </div>
       </div>
       <div class="">
@@ -28,6 +30,7 @@
 </template>
 
 <script>
+
   export default {
     props: ['blok', 'state'],
     computed: {
