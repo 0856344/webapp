@@ -56,8 +56,8 @@ const formattedDate = currentDate.toISOString().split('T')[0];
 const version = process.env.NUXT_ENV_CONNECTOR_URL + '_' + formattedDate;
 
 const baseUrl = process.env.NUXT_ENV_CONNECTOR_URL
-  ? process.env.NUXT_ENV_CONNECTOR_URL
-  : 'https://connector.grandgarage.eu'
+    ? process.env.NUXT_ENV_CONNECTOR_URL
+    : 'https://connector.grandgarage.eu'
 const connectorBaseUrl = baseUrl + '/api'
 
 let connector = axios.create({
@@ -184,13 +184,13 @@ const createStore = () => {
       },
       getRecourseLogs() {
         return connector
-          .get('member/resourceLogs')
-          .then(r => {
-            return r
-          })
-          .catch(err => {
-            this.$sentry.captureException(err)
-          })
+            .get('member/resourceLogs')
+            .then(r => {
+              return r
+            })
+            .catch(err => {
+              this.$sentry.captureException(err)
+            })
       },
       voteBlog({ state }, data) {
         const c = axios.create({
@@ -268,6 +268,14 @@ const createStore = () => {
         const res = await connector.get(`/v1/fabman/members/${id}/credits`);
         return res.data;
       },
+      async getCreditActivities({ state }, { id, creditId }) {
+        const res = await connector.get(`/v1/fabman/members/${id}/credits/${creditId}/uses`);
+        return res.data;
+      },
+      async getMemberPreviousCredits({ state }, id) {
+        const res = await connector.get(`/v1/fabman/members/${id}/previous-credits`);
+        return res.data;
+      },
       async getPackages({ state }) {
         const res = await connector.get('/v1/fabman/packages');
         return res.data;
@@ -289,7 +297,7 @@ const createStore = () => {
       async getPaymentMethod({ state }) {
         const id = state.member.id;
         const res = await connector.get(
-          `v1/fabman/members/${id}/payment-method`,
+            `v1/fabman/members/${id}/payment-method`,
         );
         return res.data;
       },
@@ -324,8 +332,8 @@ const createStore = () => {
       },
       async savePublicQuiz({ state }, data) {
         const r = await axios.post(
-          connectorBaseUrl + '/v1/save-public-quiz',
-          data,
+            connectorBaseUrl + '/v1/save-public-quiz',
+            data,
         );
         if (r.data.success) {
           return r.data.data;
@@ -373,38 +381,38 @@ const createStore = () => {
       },
       async getResource({ state }, id) {
         await connector
-          .get(`v1/fabman/resources/${id}`)
-          .then((res) => {
-            return res.data;
-          })
-          .catch((res) => {
-            this.$sentry.captureException(res);
-            console.log(res);
-          });
+            .get(`v1/fabman/resources/${id}`)
+            .then((res) => {
+              return res.data;
+            })
+            .catch((res) => {
+              this.$sentry.captureException(res);
+              console.log(res);
+            });
       },
       updateMember({ state, commit, dispatch }, data) {
         Vue.delete(data, 'lockVersion');
         const req = JSON.parse(JSON.stringify(data));
         return connector
-          .put('/v1/fabman/members/' + data.id, req)
-          .then((r) => {
-            const member = Object.assign(state.member, r.data);
-            commit('setMember', member);
-          })
-          .catch((err) => {
-            this.$sentry.captureException(err);
-          });
+            .put('/v1/fabman/members/' + data.id, req)
+            .then((r) => {
+              const member = Object.assign(state.member, r.data);
+              commit('setMember', member);
+            })
+            .catch((err) => {
+              this.$sentry.captureException(err);
+            });
       },
       updatePaymentMethod({ state, commit, dispatch }, data) {
         //Vue.delete(data, 'lockVersion')
         const req = JSON.parse(JSON.stringify(data));
         const id = state.member.id;
         return connector
-          .put(`v1/fabman/members/${id}/payment-method`, req)
-          .then((r) => {})
-          .catch((err) => {
-            this.$sentry.captureException(err);
-          });
+            .put(`v1/fabman/members/${id}/payment-method`, req)
+            .then((r) => {})
+            .catch((err) => {
+              this.$sentry.captureException(err);
+            });
       },
       getUser({ state, commit, dispatch }) {
         return new Promise((resolve, reject) => {
@@ -437,8 +445,8 @@ const createStore = () => {
       },
       async getMemberByEmail({ commit }, email) {
         const res = await connector.post(
-          '/v1/fabman/members/getMemberByEmail/',
-          email,
+            '/v1/fabman/members/getMemberByEmail/',
+            email,
         );
         return res.data;
       },
@@ -517,8 +525,8 @@ const createStore = () => {
       },
       getMaterials({ state }, id) {
         return axios.get(connectorBaseUrl + '/products/materials').then((result) => {
-            return result.data;
-          });
+          return result.data;
+        });
       },
       getMachines({ state }, id) {
         return axios.get(connectorBaseUrl + '/v1/fabman/resources').then(result => {
@@ -527,37 +535,37 @@ const createStore = () => {
       },
       async getMachinePrices({ state }, id) {
         const result = await axios.get(
-          connectorBaseUrl + '/v1/fabman/resources',
+            connectorBaseUrl + '/v1/fabman/resources',
         );
         const cMachines = result.data
-          .filter((machine) => {
-            return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList);
-          })
-          .map((machine) => {
-            return {
-              id: machine.id,
-              name: machine.name,
-              price: machine.pricePerTimeBusy,
-              seconds: machine.pricePerTimeBusySeconds,
-            }
-          })
+            .filter((machine) => {
+              return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList);
+            })
+            .map((machine) => {
+              return {
+                id: machine.id,
+                name: machine.name,
+                price: machine.pricePerTimeBusy,
+                seconds: machine.pricePerTimeBusySeconds,
+              }
+            })
         return cMachines
       },
       async getMachineStates({ state }, id) {
         const result = await axios.get(
-          connectorBaseUrl + "/v1/fabman/resources"
+            connectorBaseUrl + "/v1/fabman/resources"
         );
         const machineStates = result.data
-          .map((machine) => {
-            return {
-              id: machine.id,
-              state: machine.state,
-            };
-          })
-          .reduce((acc, machine) => {
-            acc[machine.id] = machine.state;
-            return acc;
-          }, {});
+            .map((machine) => {
+              return {
+                id: machine.id,
+                state: machine.state,
+              };
+            })
+            .reduce((acc, machine) => {
+              acc[machine.id] = machine.state;
+              return acc;
+            }, {});
         return machineStates;
       },
       // @deprecated
@@ -572,27 +580,27 @@ const createStore = () => {
       },
       async hasCompletedRequiredCourses({ state, commit }, id) {
         const res = await connector.get(
-          `/v1/fabman/members/${id}/hasCompletedRequiredCourses`,
+            `/v1/fabman/members/${id}/hasCompletedRequiredCourses`,
         );
         return res.data;
       },
       loginUser({ commit }, context) {
         return new Promise((resolve, reject) => {
           webAuth.login(
-            {
-              connection: 'Username-Password-Authentication',
-              email: context.email,
-              password: context.password,
-            },
-            function (err, authResult) {
-              if (err) {
-                console.error('Error during login:', err);
-                reject(err);
-              } else {
-                console.log('Successful login:', authResult);
-                resolve(authResult);
-              }
-            },
+              {
+                connection: 'Username-Password-Authentication',
+                email: context.email,
+                password: context.password,
+              },
+              function (err, authResult) {
+                if (err) {
+                  console.error('Error during login:', err);
+                  reject(err);
+                } else {
+                  console.log('Successful login:', authResult);
+                  resolve(authResult);
+                }
+              },
           );
         });
       },
@@ -619,30 +627,30 @@ const createStore = () => {
       registerUser({ commit }, context) {
         return new Promise((resolve, reject) => {
           webAuth.signup(
-            {
-              connection: 'Username-Password-Authentication',
-              email: context.email,
-              password: context.password,
-              user_metadata: context.user_metadata,
-            },
-            function (err, r) {
-              if (err) reject(err);
-              resolve(r);
-            },
+              {
+                connection: 'Username-Password-Authentication',
+                email: context.email,
+                password: context.password,
+                user_metadata: context.user_metadata,
+              },
+              function (err, r) {
+                if (err) reject(err);
+                resolve(r);
+              },
           );
         });
       },
       recoverPassword({ commit }, context) {
         return new Promise((resolve, reject) => {
           webAuth.changePassword(
-            {
-              connection: 'Username-Password-Authentication',
-              email: context.email,
-            },
-            function (err, r) {
-              if (err) reject(err)
-              resolve(r)
-            },
+              {
+                connection: 'Username-Password-Authentication',
+                email: context.email,
+              },
+              function (err, r) {
+                if (err) reject(err)
+                resolve(r)
+              },
           )
         })
       },
@@ -662,103 +670,103 @@ const createStore = () => {
         if (!state.auth) return null
 
         return connector
-          .get('/v1/courses/get-courses')
-          .then(r => {
-            if (r.data.success) {
-              commit('setCourses', r.data.data)
-            }
-          })
-          .catch(err => {
-            this.$sentry.captureException(err)
-          })
+            .get('/v1/courses/get-courses')
+            .then(r => {
+              if (r.data.success) {
+                commit('setCourses', r.data.data)
+              }
+            })
+            .catch(err => {
+              this.$sentry.captureException(err)
+            })
       },
       loadTagsMachine({ state }) {
         return this.$storyapi
-          .get('cdn/tags', {
-            filter_query: {
-              component: {
-                in: 'machine',
+            .get('cdn/tags', {
+              filter_query: {
+                component: {
+                  in: 'machine',
+                },
               },
-            },
-          })
-          .then(res => {
-            return res.data.tags
-          })
+            })
+            .then(res => {
+              return res.data.tags
+            })
       },
       loadTagsTeam({ state }) {
         return this.$storyapi
-          .get('cdn/tags', {
-            filter_query: {
-              component: {
-                in: 'team-member',
+            .get('cdn/tags', {
+              filter_query: {
+                component: {
+                  in: 'team-member',
+                },
               },
-            },
-          })
-          .then(res => {
-            const tagRes = res.data.tags
-            return [...tagRes].reverse()
-          })
+            })
+            .then(res => {
+              const tagRes = res.data.tags
+              return [...tagRes].reverse()
+            })
       },
       loadTeam({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
-            filter_query: {
-              component: {
-                in: 'team-member',
+            .get('cdn/stories', {
+              filter_query: {
+                component: {
+                  in: 'team-member',
+                },
               },
-            },
-            per_page: 50,
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
+              per_page: 50,
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
       },
       loadPress({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
-            filter_query: {
-              component: {
-                in: 'press-overview',
+            .get('cdn/stories', {
+              filter_query: {
+                component: {
+                  in: 'press-overview',
+                },
               },
-            },
-            per_page: 50,
-            version: version,
-            cv: state.cacheVersion,
-            sort_by: 'content.Date:desc',
-          })
-          .then(res => {
-            return res.data
-          })
+              per_page: 50,
+              version: version,
+              cv: state.cacheVersion,
+              sort_by: 'content.Date:desc',
+            })
+            .then(res => {
+              return res.data
+            })
       },
       loadFullPage({ state }, path) {
         return this.$storyapi
-          .get(`cdn/stories${path}`, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(err => {
-            this.$sentry.captureException(err)
-          })
+            .get(`cdn/stories${path}`, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(err => {
+              this.$sentry.captureException(err)
+            })
       },
       loadStoryByUUid({ state }, uuid) {
         return this.$storyapi
-          .get(`cdn/stories/${uuid}`, {
-            version: version,
-            cv: state.cacheVersion,
-            find_by: 'uuid',
-            resolve_relations: 'workshop-date.workshop',
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(err => {
-            this.$sentry.captureException(err)
-          })
+            .get(`cdn/stories/${uuid}`, {
+              version: version,
+              cv: state.cacheVersion,
+              find_by: 'uuid',
+              resolve_relations: 'workshop-date.workshop',
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(err => {
+              this.$sentry.captureException(err)
+            })
       },
       loadPage({ state }, path) {
         if (!path) {
@@ -766,301 +774,301 @@ const createStore = () => {
         }
 
         return this.$storyapi
-          .get(`cdn/stories/${state.language}${path}`, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(err => {
-            this.$sentry.captureException(err)
-          })
+            .get(`cdn/stories/${state.language}${path}`, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(err => {
+              this.$sentry.captureException(err)
+            })
       },
       loadMachineItem({ state }, slug) {
         const endpoint = `cdn/stories/${state.language}/machines/${slug}`
         return this.$storyapi
-          .get(endpoint, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get(endpoint, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       loadMachineItemById({ state }, id) {
         const endpoint = `cdn/stories/${state.language}/machines/${id}`;
         return this.$storyapi
-          .get(endpoint, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then((res) => {
-            return res.data;
-          })
-          .catch((res) => {
-            this.$sentry.captureException(res);
-          });
+            .get(endpoint, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then((res) => {
+              return res.data;
+            })
+            .catch((res) => {
+              this.$sentry.captureException(res);
+            });
       },
       loadEventItem({ state }, slug) {
         const endpoint = `cdn/stories/${state.language}/events/${slug}`
         return this.$storyapi
-          .get(endpoint, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get(endpoint, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       async loadWorkshopItem({ state, dispatch }, slug) {
         const endpoint = `cdn/stories/${state.language}/workshops/${slug}`
         const workshop = await this.$storyapi
-          .get(endpoint, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data.story
-          })
+            .get(endpoint, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data.story
+            })
         if (!workshop) {
           console.error('workshop not found: ', workshop);
         }
         const dates = await this.$storyapi
-          .get('cdn/stories', {
-            filter_query: {
-              workshop: {
-                in: workshop.uuid,
+            .get('cdn/stories', {
+              filter_query: {
+                workshop: {
+                  in: workshop.uuid,
+                },
+                component: {
+                  in: 'workshop-date',
+                },
+                starttime: {
+                  'gt-date': moment().format('YYYY-MM-DD HH:mm'),
+                },
               },
-              component: {
-                in: 'workshop-date',
-              },
-              starttime: {
-                'gt-date': moment().format('YYYY-MM-DD HH:mm'),
-              },
-            },
-            version: version,
-            cv: state.cacheVersion,
-            sort_by: 'content.starttime:asc',
-          })
-          .then(res => {
-            return res.data.stories
-          })
+              version: version,
+              cv: state.cacheVersion,
+              sort_by: 'content.starttime:asc',
+            })
+            .then(res => {
+              return res.data.stories
+            })
         return { workshop, dates }
       },
       findStatusMachines({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
-            filter_query: {
-              component: {
-                in: 'machine',
+            .get('cdn/stories', {
+              filter_query: {
+                component: {
+                  in: 'machine',
+                },
+                machine_status_items: {
+                  is: 'not_empty_array',
+                },
               },
-              machine_status_items: {
-                is: 'not_empty_array',
-              },
-            },
-            version: version,
-            cv: state.cacheVersion,
-            per_page: 150,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+              version: version,
+              cv: state.cacheVersion,
+              per_page: 150,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       findItems({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
-            ...filters,
-            version: version,
-            cv: state.cacheVersion,
-            per_page: 150,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/stories', {
+              ...filters,
+              version: version,
+              cv: state.cacheVersion,
+              per_page: 150,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       findEvents({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
-            ...filters,
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/stories', {
+              ...filters,
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       loadWorkshops({ state }) {
         return this.$storyapi
-          .get('cdn/stories', {
-            filter_query: {
-              component: {
-                in: 'workshop',
+            .get('cdn/stories', {
+              filter_query: {
+                component: {
+                  in: 'workshop',
+                },
               },
-            },
-            per_page: 100,
-            version: version,
-            cv: state.cacheVersion,
-            sort_by: 'content.title:asc',
-          })
-          .then(res => {
-            return res.data
-          })
+              per_page: 100,
+              version: version,
+              cv: state.cacheVersion,
+              sort_by: 'content.title:asc',
+            })
+            .then(res => {
+              return res.data
+            })
       },
       findWorkshops({ state }, data) {
         const filters = data.filters
         const search = data.search
         return this.$storyapi
-          .get('cdn/stories', {
-            ...filters,
-            version: version,
-            cv: state.cacheVersion,
-            resolve_relations: 'workshop',
-            sort_by: 'content.starttime:desc',
-            per_page: 100,
-          })
-          .then(res => {
-            const workshopdates = res.data.stories.reverse()
-            const workshops = {}
-            for (const w of workshopdates) {
-              if (!w.content.workshop) {
-                continue
+            .get('cdn/stories', {
+              ...filters,
+              version: version,
+              cv: state.cacheVersion,
+              resolve_relations: 'workshop',
+              sort_by: 'content.starttime:desc',
+              per_page: 100,
+            })
+            .then(res => {
+              const workshopdates = res.data.stories.reverse()
+              const workshops = {}
+              for (const w of workshopdates) {
+                if (!w.content.workshop) {
+                  continue
+                }
+                const wid = w.content.workshop.uuid
+                if (!(wid in workshops)) {
+                  workshops[wid] = Object.assign({ dates: [] }, w.content.workshop)
+                }
+                workshops[wid].dates.push(w)
               }
-              const wid = w.content.workshop.uuid
-              if (!(wid in workshops)) {
-                workshops[wid] = Object.assign({ dates: [] }, w.content.workshop)
+              if (search === '' || !search) {
+                return Object.values(workshops).sort((a, b) => a.content.title.localeCompare(b.content.title))
               }
-              workshops[wid].dates.push(w)
-            }
-            if (search === '' || !search) {
-              return Object.values(workshops).sort((a, b) => a.content.title.localeCompare(b.content.title))
-            }
-            const searchString = new RegExp(search, 'i')
-            return Object.values(workshops)
-              .filter(w => {
-                return w.content.title.match(searchString)
-              })
-              .sort((a, b) => a.content.title.localeCompare(b.content.title))
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+              const searchString = new RegExp(search, 'i')
+              return Object.values(workshops)
+                  .filter(w => {
+                    return w.content.title.match(searchString)
+                  })
+                  .sort((a, b) => a.content.title.localeCompare(b.content.title))
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       findWorkshopDates({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
-            ...filters,
-            version: version,
-            cv: state.cacheVersion,
-            sort_by: 'content.starttime:desc',
-            per_page: 100,
-          })
-          .then(res => {
-            return res.data.stories
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/stories', {
+              ...filters,
+              version: version,
+              cv: state.cacheVersion,
+              sort_by: 'content.starttime:desc',
+              per_page: 100,
+            })
+            .then(res => {
+              return res.data.stories
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       loadNewsItem({ state }, slug) {
         const endpoint = `cdn/stories/${state.language}/news/${slug}`
         return this.$storyapi
-          .get(endpoint, {
-            version: version,
-            cv: state.cacheVersion,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get(endpoint, {
+              version: version,
+              cv: state.cacheVersion,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       findNews({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
-            filter_query: filters.filter_query,
-            version: version,
-            cv: state.cacheVersion,
-            starts_with: `${state.language}/news`,
-            per_page: 100,
-            sort_by: 'content.datetime:desc',
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/stories', {
+              filter_query: filters.filter_query,
+              version: version,
+              cv: state.cacheVersion,
+              starts_with: `${state.language}/news`,
+              per_page: 100,
+              sort_by: 'content.datetime:desc',
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       loadSitemap({ state, commit }) {
         return this.$storyapi
-          .get('cdn/links', {
-            version: version,
-            cv: state.cacheVersion,
-            starts_with: state.language,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/links', {
+              version: version,
+              cv: state.cacheVersion,
+              starts_with: state.language,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       loadSettings({ state, commit }, context) {
         return this.$storyapi
-          .get(`cdn/stories/${context.language}/settings`, {
-            version: version,
-          })
-          .then(res => {
-            commit('setSettings', res.data.story.content)
-          })
-          .catch(e => {
-            console.log(e)
-          })
+            .get(`cdn/stories/${context.language}/settings`, {
+              version: version,
+            })
+            .then(res => {
+              commit('setSettings', res.data.story.content)
+            })
+            .catch(e => {
+              console.log(e)
+            })
       },
       findPress({ state }, filters) {
         return this.$storyapi
-          .get('cdn/stories', {
-            filter_query: filters.filter_query,
-            version: version,
-            cv: state.cacheVersion,
-            starts_with: `${state.language}/press`,
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/stories', {
+              filter_query: filters.filter_query,
+              version: version,
+              cv: state.cacheVersion,
+              starts_with: `${state.language}/press`,
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
       getDataSource({ state }, source) {
         return this.$storyapi
-          .get('cdn/datasource_entries', {
-            datasource: source,
-            cv: Date.now(),
-          })
-          .then(res => {
-            return res.data
-          })
-          .catch(res => {
-            this.$sentry.captureException(res)
-          })
+            .get('cdn/datasource_entries', {
+              datasource: source,
+              cv: Date.now(),
+            })
+            .then(res => {
+              return res.data
+            })
+            .catch(res => {
+              this.$sentry.captureException(res)
+            })
       },
     },
   })
