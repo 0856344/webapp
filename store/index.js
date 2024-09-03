@@ -524,7 +524,8 @@ const createStore = () => {
         })
       },
       getMaterials({ state }, id) {
-        return axios.get(connectorBaseUrl + '/products/materials').then((result) => {
+        // TODO - replace with new API - @see https://grandgarage.atlassian.net/browse/CON-465
+        return axios.get(connectorBaseUrl + '/v1/inventory/products').then((result) => {
           return result.data;
         });
       },

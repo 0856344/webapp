@@ -34,18 +34,19 @@ export default {
     },
   },
   async mounted() {
-    this.materials = await this.$store.dispatch("getMaterials");
-    let materials = Object.assign([], this.materials);
-    materials = materials.sort(function (a, b) {
-      if (a.external_name > b.external_name) {
-        return 1;
-      } else if (a.external_name < b.external_name) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    this.materials = materials;
+    // this.materials = await this.$store.dispatch("getMaterials");
+    // let materials = Object.assign([], this.materials);
+    // materials = materials.sort(function (a, b) {
+    //   if (a.external_name > b.external_name) {
+    //     return 1;
+    //   } else if (a.external_name < b.external_name) {
+    //     return -1;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
+    //this.materials = materials;
+    this.materials = [];
   },
 };
 </script>
