@@ -28,9 +28,7 @@
       <div class="form-item" style="margin-top: 0px">
         <label></label>
         <h5 style="margin: 0px">
-          HINWEIS: Das Mindestalter für eine Mitgliedschaft SMART 14+ bzw. DIGI
-          14+ liegt bei 14 Jahren. Für die Nutzung von METAL 18+ und GRAND 18+
-          als Mitglied musst du 18 Jahre alt sein. Weitere Infos >
+          HINWEIS: Das Mindestalter für eine Mitgliedschaft liegt bei 14 Jahren. Weitere Infos >
           <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>. TOO YOUNG?
           Klick dich in unsere
           <nuxt-link target="_blank" to="/de/bildungswerkstatt"
@@ -265,7 +263,7 @@ export default {
     //console.log('CONTACT FROM: ', from.path)
     if (
       from.path === "/wizard/onboarding/userInformation" ||
-      from.path === "/wizard/onboarding/image"
+      from.path === "/wizard/onboarding/payment"
     ) {
       next();
     } else {

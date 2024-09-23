@@ -57,9 +57,7 @@
       >
         <label></label>
         <h5 style="margin: 0px">
-          HINWEIS: Das Mindestalter für eine Mitgliedschaft SMART 14+ bzw. DIGI
-          14+ liegt bei 14 Jahren. Für die Nutzung von METAL 18+ und GRAND 18+
-          als Mitglied musst du 18 Jahre alt sein. Weitere Infos >
+          HINWEIS: Das Mindestalter für eine Mitgliedschaft liegt bei 14 Jahren. Weitere Infos >
           <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>. TOO YOUNG?
           Klick dich in unsere
           <nuxt-link target="_blank" to="/de/bildungswerkstatt"
@@ -76,7 +74,13 @@
         <div class="form-item" v-if="this.selectedMembership">
           <span class="label">Paket-Preis</span>
           <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
+
         </div>
+        <div class="form-item" v-if="this.selectedMembership">
+          <span class="label">Startgebühr</span>
+          <p class="text">{{ getMembershipStartPrice() }} (inkl. MwSt)</p>
+        </div>
+
 
         <div v-if="this.selectedMembership && getMembershipCredits()">
           <div class="form-item" style="margin-bottom: 4px">
@@ -99,11 +103,10 @@
             <h5 style="margin: 0px">
               Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro
               Monat. Die Freikontingente können nicht ins nächste Monat
-              mitgenommen werden. Die zusätzlich (gekauften) Credits bleiben
-              auch über die Monatsgrenze hinweg erhalten. Weitere Infos >
+              mitgenommen werden. ( weitere Infos >
               <nuxt-link target="_blank" to="/de/agb">
                 {{ $t("conditionsOfParticipation") }} </nuxt-link
-              >).
+              >)
             </h5>
           </div>
         </div>
@@ -345,7 +348,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     //console.log('PAYMENT FROM: ', from.path)
-    if (from.path === "/wizard/onboarding/image") {
+    if (from.path === "/wizard/onboarding/contact") {
       next();
     } else {
       next("/wizard/onboarding/userInformation");
@@ -407,6 +410,12 @@ export default {
         this.onboardingData.payment.membership.recurringFee + "€ monatlich"
       );
     },
+    getMembershipStartPrice() {
+      this.onboardingData.payment.membership = this.selectedMembership;
+      return (
+        this.onboardingData.payment.membership.setupFee + "€ einmalig"
+      );
+    },
 
     getMembershipCredits() {
       let membership = null;
@@ -422,6 +431,18 @@ export default {
           break;
         case "SG+ALL":
           membership = this.getMembershipByShortform("SG+ALL");
+          break;
+        case "MS24_SMALL":
+          membership = this.getMembershipByShortform("MS24_SMALL");
+          break;
+        case "MS24_MEDIUM":
+          membership = this.getMembershipByShortform("MS24_MEDIUM");
+          break;
+        case "MS24_PRO":
+          membership = this.getMembershipByShortform("MS24_PRO");
+          break;
+        case "MS24_PAY_PER_USE":
+          membership = this.getMembershipByShortform("MS24_PAY_PER_USE");
           break;
       }
       if (membership) {
@@ -464,11 +485,12 @@ export default {
     },
     sortByKey(array, key) {
       return array.sort(function (a, b) {
-        const x = a[key];
-        const y = b[key];
+        const x = Number(a[key]);
+        const y = Number(b[key]);
         return x < y ? -1 : x > y ? 1 : 0;
       });
-    },
+    }
+
   },
 };
 </script>

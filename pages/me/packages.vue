@@ -44,7 +44,7 @@
           >
         </div>
         <div class="sm:px-4 my-6 lg:px-8 lg:my-12">
-          <table v-if="monthlyCreditActivities.length > 0" class="member-portal-table table-auto w-full">
+          <table v-if="monthlyCreditActivities && monthlyCreditActivities.length > 0" class="member-portal-table table-auto w-full">
             <thead class="">
             <tr class="w-full text-base">
               <th>
@@ -520,6 +520,7 @@ export default {
     },
     async loadCreditActivities() {
       if (this.memberCredits && this.memberCredits.length > 0) {
+        console.log('load credits')
         // Lade monatliche Kreditaktivitäten für das erste Element
         try {
           this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {

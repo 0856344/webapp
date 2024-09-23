@@ -80,11 +80,8 @@ export default {
       passwordCheck: false,
       mailCheck: false,
       MemberType,
-      steps: ["userInformation", "contact", "image", "payment", "confirmation"],
+      steps: ["userInformation", "contact", "payment", "confirmation"],
       onboardingData: {
-        //image: null,
-        image64: null,
-        imageUrl: null,
         userInformation: {
           firstName: null,
           lastName: null,
@@ -198,9 +195,6 @@ export default {
             !data.contactInformation.birthdateValid
           );
         }
-        case 'image': {
-          return this.onboardingData.image64 === null;
-        }
         case 'payment': {
           const membershipType = this.getMemberType();
           // if company & free cost
@@ -296,10 +290,6 @@ export default {
               this.onboardingData.userInformation.lastName;
           }
 
-          break;
-        case 'image':
-          this.loadNextPage();
-          this.saveOnboardingData();
           break;
         case 'payment':
           this.saveOnboardingData();
@@ -566,11 +556,11 @@ export default {
         // add captcha token to memberData
         memberData = { ...memberData, ...captchaData }
 
-        // add image data to memberData
-        const imageData = {
-          dataUrl: this.onboardingData.image64,
-        }
-        memberData = { ...memberData, imageData }
+        // // add image data to memberData
+        // const imageData = {
+        //   dataUrl: this.onboardingData.image64,
+        // }
+        // memberData = { ...memberData, imageData }
         this.loading = true
         //  create Fabman member and set membership
         this.$store
