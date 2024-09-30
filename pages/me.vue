@@ -22,8 +22,11 @@
             to="/me/bookings/"
             icon="calendar"
           >{{ $t('machineBooking') }}</MenuLink>
-          <MenuLink to="/me/packages" icon="coins"
-          >{{ $t('membership') }} & Credits
+          <MenuLink to="/me/packages" icon="house"
+          >{{ $t('membership') }}
+          </MenuLink>
+          <MenuLink to="/me/credits" icon="coins"
+          >Credits
           </MenuLink>
           <MenuLink
             to="/me/trainings"

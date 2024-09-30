@@ -1,3 +1,4 @@
+<!--TODO remove - unused after MS24 reopening-->
 <template>
   <div class="section">
     <h2>Foto</h2>
