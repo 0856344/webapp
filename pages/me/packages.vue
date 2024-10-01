@@ -28,9 +28,13 @@
         </p>
       </div>
 
-      <div v-if="!loading && membership" class="bg-white p-3 pt-1">
+      <div v-if="!loading && membership &&upcomingMembership" class="bg-white p-3 pt-1">
+        <p class="text-lg font-bold"> Deine neue Mitgliedschaft beginnt bald!  </p>
+        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+      </div>
+      <div v-if="!loading && membership &&!upcomingMembership &&!currentMembership.untilDate" class="bg-white p-3 pt-1">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft wechseln? </p>
-        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
         <!-- Radio buttons for package selection -->
         <div class="mt-8">
           <hr class="border-gray-300" />
@@ -63,6 +67,26 @@
             Upgrade durchführen
           </button>
         </div>
+      </div>
+      <div v-if="!loading && membership &&!upcomingMembership &&currentMembership &&!currentMembership.untilDate" class="bg-white p-3 pt-1 mt-6">
+        <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft beenden? </p>
+        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <!-- Radio buttons for package selection -->
+        <div class="mt-8">
+          <hr class="border-gray-300" />
+          <button
+            type="submit"
+            class="w-full py-2 mt-6 text-white rounded-sm bg-red ring-2 ring-red-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
+            :disabled="!currentMembership"
+            @click="cancelPackage(currentMembership.id)">
+            Mitgliedschaft beenden
+          </button>
+        </div>
+      </div>
+      <div v-if="!loading && membership &&!upcomingMembership &&currentMembership.untilDate" class="bg-white p-3 pt-1 mt-6">
+        <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft beenden? </p>
+        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst oder beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <!-- Radio buttons for package selection -->
       </div>
 
 
@@ -122,6 +146,7 @@ export default {
       memberStorage: null,
       hasSmartGarage: false,
       loading: false,
+      loadingAvailableStorage:false,
       availableStorage: null,
       selectedMembership: null, // For tracking the selected membership
     };
@@ -188,16 +213,14 @@ export default {
         return p?._embedded?.package?.metadata?.is_membership_identifier
       });
       this.membership.forEach((p) => {
-        console.log('p: ', p.fromDate)
-          console.log('package active?: ',this.isTodayBetweenDates(p.fromDate,  p.untilDate))
-        if (this.isTodayBetweenDates(p.fromDate,  p.untilDate)) {
+        if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
           this.currentMembership = p;
         }
         if (this.isUpcomingMembership(p.fromDate)) {
           this.upcomingMembership = p;
-          console.log('upcomingMembership: ', this.upcomingMembership);
         }
       })
+      console.log('currentMembership: ', this.currentMembership)
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
@@ -229,7 +252,9 @@ export default {
         if (p?.credits.length > 0) {
           p.credits.forEach((credit) => {
             if (credit?.period === 'month') {
-              monthlyCredits += parseFloat(credit.amount);
+              if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
+                monthlyCredits += parseFloat(credit.amount);
+              }
             }
           });
         }
@@ -266,7 +291,7 @@ export default {
 
       return firstDayOfNextMonth.toISOString(); // Im ISO 8601-Format
     },
-    isTodayBetweenDates(startDateString, endDateString) {
+    isActiveMembership(startDateString, endDateString) {
       const today = new Date(); // Aktuelles Datum
       // Konvertiere die Eingabe-Strings in Date-Objekte
       const startDate = new Date(startDateString);
@@ -291,13 +316,12 @@ export default {
 
 async upgradePlan() {
       // TODO:
-      // cancel current membership on upgrade
-      // fix credit calculation
-      // show alternative text if upgrade is pending
+      // cancel current membership on upgrade DONE
+      // fix credit calculation DONE
+      // show alternative text if upgrade is pending DONE
       // cancel membership button
-      console.log('Upgrade plan to: ', this.selectedMembership)
-      await this.cancelPackage(this.c);
       await this.setPackage(this.selectedMembership);
+      await this.cancelPackage(this.currentMembership.id);
     },
     async setPackage(id) {
       await this.$recaptchaLoaded();
@@ -317,7 +341,7 @@ async upgradePlan() {
           this.$toast.show("Buchung wurde erfolgreich durchgeführt", {
             className: "goodToast",
           });
-          this.reload();
+          //this.reload();
           window.scrollTo(0, 0)
         })
         .catch((error) => {
@@ -332,31 +356,31 @@ async upgradePlan() {
         });
     },
     async cancelPackage(id) {
-      await this.$recaptchaLoaded();
-      const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
-      const captchaData = {
-        "g-recaptcha-response": token,
-      };
-      let payload = { id: id };
-      // add captcha token to payload
-      payload = { ...payload, ...captchaData };
-      await this.$store
-        .dispatch("cancelPackage", payload)
-        .then((response) => {
-          this.$toast.show("Kündigung wurde erfolgreich durchgeführt", {
-            className: "goodToast",
-          });
-          this.$emit("reload");
-        })
-        .catch((error) => {
-          switch (error.response.status) {
-            default:
-              this.$toast.show("Ein Fehler ist aufgetreten", {
-                className: "badToast",
-              });
-              break;
-          }
-        });
+       await this.$recaptchaLoaded();
+       const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
+       const captchaData = {
+         "g-recaptcha-response": token,
+       };
+       let payload = { id: id };
+       // add captcha token to payload
+       payload = { ...payload, ...captchaData };
+       await this.$store
+         .dispatch("cancelPackage", payload)
+         .then((response) => {
+           this.$toast.show("Kündigung wurde erfolgreich durchgeführt", {
+             className: "goodToast",
+           });
+           this.reload();
+         })
+         .catch((error) => {
+           switch (error.response.status) {
+             default:
+               this.$toast.show("Ein Fehler ist aufgetreten", {
+                 className: "badToast",
+               });
+               break;
+           }
+         });
     },
     // Name wird momentan direkt von Paket verwendet (war mit jährlich/reduziert vorher nicht möglich)
     // falls sich die Anforderungen wieder ändern, kann dieser Code verwendet werden
