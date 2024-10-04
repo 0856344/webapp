@@ -432,17 +432,17 @@ export default {
         case "SG+ALL":
           membership = this.getMembershipByShortform("SG+ALL");
           break;
-        case "MS24_SMALL":
-          membership = this.getMembershipByShortform("MS24_SMALL");
+        case "MS24_STARTER":
+          membership = this.getMembershipByShortform("MS24_STARTER");
           break;
-        case "MS24_MEDIUM":
-          membership = this.getMembershipByShortform("MS24_MEDIUM");
+        case "MS24_MAKER":
+          membership = this.getMembershipByShortform("MS24_MAKER");
           break;
         case "MS24_PRO":
           membership = this.getMembershipByShortform("MS24_PRO");
           break;
-        case "MS24_PAY_PER_USE":
-          membership = this.getMembershipByShortform("MS24_PAY_PER_USE");
+        case "MS24_FLEX":
+          membership = this.getMembershipByShortform("MS24_FLEX");
           break;
       }
       if (membership) {
