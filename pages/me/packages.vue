@@ -1,11 +1,12 @@
 <template>
-  <div class="section">
+  <div class="section" >
     <h2>{{ $t('membership') }}</h2>
     <br />
-    <fieldset>
+    <div><loading-spinner v-if="loading" color="#333" /></div>
+    <fieldset v-if="!loading && membership && currentMembership">
       <legend>Mitgliedschaft</legend>
-      <div><loading-spinner v-if="loading" color="#333" /></div>
-      <div v-if="!loading && membership">
+
+      <div>
         <div v-for="userPackage of membership" :key="userPackage.id">
           <package
             v-on:reload="reload"
@@ -17,24 +18,34 @@
       <p class="text-sm mx-4">
         *exklusive der Kosten für Material oder Maschinennutzung.
       </p>
-      <div v-if="this.memberPackages" class="max-w-md mt-2 mx-4 p-3">
-        <p class="text-lg font-bold">Deine Benefits:</p>
-        <p class="text-lg font-normal text-center">
-          {{ this.getMonthlyCredits() }} monatliche Credits
+      <div v-if="this.memberPackages" class="max-w-lg p-3 mb-8 bg-white border-2">
+        <p class="text-lg font-bold">Deine aktuelle Mitgliedschaft:</p>
+        <p class="font-normal text-center text-sm">
+          <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits
         </p>
         <hr class="border-gray-300" />
-        <p class="text-lg font-normal text-center">
-          24/7 Makerspace
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_FEX' " class="font-normal text-center text-bold text-red text-sm">
+          <strong>50% Aufpreis auf Maschinenpreise</strong>
+        </p>
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' " class="font-normal text-center text-green text-sm">
+          <strong>25% Discount</strong> auf Maschinenpreise nach Verbrauch der <strong>{{ this.getMonthlyCredits() }}</strong> Credits
+        </p>
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' " class="font-normal text-center text-green text-sm">
+          <strong>40% Discount</strong>  auf Maschinenpreise nach Verbrauch der <strong>{{ this.getMonthlyCredits() }}</strong> Credits
+        </p>
+        <hr class="border-gray-300" />
+        <p class="font-normal text-center text-sm">
+          <strong>24/7 Makerspace</strong> (ab 4.11.2024)
         </p>
       </div>
 
       <div v-if="!loading && membership &&upcomingMembership" class="bg-white p-3 pt-1">
         <p class="text-lg font-bold"> Deine neue Mitgliedschaft beginnt bald!  </p>
-        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <p>Mitgliedschaften laufen immer bis zum letzen Tag des nächsten Monats.</p>
       </div>
       <div v-if="!loading && membership &&!upcomingMembership &&!currentMembership.untilDate" class="bg-white p-3 pt-1">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft wechseln? </p>
-        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <p>Mitgliedschaften laufen immer bis zum letzen Tag des nächsten Monats. Wenn du deine Mitgliedschaft wechselst, dann startet die neue Mitgliedschaft am:  <strong> {{new Date(getStartDate()).toLocaleDateString('DE', { day: '2-digit',month: 'long',year: 'numeric' })}} </strong></p>
         <!-- Radio buttons for package selection -->
         <div class="mt-8">
           <hr class="border-gray-300" />
@@ -53,24 +64,35 @@
           />
           <span class="align-middle">
         Mitgliedschaft: <strong>{{ packageOption.name }}</strong>
+            <span v-if="isSelectedMembershipCurrentMembership(packageOption)"><strong>(aktuell)</strong></span>
           </span>
             <p class="align-middle mx-10 my-4">
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
             </p>
+            <p v-if="packageOption.metadata.shortform === 'MS24_FLEX'" :class="{ 'text-red': !isDisabled(packageOption) }" class="align-middle mx-10 my-4" >
+              <strong>50% Aufpreis </strong>  auf Maschinenpreise
+            </p>
+            <p v-if="packageOption.metadata.shortform === 'MS24_MAKER'" :class="{ 'text-green': !isDisabled(packageOption) }" class="align-middle mx-10 my-4 ">
+              <strong>25% Discount </strong>  auf Maschinenpreise (nach Verbrauch der <strong>{{ getPackageCredits(packageOption) }}</strong> Credits)
+            </p>
+            <p v-if="packageOption.metadata.shortform === 'MS24_PRO'" :class="{ 'text-green': !isDisabled(packageOption) }" class="align-middle mx-10 my-4 ">
+              <strong>40% Discount </strong>  auf Maschinenpreise (nach Verbrauch der <strong>{{ getPackageCredits(packageOption) }}</strong>  Credits)
+            </p>
             <hr class="border-gray-300" />
           </label>
+          <p class="text-xs text-left">* die Mitgliedschaften <strong>"SMALL & DIGI"</strong> laufen am 3.11.2024 aus.</p>
           <button
             type="submit"
             class="w-full py-2 mt-6 text-white rounded-sm bg-orange ring-2 ring-orange-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
             :disabled="!selectedMembership"
             @click="upgradePlan()">
-            Upgrade durchführen
+            Mitgliedschaft wechseln
           </button>
         </div>
       </div>
       <div v-if="!loading && membership &&!upcomingMembership &&currentMembership &&!currentMembership.untilDate" class="bg-white p-3 pt-1 mt-6">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft beenden? </p>
-        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <p>Mitgliedschaften laufen immer bis zum letzten Tag des nächsten Monats. Wenn du deine Mitgliedschaft jetzt beendest, dann läuft deine Mitgliedschaft bis: <strong> {{new Date(getCancelDate()).toLocaleDateString('DE', { day: '2-digit',month: 'long',year: 'numeric' })}} </strong></p>
         <!-- Radio buttons for package selection -->
         <div class="mt-8">
           <hr class="border-gray-300" />
@@ -79,13 +101,13 @@
             class="w-full py-2 mt-6 text-white rounded-sm bg-red ring-2 ring-red-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
             :disabled="!currentMembership"
             @click="cancelPackage(currentMembership.id)">
-            Mitgliedschaft beenden
+            Mitgliedschaft kündigen
           </button>
         </div>
       </div>
       <div v-if="!loading && membership &&!upcomingMembership &&currentMembership.untilDate" class="bg-white p-3 pt-1 mt-6">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft beenden? </p>
-        <p>Mitgliedschaften laufen immer bis zum Monatsende. Wenn du deine Mitgliedschaft wechselst oder beendest, dann ist die Änderung erst gültig ab den nächsten Monat.</p>
+        <p>Die Mitgliedschaften haben eine Mindestlaufzeit bis am letzten Tag des Folgemonats ab Kündigungsdatum. </p>
         <!-- Radio buttons for package selection -->
       </div>
 
@@ -163,6 +185,7 @@ export default {
         'getMemberPackages',
         this.$store.state.member.id,
       );
+      console.log('member packs: ', this.memberPackages)
       this.upgradePackages = await this.$store.dispatch('getPackages');
       this.upgradePackages = this.upgradePackages.filter((p) => {
         const metadata = p.metadata;
@@ -185,6 +208,7 @@ export default {
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
+      console.log('all packs: ', this.memberPackages)
       this.membership = this.memberPackages.filter((p) => {
         const metadata = p._embedded.package.metadata;
         if (metadata?.shortform === PACKAGES_SHORT_FORMS.discount) {
@@ -209,6 +233,7 @@ export default {
       // check if package has "is_membership_identifier" flag to identify the membership package
       //let identifiedMembership = null;
       //this.membership = [];
+      console.log('all: ', this.membership)
       this.membership.filter((p) => {
         return p?._embedded?.package?.metadata?.is_membership_identifier
       });
@@ -220,6 +245,7 @@ export default {
           this.upcomingMembership = p;
         }
       })
+      this.selectedMembership = this.currentMembership._embedded.package.id;
       console.log('currentMembership: ', this.currentMembership)
 
       // storage of the current member
@@ -262,8 +288,18 @@ export default {
       return monthlyCredits * 10;
     },
     isDisabled(packageOption) {
-      // Überprüfen, ob die Option in der aktuellen Mitgliedschaft enthalten ist
-      return this.membership.some(m => m._embedded.package.metadata.shortform === packageOption.metadata.shortform);
+      // Überprüfen, ob die Option in der aktuellen Mitgliedschaft enthalten ist oder SMART oder DIGI
+      return this.membership.some(m => m._embedded.package.metadata.shortform === packageOption.metadata.shortform) || (packageOption.metadata.shortform === 'SG+DT' || packageOption.metadata.shortform ==='SG');
+    },
+    isSelectedMembershipCurrentMembership(packageOption) {
+      // Überprüfen, ob die ausgewählte Option die aktuelle Membership ist
+      console.log("packageOption: ", packageOption.name)
+      if (this.membership.some(m => m._embedded.package.metadata.shortform === packageOption.metadata.shortform)){
+        //this.selectedMembership=packageOption.id;
+        return true
+      } else {
+        return false
+      }
     },
     getPackageCredits(memberPackage) {
       let monthlyCredits = 0
@@ -281,15 +317,26 @@ export default {
         return x < y ? -1 : x > y ? 1 : 0;
       });
     },
-    getFirstDayOfNextMonth() {
+    getStartDate() {
       const today = new Date(); // Aktuelles Datum
       const year = today.getFullYear();
       const month = today.getMonth(); // Monate sind 0-basiert (0 = Januar, 11 = Dezember)
 
-      // Erster Tag des nächsten Monats (kein Problem mit Zeitzonen)
-      const firstDayOfNextMonth = new Date(Date.UTC(year, month + 1, 1));
+      // Erster Tag in 2 Monaten (kein Problem mit Zeitzonen)
+      const startDate = new Date(Date.UTC(year, month + 2, 1));
 
-      return firstDayOfNextMonth.toISOString(); // Im ISO 8601-Format
+      return startDate.toISOString(); // Im ISO 8601-Format
+    },
+    getCancelDate() {
+      const today = new Date(); // Aktuelles Datum
+      const year = today.getFullYear();
+      const month = today.getMonth(); // Monate sind 0-basiert (0 = Januar, 11 = Dezember)
+
+      // Letzter Tag des nächsten Monats (kein Problem mit Zeitzonen)
+      let cancelDate = new Date(Date.UTC(year, month + 2, 1));
+      cancelDate.setUTCDate(cancelDate.getUTCDate() - 1);
+
+      return cancelDate.toISOString(); // Im ISO 8601-Format
     },
     isActiveMembership(startDateString, endDateString) {
       const today = new Date(); // Aktuelles Datum
@@ -315,11 +362,6 @@ export default {
 
 
 async upgradePlan() {
-      // TODO:
-      // cancel current membership on upgrade DONE
-      // fix credit calculation DONE
-      // show alternative text if upgrade is pending DONE
-      // cancel membership button
       await this.setPackage(this.selectedMembership);
       await this.cancelPackage(this.currentMembership.id);
     },
@@ -329,15 +371,13 @@ async upgradePlan() {
       const captchaData = {
         "g-recaptcha-response": token,
       };
-      const startDate = this.getFirstDayOfNextMonth();
+      const startDate = this.getStartDate();
       let payload = { id: id, startDate:startDate };
       // add captcha token to payload
       payload = { ...payload, ...captchaData };
       await this.$store
         .dispatch("setPackage", payload)
         .then((response) => {
-          //this.packageLoading = false;
-          //this.closeSetPackageDialog();
           this.$toast.show("Buchung wurde erfolgreich durchgeführt", {
             className: "goodToast",
           });
@@ -345,7 +385,6 @@ async upgradePlan() {
           window.scrollTo(0, 0)
         })
         .catch((error) => {
-          //this.packageLoading = false;
           switch (error?.response?.status) {
             default:
               this.$toast.show("Ein Fehler ist aufgetreten", {
@@ -361,7 +400,8 @@ async upgradePlan() {
        const captchaData = {
          "g-recaptcha-response": token,
        };
-       let payload = { id: id };
+      const cancellationDate = this.getCancelDate();
+       let payload = { id: id, cancellationDate:cancellationDate };
        // add captcha token to payload
        payload = { ...payload, ...captchaData };
        await this.$store
