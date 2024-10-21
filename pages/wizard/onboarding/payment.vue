@@ -73,19 +73,19 @@
       <div v-if="!this.onboardingData.contactInformation.company">
         <div class="form-item" v-if="this.selectedMembership">
           <span class="label">Paket-Preis</span>
-          <p class="text">{{ getMembershipPrice() }} (inkl. MwSt)</p>
+          <p class="text text-blue-900"><strong>{{ getMembershipPrice() }}</strong> (inkl. MwSt)</p>
 
         </div>
         <div class="form-item" v-if="this.selectedMembership">
           <span class="label">Startgebühr</span>
-          <p class="text">{{ getMembershipStartPrice() }} (inkl. MwSt)</p>
+          <p class="text text-blue-900"><strong>{{ getMembershipStartPrice() }}</strong> (inkl. MwSt)</p>
         </div>
 
 
         <div v-if="this.selectedMembership && getMembershipCredits()">
           <div class="form-item" style="margin-bottom: 4px">
             <span class="label">Credits</span>
-            <p class="text">
+            <p class="text text-orange">
               {{ getMembershipCredits()[0] }}
               <strong v-if="getMembershipCredits()[1] !== ''"
                 ><span class="specialOffer">
@@ -108,6 +108,27 @@
                 {{ $t("conditionsOfParticipation") }} </nuxt-link
               >)
             </h5>
+          </div>
+          <div v-if="this.selectedMembership &&
+          (this.selectedMembership?.metadata?.shortform === 'MS24_FLEX' ||
+          this.selectedMembership?.metadata?.shortform === 'MS24_STARTER' ||
+           this.selectedMembership?.metadata?.shortform === 'MS24_MAKER' ||
+            this.selectedMembership?.metadata?.shortform === 'MS24_PRO') ">
+            <div class="form-item" style="margin-bottom: 4px">
+              <span class="label">Maschinenpreis</span>
+              <p class="text text-red" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'">
+                50% Aufpreis
+              </p>
+              <p class="text text-red" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER'">
+                kein Rabatt
+              </p>
+              <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_MAKER'">
+                25% Rabatt
+              </p>
+              <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_PRO'">
+                40% Rabatt
+              </p>
+            </div>
           </div>
         </div>
       </div>

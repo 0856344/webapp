@@ -23,15 +23,18 @@
         <p class="font-normal text-center text-sm">
           <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits
         </p>
+<!--        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'" class="font-normal text-center text-sm">-->
+<!--          <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits-->
+<!--        </p>-->
         <hr class="border-gray-300" />
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_FEX' " class="font-normal text-center text-bold text-red text-sm">
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_FLEX' " class="font-normal text-center text-bold text-red text-sm">
           <strong>50% Aufpreis auf Maschinenpreise</strong>
         </p>
         <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' " class="font-normal text-center text-green text-sm">
-          <strong>25% Discount</strong> auf Maschinenpreise nach Verbrauch der <strong>{{ this.getMonthlyCredits() }}</strong> Credits
+          <strong>25% Discount</strong> auf Maschinenpreise
         </p>
         <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' " class="font-normal text-center text-green text-sm">
-          <strong>40% Discount</strong>  auf Maschinenpreise nach Verbrauch der <strong>{{ this.getMonthlyCredits() }}</strong> Credits
+          <strong>40% Discount</strong>  auf Maschinenpreise
         </p>
         <hr class="border-gray-300" />
         <p class="font-normal text-center text-sm">
@@ -73,10 +76,10 @@
               <strong>50% Aufpreis </strong>  auf Maschinenpreise
             </p>
             <p v-if="packageOption.metadata.shortform === 'MS24_MAKER'" :class="{ 'text-green': !isDisabled(packageOption) }" class="align-middle mx-10 my-4 ">
-              <strong>25% Discount </strong>  auf Maschinenpreise (nach Verbrauch der <strong>{{ getPackageCredits(packageOption) }}</strong> Credits)
+              <strong>25% Discount </strong>  auf Maschinenpreise
             </p>
             <p v-if="packageOption.metadata.shortform === 'MS24_PRO'" :class="{ 'text-green': !isDisabled(packageOption) }" class="align-middle mx-10 my-4 ">
-              <strong>40% Discount </strong>  auf Maschinenpreise (nach Verbrauch der <strong>{{ getPackageCredits(packageOption) }}</strong>  Credits)
+              <strong>40% Discount </strong>  auf Maschinenpreise
             </p>
             <hr class="border-gray-300" />
           </label>
@@ -126,7 +129,7 @@
 
     </fieldset>
 
-    <fieldset>
+    <fieldset v-if="!loading">
       <legend>Lager</legend>
       <div><loading-spinner v-if="loadingAvailableStorage" color="#333" /></div>
       <div
@@ -245,7 +248,9 @@ export default {
           this.upcomingMembership = p;
         }
       })
-      this.selectedMembership = this.currentMembership._embedded.package.id;
+      if (this.currentMembership) {
+        this.selectedMembership = this.currentMembership._embedded.package.id;
+      }
       console.log('currentMembership: ', this.currentMembership)
 
       // storage of the current member
@@ -401,6 +406,7 @@ async upgradePlan() {
          "g-recaptcha-response": token,
        };
       const cancellationDate = this.getCancelDate();
+      console.log(cancellationDate)
        let payload = { id: id, cancellationDate:cancellationDate };
        // add captcha token to payload
        payload = { ...payload, ...captchaData };

@@ -2,47 +2,18 @@
   <div class="section">
     <h2>Credits</h2>
     <br />
-<!--    <fieldset>-->
-<!--      <legend>Mitgliedschaft</legend>-->
-<!--      <div><loading-spinner v-if="loading" color="#333" /></div>-->
-<!--      <div v-if="!loading && membership">-->
-<!--        <div v-for="userPackage of membership" :key="userPackage.id">-->
-<!--          <package-->
-<!--              v-on:reload="reload"-->
-<!--              :user-package="userPackage"-->
-<!--              :storage="false"-->
-<!--          />-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      <div v-if="memberStorage && memberStorage.length > 0">-->
-<!--        <div v-for="userPackage of memberStorage" :key="userPackage.id">-->
-<!--          <package-->
-<!--              v-on:reload="reload"-->
-<!--              :user-package="userPackage"-->
-<!--              :storage="true"-->
-<!--              :booked="true"-->
-<!--          />-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <p>-->
-<!--        Bei Änderungen deiner Mitgliedschaft kontaktiere bitte unseren Frontdesk-->
-<!--        per Mail an <a v-bind:href="mail">frontdesk@grandgarage.eu</a>-->
-<!--      </p>-->
-<!--    </fieldset>-->
-
-
-
-    <fieldset v-if="hasSmartGarage">
-      <legend>Credits</legend>
-
-
-      <accordion bgColor="bg-white" textColor="text-black" class="my-4">
-        <div slot="header" class="text-xs xs:text-sm md:text-xl">Aktueller Status deines monatlichen Kontigents:
-          <span class="text-blue text-bold">
-          {{ this.getFirstRemainingCredit() }} Credits</span
+    <loading-spinner v-if="!currentMembership || loadingCreditActivities"></loading-spinner>
+    <div v-if="hasSmartGarage && currentMembership &&!loadingCreditActivities">
+      <accordion  v-if="!loadingCreditActivities" bgColor="bg-white" textColor="text-black" class="my-4">
+        <div slot="header" class="text-xs xs:text-sm md:text-xl">aktuelle Credits:
+          <span class="text-orange text-bold">
+          {{ Number(monthlyRemainingCredit).toFixed(1)}} Credits</span
           >
+<!--          <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'" class="text-orange text-bold">-->
+<!--          {{ (monthlyRemainingCredit /0.6).toFixed(1)}} Credits</span-->
+<!--          >-->
         </div>
+        <div v-if="loadingCreditActivities"><loading-spinner></loading-spinner></div>
         <div class="sm:px-4 my-6 lg:px-8 lg:my-12">
           <table v-if="monthlyCreditActivities && monthlyCreditActivities.length > 0" class="member-portal-table table-auto w-full">
             <thead class="">
@@ -51,7 +22,8 @@
                 Creditskontigent gesamt
               </th>
               <th>
-                <span>{{ this.getMonthlyCredits() }} Credits</span>
+                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER'">{{ Number(monthlyCredits).toFixed(1) }} Credits</span>
+<!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyCredits/0.6).toFixed(1) }} Credits</span>-->
               </th>
             </tr>
             </thead>
@@ -61,7 +33,7 @@
             >
               <td>
                 <div>
-                  {{ new Date(activity.createdAt).toLocaleDateString('de-AT') }} um {{ new Date(activity.createdAt).toLocaleTimeString('de-AT') }}
+                  {{ new Date(activity._embedded.resourceLog.createdAt).toLocaleDateString('de-AT') }} um {{ new Date(activity._embedded.resourceLog.createdAt).toLocaleTimeString('de-AT') }}
                 </div>
                 <div>
                   {{ convertTime(activity.duration)}}
@@ -69,7 +41,8 @@
               </td>
               <td>
                 <div>
-                  - {{(activity.amount * 10).toFixed(1) }}
+                  <span> - {{((activity.amount * 10)).toFixed(1) }}</span>
+<!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
                 </div>
                 <div>
                   {{ activity.resource_name}}
@@ -81,7 +54,8 @@
                 Verbleibende Credits
               </th>
               <th class="flex-1">
-                <span>{{ this.getFirstRemainingCredit() }} Credits</span>
+                <span>{{ Number(monthlyRemainingCredit).toFixed(1) }} Credits</span>
+<!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyRemainingCredit/0.6).toFixed(1) }} Credits</span>-->
               </th>
             </tr>
             </tbody>
@@ -111,10 +85,10 @@
         </div>
       </accordion>
 
-      <accordion bgColor="bg-white" textColor="text-black" class="my-4">
-        <div slot="header" class="text-xs xs:text-sm md:text-xl">Aktueller Status deiner zugekauften Credits:
-          <span class="text-blue text-bold">
-          {{ this.getPackageRemainingCredit() }} Credits</span
+      <accordion bgColor="bg-white" textColor="text-black" class="my-4" v-if="oneTimeCredits && oneTimeCredits>0 ">
+        <div slot="header" class="text-xs xs:text-sm md:text-xl">Extra Credits:
+          <span class="text-orange  text-bold">
+          {{ oneTimeCredits }} Credits</span
           >
         </div>
         <div class="sm:px-4 my-6 lg:px-8 lg:my-12">
@@ -125,7 +99,7 @@
                 Creditskontigent gesamt
               </th>
               <th>
-                <span>{{ this.getPackageCredits() }} Credits</span>
+                <span>{{ oneTimeCreditsOriginal }} Credits</span>
               </th>
             </tr>
             </thead>
@@ -135,7 +109,7 @@
             >
               <td>
                 <div>
-                  {{ new Date(creditActivity.createdAt).toLocaleDateString('de-AT') }} um {{ new Date(creditActivity.createdAt).toLocaleTimeString('de-AT') }}
+                  {{ new Date(creditActivity._embedded.resourceLog.createdAt).toLocaleDateString('de-AT') }} um {{ new Date(creditActivity._embedded.resourceLog.createdAt).toLocaleTimeString('de-AT') }}
                 </div>
                 <div>
                   {{ convertTime(creditActivity.duration)}}
@@ -155,7 +129,7 @@
                 Verbleibende Credits
               </th>
               <th class="flex-1">
-                <span>{{ this.getPackageRemainingCredit() }} Credits</span>
+                <span>{{ oneTimeCredits }} Credits</span>
               </th>
             </tr>
             </tbody>
@@ -185,10 +159,18 @@
         </div>
       </accordion>
 
-      <accordion bgColor="bg-white" textColor="text-black" class="my-4">
-        <div slot="header" class="text-xs xs:text-sm md:text-xl">Hier kannst du deine Credits-Historie ansehen
+<!--      <accordion bgColor="bg-white" textColor="text-black" class="my-4" v-if="loadingPreviousCreditActivities" >-->
+<!--        <div slot="header" class="text-xs xs:text-sm md:text-xl">Credits-Historie (lade Informationen...)-->
+<!--        </div>-->
+<!--      </accordion>-->
+<!--      <p v-if="loadingPreviousCreditActivities" >-->
+<!--        lade Credit-History...-->
+<!--      </p>-->
+      <accordion bgColor="bg-white" textColor="text-black" class="my-4" :key="loadingPreviousCreditActivities" >
+        <div slot="header" class="text-xs xs:text-sm md:text-xl">Credits-Historie
         </div>
-        <div class="sm:px-4 my-6 lg:px-8 lg:my-12">
+        <div v-if="loadingPreviousCreditActivities"><loading-spinner></loading-spinner></div>
+        <div v-if="!loadingPreviousCreditActivities"  class="sm:px-4 my-6 lg:px-8 lg:my-12">
           <table v-if="previousCreditActivities.length > 0" class="member-portal-table table-auto w-full">
             <thead class="">
             <tr class="w-full">
@@ -205,7 +187,7 @@
             >
               <td>
                 <div>
-                  {{ new Date(creditActivity.createdAt).toLocaleDateString('de-AT') }} um {{ new Date(creditActivity.createdAt).toLocaleTimeString('de-AT') }}
+                  {{ new Date(creditActivity._embedded.resourceLog.createdAt).toLocaleDateString('de-AT') }} um {{ new Date(creditActivity._embedded.resourceLog.createdAt).toLocaleTimeString('de-AT') }}
                 </div>
                 <div>
                   {{ convertTime(creditActivity.duration)}}
@@ -263,10 +245,10 @@
 <!--        (gekauften) Credits bleiben auch über die Monatsgrenze hinweg erhalten.-->
 <!--        Weitere Infos > <nuxt-link target="_blank" to="/de/agb">AGB</nuxt-link>.-->
 <!--      </p>-->
-      <p>
-        Du willst dein Paket wechseln, dann schicke gern ein Mail an den
-        Frontdesk <a v-bind:href="mail">frontdesk@grandgarage.eu</a>
-      </p>
+<!--      <p>-->
+<!--        Du willst dein Paket wechseln, dann schicke gern ein Mail an den-->
+<!--        Frontdesk <a v-bind:href="mail">frontdesk@grandgarage.eu</a>-->
+<!--      </p>-->
 <!--      <div v-if="discount" style="margin-top: 50px; margin-bottom: 40px">-->
 <!--        <p>-->
 <!--          <strong>Ermäßigung: </strong> Dein ermäßigter Preis auf Credits ist-->
@@ -284,8 +266,8 @@
 <!--          >-->
 <!--        </p>-->
 <!--      </div>-->
-      <div><loading-spinner v-if="loading" color="#333" /></div>
-    </fieldset>
+<!--      <div><loading-spinner v-if="loading" color="#333" /></div>-->
+    </div>
 
 
 <!--no more credit buy option after MS24 but keep here just in case of Reopening MS25-->
@@ -331,14 +313,23 @@ export default {
     return {
       memberPackages: null,
       membership: null,
+      currentMembership: null,
       memberStorage: null,
       memberCredits: null,
       memberPreviousCredits: null,
       previousCreditActivities: [],
+      loadingPreviousCreditActivities:true,
       monthlyCreditActivities: null,
+      loadingCreditActivities: true,
       packageCreditActivities: [],
       activitiesUsed: [],
       creditId: null,
+      monthlyCreditId :null,
+      monthlyRemainingCredit:null,
+      monthlyCredits:null,
+      oneTimeCreditIds :[],
+      oneTimeCredits: null,
+      oneTimeCreditsOriginal:null,
       buyCredits: null,
       discount: null,
       hasDiscount: false,
@@ -355,6 +346,7 @@ export default {
     };
   },
   async mounted() {
+
     await this.reload();
   },
   methods: {
@@ -401,15 +393,12 @@ export default {
     async reload() {
       this.loading = true;
       this.loadingAvailableStorage = true;
-      await this.loadCreditStatus();
-      await this.loadCreditActivities();
-      await this.loadPreviousCreditStatus();
-      await this.loadPreviousCreditActivities();
 
       this.memberPackages = await this.$store.dispatch(
           'getMemberPackages',
           this.$store.state.member.id,
       );
+
 
       this.memberPackages = this.memberPackages.filter((p) => {
         // filter old packages
@@ -449,16 +438,35 @@ export default {
       // check if package has "is_membership_identifier" flag to identify the membership package
       // (show only identified membership in that case)
       // https://grandgarage.atlassian.net/browse/CON-443
-      let identifiedMembership = null;
+      //let identifiedMembership = null;
       this.membership.forEach((p) => {
         if (p?._embedded?.package?.metadata?.is_membership_identifier) {
-          identifiedMembership = p;
+          console.log('p: ', p)
+          if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
+            this.membership = []; // fix this
+            this.membership.push(p);
+            this.currentMembership = p;
+          }
+          // identifiedMembership = p;
         }
       });
-      if (identifiedMembership) {
-        this.membership = [];
-        this.membership.push(identifiedMembership);
-      }
+
+      // if (identifiedMembership) {
+      //   this.membership = [];
+      //   this.membership.push(identifiedMembership);
+      // }
+      // this.membership.forEach((p) => {
+      //   console.log('package: ',p)
+      //   if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
+      //     this.currentMembership = p;
+      //   }
+      // })
+      this.getMonthlyCredits();
+
+      await this.loadCreditStatus();
+      await this.loadCreditActivities();
+      await this.loadPreviousCreditStatus();
+      await this.loadPreviousCreditActivities();
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
@@ -499,71 +507,104 @@ export default {
             .catch((err) => {
               console.error(err);
             });
-      }, 30000);
+      }, 300000);
     },
     async loadPreviousCreditStatus() {
       this.memberPreviousCredits = await this.$store.dispatch(
           'getMemberPreviousCredits',
           this.$store.state.member.id,
       );
+      this.memberPreviousCredits = this.memberPreviousCredits.filter(credit => {
+        return credit.scope === 'usage';
+      })
       // update credits status every 30 seconds
       setInterval(() => {
         this.$store
             .dispatch("getMemberPreviousCredits", this.$store.state.member.id)
             .then((response) => {
               this.memberPreviousCredits = response;
+              this.memberPreviousCredits = this.memberPreviousCredits.filter(credit => {
+                return credit.scope === 'usage';
+              })
             })
             .catch((err) => {
               console.error(err);
             });
-      }, 30000);
+      }, 300000);
     },
     async loadCreditActivities() {
-      if (this.memberCredits && this.memberCredits.length > 0) {
-        console.log('load credits')
+      this.loadingCreditActivities = true;
+      if (this.memberCredits && this.memberCredits.length > 0 &&this.memberPackages) {
+        this.getMonthlyRemainingCredit()
+        this.getOneTimeCredits()
         // Lade monatliche Kreditaktivitäten für das erste Element
         try {
-          this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
-            id: this.$store.state.member.id,
-            creditId: this.memberCredits[0].id
-          });
-          this.activitiesUsed.push(...this.monthlyCreditActivities)
+          if (this.monthlyCreditId) {
+            this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
+              id: this.$store.state.member.id,
+              creditId: this.monthlyCreditId
+            });
+            this.activitiesUsed.push(...this.monthlyCreditActivities)
+
+          }
+
+
+
 
           // Aktualisiere regelmäßig die monatlichen Kreditaktivitäten
           setInterval(async () => {
             try {
-              this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
-                id: this.$store.state.member.id,
-                creditId: this.memberCredits[0].id
-              });
+              if (this.monthlyCreditId) {
+                this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
+                  id: this.$store.state.member.id,
+                  creditId: this.monthlyCreditId
+                });
+              }
             } catch (err) {
               console.error(err);
             }
-          }, 30000);
+          }, 300000);
         } catch (err) {
           console.error("Error loading monthly credit activities:", err);
         }
       }
 
-      // Überprüfe, ob weitere Credits vorhanden sind
-      if (this.memberCredits && this.memberCredits.length > 1) {
-        for (let i = 1; i < this.memberCredits.length; i++) {
-          let credit = this.memberCredits[i];
 
-          try {
-            let activities =  await this.$store.dispatch('getCreditActivities', {
-              id: this.$store.state.member.id,
-              creditId: credit.id
-            });
-            this.packageCreditActivities.push(...activities);
-            this.activitiesUsed.push(...activities)
-          } catch (err) {
-            console.error("Error loading package credit activities for creditId:", credit.id, err);
-          }
+
+      // Überprüfe, ob one-time Credits vorhanden sind
+      for (let i = 0; i < this.oneTimeCreditIds.length; i++) {
+        let creditId = this.oneTimeCreditIds[i];
+        try {
+          let activities = await this.$store.dispatch('getCreditActivities', {
+            id: this.$store.state.member.id,
+            creditId: creditId
+          });
+          this.packageCreditActivities.push(...activities);
+          this.activitiesUsed.push(...activities)
+        } catch (err) {
+          console.error("Error loading package credit activities for creditId:", creditId, err);
         }
       }
+      // if (this.memberCredits && this.memberCredits.length > 1) {
+      //   for (let i = 1; i < this.memberCredits.length; i++) {
+      //     let credit = this.memberCredits[i];
+      //
+      //     try {
+      //       let activities =  await this.$store.dispatch('getCreditActivities', {
+      //         id: this.$store.state.member.id,
+      //         creditId: credit.id
+      //       });
+      //       this.packageCreditActivities.push(...activities);
+      //       this.activitiesUsed.push(...activities)
+      //     } catch (err) {
+      //       console.error("Error loading package credit activities for creditId:", credit.id, err);
+      //     }
+      //   }
+      // }
+      this.loadingCreditActivities = false;
     },
     async loadPreviousCreditActivities() {
+      this.loadingPreviousCreditActivities = true;
       if (this.memberPreviousCredits && this.memberPreviousCredits.length > 0) {
         for (let i = 0; i < this.memberPreviousCredits.length; i++) {
           let credit = this.memberPreviousCredits[i];
@@ -580,6 +621,7 @@ export default {
           }
         }
       }
+      this.loadingPreviousCreditActivities = false;
     },
     getAllCredits() {
       let creditSum = 0;
@@ -592,25 +634,39 @@ export default {
       }
       return Number(creditSum * 10).toFixed(1);
     },
-    getFirstRemainingCredit() {
-      if (this.memberCredits.length > 0 && this.memberCredits[0].remainingAmount) {
-        return Number(parseFloat(this.memberCredits[0].remainingAmount) * 10).toFixed(1);
-      }
-      return "0.0"; // Rückgabe eines Standardwerts, falls keine Daten vorhanden sind
+    getMonthlyRemainingCredit() {
+      let creditSum = 0;
+        this.memberCredits.forEach((credit) => {
+          if (credit?.scope === 'usage' && credit?.untilDate) {
+            // unhandled precondition: there may only be one monthly credit
+            this.monthlyCreditId = credit.id
+            creditSum += parseFloat(credit.remainingAmount);
+          }
+        });
+        this.monthlyRemainingCredit = Number(parseFloat(creditSum) * 10).toFixed(1);
+      //return "0.0"; // Rückgabe eines Standardwerts, falls keine Daten vorhanden sind
     },
-    getPackageRemainingCredit() {
-      if (this.memberCredits && this.memberCredits.length > 1) {
-        let totalRemainingAmount = 0;
-        for (let i = 1; i < this.memberCredits.length; i++) {
-          if (this.memberCredits[i].remainingAmount) {
-            totalRemainingAmount += parseFloat(this.memberCredits[i].remainingAmount);
+
+    getOneTimeCredits() {
+      let creditSum = 0;
+      let creditSumOriginal = 0;
+      this.oneTimeCreditIds = []
+      this.memberCredits.forEach((credit) => {
+        if (credit?.scope === 'usage' && !credit?.untilDate) {
+          if (credit.remainingAmount > 0){
+            this.oneTimeCreditIds.push(credit.id)
+            creditSum += parseFloat(credit.remainingAmount);
+            creditSumOriginal +=parseFloat(credit.amount);
           }
         }
-        return (totalRemainingAmount * 10).toFixed(1);
-      }
-      return "0.0";
+      });
+      this.oneTimeCreditsOriginal = Number(parseFloat(creditSumOriginal) * 10).toFixed(1);
+      this.oneTimeCredits = Number(parseFloat(creditSum) * 10).toFixed(1);
+      //return Number(parseFloat(creditSum) * 10).toFixed(1);
     },
     getPackageCredits() {
+      // TODO fix
+
       if (this.memberCredits && this.memberCredits.length > 1) {
         let totalAmount = 0;
         for (let i = 1; i < this.memberCredits.length; i++) {
@@ -634,7 +690,8 @@ export default {
           });
         }
       });
-      return monthlyCredits * 10;
+      this.monthlyCredits = monthlyCredits * 10;
+      //return monthlyCredits * 10;
     },
     checkValue($value) {
       if (parseFloat($value) > this.deposit) {
@@ -644,6 +701,24 @@ export default {
         this.redeemDeposit = Number(Math.floor($value * 100) / 100).toFixed(2);
       }
     },
+    isActiveMembership(startDateString, endDateString) {
+      const today = new Date(); // Aktuelles Datum
+      // Konvertiere die Eingabe-Strings in Date-Objekte
+      const startDate = new Date(startDateString);
+      if (endDateString) {
+        const endDate = new Date(endDateString);
+        // Vergleiche, ob "heute" zwischen dem Start- und Enddatum liegt
+        return today >= startDate && today <= endDate;
+      }
+      else{
+        return today >= startDate
+      }
+    },
+    getDiscountForDate($date){
+      //retrieves the membership discount for an older date
+
+
+    }
   },
   computed: {
     mail() {
