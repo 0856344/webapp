@@ -26,6 +26,19 @@
       </div>
       <div
         class="form-item"
+        v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'"
+        style="margin-top: 0px; margin-bottom: 30px"
+      >
+        <label></label>
+        <h5 style="margin: 0px">
+          Die FLEX Mitgliedschaft hat eine fixe Laufzeit von einem Jahr ab dem Startdatum. ( weitere Infos >
+          <nuxt-link target="_blank" to="/de/agb">
+            {{ $t("conditionsOfParticipation") }} </nuxt-link
+          >)
+        </h5>
+      </div>
+      <div
+        class="form-item"
         v-if="
           !this.onboardingData.contactInformation.company &&
           this.onboardingData.contactInformation.age < 18

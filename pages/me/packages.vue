@@ -46,7 +46,7 @@
         <p class="text-lg font-bold"> Deine neue Mitgliedschaft beginnt bald!  </p>
         <p>Mitgliedschaften laufen immer bis zum letzen Tag des nächsten Monats.</p>
       </div>
-      <div v-if="!loading && membership &&!upcomingMembership &&!currentMembership.untilDate" class="bg-white p-3 pt-1">
+      <div v-if="!loading && membership &&!upcomingMembership" class="bg-white p-3 pt-1">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft wechseln? </p>
         <p>Mitgliedschaften laufen immer bis zum letzen Tag des nächsten Monats. Wenn du deine Mitgliedschaft wechselst, dann startet die neue Mitgliedschaft am:  <strong> {{new Date(getStartDate()).toLocaleDateString('DE', { day: '2-digit',month: 'long',year: 'numeric' })}} </strong></p>
         <!-- Radio buttons for package selection -->
@@ -83,11 +83,11 @@
             </p>
             <hr class="border-gray-300" />
           </label>
-          <p class="text-xs text-left">* die Mitgliedschaften <strong>"SMALL & DIGI"</strong> laufen am 3.11.2024 aus.</p>
+          <p class="text-xs text-left">* die Mitgliedschaften <strong>"SMALL & DIGI"</strong> laufen am 30.11.2024 aus.</p>
           <button
             type="submit"
             class="w-full py-2 mt-6 text-white rounded-sm bg-orange ring-2 ring-orange-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
-            :disabled="!selectedMembership"
+            :disabled="!selectedMembership || selectedMembership===currentMembership._embedded.package.id"
             @click="upgradePlan()">
             Mitgliedschaft wechseln
           </button>
@@ -178,7 +178,6 @@ export default {
   },
   async mounted() {
     await this.reload();
-    console.log('this.membership: ', this.membership)
   },
   methods: {
     async reload() {
@@ -188,14 +187,12 @@ export default {
         'getMemberPackages',
         this.$store.state.member.id,
       );
-      console.log('member packs: ', this.memberPackages)
       this.upgradePackages = await this.$store.dispatch('getPackages');
       this.upgradePackages = this.upgradePackages.filter((p) => {
         const metadata = p.metadata;
         return !metadata.is_storage_box;
       });
       this.sortByKey(this.upgradePackages, "recurringFee");
-      console.log(this.upgradePackages)
 
       this.memberPackages = this.memberPackages.filter((p) => {
         // filter old packages
@@ -211,7 +208,6 @@ export default {
 
       // membership of the current member (precondition: only one membership per member)
       // filter discount package
-      console.log('all packs: ', this.memberPackages)
       this.membership = this.memberPackages.filter((p) => {
         const metadata = p._embedded.package.metadata;
         if (metadata?.shortform === PACKAGES_SHORT_FORMS.discount) {
@@ -236,7 +232,6 @@ export default {
       // check if package has "is_membership_identifier" flag to identify the membership package
       //let identifiedMembership = null;
       //this.membership = [];
-      console.log('all: ', this.membership)
       this.membership.filter((p) => {
         return p?._embedded?.package?.metadata?.is_membership_identifier
       });
@@ -251,7 +246,6 @@ export default {
       if (this.currentMembership) {
         this.selectedMembership = this.currentMembership._embedded.package.id;
       }
-      console.log('currentMembership: ', this.currentMembership)
 
       // storage of the current member
       this.memberStorage = this.memberPackages.filter((p) => {
@@ -298,7 +292,6 @@ export default {
     },
     isSelectedMembershipCurrentMembership(packageOption) {
       // Überprüfen, ob die ausgewählte Option die aktuelle Membership ist
-      console.log("packageOption: ", packageOption.name)
       if (this.membership.some(m => m._embedded.package.metadata.shortform === packageOption.metadata.shortform)){
         //this.selectedMembership=packageOption.id;
         return true
@@ -406,7 +399,6 @@ async upgradePlan() {
          "g-recaptcha-response": token,
        };
       const cancellationDate = this.getCancelDate();
-      console.log(cancellationDate)
        let payload = { id: id, cancellationDate:cancellationDate };
        // add captcha token to payload
        payload = { ...payload, ...captchaData };

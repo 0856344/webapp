@@ -41,7 +41,7 @@
               </td>
               <td>
                 <div>
-                  <span> - {{((activity.amount * 10)).toFixed(1) }}</span>
+                  <span> - {{((activity.amount * 10)).toFixed(1) }} Credits</span>
 <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
                 </div>
                 <div>
@@ -117,7 +117,7 @@
               </td>
               <td>
                 <div>
-                  - {{(creditActivity.amount * 10).toFixed(1) }}
+                  - {{(creditActivity.amount * 10).toFixed(1) }} Credits
                 </div>
                 <div>
                   {{ creditActivity.resource_name}}
@@ -195,7 +195,7 @@
               </td>
               <td>
                 <div>
-                  - {{(creditActivity.amount * 10).toFixed(1) }}
+                  - {{(creditActivity.amount * 10).toFixed(1) }} Credits
                 </div>
                 <div>
                   {{ creditActivity.resource_name}}
@@ -441,7 +441,6 @@ export default {
       //let identifiedMembership = null;
       this.membership.forEach((p) => {
         if (p?._embedded?.package?.metadata?.is_membership_identifier) {
-          console.log('p: ', p)
           if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
             this.membership = []; // fix this
             this.membership.push(p);
@@ -456,7 +455,6 @@ export default {
       //   this.membership.push(identifiedMembership);
       // }
       // this.membership.forEach((p) => {
-      //   console.log('package: ',p)
       //   if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
       //     this.currentMembership = p;
       //   }
