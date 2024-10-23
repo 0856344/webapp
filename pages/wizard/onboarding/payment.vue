@@ -114,8 +114,7 @@
           >
             <label></label>
             <h5 style="margin: 0px">
-              Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro
-              Monat. Die Freikontingente können nicht ins nächste Monat
+              Die Freikontingente können nicht ins nächste Monat
               mitgenommen werden. ( weitere Infos >
               <nuxt-link target="_blank" to="/de/agb">
                 {{ $t("conditionsOfParticipation") }} </nuxt-link

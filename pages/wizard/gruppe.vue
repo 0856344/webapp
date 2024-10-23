@@ -147,7 +147,7 @@ export default {
           privacyPolicy: false,
           ibanIsValid: false,
           startDate: new Date().toISOString().split('T')[0],
-          numberOfMembers: 2
+          numberOfMembers: 3
         },
         profile: {
           address: null,
@@ -515,6 +515,12 @@ export default {
           phone: this.onboardingData.contactInformation.phone,
           countryCode: this.onboardingData.contactInformation.country,
           hasBillingAddress: this.onboardingData.contactInformation.hasBillingAddress,
+          // add makerspace 24 group information
+          metadata: {
+            selectedGroupType:this.onboardingData.type.selectedGroupType,
+            selectedCreditType: this.onboardingData.creditType.selectedCreditType,
+            numberOfMembers: this.onboardingData.payment.numberOfMembers,
+          },
         }
         if (this.onboardingData.userInformation.gender !== 'empty') {
           memberDataBasic = {

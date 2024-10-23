@@ -20,6 +20,19 @@
           </option>
         </select>
       </div>
+      <div
+        class="form-item"
+        v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'"
+        style="margin-top: 0px; margin-bottom: 30px"
+      >
+        <label></label>
+        <h5 style="margin: 0px">
+          Die FLEX Mitgliedschaft hat eine fixe Laufzeit von einem Jahr ab dem Startdatum. ( weitere Infos >
+          <nuxt-link target="_blank" to="/de/agb">
+            {{ $t("conditionsOfParticipation") }} </nuxt-link
+          >)
+        </h5>
+      </div>
       <div class="form-item" v-if="selectedMembership">
         <span class="label">Anzahl der Mitglieder<span class="red">*</span></span>
         <input
@@ -27,7 +40,7 @@
           step="1"
           type="number"
           required
-          min="2"
+          min="3"
           @input="validateNumberOfMembers"
           v-model="onboardingData.payment.numberOfMembers"
         />
@@ -61,9 +74,7 @@
         <label></label>
         <label class="text-sm space-y-1">
           <hr class="my-1">
-          <p>{{ getMembershipCredits()[0]}} Credits im Monat</p>
-          <hr class="my-1">
-          <p>+{{getMembershipCredits()[0] / 2}} Credits pro weiterem Mitglied</p>
+          <p>+{{getMembershipCredits()[0]}} Credits pro Mitglied</p>
           <hr class="my-1">
           <p>24/7 Makerspace Nutzung</p>
           <hr class="my-1">
@@ -91,8 +102,7 @@
         >
           <label></label>
           <h5 style="margin: 0px">
-            Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro
-            Monat. Die Freikontingente können nicht ins nächste Monat
+            Die Freikontingente können nicht ins nächste Monat
             mitgenommen werden. ( weitere Infos >
             <nuxt-link target="_blank" to="/de/agb">
               {{ $t("conditionsOfParticipation") }} </nuxt-link
@@ -100,6 +110,24 @@
           </h5>
         </div>
 
+      </div>
+      <div v-if="this.selectedMembership &&
+          (
+          this.selectedMembership?.metadata?.shortform === 'MS24_STARTER_GROUP' ||
+           this.selectedMembership?.metadata?.shortform === 'MS24_MAKER_GROUP' ||
+            this.selectedMembership?.metadata?.shortform === 'MS24_PRO_GROUP') ">
+        <div class="form-item" style="margin-bottom: 4px">
+          <span class="label">Maschinenpreis</span>
+          <p class="text text-red" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER_GROUP'">
+            kein Rabatt
+          </p>
+          <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_MAKER_GROUP'">
+            25% Rabatt
+          </p>
+          <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_PRO_GROUP'">
+            40% Rabatt
+          </p>
+        </div>
       </div>
 
       <div class="mt-12"></div>
@@ -347,7 +375,7 @@ export default {
           console.error("no metadata (storage, visible) for package: ", p);
           return false;
         }
-        if (!p.metadata.is_storage_box && p.metadata.shop_visible) {
+        if (!p.metadata.is_storage_box && p.metadata.shop_visible && p.metadata?.group) {
           this.availableMemberships.push(p);
         }
         return p.metadata.is_storage_box && p.metadata.shop_visible;
@@ -433,28 +461,18 @@ export default {
       if (!this.selectedMembership || !this.onboardingData.payment.numberOfMembers || !this.onboardingData.payment.membership) {
         return 0;
       }
-
       const basePrice = Number(this.onboardingData.payment.membership.recurringFee);
-      const additionalMembers = this.onboardingData.payment.numberOfMembers - 1;
-
-      // Calculate total price: full price for the first member and half price for each additional member
-      const totalPrice = basePrice + (additionalMembers * (basePrice / 2));
-
-      return totalPrice;
+      const countMembers = this.onboardingData.payment.numberOfMembers;
+      return basePrice * countMembers;
     },
 
     getMembershipGroupCredits() {
       if (!this.selectedMembership || !this.onboardingData.payment.numberOfMembers || !this.onboardingData.payment.membership) {
         return 0;
       }
-
       const baseCredits = Number(this.getMembershipCredits()[0]);
-      const additionalMembers = this.onboardingData.payment.numberOfMembers - 1;
-
-      // Calculate total price: full price for the first member and half price for each additional member
-      const totalCredits = baseCredits + (additionalMembers * (baseCredits / 2));
-
-      return totalCredits;
+      const countMembers = this.onboardingData.payment.numberOfMembers;
+      return countMembers * baseCredits;
     },
 
     getMembershipStartPrice() {
@@ -467,29 +485,14 @@ export default {
     getMembershipCredits() {
       let membership = null;
       switch (this.selectedMembership.metadata.shortform) {
-        case "SG":
-          membership = this.getMembershipByShortform("SG");
+        case "MS24_STARTER_GROUP":
+          membership = this.getMembershipByShortform("MS24_STARTER_GROUP");
           break;
-        case "SG+MW":
-          membership = this.getMembershipByShortform("SG+MW");
+        case "MS24_MAKER_GROUP":
+          membership = this.getMembershipByShortform("MS24_MAKER_GROUP");
           break;
-        case "SG+DT":
-          membership = this.getMembershipByShortform("SG+DT");
-          break;
-        case "SG+ALL":
-          membership = this.getMembershipByShortform("SG+ALL");
-          break;
-        case "MS24_STARTER":
-          membership = this.getMembershipByShortform("MS24_STARTER");
-          break;
-        case "MS24_MAKER":
-          membership = this.getMembershipByShortform("MS24_MAKER");
-          break;
-        case "MS24_PRO":
-          membership = this.getMembershipByShortform("MS24_PRO");
-          break;
-        case "MS24_FLEX":
-          membership = this.getMembershipByShortform("MS24_FLEX");
+        case "MS24_PRO_GROUP":
+          membership = this.getMembershipByShortform("MS24_PRO_GROUP");
           break;
       }
       if (membership) {

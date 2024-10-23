@@ -70,7 +70,6 @@ export default {
   methods: {
     selectOption(option) {
       this.onboardingData.creditType.selectedCreditType = option;
-      console.log(this.onboardingData.creditType.selectedCreditType)
     },
   },
 };
