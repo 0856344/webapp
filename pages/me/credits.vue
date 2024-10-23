@@ -3,6 +3,9 @@
     <h2>Credits</h2>
     <br />
     <loading-spinner v-if="!currentMembership || loadingCreditActivities"></loading-spinner>
+    <div v-if="!(hasSmartGarage && currentMembership) &&!loadingCreditActivities ">
+      Es sind keine Credits in deiner Mitgliedschaft verfügbar.
+    </div>
     <div v-if="hasSmartGarage && currentMembership &&!loadingCreditActivities">
       <accordion  v-if="!loadingCreditActivities" bgColor="bg-white" textColor="text-black" class="my-4">
         <div slot="header" class="text-xs xs:text-sm md:text-xl">aktuelle Credits:
