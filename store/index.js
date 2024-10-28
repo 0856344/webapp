@@ -268,6 +268,10 @@ const createStore = () => {
         const res = await connector.get(`/v1/fabman/members/${id}/credits`);
         return res.data;
       },
+      async getTeam({ state }, id) {
+        const res = await connector.get(`/v1/fabman/members/${id}/getTeam`);
+        return res.data;
+      },
       async getCreditActivities({ state }, { id, creditId }) {
         const res = await connector.get(`/v1/fabman/members/${id}/credits/${creditId}/uses`);
         return res.data;
@@ -402,6 +406,15 @@ const createStore = () => {
             .catch((err) => {
               this.$sentry.captureException(err);
             });
+      },
+      updateTeamMember({ state, commit, dispatch }, data) {
+        //Vue.delete(data, 'lockVersion');
+        const req = JSON.parse(JSON.stringify(data));
+        return connector
+          .put('/v1/fabman/members/' + data.id, req)
+          .catch((err) => {
+            this.$sentry.captureException(err);
+          });
       },
       updatePaymentMethod({ state, commit, dispatch }, data) {
         //Vue.delete(data, 'lockVersion')
@@ -625,6 +638,10 @@ const createStore = () => {
         const res = await connector.post('/v1/fabman/members/', data);
         return res.data;
       },
+      async createTeam({ commit }, data) {
+        const res = await connector.post('/v1/fabman/team/', data);
+        return res.data;
+      },
       registerUser({ commit }, context) {
         return new Promise((resolve, reject) => {
           webAuth.signup(
@@ -641,6 +658,7 @@ const createStore = () => {
           );
         });
       },
+
       recoverPassword({ commit }, context) {
         return new Promise((resolve, reject) => {
           webAuth.changePassword(

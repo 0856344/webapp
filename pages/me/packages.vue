@@ -190,7 +190,7 @@ export default {
       this.upgradePackages = await this.$store.dispatch('getPackages');
       this.upgradePackages = this.upgradePackages.filter((p) => {
         const metadata = p.metadata;
-        return !metadata.is_storage_box;
+        return !metadata.is_storage_box && !metadata?.group;
       });
       this.sortByKey(this.upgradePackages, "recurringFee");
 

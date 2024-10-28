@@ -17,6 +17,7 @@
       <div class="tab-section">
         <div class="tab-section-menu">
           <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
+          <MenuLink v-if="isAdmin" to="/me/team/" icon="people-group">Team</MenuLink>
           <MenuLink
             v-show="canSeeBookings"
             to="/me/bookings/"
@@ -100,6 +101,13 @@ export default {
   computed: {
     member() {
       return this.$store.state.member;
+    },
+    isAdmin() {
+      return this.$store.state.member.metadata?.groupMemberType === 'admin';
+    },
+    isGroupFull() {
+      // TODO - implement in connector function to check, if group is full (if member is a group admin)
+      return false;
     },
     canSeeBookings() {
       const memberPackages = this.$store.getters.getMemberPackages();

@@ -517,6 +517,7 @@ export default {
           hasBillingAddress: this.onboardingData.contactInformation.hasBillingAddress,
           // add makerspace 24 group information
           metadata: {
+            groupMemberType:'admin',
             selectedGroupType:this.onboardingData.type.selectedGroupType,
             selectedCreditType: this.onboardingData.creditType.selectedCreditType,
             numberOfMembers: this.onboardingData.payment.numberOfMembers,
@@ -602,7 +603,7 @@ export default {
             startDate: this.onboardingData.payment.startDate,
           }
         } else {
-          // company member
+          // company member - TODO delete?
           packageData = {
             packageId: this.onboardingData.contactInformation.company.metadata.attendees_package_id,
             attendeesPackages: this.onboardingData.contactInformation.company.metadata.attendees_packages,
@@ -627,7 +628,7 @@ export default {
         this.loading = true
         //  create Fabman member and set membership
         this.$store
-          .dispatch('createMember', memberData)
+          .dispatch('createTeam', memberData)
           .then(r => {
             // register Auth0
             const registerAuth0Data = {
