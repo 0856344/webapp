@@ -86,12 +86,12 @@
       <div v-if="!this.onboardingData.contactInformation.company">
         <div class="form-item" v-if="this.selectedMembership">
           <span class="label">Paket-Preis</span>
-          <p class="text text-blue-900"><strong>{{ getMembershipPrice() }}</strong> (inkl. MwSt)</p>
+          <p class="text text-blue-900"><strong>{{ getMembershipPrice() }}</strong></p>
 
         </div>
         <div class="form-item" v-if="this.selectedMembership">
           <span class="label">Startgebühr</span>
-          <p class="text text-blue-900"><strong>{{ getMembershipStartPrice() }}</strong> (inkl. MwSt)</p>
+          <p class="text text-blue-900"><strong>{{ getMembershipStartPrice() }} </strong></p>
         </div>
 
 
@@ -321,7 +321,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       countries: null,
       packages: [],
       availableStorage: [],
@@ -349,8 +349,8 @@ export default {
   },
   mounted() {
     // this.$refs.firstInput.focus()
+    this.loading = true
     window.scrollTo(0, 0);
-    this.loading = true;
     this.$store.dispatch("getCountries").then((r) => (this.countries = r));
     //all packages available for booking
     this.$store.dispatch("getPackages").then((r) => {
@@ -362,7 +362,7 @@ export default {
           console.error("no metadata (storage, visible) for package: ", p);
           return false;
         }
-        if (!p.metadata.is_storage_box && p.metadata.shop_visible) {
+        if (!p.metadata.is_storage_box && p.metadata.shop_visible && !p.metadata?.group) {
           this.availableMemberships.push(p);
         }
         return p.metadata.is_storage_box && p.metadata.shop_visible;
@@ -440,13 +440,13 @@ export default {
     getMembershipPrice() {
       this.onboardingData.payment.membership = this.selectedMembership;
       return (
-        this.onboardingData.payment.membership.recurringFee + "€ monatlich"
+        this.onboardingData.payment.membership.recurringFee + "€ monatlich (inkl. MwSt)"
       );
     },
     getMembershipStartPrice() {
       this.onboardingData.payment.membership = this.selectedMembership;
       return (
-        this.onboardingData.payment.membership.setupFee + "€ einmalig"
+        this.onboardingData.payment.membership.setupFee + "€ jährlich (inkl. MwSt)"
       );
     },
 

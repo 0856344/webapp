@@ -1,12 +1,11 @@
 <template>
   <div class="section" >
-    <h2>{{ $t('membership') }}</h2>
+    <h2>{{ $t("membership") }}</h2>
     <br />
     <div><loading-spinner v-if="loading" color="#333" /></div>
-    <fieldset v-if="!loading && membership && currentMembership">
+    <fieldset v-if="!loading && membership && currentMembership &&currentMembership">
       <legend>Mitgliedschaft</legend>
-
-      <div>
+      <div v-if="!currentMembership._embedded.package.metadata?.group">
         <div v-for="userPackage of membership" :key="userPackage.id">
           <package
             v-on:reload="reload"
@@ -15,14 +14,30 @@
           />
         </div>
       </div>
-      <p class="text-sm mx-4">
-        *exklusive der Kosten für Material oder Maschinennutzung.
-      </p>
       <div v-if="this.memberPackages" class="max-w-lg p-3 mb-8 bg-white border-2">
-        <p class="text-lg font-bold">Deine aktuelle Mitgliedschaft:</p>
-        <p class="font-normal text-center text-sm">
-          <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits
-        </p>
+        <p class="text-lg font-bold text-center">{{this.currentMembership._embedded.package.name}}</p>
+        <div v-if="this.isAdmin">
+          <p class="font-normal text-center text-sm">
+            <strong>{{ this.groupSize }}</strong> Team Plätze
+          </p>
+          <p class="font-normal text-center text-sm">
+            <strong>{{ this.currentMembership.recurringFee*this.groupSize }}€*</strong> monatlich ({{ this.currentMembership.recurringFee}}€ pro Platz)
+          </p>
+          <p v-if="creditType==='pot'" class="font-normal text-center text-sm">
+            <strong>{{ this.getMonthlyCreditsForTeamAdmin() *this.groupSize }} Credits</strong> monatlich ({{ this.getMonthlyCreditsForTeamAdmin()}} Credits pro Person)
+          </p>
+          <p v-if="creditType==='split'" class="font-normal text-center text-sm">
+            <strong>{{ this.getMonthlyCreditsForTeamAdmin()}}</strong> Credits pro Person (Credits werden geteilt)
+          </p>
+        </div>
+        <div v-if="!this.isAdmin">
+          <p v-if="this.getMonthlyCredits()!==0" class="font-normal text-center text-sm">
+            <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits
+          </p>
+<!--          <p v-else class="font-normal text-center text-sm">-->
+<!--            Das monatliche Credit Kontingent ist bei Administrator hinterlegt-->
+<!--          </p>-->
+        </div>
 <!--        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'" class="font-normal text-center text-sm">-->
 <!--          <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits-->
 <!--        </p>-->
@@ -30,25 +45,28 @@
         <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_FLEX' " class="font-normal text-center text-bold text-red text-sm">
           <strong>50% Aufpreis auf Maschinenpreise</strong>
         </p>
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' " class="font-normal text-center text-green text-sm">
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' || currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_GROUP' " class="font-normal text-center text-green text-sm">
           <strong>25% Discount</strong> auf Maschinenpreise
         </p>
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' " class="font-normal text-center text-green text-sm">
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' || currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_GROUP'" class="font-normal text-center text-green text-sm">
           <strong>40% Discount</strong>  auf Maschinenpreise
         </p>
         <hr class="border-gray-300" />
         <p class="font-normal text-center text-sm">
-          <strong>24/7 Makerspace</strong> (ab 4.11.2024)
+          <strong>24/7 Makerspace</strong>
         </p>
       </div>
+      <p class="text-sm mx-4">
+        *exklusive der Kosten für Material oder Maschinennutzung.
+      </p>
 
-      <div v-if="!loading && membership &&upcomingMembership" class="bg-white p-3 pt-1">
+      <div v-if="!loading && membership &&upcomingMembership &&!currentMembership._embedded.package.metadata?.group " class="bg-white p-3 pt-1">
         <p class="text-lg font-bold"> Deine neue Mitgliedschaft beginnt bald!  </p>
-        <p>Mitgliedschaften laufen immer bis zum letzen Tag des nächsten Monats.</p>
+        <p>Mitgliedschaften laufen immer bis zum letzen Tag des aktuellen Monats.</p>
       </div>
-      <div v-if="!loading && membership &&!upcomingMembership" class="bg-white p-3 pt-1">
+      <div v-if="!loading && membership &&!upcomingMembership &&!currentMembership._embedded.package.metadata?.group && isPrivateMember()" class="bg-white p-3 pt-1">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft wechseln? </p>
-        <p>Mitgliedschaften laufen immer bis zum letzen Tag des nächsten Monats. Wenn du deine Mitgliedschaft wechselst, dann startet die neue Mitgliedschaft am:  <strong> {{new Date(getStartDate()).toLocaleDateString('DE', { day: '2-digit',month: 'long',year: 'numeric' })}} </strong></p>
+        <p>Mitgliedschaften laufen immer bis zum letzen Tag des aktuellen Monats. Wenn du deine Mitgliedschaft wechselst, dann startet die neue Mitgliedschaft am:  <strong> {{new Date(getStartDate()).toLocaleDateString("DE", { day: "2-digit",month: "long",year: "numeric" })}} </strong></p>
         <!-- Radio buttons for package selection -->
         <div class="mt-8">
           <hr class="border-gray-300" />
@@ -65,23 +83,34 @@
             class="mr-2 align-middle"
             :disabled="isDisabled(packageOption)"
           />
-          <span class="align-middle">
-        Mitgliedschaft: <strong>{{ packageOption.name }}</strong>
+          <span class="align-middle">Mitgliedschaft: <strong>{{ packageOption.name }}</strong>
             <span v-if="isSelectedMembershipCurrentMembership(packageOption)"><strong>(aktuell)</strong></span>
           </span>
-            <p class="align-middle mx-10 my-4">
+            <div v-if="packageOption.metadata.shortform === 'MS24_FLEX'" class="align-middle mx-10 my-4" >
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
-            </p>
-            <p v-if="packageOption.metadata.shortform === 'MS24_FLEX'" :class="{ 'text-red': !isDisabled(packageOption) }" class="align-middle mx-10 my-4" >
-              <strong>50% Aufpreis </strong>  auf Maschinenpreise
-            </p>
-            <p v-if="packageOption.metadata.shortform === 'MS24_MAKER'" :class="{ 'text-green': !isDisabled(packageOption) }" class="align-middle mx-10 my-4 ">
-              <strong>25% Discount </strong>  auf Maschinenpreise
-            </p>
-            <p v-if="packageOption.metadata.shortform === 'MS24_PRO'" :class="{ 'text-green': !isDisabled(packageOption) }" class="align-middle mx-10 my-4 ">
-              <strong>40% Discount </strong>  auf Maschinenpreise
-            </p>
-            <hr class="border-gray-300" />
+              <p><strong>Laufzeit: 1 Jahr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
+              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>50% Aufpreis </strong>  auf Maschinenpreise</p>
+              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Startgebühr</strong>  (jährlich)</p>
+            </div>
+            <div v-if="packageOption.metadata.shortform === 'MS24_STARTER'" class="align-middle mx-10 my-4" >
+              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>kein Aufpreis </strong>  auf Maschinenpreise</p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine Startgebühr</strong></p>
+            </div>
+            <div v-if="packageOption.metadata.shortform === 'MS24_MAKER'" class="align-middle mx-10 my-4 ">
+              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>25% Discount </strong>  auf Maschinenpreise</p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
+            </div>
+            <div v-if="packageOption.metadata.shortform === 'MS24_PRO'" class="align-middle mx-10 my-4 ">
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
+              <p  :class="{ 'text-green': !isDisabled(packageOption) }"><strong>40% Discount </strong>  auf Maschinenpreise</p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
+            </div>
+            <hr class="border-gray-300 my-4" />
           </label>
           <p class="text-xs text-left">* die Mitgliedschaften <strong>"SMALL & DIGI"</strong> laufen am 30.11.2024 aus.</p>
           <button
@@ -93,9 +122,9 @@
           </button>
         </div>
       </div>
-      <div v-if="!loading && membership &&!upcomingMembership &&currentMembership &&!currentMembership.untilDate" class="bg-white p-3 pt-1 mt-6">
+      <div v-if="!loading && membership &&!upcomingMembership &&currentMembership &&!currentMembership.untilDate &&!currentMembership._embedded.package.metadata?.group && isPrivateMember() " class="bg-white p-3 pt-1 mt-6">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft beenden? </p>
-        <p>Mitgliedschaften laufen immer bis zum letzten Tag des nächsten Monats. Wenn du deine Mitgliedschaft jetzt beendest, dann läuft deine Mitgliedschaft bis: <strong> {{new Date(getCancelDate()).toLocaleDateString('DE', { day: '2-digit',month: 'long',year: 'numeric' })}} </strong></p>
+        <p>Bei Kündigungen laufen Mitgliedschaften bis zum letzten Tag des nächsten Monats. Wenn du deine Mitgliedschaft jetzt beendest, dann läuft deine Mitgliedschaft bis: <strong> {{new Date(getCancelDate()).toLocaleDateString("DE", { day: "2-digit",month: "long",year: "numeric" })}} </strong></p>
         <!-- Radio buttons for package selection -->
         <div class="mt-8">
           <hr class="border-gray-300" />
@@ -103,12 +132,12 @@
             type="submit"
             class="w-full py-2 mt-6 text-white rounded-sm bg-red ring-2 ring-red-300 cursor:pointer disabled:cursor-default disabled:bg-gray-700 disabled:ring-gray-300 sm:max-w-max sm:px-12 hover:bg-gray-900 hover:ring-gray-300"
             :disabled="!currentMembership"
-            @click="cancelPackage(currentMembership.id)">
+            @click="cancelPackage(currentMembership.id, getCancelDate())">
             Mitgliedschaft kündigen
           </button>
         </div>
       </div>
-      <div v-if="!loading && membership &&!upcomingMembership &&currentMembership.untilDate" class="bg-white p-3 pt-1 mt-6">
+      <div v-if="!loading && membership &&!upcomingMembership &&currentMembership.untilDate &&!currentMembership._embedded.package.metadata?.group  " class="bg-white p-3 pt-1 mt-6">
         <p class="text-lg font-bold"> Du möchtest deine Mitgliedschaft beenden? </p>
         <p>Die Mitgliedschaften haben eine Mindestlaufzeit bis am letzten Tag des Folgemonats ab Kündigungsdatum. </p>
         <!-- Radio buttons for package selection -->
@@ -125,6 +154,14 @@
             :booked="true"
           />
         </div>
+      </div>
+      <div v-if="currentMembership && currentMembership._embedded.package.metadata?.group">
+        <p class="my-8">
+              Bitte kontaktiere den
+              <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a> um die Mitgliedschaft anzupassen.
+        </p>
+        <p>Mitgliedschaften laufen bei einer Kündigung immer bis zum letzten Tag des nächsten Monats. </p>
+        <p>Wenn du eine Mitgliedschaft jetzt beendest, dann läuft die Mitgliedschaft bis: <strong> {{new Date(getCancelDate()).toLocaleDateString("DE", { day: "2-digit",month: "long",year: "numeric" })}} </strong></p>
       </div>
 
     </fieldset>
@@ -181,6 +218,7 @@ export default {
   },
   methods: {
     async reload() {
+      window.scrollTo(0, 0)
       this.loading = true;
 
       this.memberPackages = await this.$store.dispatch(
@@ -232,7 +270,7 @@ export default {
       // check if package has "is_membership_identifier" flag to identify the membership package
       //let identifiedMembership = null;
       //this.membership = [];
-      this.membership.filter((p) => {
+      this.membership = this.membership.filter((p) => {
         return p?._embedded?.package?.metadata?.is_membership_identifier
       });
       this.membership.forEach((p) => {
@@ -286,6 +324,18 @@ export default {
       });
       return monthlyCredits * 10;
     },
+    getMonthlyCreditsForTeamAdmin() {
+      // check all memberPackages for possible monthly credits
+      let monthlyCredits = 0;
+      this.currentMembership.credits.forEach((credit) => {
+            if (credit?.period === 'month') {
+              if (this.isActiveMembership(this.currentMembership.fromDate,  this.currentMembership.untilDate)) {
+                monthlyCredits = parseFloat(credit.amount);
+              }
+            }
+      });
+      return monthlyCredits * 10;
+    },
     isDisabled(packageOption) {
       // Überprüfen, ob die Option in der aktuellen Mitgliedschaft enthalten ist oder SMART oder DIGI
       return this.membership.some(m => m._embedded.package.metadata.shortform === packageOption.metadata.shortform) || (packageOption.metadata.shortform === 'SG+DT' || packageOption.metadata.shortform ==='SG');
@@ -320,8 +370,8 @@ export default {
       const year = today.getFullYear();
       const month = today.getMonth(); // Monate sind 0-basiert (0 = Januar, 11 = Dezember)
 
-      // Erster Tag in 2 Monaten (kein Problem mit Zeitzonen)
-      const startDate = new Date(Date.UTC(year, month + 2, 1));
+      // Erster Tag des nächsten Monats (kein Problem mit Zeitzonen)
+      const startDate = new Date(Date.UTC(year, month + 1, 1));
 
       return startDate.toISOString(); // Im ISO 8601-Format
     },
@@ -332,6 +382,17 @@ export default {
 
       // Letzter Tag des nächsten Monats (kein Problem mit Zeitzonen)
       let cancelDate = new Date(Date.UTC(year, month + 2, 1));
+      cancelDate.setUTCDate(cancelDate.getUTCDate() - 1);
+
+      return cancelDate.toISOString(); // Im ISO 8601-Format
+    },
+    getChangeMembershipDate() {
+      const today = new Date(); // Aktuelles Datum
+      const year = today.getFullYear();
+      const month = today.getMonth(); // Monate sind 0-basiert (0 = Januar, 11 = Dezember)
+
+      // Letzter Tag des aktuellen Monats (kein Problem mit Zeitzonen)
+      let cancelDate = new Date(Date.UTC(year, month + 1, 1));
       cancelDate.setUTCDate(cancelDate.getUTCDate() - 1);
 
       return cancelDate.toISOString(); // Im ISO 8601-Format
@@ -357,11 +418,24 @@ export default {
         return today < startDate;
       }
     },
+    // private and no team member
+    // TODO remove Smart & Digi after 1.12.24
+    isPrivateMember() {
+      if (this.currentMembership &&
+        (this.currentMembership._embedded.package.metadata?.shortform === 'MS24_FLEX'||
+          this.currentMembership._embedded.package.metadata?.shortform === 'MS24_STARTER'||
+          this.currentMembership._embedded.package.metadata?.shortform === 'MS24_MAKER'||
+        this.currentMembership._embedded.package.metadata?.shortform === 'MS24_PRO' ||
+          this.currentMembership._embedded.package.metadata?.shortform === 'SG'||
+          this.currentMembership._embedded.package.metadata?.shortform === 'SG+DT')){
+        return true
+      } else return false
+    },
 
 
 async upgradePlan() {
       await this.setPackage(this.selectedMembership);
-      await this.cancelPackage(this.currentMembership.id);
+      await this.cancelPackage(this.currentMembership.id, this.getChangeMembershipDate());
     },
     async setPackage(id) {
       await this.$recaptchaLoaded();
@@ -392,13 +466,13 @@ async upgradePlan() {
           }
         });
     },
-    async cancelPackage(id) {
+    async cancelPackage(id, cancellationDate) {
+
        await this.$recaptchaLoaded();
        const token = await this.$recaptcha("submit"); // Execute reCAPTCHA with action "submit"
        const captchaData = {
          "g-recaptcha-response": token,
        };
-      const cancellationDate = this.getCancelDate();
        let payload = { id: id, cancellationDate:cancellationDate };
        // add captcha token to payload
        payload = { ...payload, ...captchaData };
@@ -432,6 +506,16 @@ async upgradePlan() {
     // },
   },
   computed: {
+    isAdmin() {
+      return this.$store.state.member.metadata?.groupMemberType === 'admin';
+    },
+    groupSize() {
+        return this.$store.state.member.metadata?.numberOfMembers;
+    },
+    // Split pot oder Team pot for credits
+    creditType() {
+      return this.$store.state.member.metadata?.selectedCreditType;
+    },
     mail() {
       const fullName =
         this.$store.state.member.firstName +

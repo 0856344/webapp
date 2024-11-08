@@ -30,7 +30,6 @@
         <div
           class="w-full lg:w-1/2 p-6 border rounded-lg cursor-pointer relative transition-colors h-80 flex items-center justify-center"
           :class="onboardingData.type.selectedGroupType === 'organizer' ? 'bg-blue-300 border-blue-500' : 'bg-blue-50 border-gray-300 hover:bg-blue-200'"
-          @click="selectOption('organizer')"
         >
           <!-- Icon im Hintergrund -->
           <div class="absolute inset-0 flex items-center justify-center opacity-40">
@@ -41,6 +40,11 @@
           <div class="relative z-10 bg-white p-4 rounded-md text-center">
             <h4 class="text-xl font-semibold">Organisator</h4>
             <p>Du möchtest eine Gruppe anlegen und die Mitgliedschaften nur verwalten?</p>
+            <p class="text-sm">(Kooperationspartner, Bildungseinrichtungen, Startups, ...)</p>
+            <p class="my-8">
+              Bitte kontaktiere den
+              <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a> und wir klären die Anfrage persönlich.
+            </p>
           </div>
         </div>
       </div>

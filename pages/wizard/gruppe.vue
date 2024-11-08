@@ -5,6 +5,9 @@
       <h2>{{ $t('joinNow') }}</h2>
       <p>{{ $t('becomeAMemberIn4simpleSteps') }}</p>
     </div>
+<!--    <div v-if="this.loading" style="margin-top: 30px; margin-bottom: 500px">-->
+<!--      <loading-spinner />-->
+<!--    </div>-->
     <div class="wizard-section">
       <div class="wizard-section-menu">
         <div class="steps">
@@ -41,9 +44,14 @@
               :disabled="nextStepDisabled"
               @click="next()"
             >
-              {{
-                activeStep === 'payment' ? 'Anmeldung abschließen' : 'Weiter'
-              }}
+              <div v-if="this.loading" style="height: 17px">
+                <loading-spinner-button  color="white"/>
+              </div>
+              <div v-if="!this.loading">
+                {{
+                  activeStep === 'payment' ? 'Anmeldung abschließen' : 'Weiter'
+                }}
+              </div>
             </button>
           </div>
         </div>
@@ -80,7 +88,8 @@ export default {
       passwordCheck: false,
       mailCheck: false,
       MemberType,
-      steps: ["userInformation", "type", "contact", "creditType", "payment", "confirmation"],
+      //steps: ["userInformation", "type", "contact", "creditType", "payment", "confirmation"],
+      steps: ["userInformation", "type", "contact", "payment", "confirmation"],
       onboardingData: {
         userInformation: {
           firstName: null,
@@ -344,10 +353,10 @@ export default {
           }
 
           break;
-        case 'creditType':
-          this.loadNextPage();
-          this.saveOnboardingData();
-          break;
+        // case 'creditType':
+        //   this.loadNextPage();
+        //   this.saveOnboardingData();
+        //   break;
         case 'payment':
           this.saveOnboardingData();
           this.submit();
@@ -498,6 +507,8 @@ export default {
       },
 
       async submit() {
+        //window.scrollTo(0, 0);
+        this.loading = true
         const memberType = this.getMemberType()
         // build onboarding requests
         let memberDataBasic = {
@@ -519,7 +530,8 @@ export default {
           metadata: {
             groupMemberType:'admin',
             selectedGroupType:this.onboardingData.type.selectedGroupType,
-            selectedCreditType: this.onboardingData.creditType.selectedCreditType,
+            selectedCreditType: 'pot',
+            //selectedCreditType: this.onboardingData.creditType.selectedCreditType,
             numberOfMembers: this.onboardingData.payment.numberOfMembers,
           },
         }
@@ -625,7 +637,6 @@ export default {
         //   dataUrl: this.onboardingData.image64,
         // }
         // memberData = { ...memberData, imageData }
-        this.loading = true
         //  create Fabman member and set membership
         this.$store
           .dispatch('createTeam', memberData)
@@ -672,6 +683,7 @@ export default {
               })
           })
           .catch(e => {
+            this.loading = false
             this.$toast.show('Ein Fehler ist aufgetreten ', e.code, {
               theme: 'bubble',
             })

@@ -14,10 +14,23 @@
         <font-awesome-icon icon="info-circle" />
         {{ $t('openSafetyTraining') }}
       </div>
+      <div
+        v-if="hasTeamFreeSeats"
+        class="alert alert-secondary"
+        role="alert"
+      >
+        <font-awesome-icon icon="info-circle" />
+        Es sind noch Teamplätze frei
+      </div>
       <div class="tab-section">
         <div class="tab-section-menu">
           <MenuLink to="/me/" icon="user">{{ $t('myProfile') }}</MenuLink>
-          <MenuLink v-if="isAdmin" to="/me/team/" icon="people-group">Team</MenuLink>
+          <MenuLink v-if="isAdmin" to="/me/team/" icon="people-group">
+            <font-awesome-icon
+            :style="{ color: '#E69140' }"
+            v-if="hasTeamFreeSeats"
+            icon="info-circle"
+          />Team</MenuLink>
           <MenuLink
             v-show="canSeeBookings"
             to="/me/bookings/"
@@ -74,6 +87,7 @@ export default {
       hasCompletedRequiredCourses: true,
       test: null,
       lastName: '',
+      areTeamSeatsFree: false,
     };
   },
   created() {},
@@ -84,6 +98,25 @@ export default {
     );
     // TODO - Load allowed spaces for member - can't be done right now: no relation between package <-> space
     //await this.loadMemberSpaces()
+    this.freeSeats = null
+    this.team = null
+
+    // check, if team seats are free
+    if (this.isAdmin) {
+      const team = await this.$store.dispatch("getTeam", this.$store.state.member.id)
+      this.$store.commit('setTeam', team);
+      // get free seats
+      this.freeSeats = this.$store.state.team.filter((member)=>{
+        return (member.emailAddress === null || member.emailAddress === '')
+      })
+      if (this.freeSeats.length > 0) {
+        this.$store.commit('setHasTeamFreeSeats', true)
+      } else {
+        this.$store.commit('setHasTeamFreeSeats', false)
+      }
+
+    }
+
   },
   methods: {
     logout() {
@@ -104,6 +137,9 @@ export default {
     },
     isAdmin() {
       return this.$store.state.member.metadata?.groupMemberType === 'admin';
+    },
+    hasTeamFreeSeats() {
+      return this.$store.state.hasTeamFreeSeats;
     },
     isGroupFull() {
       // TODO - implement in connector function to check, if group is full (if member is a group admin)

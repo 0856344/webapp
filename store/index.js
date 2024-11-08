@@ -83,6 +83,8 @@ const createStore = () => {
       necessaryCookie: false,
       analyticsCookie: false,
       selectedBookings: [],
+      hasTeamFreeSeats: false,
+      team: []
     },
     getters: {
       getSelectedBookings: (state) => {
@@ -109,6 +111,12 @@ const createStore = () => {
       },
       getMemberPackages: (state) => () => {
         return state.memberPackages;
+      },
+      getHasTeamFreeSeats: (state) => () => {
+        return state.hasTeamFreeSeats;
+      },
+      getTeam: (state) => () => {
+        return state.team;
       },
       getPackageById: (state) => (id) => {
         return state.fabman.packages.find((p) => p.id === id);
@@ -154,6 +162,12 @@ const createStore = () => {
       },
       setMemberPackages(state, data) {
         state.memberPackages = data;
+      },
+      setHasTeamFreeSeats(state, data) {
+        state.hasTeamFreeSeats = data;
+      },
+      setTeam(state, data) {
+        state.team = data;
       },
       setMemberCourses(state, data) {
         state.memberCourses = data;

@@ -25,7 +25,7 @@
                 Creditskontigent gesamt
               </th>
               <th>
-                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER'">{{ Number(monthlyCredits).toFixed(1) }} Credits</span>
+                <span>{{ Number(monthlyCredits).toFixed(1) }} Credits</span>
 <!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyCredits/0.6).toFixed(1) }} Credits</span>-->
               </th>
             </tr>
@@ -51,6 +51,14 @@
                   {{ activity.resource_name}}
                 </div>
               </td>
+              <div v-if="isAdmin">
+                <td>
+                  <div>
+                    <span> {{getMemberFromActivity(activity._embedded.resourceLog.member)}}</span>
+                    <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
+                  </div>
+                </td>
+              </div>
             </tr>
             <tr class="w-full bg-black text-white text-base uppercase leading-5 tracking-wide font-semibold">
               <th class="flex-1">
@@ -204,6 +212,14 @@
                   {{ creditActivity.resource_name}}
                 </div>
               </td>
+              <div v-if="isAdmin">
+                <td>
+                  <div>
+                    <span> {{getMemberFromActivity(creditActivity._embedded.resourceLog.member)}}</span>
+                    <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
+                  </div>
+                </td>
+              </div>
             </tr>
             <tr class="w-full bg-black text-white text-base uppercase leading-5 tracking-wide font-semibold">
               <th class="flex-1">
@@ -322,12 +338,13 @@ export default {
       memberPreviousCredits: null,
       previousCreditActivities: [],
       loadingPreviousCreditActivities:true,
-      monthlyCreditActivities: null,
+      monthlyCreditActivities: [],
       loadingCreditActivities: true,
       packageCreditActivities: [],
       activitiesUsed: [],
       creditId: null,
-      monthlyCreditId :null,
+      monthlyCreditId :null, // maybe delete
+      allMonthlyCreditIds: [],
       monthlyRemainingCredit:null,
       monthlyCredits:null,
       oneTimeCreditIds :[],
@@ -508,7 +525,7 @@ export default {
             .catch((err) => {
               console.error(err);
             });
-      }, 300000);
+      }, 30000);
     },
     async loadPreviousCreditStatus() {
       this.memberPreviousCredits = await this.$store.dispatch(
@@ -519,19 +536,19 @@ export default {
         return credit.scope === 'usage';
       })
       // update credits status every 30 seconds
-      setInterval(() => {
-        this.$store
-            .dispatch("getMemberPreviousCredits", this.$store.state.member.id)
-            .then((response) => {
-              this.memberPreviousCredits = response;
-              this.memberPreviousCredits = this.memberPreviousCredits.filter(credit => {
-                return credit.scope === 'usage';
-              })
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-      }, 300000);
+      // setInterval(() => {
+      //   this.$store
+      //       .dispatch("getMemberPreviousCredits", this.$store.state.member.id)
+      //       .then((response) => {
+      //         this.memberPreviousCredits = response;
+      //         this.memberPreviousCredits = this.memberPreviousCredits.filter(credit => {
+      //           return credit.scope === 'usage';
+      //         })
+      //       })
+      //       .catch((err) => {
+      //         console.error(err);
+      //       });
+      // }, 30000);
     },
     async loadCreditActivities() {
       this.loadingCreditActivities = true;
@@ -540,31 +557,59 @@ export default {
         this.getOneTimeCredits()
         // Lade monatliche Kreditaktivitäten für das erste Element
         try {
-          if (this.monthlyCreditId) {
-            this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
-              id: this.$store.state.member.id,
-              creditId: this.monthlyCreditId
-            });
-            this.activitiesUsed.push(...this.monthlyCreditActivities)
-
+          if (this.allMonthlyCreditIds.length > 0) {
+            for (const creditId of this.allMonthlyCreditIds) {
+              const activities = await this.$store.dispatch('getCreditActivities', {
+                id: this.$store.state.member.id,
+                creditId: creditId
+              });
+              this.monthlyCreditActivities.push(...activities);
+            }
+            //this.activitiesUsed.push(...this.monthlyCreditActivities)
+            //console.log('this.activitiesUsed: ', this.activitiesUsed)
           }
+          // if (this.monthlyCreditId) {
+          //   this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
+          //     id: this.$store.state.member.id,
+          //     creditId: this.monthlyCreditId
+          //   });
+          //   this.activitiesUsed.push(...this.monthlyCreditActivities)
+          //
+          // }
 
 
 
 
           // Aktualisiere regelmäßig die monatlichen Kreditaktivitäten
           setInterval(async () => {
+            this.loadingCreditActivities = true;
+            this.getMonthlyRemainingCredit()
+            this.getOneTimeCredits()
             try {
-              if (this.monthlyCreditId) {
-                this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
-                  id: this.$store.state.member.id,
-                  creditId: this.monthlyCreditId
-                });
+              this.monthlyCreditActivities = [];
+              if (this.allMonthlyCreditIds.length > 0) {
+                for (const creditId of this.allMonthlyCreditIds) {
+                  const activities = await this.$store.dispatch('getCreditActivities', {
+                    id: this.$store.state.member.id,
+                    creditId: creditId
+                  });
+                  this.monthlyCreditActivities.push(...activities);
+                }
+                // this.activitiesUsed = []
+                // this.activitiesUsed.push(...this.monthlyCreditActivities)
+                this.loadingCreditActivities = false;
+                //console.log('this.activitiesUsed: ', this.activitiesUsed)
               }
+              // if (this.monthlyCreditId) {
+              //   this.monthlyCreditActivities = await this.$store.dispatch('getCreditActivities', {
+              //     id: this.$store.state.member.id,
+              //     creditId: this.monthlyCreditId
+              //   });
+              // }
             } catch (err) {
               console.error(err);
             }
-          }, 300000);
+          }, 30000);
         } catch (err) {
           console.error("Error loading monthly credit activities:", err);
         }
@@ -636,11 +681,14 @@ export default {
       return Number(creditSum * 10).toFixed(1);
     },
     getMonthlyRemainingCredit() {
+      this.monthlyCreditId = null
+      this.allMonthlyCreditIds = []
       let creditSum = 0;
         this.memberCredits.forEach((credit) => {
           if (credit?.scope === 'usage' && credit?.untilDate) {
             // unhandled precondition: there may only be one monthly credit
             this.monthlyCreditId = credit.id
+            this.allMonthlyCreditIds.push(credit.id)
             creditSum += parseFloat(credit.remainingAmount);
           }
         });
@@ -715,10 +763,19 @@ export default {
         return today >= startDate
       }
     },
-    getDiscountForDate($date){
+    getMemberFromActivity(id){
+      const team = this.$store.state.team;
+      let member = null
+      if (this.$store.state.member.id === id) {
+         member = this.$store.state.member
+      } else {
+        member = team.find(member => member.id === id)
+      }
+      if (member){
+        return member.firstName + ' ' + member.lastName
+      } else return ''
+
       //retrieves the membership discount for an older date
-
-
     }
   },
   computed: {
@@ -760,6 +817,9 @@ export default {
     },
     totalPreviousActivityPages() {
       return Math.ceil(this.activitiesUsed.length / this.rowsPerPage);
+    },
+    isAdmin() {
+      return this.$store.state.member.metadata?.groupMemberType === 'admin';
     },
   },
 };

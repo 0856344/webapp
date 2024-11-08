@@ -2,7 +2,6 @@
   <div class="section">
     <div v-if="this.loading" style="margin-top: 30px; margin-bottom: 500px">
       <loading-spinner />
-      <!--      <p>lade Mitgliedschaften...</p>-->
     </div>
     <form v-if="!this.loading" class="form">
       <div
@@ -130,31 +129,31 @@
         </div>
       </div>
 
-      <div class="mt-12"></div>
+<!--      <div class="mt-12"></div>-->
 
-      <div class="form-item">
-        <span class="label">Credit-Typ auswählen<span class="red">*</span></span>
-        <div class="inline-flex space-x-4">
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              value="split"
-              v-model="onboardingData.creditType.selectedCreditType"
-              class="radio-input"
-            />
-            <span class="ml-2 whitespace-nowrap">Fair geteilt</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              value="pot"
-              v-model="onboardingData.creditType.selectedCreditType"
-              class="radio-input"
-            />
-            <span class="ml-2 whitespace-nowrap">Ein Topf</span>
-          </label>
-        </div>
-      </div>
+<!--      <div class="form-item">-->
+<!--        <span class="label">Credit-Typ auswählen<span class="red">*</span></span>-->
+<!--        <div class="inline-flex space-x-4">-->
+<!--          <label class="inline-flex items-center">-->
+<!--            <input-->
+<!--              type="radio"-->
+<!--              value="split"-->
+<!--              v-model="onboardingData.creditType.selectedCreditType"-->
+<!--              class="radio-input"-->
+<!--            />-->
+<!--            <span class="ml-2 whitespace-nowrap">Fair geteilt</span>-->
+<!--          </label>-->
+<!--          <label class="inline-flex items-center">-->
+<!--            <input-->
+<!--              type="radio"-->
+<!--              value="pot"-->
+<!--              v-model="onboardingData.creditType.selectedCreditType"-->
+<!--              class="radio-input"-->
+<!--            />-->
+<!--            <span class="ml-2 whitespace-nowrap">Ein Topf</span>-->
+<!--          </label>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div
         class="form-item"
@@ -334,7 +333,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       countries: null,
       packages: [],
       availableStorage: [],
@@ -381,6 +380,7 @@ export default {
         return p.metadata.is_storage_box && p.metadata.shop_visible;
       });
       this.sortByKey(this.availableMemberships, "recurringFee");
+      this.loading = false;
 
       //if membership is preselected, select it, else select first available membership package
       if (this.onboardingData.payment.membership) {
@@ -391,7 +391,6 @@ export default {
         this.selectedMembership = this.availableMemberships[0];
       }
     });
-    this.loading = false;
   },
   // beforeRouteEnter(to, from, next) {
   //   //console.log('PAYMENT FROM: ', from.path)

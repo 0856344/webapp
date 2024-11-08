@@ -41,9 +41,14 @@
               :disabled="nextStepDisabled"
               @click="next()"
             >
-              {{
-                activeStep === 'payment' ? 'Anmeldung abschließen' : 'Weiter'
-              }}
+              <div v-if="this.loading" style="height: 17px">
+                <loading-spinner-button  color="white"/>
+              </div>
+              <div v-if="!this.loading">
+                {{
+                  activeStep === 'payment' ? 'Anmeldung abschließen' : 'Weiter'
+                }}
+              </div>
             </button>
           </div>
         </div>
@@ -441,6 +446,7 @@ export default {
       },
 
       async submit() {
+      this.loading = true
         const memberType = this.getMemberType()
         // build onboarding requests
         let memberDataBasic = {
@@ -561,7 +567,6 @@ export default {
         //   dataUrl: this.onboardingData.image64,
         // }
         // memberData = { ...memberData, imageData }
-        this.loading = true
         //  create Fabman member and set membership
         this.$store
           .dispatch('createMember', memberData)
@@ -608,6 +613,7 @@ export default {
               })
           })
           .catch(e => {
+            this.loading = false
             this.$toast.show('Ein Fehler ist aufgetreten ', e.code, {
               theme: 'bubble',
             })
