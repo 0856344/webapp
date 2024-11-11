@@ -106,6 +106,7 @@
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_PRO'" class="align-middle mx-10 my-4 ">
+              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p  :class="{ 'text-green': !isDisabled(packageOption) }"><strong>40% Discount </strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>

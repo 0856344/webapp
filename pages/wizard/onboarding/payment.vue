@@ -172,25 +172,23 @@
         v-if="!this.onboardingData.contactInformation.company"
         style="margin-top: 20px"
       >
-        <span class="label"
-          >{{ "Beginn der Mitgliedschaft" }}<span class="red">*</span></span
-        >
-        <div>
-          <input
-            class="input-text"
-            type="date"
-            :min="minDate"
-            :max="maxDate"
-            v-model="onboardingData.payment.startDate"
-            name=""
-          />
-          <div class="date-error">
-            <!--          <span-->
-            <!--              v-if="!onboardingData.contactInformation.birthdateValid"-->
-            <!--              class="bad"-->
-            <!--          >{{ $t('tooYoung') }} </span>-->
-          </div>
-        </div>
+
+<!--        // TODO remove or fix startDate-->
+<!--        <span class="label"-->
+<!--        >{{ "Beginn der Mitgliedschaft" }}<span class="red">*</span></span-->
+<!--        >-->
+<!--        <div>-->
+<!--          <input-->
+<!--            class="input-text"-->
+<!--            type="date"-->
+<!--            :min="minDate"-->
+<!--            :max="maxDate"-->
+<!--            v-model="onboardingData.payment.startDate"-->
+<!--            name=""-->
+<!--          />-->
+<!--          <div class="date-error">-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
       <div
         class="form-item"

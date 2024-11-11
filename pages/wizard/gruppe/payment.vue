@@ -188,31 +188,28 @@
         </div>
       </div>
       <hr class="my-8">
-      <div
-        class="form-item"
-        v-if="!this.onboardingData.contactInformation.company"
-        style="margin-top: 20px"
-      >
-        <span class="label"
-          >{{ "Beginn der Mitgliedschaft" }}<span class="red">*</span></span
-        >
-        <div>
-          <input
-            class="input-text"
-            type="date"
-            :min="minDate"
-            :max="maxDate"
-            v-model="onboardingData.payment.startDate"
-            name=""
-          />
-          <div class="date-error">
-            <!--          <span-->
-            <!--              v-if="!onboardingData.contactInformation.birthdateValid"-->
-            <!--              class="bad"-->
-            <!--          >{{ $t('tooYoung') }} </span>-->
-          </div>
-        </div>
-      </div>
+<!--      TODO remove or fix startDate-->
+<!--      <div-->
+<!--        class="form-item"-->
+<!--        v-if="!this.onboardingData.contactInformation.company"-->
+<!--        style="margin-top: 20px"-->
+<!--      >-->
+<!--        <span class="label"-->
+<!--          >{{ "Beginn der Mitgliedschaft" }}<span class="red">*</span></span-->
+<!--        >-->
+<!--        <div>-->
+<!--          <input-->
+<!--            class="input-text"-->
+<!--            type="date"-->
+<!--            :min="minDate"-->
+<!--            :max="maxDate"-->
+<!--            v-model="onboardingData.payment.startDate"-->
+<!--            name=""-->
+<!--          />-->
+<!--          <div class="date-error">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
       <div v-if="!this.hasAttendeesFreeCost">
         <div class="form-item">
           <span class="label">IBAN<span class="red">*</span></span>
@@ -392,14 +389,14 @@ export default {
       }
     });
   },
-  // beforeRouteEnter(to, from, next) {
-  //   //console.log('PAYMENT FROM: ', from.path)
-  //   if (from.path === "/wizard/gruppe/creditType") {
-  //     next();
-  //   } else {
-  //     next("/wizard/gruppe/userInformation");
-  //   }
-  // },
+  beforeRouteEnter(to, from, next) {
+    //console.log('PAYMENT FROM: ', from.path)
+    if (from.path === "/wizard/gruppe/contact") {
+      next();
+    } else {
+      next("/wizard/gruppe/userInformation");
+    }
+  },
   computed: {
     storagePrice() {
       let storagePrice = 0.0;
