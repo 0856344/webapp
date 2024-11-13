@@ -42,14 +42,24 @@
 <!--          <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits-->
 <!--        </p>-->
         <hr class="border-gray-300" />
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_FLEX' " class="font-normal text-center text-bold text-red text-sm">
-          <strong>50% Aufpreis auf Maschinenpreise</strong>
+        <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_FLEX' " >
+          <div v-if="!currentMembership.untilDate">
+            <p class="font-normal text-center text-bold  text-sm"><strong>automatische Erneuerung:</strong></p>
+            <p class="font-normal text-center text-bold text-sm"> <strong>{{new Date(getUntilDateForFlexPackage(currentMembership.fromDate)).toLocaleDateString("DE", { day: "2-digit",month: "long",year: "numeric" })}}</strong></p>
+            <hr class="border-gray-300" />
+          </div>
+
+          <p class="font-normal text-center text-bold text-green text-sm"><strong>keine monatliche Gebühr</strong></p>
+
+        </div>
+        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER' || currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_GROUP' " class="font-normal text-center text-green text-sm">
+          <strong>15% Discount</strong> auf Maschinenpreise
         </p>
         <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' || currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_GROUP' " class="font-normal text-center text-green text-sm">
           <strong>25% Discount</strong> auf Maschinenpreise
         </p>
         <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' || currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_GROUP'" class="font-normal text-center text-green text-sm">
-          <strong>40% Discount</strong>  auf Maschinenpreise
+          <strong>35% Discount</strong>  auf Maschinenpreise
         </p>
         <hr class="border-gray-300" />
         <p class="font-normal text-center text-sm">
@@ -87,28 +97,29 @@
             <span v-if="isSelectedMembershipCurrentMembership(packageOption)"><strong>(aktuell)</strong></span>
           </span>
             <div v-if="packageOption.metadata.shortform === 'MS24_FLEX'" class="align-middle mx-10 my-4" >
-              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
+<!--              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat-->
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine monatliche Gebühr</strong></p>
               <p><strong>Laufzeit: 1 Jahr</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
-              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>50% Aufpreis </strong>  auf Maschinenpreise</p>
-              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Startgebühr</strong>  (jährlich)</p>
+<!--              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>50% Aufpreis </strong>  auf Maschinenpreise</p>-->
+              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Startgebühr </strong>  (jährlich)</p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_STARTER'" class="align-middle mx-10 my-4" >
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
-              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>kein Aufpreis </strong>  auf Maschinenpreise</p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>15% Rabatt</strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine Startgebühr</strong></p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_MAKER'" class="align-middle mx-10 my-4 ">
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
-              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>25% Discount </strong>  auf Maschinenpreise</p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>25% Rabatt </strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_PRO'" class="align-middle mx-10 my-4 ">
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
-              <p  :class="{ 'text-green': !isDisabled(packageOption) }"><strong>40% Discount </strong>  auf Maschinenpreise</p>
+              <p  :class="{ 'text-green': !isDisabled(packageOption) }"><strong>35% Rabatt </strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
             </div>
             <hr class="border-gray-300 my-4" />
@@ -375,6 +386,11 @@ export default {
       const startDate = new Date(Date.UTC(year, month + 1, 1));
 
       return startDate.toISOString(); // Im ISO 8601-Format
+    },
+    getUntilDateForFlexPackage(startDate){
+      const start = new Date(startDate);
+
+      return start.setFullYear(start.getFullYear() + 1)// Im ISO 8601-Format
     },
     getCancelDate() {
       const today = new Date(); // Aktuelles Datum

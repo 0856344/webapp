@@ -26,7 +26,7 @@
       </div>
       <div
         class="form-item"
-        v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'"
+        v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX' && !this.onboardingData.contactInformation.company "
         style="margin-top: 0px; margin-bottom: 30px"
       >
         <label></label>
@@ -89,10 +89,10 @@
           <p class="text text-blue-900"><strong>{{ getMembershipPrice() }}</strong></p>
 
         </div>
-        <div class="form-item" v-if="this.selectedMembership">
-          <span class="label">Startgebühr</span>
-          <p class="text text-blue-900"><strong>{{ getMembershipStartPrice() }} </strong></p>
-        </div>
+<!--        <div class="form-item" v-if="this.selectedMembership">-->
+<!--          <span class="label">Startgebühr</span>-->
+<!--          <p class="text text-blue-900"><strong>{{ getMembershipStartPrice() }} </strong></p>-->
+<!--        </div>-->
 
 
         <div v-if="this.selectedMembership && getMembershipCredits()">
@@ -437,9 +437,17 @@ export default {
     },
     getMembershipPrice() {
       this.onboardingData.payment.membership = this.selectedMembership;
-      return (
-        this.onboardingData.payment.membership.recurringFee + "€ monatlich (inkl. MwSt)"
-      );
+      // console.log('this.onboardingData.payment.membership: ', this.onboardingData.payment.membership)
+      if (this.onboardingData.payment.membership.recurringFeePeriod === 'year') {
+        return (
+          this.onboardingData.payment.membership.recurringFee + "€ jährlich (inkl. MwSt)"
+        );
+      }else {
+        return (
+          this.onboardingData.payment.membership.recurringFee + "€ monatlich (inkl. MwSt)"
+        );
+      }
+
     },
     getMembershipStartPrice() {
       this.onboardingData.payment.membership = this.selectedMembership;
