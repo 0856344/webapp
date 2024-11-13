@@ -129,16 +129,16 @@
             <div class="form-item" style="margin-bottom: 4px">
               <span class="label">Maschinenpreis</span>
               <p class="text text-red" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'">
-                50% Aufpreis
-              </p>
-              <p class="text text-red" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER'">
                 kein Rabatt
+              </p>
+              <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER'">
+                15% Rabatt
               </p>
               <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_MAKER'">
                 25% Rabatt
               </p>
               <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_PRO'">
-                40% Rabatt
+                35% Rabatt
               </p>
             </div>
           </div>
