@@ -33,7 +33,7 @@
         </h5>
       </div>
       <div class="form-item" v-if="selectedMembership">
-        <span class="label">Anzahl der Mitglieder<span class="red">*</span></span>
+        <span class="label">Mitglieder (Gesamt)<span class="red">*</span></span>
         <input
           class="input-text"
           step="1"
@@ -73,6 +73,8 @@
         <label></label>
         <label class="text-sm space-y-1">
           <hr class="my-1">
+          <p>{{onboardingData.payment.numberOfMembers-1}} zusätzliche Mitglieder</p>
+          <hr class="my-1">
           <p>+{{getMembershipCredits()[0]}} Credits pro Mitglied</p>
           <hr class="my-1">
           <p>24/7 Makerspace Nutzung</p>
@@ -83,7 +85,7 @@
       </div>
 
       <div v-if="this.selectedMembership && getMembershipCredits()">
-        <div class="form-item" style="margin-bottom: 4px">
+        <div class="form-item" style="margin-bottom: 4px;">
           <span class="label">Credits</span>
           <p class="text">
             <span class="font-bold text-orange-600">{{ getMembershipGroupCredits() }} Credits&nbsp;</span>im Monat
@@ -101,7 +103,7 @@
         >
           <label></label>
           <h5 style="margin: 0px">
-            Die Freikontingente können nicht ins nächste Monat
+            Die Freikontingente für die Maschinennutzung können nicht ins nächste Monat
             mitgenommen werden. ( weitere Infos >
             <nuxt-link target="_blank" to="/de/agb">
               {{ $t("conditionsOfParticipation") }} </nuxt-link
@@ -116,17 +118,48 @@
            this.selectedMembership?.metadata?.shortform === 'MS24_MAKER_GROUP' ||
             this.selectedMembership?.metadata?.shortform === 'MS24_PRO_GROUP') ">
         <div class="form-item" style="margin-bottom: 4px">
-          <span class="label">Maschinenpreis</span>
-          <p class="text text-red" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER_GROUP'">
-            kein Rabatt
+          <span class="label">Maschinennutzung</span>
+          <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER_GROUP'">
+            15% Rabatt
           </p>
           <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_MAKER_GROUP'">
             25% Rabatt
           </p>
           <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_PRO_GROUP'">
-            40% Rabatt
+            35% Rabatt
           </p>
         </div>
+      </div>
+      <div v-if="this.selectedMembership &&
+          (
+          this.selectedMembership?.metadata?.shortform === 'MS24_STARTER_GROUP' ||
+           this.selectedMembership?.metadata?.shortform === 'MS24_MAKER_GROUP' ||
+            this.selectedMembership?.metadata?.shortform === 'MS24_PRO_GROUP') ">
+        <div class="form-item" style="margin-bottom: 4px">
+          <span class="label">Maschinenreservierung</span>
+          <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER_GROUP'">
+            1 Stunde pro Woche
+          </p>
+          <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_MAKER_GROUP'">
+            1 Stunde pro Woche
+          </p>
+          <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_PRO_GROUP'">
+            5 Stunden pro Woche
+          </p>
+        </div>
+      </div>
+      <div
+        class="form-item"
+        v-if="this.selectedMembership"
+        style="margin-top: 0px; margin-bottom: 30px"
+      >
+        <label></label>
+        <h5 style="margin: 0px">
+          Das Freikontingent für die Maschinenreservierung steht jedem Mitglied zur Verfügung. ( weitere Infos >
+          <nuxt-link target="_blank" to="/de/agb">
+            {{ $t("conditionsOfParticipation") }} </nuxt-link
+          >)
+        </h5>
       </div>
 
 <!--      <div class="mt-12"></div>-->
@@ -185,6 +218,18 @@
         <div class="form-item" v-if="this.selectedMembership">
           <span class="label">Startgebühr</span>
           <p class="text"><span class="font-bold text-orange-600">{{ getMembershipStartPrice() }}€&nbsp;</span>einmalig (inkl. MwSt)</p>
+        </div>
+        <div
+          class="form-item"
+          style="margin-top: 0px; margin-bottom: 30px"
+        >
+          <label></label>
+          <h5 style="margin: 0px">
+            Das erste Monat wird alliqout verrechnet. ( weitere Infos >
+            <nuxt-link target="_blank" to="/de/agb">
+              {{ $t("conditionsOfParticipation") }} </nuxt-link
+            >)
+          </h5>
         </div>
       </div>
       <hr class="my-8">

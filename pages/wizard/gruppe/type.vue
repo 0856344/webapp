@@ -4,7 +4,7 @@
     <p class="mt-4">
       Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserer Innovationswerkstatt abschließen möchtest.
     </p>
-    <p class="mt-2">Als nächstes benötigen wir noch ein paar Infos zu eurem Hauptuser:</p>
+    <p class="mt-2">Welche Art der Gruppenmitgliedschaft soll abgeschlossen werden?</p>
 
     <form class="form mt-8">
       <div class="flex flex-col lg:flex-row justify-between space-y-4 lg:space-y-0 lg:space-x-4">
@@ -22,15 +22,15 @@
           <!-- Text Box -->
           <div class="relative z-10 bg-white p-4 rounded-md text-center">
             <h4 class="text-xl font-semibold">Maker</h4>
-            <p>Du möchtest eine Gruppe anlegen und genauso selber nutzen?</p>
+            <p>Du möchtest eine Gruppe anlegen und den Makerspace genauso selber nutzen?</p>
           </div>
         </div>
 
         <!-- Organisator Auswahl -->
         <div
           class="w-full lg:w-1/2 p-6 border rounded-lg cursor-pointer relative transition-colors h-80 flex items-center justify-center"
-          :class="onboardingData.type.selectedGroupType === 'organizer' ? 'bg-blue-300 border-blue-500' : 'bg-blue-50 border-gray-300 hover:bg-blue-200'"
         >
+<!-- :class="onboardingData.type.selectedGroupType === 'organizer' ? 'bg-blue-300 border-blue-500' : 'bg-blue-50 border-gray-300 hover:bg-blue-200'"-->
           <!-- Icon im Hintergrund -->
           <div class="absolute inset-0 flex items-center justify-center opacity-40">
             <font-awesome-icon icon="users-cog" class="text-gray-400" style="width: 100%; height: 100%;" />
@@ -38,8 +38,8 @@
 
           <!-- Text Box -->
           <div class="relative z-10 bg-white p-4 rounded-md text-center">
-            <h4 class="text-xl font-semibold">Organisator</h4>
-            <p>Du möchtest eine Gruppe anlegen und die Mitgliedschaften nur verwalten?</p>
+            <h4 class="text-xl font-semibold">Organisation</h4>
+            <p>Du möchtest eine Gruppe anlegen und die Mitgliedschaften verwalten?</p>
             <p class="text-sm">(Kooperationspartner, Bildungseinrichtungen, Startups, ...)</p>
             <p class="my-8">
               Bitte kontaktiere den

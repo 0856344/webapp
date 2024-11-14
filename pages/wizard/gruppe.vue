@@ -89,7 +89,7 @@ export default {
       mailCheck: false,
       MemberType,
       //steps: ["userInformation", "type", "contact", "creditType", "payment", "confirmation"],
-      steps: ["userInformation", "type", "contact", "payment", "confirmation"],
+      steps: ["type", "userInformation", "contact", "payment", "confirmation"],
       onboardingData: {
         userInformation: {
           firstName: null,
@@ -181,6 +181,14 @@ export default {
       switch (this.activeStep) {
         case 'index':
           return false;
+        case 'type': {
+          const requiredKeys = [
+            'selectedGroupType'
+          ];
+          return (
+            !!requiredKeys.filter((k) => !data.type[k]).length
+          );
+        }
         case 'userInformation': {
           const requiredKeys = [
             'firstName',
@@ -192,14 +200,6 @@ export default {
           return (
             !!requiredKeys.filter((k) => !data.userInformation[k]).length ||
             !data.userInformation.emailOk
-          );
-        }
-        case 'type': {
-          const requiredKeys = [
-            'selectedGroupType'
-          ];
-          return (
-            !!requiredKeys.filter((k) => !data.type[k]).length
           );
         }
         case 'contact': {
@@ -222,7 +222,6 @@ export default {
               'country',
             ];
           }
-
           const requiredKeysInvoiceContact = [
             'firstName',
             'lastName',
@@ -316,7 +315,7 @@ export default {
       const ni = this.index - 1 < 0 ? 0 : this.index - 1;
       let path = this.steps[ni];
       if (ni === 0) {
-        path = 'userInformation';
+        path = 'type';
       }
       this.$router.push('/wizard/gruppe/' + path);
     },
@@ -326,14 +325,14 @@ export default {
           this.loadNextPage();
           this.saveOnboardingData();
           break;
+        case 'type':
+          this.loadNextPage();
+          this.saveOnboardingData();
+          break;
         case 'userInformation':
           this.mailCheck = false;
           // will go to next page if email is valid
           await this.checkLoginDataAndProceed();
-          this.saveOnboardingData();
-          break;
-        case 'type':
-          this.loadNextPage();
           this.saveOnboardingData();
           break;
         case 'contact':

@@ -278,7 +278,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     //console.log('CONTACT FROM: ', from.path)
     if (
-      from.path === "/wizard/gruppe/type" ||
+      from.path === "/wizard/gruppe/userInformation" ||
       from.path === "/wizard/gruppe/payment"
     ) {
       next();
