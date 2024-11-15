@@ -353,6 +353,11 @@ export default {
     //all packages available for booking
     this.$store.dispatch("getPackages").then((r) => {
       this.packages = r;
+      // retrieve flex for sorting memberships
+      const flex = this.packages.find((p) => {
+        const metadata = p.metadata;
+        return metadata.shortform ==="MS24_FLEX"
+      });
       // filter already booked storages
       this.availableStorage = this.packages.filter((p) => {
         //handle packages with no metadata available for storage & visibility or malformed format
@@ -360,12 +365,16 @@ export default {
           console.error("no metadata (storage, visible) for package: ", p);
           return false;
         }
-        if (!p.metadata.is_storage_box && p.metadata.shop_visible && !p.metadata?.group) {
+        if (!p.metadata.is_storage_box && p.metadata.shop_visible && !p.metadata?.group && !(p.metadata?.shortform === 'MS24_FLEX')) {
           this.availableMemberships.push(p);
         }
         return p.metadata.is_storage_box && p.metadata.shop_visible;
       });
       this.sortByKey(this.availableMemberships, "recurringFee");
+      // insert flex in first place to have right order
+      if (flex) {
+        this.availableMemberships = [flex].concat(this.availableMemberships)
+      }
       this.loading = false;
       //if membership is preselected, select it, else select first available membership package
       if (this.onboardingData.payment.membership) {

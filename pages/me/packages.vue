@@ -103,24 +103,28 @@
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
 <!--              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>50% Aufpreis </strong>  auf Maschinenpreise</p>-->
               <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Startgebühr </strong>  (jährlich)</p>
+              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>keine Maschinenreservierung möglich</strong></p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_STARTER'" class="align-middle mx-10 my-4" >
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>15% Rabatt</strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine Startgebühr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>1 Stunde Maschinenreservierung pro Woche inkludiert</strong> (danach 5€ pro Stunde)</p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_MAKER'" class="align-middle mx-10 my-4 ">
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>25% Rabatt </strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>1 Stunde Maschinenreservierung pro Woche inkludiert </strong>(danach 5€ pro Stunde)</p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_PRO'" class="align-middle mx-10 my-4 ">
               <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p  :class="{ 'text-green': !isDisabled(packageOption) }"><strong>35% Rabatt </strong>  auf Maschinenpreise</p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>5 Stunden Maschinenreservierung pro Woche inkludiert </strong>(danach 5€ pro Stunde)</p>
             </div>
             <hr class="border-gray-300 my-4" />
           </label>
@@ -238,11 +242,20 @@ export default {
         this.$store.state.member.id,
       );
       this.upgradePackages = await this.$store.dispatch('getPackages');
+      // sort packages for upgrading: FLEX, STARTER, MAKER, PRO
+      const flex = this.upgradePackages.find((p) => {
+        const metadata = p.metadata;
+        return metadata.shortform ==="MS24_FLEX"
+      });
       this.upgradePackages = this.upgradePackages.filter((p) => {
         const metadata = p.metadata;
-        return !metadata.is_storage_box && !metadata?.group;
+        return metadata.is_membership_identifier && !metadata?.group && !(metadata?.shortform === 'MS24_FLEX');
       });
       this.sortByKey(this.upgradePackages, "recurringFee");
+      // insert flex in first place to have the right order
+      if (flex) {
+        this.upgradePackages = [flex].concat(this.upgradePackages)
+      }
 
       this.memberPackages = this.memberPackages.filter((p) => {
         // filter old packages

@@ -114,24 +114,34 @@
                 @reload="fetchBookings(member.id)"
               ></editable-booking-calendar>
             </span>
-            <div v-if="selectedMachine" class="flex justify-end">
-              <button
-                class="input-button-primary v-step-4 shadow-md"
-                @click="openModal"
-                :disabled="this.$store.getters.getSelectedBookings.length <= 0"
-              >
-                <svg
-                  class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="2em"
-                  viewBox="0 0 448 512"
+            <div v-if="currentMembership">
+              <div v-if="selectedMachine" class="flex justify-end">
+                <button
+                  class="input-button-primary v-step-4 shadow-md"
+                  @click="openModal"
+                  :disabled="this.$store.getters.getSelectedBookings.length <= 0 || currentMembership._embedded.package?.metadata?.shortform ==='MS24_FLEX'"
                 >
-                  <path
-                    d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
-                  />
-                </svg>
-                {{ $t('confirm') }}
-              </button>
+                  <svg
+                    class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="2em"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+                    />
+                  </svg>
+                  {{ $t('confirm') }}
+                </button>
+
+              </div>
+              <div v-if="currentMembership._embedded.package?.metadata?.shortform ==='MS24_FLEX'">
+                <p class="text-bold text-red">Deine FLEX Mitgliedschaft inkludiert keine Reservierung.</p>
+                <p class="text-bold">
+                  <nuxt-link
+                    to="/me/packages"
+                  >Wechsle deine Mitgliedschaft</nuxt-link>, um die Maschinenreservierung nutzen zu können.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -301,7 +311,9 @@ export default {
         bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
         bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
         bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours
-      }
+      },
+      currentMembership: null,
+      membership: null
     };
   },
   watch: {
@@ -331,7 +343,10 @@ export default {
     this.steps = this.createTourText();
   },
   async mounted () {
+    // Load current membership (FLEX may not book machines)
+    await this.fetchMembership();
     // Load machines, which are bookable for this member (depends on space and required trainings)
+    console.log('current membership', this.currentMembership)
     await this.fetchMachines();
 
     // Check if user has already selected a machine on another page (e.g. Machine.vue) by query param
@@ -708,6 +723,45 @@ export default {
         .finally(() => {
           this.loadingBookings = false;
         });
+    },
+    async fetchMembership(){
+      this.membership = await this.$store.dispatch(
+        'getMemberPackages',
+        this.$store.state.member.id,
+      );
+      this.membership = this.membership.filter((p) => {
+        // filter old packages
+        if (p.untilDate) {
+          const packageDate = new Date(p.untilDate)
+          const currentDate = new Date();
+          if (packageDate.getTime() < currentDate.getTime()) {
+            return false;
+          }
+        }
+        return true;
+      });
+      // check if package has "is_membership_identifier" flag to identify the membership package
+      this.membership = this.membership.filter((p) => {
+        return p?._embedded?.package?.metadata?.is_membership_identifier
+      });
+      this.membership.forEach((p) => {
+        if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
+          this.currentMembership = p;
+        }
+      })
+    },
+    isActiveMembership(startDateString, endDateString) {
+      const today = new Date(); // Aktuelles Datum
+      // Konvertiere die Eingabe-Strings in Date-Objekte
+      const startDate = new Date(startDateString);
+      if (endDateString) {
+        const endDate = new Date(endDateString);
+        // Vergleiche, ob "heute" zwischen dem Start- und Enddatum liegt
+        return today >= startDate && today <= endDate;
+      }
+      else{
+        return today >= startDate
+      }
     },
     startTour () {
       // Start introduction tour
