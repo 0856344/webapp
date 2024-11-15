@@ -263,7 +263,7 @@ export default {
     //console.log('CONTACT FROM: ', from.path)
     if (
       from.path === "/wizard/onboarding/userInformation" ||
-      from.path === "/wizard/onboarding/payment"
+      from.path === "/wizard/onboarding/image"
     ) {
       next();
     } else {

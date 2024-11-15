@@ -379,7 +379,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     //console.log('PAYMENT FROM: ', from.path)
-    if (from.path === "/wizard/onboarding/contact") {
+    if (from.path === "/wizard/onboarding/image") {
       next();
     } else {
       next("/wizard/onboarding/userInformation");
