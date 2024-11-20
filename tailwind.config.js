@@ -85,7 +85,8 @@ module.exports = {
     extend: {
       gridTemplateColumns: {
         contact: "28% 72%",
-        "member-grid": "minmax(12em, 3fr) repeat(2, 2fr)",
+        "member-grid": "minmax(12em, 3fr) repeat(4, 2fr)",
+        "member-grid-2024": "minmax(12em, 3fr) repeat(4, 2fr)",
       },
       gridTemplateRows: {
         plan: "3em repeat(auto-fill, minmax(5.2em, 1fr))",

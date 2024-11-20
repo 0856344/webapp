@@ -561,19 +561,30 @@ const createStore = () => {
           return result.data
         })
       },
-      async getMachinePrices({ state }, id) {
+      async getMachinePrices({ state }, payload) {
         const result = await axios.get(
             connectorBaseUrl + '/v1/fabman/resources',
         );
         const cMachines = result.data
             .filter((machine) => {
-              return (machine.pricePerTimeBusy > 0 && !machine.metadata?.hideFromPriceList);
+              return (machine.space == '2017' && (machine.pricePerTimeBusy > 0 || machine.pricePerUsage > 0));
             })
             .map((machine) => {
+              const perUsage = parseFloat(machine.pricePerUsage) > 0;
+              if (payload.alternativePricing && machine.metadata?.altPrice) {
+                return {
+                  id: machine.id,
+                  name: machine.name,
+                  price: machine.metadata.altPrice,
+                  perUsage,
+                  seconds: machine.pricePerTimeBusySeconds,
+                }
+              }
               return {
                 id: machine.id,
                 name: machine.name,
-                price: machine.pricePerTimeBusy,
+                price: perUsage ? machine.pricePerUsage : machine.pricePerTimeBusy,
+                perUsage,
                 seconds: machine.pricePerTimeBusySeconds,
               }
             })

@@ -24,16 +24,16 @@
             <thead class="">
               <tr class="w-full">
                 <th
-                  class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-3/5 w-1/2 border-t border-l bg-gray-900 rounded-tl-md"
+                  class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-3/5 w-1/2 border-t border-l bg-gray-900 rounded-tl-md" :class="{ 'w-1/3 sm:w-2/5': updatedPricing }"
                 >
                   {{ $t("name") }}
                 </th>
                 <th
-                  class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-2/5 w-1/2 border-t border-r bg-gray-900 rounded-tr-md"
+                  class="text-left p-2 font-mono text-white sm:text-lg text-base font-bold sm:w-2/5 w-1/2 border-t border-r bg-gray-900 rounded-tr-md" :class="{ 'w-1/6 sm:w-1/6': updatedPricing }"
                 >
                   {{
-                    priceList.billedInCredits ? $t("credits") : $t("priceIn")
-                  }}
+                    priceList.billedInCredits && !updatedPricing ? $t("credits") : $t("priceIn")
+                  }} <span v-if="updatedPricing">(Flex)</span>
                 </th>
               </tr>
             </thead>
@@ -47,7 +47,7 @@
                   {{ item.name }}
                 </td>
                 <td
-                  class="pr-2 table font-mono text-sm sm:text-base"
+                  class="pr-2  font-mono text-sm sm:text-base"
                   v-html="formatPriceHTML(item)"
                 ></td>
               </tr>
@@ -99,7 +99,7 @@
 
 <script>
 export default {
-  props: ["priceList"],
+  props: ["priceList", "updatedPricing"],
   middleware: "authenticated",
   data() {
     return {
@@ -169,9 +169,9 @@ export default {
         );
       }
     },
-    formatPriceHTML(item) {
+    formatPriceHTML(item, discount) {
       if (item === undefined) return;
-      if (this.priceList.billedInCredits) {
+      if (this.priceList.billedInCredits && !this.updatedPricing) {
         const price = Math.ceil(item.price * 10).toString();
         return `<span class="table-row" aria-label=${price}>
                 <span class="table-cell">${this.padString(price)}</span>
@@ -186,7 +186,7 @@ export default {
                 <span class="table-cell text-left">${
                   decimal.length === 1 ? decimal + "0" : decimal
                 }</span>
-                <span>&nbsp;/ ${item.unit}</span>
+                <span>&nbsp;/ ${item.perUsage ? 'Nutzung' : item.unit}</span>
               </span>`;
       }
     },

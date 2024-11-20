@@ -1,19 +1,19 @@
 <template>
   <div class="section">
-    <h2>Credits</h2>
+    <h2>Guthaben</h2>
     <br />
     <loading-spinner v-if="!currentMembership || loadingCreditActivities"></loading-spinner>
     <div v-if="!(hasSmartGarage && currentMembership) &&!loadingCreditActivities ">
-      Es sind keine Credits in deiner Mitgliedschaft verfügbar.
+      Es ist kein Guthaben in deiner Mitgliedschaft verfügbar.
     </div>
     <div v-if="hasSmartGarage && currentMembership &&!loadingCreditActivities">
       <accordion  v-if="!loadingCreditActivities" bgColor="bg-white" textColor="text-black" class="my-4">
-        <div slot="header" class="text-xs xs:text-sm md:text-xl">aktuelle Credits:
+        <div slot="header" class="text-xs xs:text-sm md:text-xl">aktuelles Guthaben:
           <span class="text-orange text-bold">
-          {{ Number(monthlyRemainingCredit).toFixed(1)}} Credits</span
+          {{ Number(monthlyRemainingCredit).toFixed(2)}}€</span
           >
 <!--          <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'" class="text-orange text-bold">-->
-<!--          {{ (monthlyRemainingCredit /0.6).toFixed(1)}} Credits</span-->
+<!--          {{ (monthlyRemainingCredit /0.6).toFixed(2)}} Credits</span-->
 <!--          >-->
         </div>
         <div v-if="loadingCreditActivities"><loading-spinner></loading-spinner></div>
@@ -22,11 +22,11 @@
             <thead class="">
             <tr class="w-full text-base">
               <th>
-                Creditskontigent gesamt
+                Guthaben gesamt
               </th>
               <th>
-                <span>{{ Number(monthlyCredits).toFixed(1) }} Credits</span>
-<!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyCredits/0.6).toFixed(1) }} Credits</span>-->
+                <span>{{ Number(monthlyCredits).toFixed(2) }}€ Guthaben</span>
+<!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyCredits/0.6).toFixed(2) }} Credits</span>-->
               </th>
             </tr>
             </thead>
@@ -44,8 +44,8 @@
               </td>
               <td>
                 <div>
-                  <span> - {{((activity.amount * 10)).toFixed(1) }} Credits</span>
-<!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
+                  <span> - {{(Number(activity.amount)).toFixed(2) }}€</span>
+<!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(2) }}</span>-->
                 </div>
                 <div>
                   {{ activity.resource_name}}
@@ -55,18 +55,18 @@
                 <td>
                   <div>
                     <span> {{getMemberFromActivity(activity._embedded.resourceLog.member)}}</span>
-                    <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
+                    <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(2) }}</span>-->
                   </div>
                 </td>
               </div>
             </tr>
             <tr class="w-full bg-black text-white text-base uppercase leading-5 tracking-wide font-semibold">
               <th class="flex-1">
-                Verbleibende Credits
+                Verbleibendes Guthaben
               </th>
               <th class="flex-1">
-                <span>{{ Number(monthlyRemainingCredit).toFixed(1) }} Credits</span>
-<!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyRemainingCredit/0.6).toFixed(1) }} Credits</span>-->
+                <span>{{ Number(monthlyRemainingCredit).toFixed(2) }}€ Guthaben</span>
+<!--                <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'">{{ (monthlyRemainingCredit/0.6).toFixed(2) }} Credits</span>-->
               </th>
             </tr>
             </tbody>
@@ -92,7 +92,7 @@
               </div>
             </div>
           </table>
-          <div v-else>Du hast noch keine Credits eingelöst</div>
+          <div v-else>Du hast noch kein Guthaben eingelöst</div>
         </div>
       </accordion>
 
@@ -107,10 +107,10 @@
             <thead class="">
             <tr class="w-full text-base">
               <th>
-                Creditskontigent gesamt
+                Guthaben gesamt
               </th>
               <th>
-                <span>{{ oneTimeCreditsOriginal }} Credits</span>
+                <span>{{ oneTimeCreditsOriginal }} Guthaben</span>
               </th>
             </tr>
             </thead>
@@ -128,7 +128,7 @@
               </td>
               <td>
                 <div>
-                  - {{(creditActivity.amount * 10).toFixed(1) }} Credits
+                  - {{(Number(creditActivity.amount)).toFixed(2) }}€
                 </div>
                 <div>
                   {{ creditActivity.resource_name}}
@@ -137,10 +137,10 @@
             </tr>
             <tr class="w-full bg-black text-white text-base uppercase leading-5 tracking-wide font-semibold">
               <th class="flex-1">
-                Verbleibende Credits
+                Verbleibendes Guthaben
               </th>
               <th class="flex-1">
-                <span>{{ oneTimeCredits }} Credits</span>
+                <span>{{ oneTimeCredits }} Guthaben</span>
               </th>
             </tr>
             </tbody>
@@ -166,7 +166,7 @@
               </div>
             </div>
           </table>
-          <div v-else>Du hast noch keine Credits eingelöst</div>
+          <div v-else>Du hast noch kein Guthaben eingelöst</div>
         </div>
       </accordion>
 
@@ -178,7 +178,7 @@
 <!--        lade Credit-History...-->
 <!--      </p>-->
       <accordion bgColor="bg-white" textColor="text-black" class="my-4" :key="loadingPreviousCreditActivities" >
-        <div slot="header" class="text-xs xs:text-sm md:text-xl">Credits-Historie
+        <div slot="header" class="text-xs xs:text-sm md:text-xl">Guthaben-Historie
         </div>
         <div v-if="loadingPreviousCreditActivities"><loading-spinner></loading-spinner></div>
         <div v-if="!loadingPreviousCreditActivities"  class="sm:px-4 my-6 lg:px-8 lg:my-12">
@@ -206,7 +206,7 @@
               </td>
               <td>
                 <div>
-                  - {{(creditActivity.amount * 10).toFixed(1) }} Credits
+                  - {{(Number(creditActivity.amount)).toFixed(2) }}€
                 </div>
                 <div>
                   {{ creditActivity.resource_name}}
@@ -216,7 +216,7 @@
                 <td>
                   <div>
                     <span> {{getMemberFromActivity(creditActivity._embedded.resourceLog.member)}}</span>
-                    <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(1) }}</span>-->
+                    <!--                  <span v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO'"> - {{((activity.amount * 10)/0.6).toFixed(2) }}</span>-->
                   </div>
                 </td>
               </div>
@@ -250,11 +250,13 @@
               </div>
             </div>
           </table>
-          <div v-else>Du hast noch keine Credits eingelöst</div>
+          <div v-else>Du hast noch kein Guthaben eingelöst</div>
         </div>
       </accordion>
-
-      <p>
+      <p class="text-sm mx-4">
+        <strong>Neu:</strong> Das Guthaben und die Kosten werden nicht mehr in <strong>Credits</strong>, sondern in <strong>Euro</strong> dargestellt - dadurch sollen die Kosten transparent und verständlich dargestellt werden.
+      </p>
+      <p class="text-sm mx-4">
         Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die
         Freikontingente können nicht ins nächste Monat mitgenommen werden.
       </p>
@@ -678,7 +680,7 @@ export default {
           }
         });
       }
-      return Number(creditSum * 10).toFixed(1);
+      return Number(creditSum).toFixed(2);
     },
     getMonthlyRemainingCredit() {
       this.monthlyCreditId = null
@@ -692,7 +694,7 @@ export default {
             creditSum += parseFloat(credit.remainingAmount);
           }
         });
-        this.monthlyRemainingCredit = Number(parseFloat(creditSum) * 10).toFixed(1);
+        this.monthlyRemainingCredit = Number(parseFloat(creditSum)).toFixed(2);
       //return "0.0"; // Rückgabe eines Standardwerts, falls keine Daten vorhanden sind
     },
 
@@ -709,9 +711,9 @@ export default {
           }
         }
       });
-      this.oneTimeCreditsOriginal = Number(parseFloat(creditSumOriginal) * 10).toFixed(1);
-      this.oneTimeCredits = Number(parseFloat(creditSum) * 10).toFixed(1);
-      //return Number(parseFloat(creditSum) * 10).toFixed(1);
+      this.oneTimeCreditsOriginal = Number(parseFloat(creditSumOriginal)).toFixed(2);
+      this.oneTimeCredits = Number(parseFloat(creditSum)).toFixed(2);
+      //return Number(parseFloat(creditSum) * 10).toFixed(2);
     },
     getPackageCredits() {
       // TODO fix
@@ -723,7 +725,7 @@ export default {
             totalAmount += parseFloat(this.memberCredits[i].amount);
           }
         }
-        return (totalAmount * 10).toFixed(1);
+        return (totalAmount).toFixed(2);
       }
       return "0.0";
     },
@@ -739,7 +741,7 @@ export default {
           });
         }
       });
-      this.monthlyCredits = monthlyCredits * 10;
+      this.monthlyCredits = monthlyCredits;
       //return monthlyCredits * 10;
     },
     checkValue($value) {

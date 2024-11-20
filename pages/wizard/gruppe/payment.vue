@@ -75,7 +75,7 @@
           <hr class="my-1">
           <p>{{onboardingData.payment.numberOfMembers-1}} zusätzliche Mitglieder</p>
           <hr class="my-1">
-          <p>+{{getMembershipCredits()[0]}} Credits pro Mitglied</p>
+          <p>+{{getMembershipCredits()[0]}}€ Guthaben pro Mitglied</p>
           <hr class="my-1">
           <p>24/7 Makerspace Nutzung</p>
           <hr class="my-1">
@@ -86,9 +86,9 @@
 
       <div v-if="this.selectedMembership && getMembershipCredits()">
         <div class="form-item" style="margin-bottom: 4px;">
-          <span class="label">Credits</span>
+          <span class="label">Guthaben </span>
           <p class="text">
-            <span class="font-bold text-orange-600">{{ getMembershipGroupCredits() }} Credits&nbsp;</span>im Monat
+            <span class="font-bold text-orange-600">{{ getMembershipGroupCredits() }}€ Guthaben&nbsp;</span>im Monat
             <!--              <strong v-if="getMembershipCredits()[1] !== ''"-->
             <!--                ><span class="specialOffer">-->
             <!--                  + {{ getMembershipCredits()[1] }} Credits einmal [%Aktion%]</span-->
@@ -196,10 +196,10 @@
         <label></label>
         <!-- Explanation text based on the selection -->
         <p v-if="onboardingData.creditType.selectedCreditType === 'split'" class="text-md text-gray-600">
-          Credits werden fair auf alle Mitglieder aufgeteilt.
+          Das Guthaben wird fair auf alle Mitglieder aufgeteilt.
         </p>
         <p v-if="onboardingData.creditType.selectedCreditType === 'pot'" class="text-md text-gray-600">
-          Alle Credits sind in einem gemeinsamen Topf verfügbar.
+          Das Guthaben ist in einem gemeinsamen Topf verfügbar.
         </p>
       </div>
 
@@ -216,7 +216,7 @@
 
         </div>
         <div class="form-item" v-if="this.selectedMembership">
-          <span class="label">Startgebühr</span>
+          <span class="label">Jahresbeitrag</span>
           <p class="text"><span class="font-bold text-orange-600">{{ getMembershipStartPrice() }}€&nbsp;</span>einmalig (inkl. MwSt)</p>
         </div>
         <div
@@ -551,10 +551,10 @@ export default {
           }
         });
         const resultTextmonthlyCredits =
-          monthlyCredit * 10;
+          monthlyCredit;
         const resultsTexts = [resultTextmonthlyCredits, ""];
         if (oneTimeCredits !== 0) {
-          resultsTexts[1] = oneTimeCredits * 10;
+          resultsTexts[1] = oneTimeCredits;
           return resultsTexts;
         }
         return resultsTexts;

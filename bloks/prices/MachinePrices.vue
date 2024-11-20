@@ -1,5 +1,5 @@
 <template v-editable="blok">
-  <Pricelist :priceList="priceList" />
+  <Pricelist :priceList="priceList" :updatedPricing="blok.pricing2024" />
 </template>
 
 <script>
@@ -48,13 +48,13 @@ export default {
               : minutes < 1
               ? "s"
               : "min";
-          return { name: m.name, price: m.price, unit: timeUnit };
+          return { name: m.name, price: m.price, unit: timeUnit, perUsage: m.perUsage };
         }),
       };
     },
   },
   async mounted() {
-    this.machines = await this.$store.dispatch("getMachinePrices");
+    this.machines = await this.$store.dispatch("getMachinePrices", {alternativePricing: this.blok.pricing2024});
   },
 };
 </script>

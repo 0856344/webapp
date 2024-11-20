@@ -1,24 +1,54 @@
 <template>
-  <div v-editable="blok" class="mt-2 flex flex-col w-full justify-center px-4">
+  <div v-editable="blok" class="mt-2 flex flex-col w-full justify-center px-4 relative">
     <div
       id="plans"
-      class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid lg:gap-2 lg:h-[52rem] py-2 mb-2 lg:py-6 px-2"
+      class="flex justify-center overflow-x-hidden lg:grid lg:grid-cols-member-grid-2024 lg:gap-2 lg:h-[52rem] py-2 mb-2 lg:py-6 px-2"
     >
       <div v-if="!isMobile" class="grid grid-rows-plan">
         <!---First DIV acts as placeholder for missing header row-->
         <div class="">&nbsp;</div>
-        <div
-          v-for="item in featureStrings"
-          :key="item._uid"
-          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
-        >
-          {{ item }}
-        </div>
+        <template v-if="!updatedPricing">
+          <div
+            v-for="item in featureStrings"
+            :key="item._uid"
+            class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
+          >
+            {{ item }}
+          </div>
+        </template>
         <div
           class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
         >
           <span>{{ $t("creditsDescription") }}</span>
         </div>
+        <template v-if="updatedPricing">
+          
+          <div
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
+        >
+          <span>{{ $t("memberBenefits") }}</span>
+        </div>
+          <div
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
+        >
+          <span>{{ $t("discount") }}</span>
+        </div>
+        <div
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
+        >
+          <span>{{ $t("bookingHoursDescription") }}</span>
+        </div>
+        <div
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto bg-yellow"
+        >
+          <span>{{ $t("memberGroups") }}</span>
+        </div>
+        <div
+          class="inline-flex items-center px-2 py-1 text-base border-b-2 border-b-gray-900 hyphens-auto"
+        >
+          <span>{{ $t("yearlyCharge") }}</span>
+        </div>
+        </template>
         <div class="">&nbsp;</div>
       </div>
       <slider-container
@@ -39,6 +69,7 @@
             :strings="featureStrings"
             :comingSoon="comingSoon"
             :isMobile="isMobile"
+            :updatedPricing="updatedPricing"
             :class="[
               { 'lg:ml-0 ml-12': index === 0 },
               { 'lg:mr-0 mr-12': index === numberColumns - 1 },
@@ -74,7 +105,7 @@ export default {
       breakpoint: "",
       isMobile: false,
       //keys of features that will be marked as "coming soon"
-      comingSoon: ["desk"],
+      comingSoon: [],
     };
   },
   //get the array of feature description string values from the datasource
@@ -110,6 +141,10 @@ export default {
     numberColumns() {
       return this.blok.columns.length;
     },
+    updatedPricing() {
+      console.log(this.blok);
+      return this.blok.pricing2024;
+    }
   },
   methods: {
     setIsMobile() {

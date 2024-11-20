@@ -90,14 +90,14 @@
 
         </div>
 <!--        <div class="form-item" v-if="this.selectedMembership">-->
-<!--          <span class="label">Startgebühr</span>-->
+<!--          <span class="label">Jahresbeitrag</span>-->
 <!--          <p class="text text-blue-900"><strong>{{ getMembershipStartPrice() }} </strong></p>-->
 <!--        </div>-->
 
 
         <div v-if="this.selectedMembership && getMembershipCredits()">
           <div class="form-item" style="margin-bottom: 4px">
-            <span class="label">Credits</span>
+            <span class="label">Guthaben</span>
             <p class="text text-orange">
               {{ getMembershipCredits()[0] }}
               <strong v-if="getMembershipCredits()[1] !== ''"
@@ -142,6 +142,25 @@
               </p>
             </div>
           </div>
+          <div class="my-4" v-if="this.selectedMembership &&
+          (
+          this.selectedMembership?.metadata?.shortform === 'MS24_STARTER' ||
+           this.selectedMembership?.metadata?.shortform === 'MS24_MAKER' ||
+            this.selectedMembership?.metadata?.shortform === 'MS24_PRO') ">
+            <div class="form-item" style="margin-bottom: 4px">
+              <span class="label">Maschinenreservierung</span>
+              <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_STARTER'">
+                1 Stunde pro Woche
+              </p>
+              <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_MAKER'">
+                1 Stunde pro Woche
+              </p>
+              <p class="text text-green" v-if="this.selectedMembership?.metadata?.shortform === 'MS24_PRO'">
+                5 Stunden pro Woche
+              </p>
+            </div>
+          </div>
+          <hr class="my-8">
         </div>
       </div>
       <!--      Verkauf von Lagerboxen wurde temporär ausgesetzt: https://grandgarage.atlassian.net/browse/HP-212-->
@@ -508,10 +527,10 @@ export default {
           }
         });
         const resultTextmonthlyCredits =
-          monthlyCredit * 10 + " Credits monatlich";
+          monthlyCredit + "€ Guthaben monatlich";
         const resultsTexts = [resultTextmonthlyCredits, ""];
         if (oneTimeCredits !== 0) {
-          resultsTexts[1] = oneTimeCredits * 10 + " Credits einmalig";
+          resultsTexts[1] = oneTimeCredits * 10 + "€ Guthaben einmalig";
           return resultsTexts;
         }
         return resultsTexts;

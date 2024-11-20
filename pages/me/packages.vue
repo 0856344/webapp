@@ -14,25 +14,25 @@
           />
         </div>
       </div>
-      <div v-if="this.memberPackages" class="max-w-lg p-3 mb-8 bg-white border-2">
+      <div v-if="this.memberPackages" class="max-w-lg p-3 mb-4 bg-white border-2">
         <p class="text-lg font-bold text-center">{{this.currentMembership._embedded.package.name}}</p>
         <div v-if="this.isAdmin">
           <p class="font-normal text-center text-sm">
             <strong>{{ this.groupSize }}</strong> Team Plätze
           </p>
           <p class="font-normal text-center text-sm">
-            <strong>{{ this.currentMembership.recurringFee*this.groupSize }}€*</strong> monatlich ({{ this.currentMembership.recurringFee}}€ pro Platz)
+            <strong>{{ this.currentMembership.recurringFee*this.groupSize }}€*</strong> monatlich ({{ Number(this.currentMembership.recurringFee).toFixed(0)}}€ pro Platz)
           </p>
           <p v-if="creditType==='pot'" class="font-normal text-center text-sm">
-            <strong>{{ this.getMonthlyCreditsForTeamAdmin() *this.groupSize }} Credits</strong> monatlich ({{ this.getMonthlyCreditsForTeamAdmin()}} Credits pro Person)
+            <strong>{{ this.getMonthlyCreditsForTeamAdmin() *this.groupSize }}€ Guthaben</strong> monatlich ({{ this.getMonthlyCreditsForTeamAdmin()}}€ Guthaben pro Person)
           </p>
           <p v-if="creditType==='split'" class="font-normal text-center text-sm">
-            <strong>{{ this.getMonthlyCreditsForTeamAdmin()}}</strong> Credits pro Person (Credits werden geteilt)
+            <strong>{{ this.getMonthlyCreditsForTeamAdmin()}}</strong>€ Guthaben pro Person (Guthaben wird geteilt)
           </p>
         </div>
         <div v-if="!this.isAdmin">
           <p v-if="this.getMonthlyCredits()!==0" class="font-normal text-center text-sm">
-            <strong>{{ this.getMonthlyCredits() }}</strong> monatliche Credits
+            <strong>{{ this.getMonthlyCredits() }}</strong>€ monatliches Guthaben*
           </p>
 <!--          <p v-else class="font-normal text-center text-sm">-->
 <!--            Das monatliche Credit Kontingent ist bei Administrator hinterlegt-->
@@ -52,22 +52,50 @@
           <p class="font-normal text-center text-bold text-green text-sm"><strong>keine monatliche Gebühr</strong></p>
 
         </div>
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER' || currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_GROUP' " class="font-normal text-center text-green text-sm">
-          <strong>15% Discount</strong> auf Maschinenpreise
-        </p>
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' || currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_GROUP' " class="font-normal text-center text-green text-sm">
-          <strong>25% Discount</strong> auf Maschinenpreise
-        </p>
-        <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' || currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_GROUP'" class="font-normal text-center text-green text-sm">
-          <strong>35% Discount</strong>  auf Maschinenpreise
-        </p>
+        <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER' ||
+         currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_GROUP' ||
+          currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_PERMISSIONS_TEAMPOT'" class="font-normal text-center text-green text-sm">
+          <p><strong>15% Discount</strong> auf Maschinenpreise</p>
+          <hr class="border-gray-300" />
+          <div v-if="this.isAdmin">
+            <p><strong>1 Stunde Maschinenreservierung pro Woche für jedes Teammitglied inkludiert</strong> (danach 5€ pro Stunde)</p>
+          </div>
+          <div v-if="!this.isAdmin">
+            <p><strong>1 Stunde Maschinenreservierung pro Woche inkludiert</strong> (danach 5€ pro Stunde)</p>
+          </div>
+        </div>
+        <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' ||
+         currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_GROUP' ||
+          currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_PERMISSIONS_TEAMPOT'" class="font-normal text-center text-green text-sm">
+          <p><strong>25% Discount</strong> auf Maschinenpreise</p>
+          <hr class="border-gray-300" />
+          <div v-if="this.isAdmin">
+            <p><strong>1 Stunde Maschinenreservierung pro Woche für jedes Teammitglied inkludiert</strong> (danach 5€ pro Stunde)</p>
+          </div>
+          <div v-if="!this.isAdmin">
+            <p><strong>1 Stunde Maschinenreservierung pro Woche inkludiert</strong> (danach 5€ pro Stunde)</p>
+          </div>
+
+        </div>
+        <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' ||
+         currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_GROUP' ||
+         currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_PERMISSIONS_TEAMPOT'" class="font-normal text-center text-green text-sm">
+          <p><strong>35% Discount</strong>  auf Maschinenpreise</p>
+          <hr class="border-gray-300" />
+          <div v-if="this.isAdmin">
+            <p><strong>5 Stunden Maschinenreservierung pro Woche für jedes Teammitglied inkludiert</strong> (danach 5€ pro Stunde)</p>
+          </div>
+          <div v-if="!this.isAdmin">
+            <p><strong>5 Stunden Maschinenreservierung pro Woche inkludiert</strong> (danach 5€ pro Stunde)</p>
+          </div>
+        </div>
         <hr class="border-gray-300" />
         <p class="font-normal text-center text-sm">
           <strong>24/7 Makerspace</strong>
         </p>
       </div>
-      <p class="text-sm mx-4">
-        *exklusive der Kosten für Material oder Maschinennutzung.
+      <p class="text-sm mx-4 mb-8">
+        *exklusive der Kosten für Material oder Maschinennutzung (nach Verbrauch des Guthabens).
       </p>
 
       <div v-if="!loading && membership &&upcomingMembership &&!currentMembership._embedded.package.metadata?.group " class="bg-white p-3 pt-1">
@@ -99,31 +127,30 @@
             <div v-if="packageOption.metadata.shortform === 'MS24_FLEX'" class="align-middle mx-10 my-4" >
 <!--              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat-->
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine monatliche Gebühr</strong></p>
-              <p><strong>Laufzeit: 1 Jahr</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
 <!--              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>50% Aufpreis </strong>  auf Maschinenpreise</p>-->
-              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Startgebühr </strong>  (jährlich)</p>
+              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Jahresbeitrag </strong></p>
               <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>keine Maschinenreservierung möglich</strong></p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_STARTER'" class="align-middle mx-10 my-4" >
-              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
+              <strong>{{ getPackageCredits(packageOption) }}€ Guthaben </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>15% Rabatt</strong>  auf Maschinenpreise</p>
-              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine Startgebühr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>keine Jahresbeitrag</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>1 Stunde Maschinenreservierung pro Woche inkludiert</strong> (danach 5€ pro Stunde)</p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_MAKER'" class="align-middle mx-10 my-4 ">
-              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
+              <strong>{{ getPackageCredits(packageOption) }}€ Guthaben </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>25% Rabatt </strong>  auf Maschinenpreise</p>
-              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Jahresbeitrag</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>1 Stunde Maschinenreservierung pro Woche inkludiert </strong>(danach 5€ pro Stunde)</p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_PRO'" class="align-middle mx-10 my-4 ">
-              <strong>{{ getPackageCredits(packageOption) }} Credits </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
+              <strong>{{ getPackageCredits(packageOption) }}€ Guthaben </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
               <p  :class="{ 'text-green': !isDisabled(packageOption) }"><strong>35% Rabatt </strong>  auf Maschinenpreise</p>
-              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Startgebühr</strong></p>
+              <p :class="{ 'text-green': !isDisabled(packageOption) }"><strong>keine Jahresbeitrag</strong></p>
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>5 Stunden Maschinenreservierung pro Woche inkludiert </strong>(danach 5€ pro Stunde)</p>
             </div>
             <hr class="border-gray-300 my-4" />
@@ -347,7 +374,7 @@ export default {
           });
         }
       });
-      return monthlyCredits * 10;
+      return monthlyCredits;
     },
     getMonthlyCreditsForTeamAdmin() {
       // check all memberPackages for possible monthly credits
@@ -359,7 +386,7 @@ export default {
               }
             }
       });
-      return monthlyCredits * 10;
+      return monthlyCredits;
     },
     isDisabled(packageOption) {
       // Überprüfen, ob die Option in der aktuellen Mitgliedschaft enthalten ist oder SMART oder DIGI
@@ -381,7 +408,7 @@ export default {
               monthlyCredits += parseFloat(c.amount);
             }
       })
-      return monthlyCredits * 10;
+      return monthlyCredits;
     },
     sortByKey(array, key) {
       return array.sort(function (a, b) {

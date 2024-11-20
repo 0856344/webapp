@@ -40,7 +40,7 @@
           >{{ $t('membership') }}
           </MenuLink>
           <MenuLink to="/me/credits" icon="coins"
-          >Credits
+          >Guthaben
           </MenuLink>
           <MenuLink
             to="/me/trainings"
