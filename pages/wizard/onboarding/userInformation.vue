@@ -125,11 +125,12 @@ export default {
     };
   },
   async mounted() {
+    window.scrollTo(0, 0)
     if (this.$route.query.plan) {
       const availablePackages = await this.$store.dispatch("getPackages");
       const memberPackage = availablePackages.find(
         (p) =>
-          p.name === decodeURIComponent(this.$route.query.plan).toUpperCase()
+          p.metadata?.shortform === decodeURIComponent(this.$route.query.plan)
       );
       if (memberPackage !== undefined) {
         this.onboardingData.payment.membership = memberPackage;

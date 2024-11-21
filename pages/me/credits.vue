@@ -97,9 +97,9 @@
       </accordion>
 
       <accordion bgColor="bg-white" textColor="text-black" class="my-4" v-if="oneTimeCredits && oneTimeCredits>0 ">
-        <div slot="header" class="text-xs xs:text-sm md:text-xl">Extra Credits:
+        <div slot="header" class="text-xs xs:text-sm md:text-xl">zusätzliches Guthaben:
           <span class="text-orange  text-bold">
-          {{ oneTimeCredits }} Credits</span
+          {{ oneTimeCredits }}€ </span
           >
         </div>
         <div class="sm:px-4 my-6 lg:px-8 lg:my-12">

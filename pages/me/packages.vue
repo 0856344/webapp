@@ -130,7 +130,6 @@
               <p :class="{ 'text-green': !isDisabled(packageOption) }" ><strong>24/7 Makerspace</strong></p>
 <!--              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>50% Aufpreis </strong>  auf Maschinenpreise</p>-->
               <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>25€ Jahresbeitrag </strong></p>
-              <p :class="{ 'text-red': !isDisabled(packageOption) }" ><strong>keine Maschinenreservierung möglich</strong></p>
             </div>
             <div v-if="packageOption.metadata.shortform === 'MS24_STARTER'" class="align-middle mx-10 my-4" >
               <strong>{{ getPackageCredits(packageOption) }}€ Guthaben </strong>  für <strong> {{ packageOption.recurringFee }}€ </strong>im Monat

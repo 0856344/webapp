@@ -48,10 +48,10 @@
           </div>
         </div>
       </div>
+      <p class="text-sm">Du hast bereits einen Kooperationscode bekommen? Dieser Code lässt sich im <a href="/wizard/onboarding/userInformation">Onboarding für Einzelmitgliedschaften</a> einlösen.</p>
     </form>
   </div>
 </template>
-
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
