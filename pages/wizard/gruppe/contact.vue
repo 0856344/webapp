@@ -2,7 +2,7 @@
   <div class="section">
     <h3 class="mt-10 text-2xl font-bold">Willkommen in der GRAND GARAGE!</h3>
     <p class="mt-4">
-      Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserer Innovationswerkstatt abschließen möchtest.
+      Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserem MakerSpace abschließen möchtest.
     </p>
     <p v-if="onboardingData.type.selectedGroupType === 'maker'" class="mt-2 mb-12">Als nächstes benötigen wir noch ein paar Infos zu eurem Hauptuser:</p>
     <p v-if="onboardingData.type.selectedGroupType === 'organizer'" class="mt-2 mb-12">Als nächstes benötigen wir noch ein paar Infos zu eurer Organisation:</p>

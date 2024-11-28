@@ -2,7 +2,7 @@
   <div class="section">
     <h3 class="mt-10 text-2xl font-bold">Willkommen in der GRAND GARAGE!</h3>
     <p class="mt-4">
-      Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserer Innovationswerkstatt abschließen möchtest.
+      Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserem MakerSpace abschließen möchtest.
     </p>
     <p class="mt-2">Welche Art der Gruppenmitgliedschaft soll abgeschlossen werden?</p>
 
@@ -22,7 +22,7 @@
           <!-- Text Box -->
           <div class="relative z-10 bg-white p-4 rounded-md text-center">
             <h4 class="text-xl font-semibold">Maker</h4>
-            <p>Du möchtest eine Gruppe anlegen und den Makerspace genauso selber nutzen?</p>
+            <p>Du möchtest eine Gruppe anlegen und den MakerSpace genauso selber nutzen?</p>
           </div>
         </div>
 

@@ -21,7 +21,7 @@
             <strong>{{ this.groupSize }}</strong> Team Plätze
           </p>
           <p class="font-normal text-center text-sm">
-            <strong>{{ this.currentMembership.recurringFee*this.groupSize }}€*</strong> monatlich ({{ Number(this.currentMembership.recurringFee).toFixed(0)}}€ pro Platz)
+            <strong>{{ this.currentMembership.recurringFee*this.groupSize }}€*</strong> monatlich ({{ parseFloat(Number(this.currentMembership.recurringFee).toFixed(1))}}€ pro Platz)
           </p>
           <p v-if="creditType==='pot'" class="font-normal text-center text-sm">
             <strong>{{ this.getMonthlyCreditsForTeamAdmin() *this.groupSize }}€ Guthaben</strong> monatlich ({{ this.getMonthlyCreditsForTeamAdmin()}}€ Guthaben pro Person)
@@ -55,7 +55,7 @@
         <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER' ||
          currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_GROUP' ||
           currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_PERMISSIONS_TEAMPOT'" class="font-normal text-center text-green text-sm">
-          <p><strong>15% Discount</strong> auf Maschinenpreise</p>
+          <p><strong>15% Rabatt</strong> auf Maschinenpreise</p>
           <hr class="border-gray-300" />
           <div v-if="this.isAdmin">
             <p><strong>1 Stunde Maschinenreservierung pro Woche für jedes Teammitglied inkludiert</strong> (danach 5€ pro Stunde)</p>
@@ -67,7 +67,7 @@
         <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER' ||
          currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_GROUP' ||
           currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_PERMISSIONS_TEAMPOT'" class="font-normal text-center text-green text-sm">
-          <p><strong>25% Discount</strong> auf Maschinenpreise</p>
+          <p><strong>25% Rabatt</strong> auf Maschinenpreise</p>
           <hr class="border-gray-300" />
           <div v-if="this.isAdmin">
             <p><strong>1 Stunde Maschinenreservierung pro Woche für jedes Teammitglied inkludiert</strong> (danach 5€ pro Stunde)</p>
@@ -80,7 +80,7 @@
         <div v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_PRO' ||
          currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_GROUP' ||
          currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_PERMISSIONS_TEAMPOT'" class="font-normal text-center text-green text-sm">
-          <p><strong>35% Discount</strong>  auf Maschinenpreise</p>
+          <p><strong>35% Rabatt</strong>  auf Maschinenpreise</p>
           <hr class="border-gray-300" />
           <div v-if="this.isAdmin">
             <p><strong>5 Stunden Maschinenreservierung pro Woche für jedes Teammitglied inkludiert</strong> (danach 5€ pro Stunde)</p>
@@ -200,7 +200,7 @@
       <div v-if="currentMembership && currentMembership._embedded.package.metadata?.group">
         <p class="my-8">
               Bitte kontaktiere den
-              <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a> um die Mitgliedschaft anzupassen.
+              <a href="mailto:frontdesk@grandgarage.eu">Frontdesk</a>, um dein Mitgliedschaftspaket anzupassen.
         </p>
         <p>Mitgliedschaften laufen bei einer Kündigung immer bis zum letzten Tag des nächsten Monats. </p>
         <p>Wenn du eine Mitgliedschaft jetzt beendest, dann läuft die Mitgliedschaft bis: <strong> {{new Date(getCancelDate()).toLocaleDateString("DE", { day: "2-digit",month: "long",year: "numeric" })}} </strong></p>
@@ -208,28 +208,29 @@
 
     </fieldset>
 
-    <fieldset v-if="!loading">
-      <legend>Lager</legend>
-      <div><loading-spinner v-if="loadingAvailableStorage" color="#333" /></div>
-      <div
-        v-if="
-          !loadingAvailableStorage &&
-          availableStorage &&
-          availableStorage.length > 0 &&
-          membership &&
-          membership.length > 0
-        "
-      >
-        <div v-for="userPackage of availableStorage" :key="userPackage.id">
-          <package
-            v-on:reload="reload"
-            :user-package="userPackage"
-            :storage="true"
-            :booked="false"
-          />
-        </div>
-      </div>
-    </fieldset>
+<!--    Lagerbuchung deaktiviert am 26.11 nach Projektmeeting-->
+<!--    <fieldset v-if="!loading">-->
+<!--      <legend>Lager</legend>-->
+<!--      <div><loading-spinner v-if="loadingAvailableStorage" color="#333" /></div>-->
+<!--      <div-->
+<!--        v-if="-->
+<!--          !loadingAvailableStorage &&-->
+<!--          availableStorage &&-->
+<!--          availableStorage.length > 0 &&-->
+<!--          membership &&-->
+<!--          membership.length > 0-->
+<!--        "-->
+<!--      >-->
+<!--        <div v-for="userPackage of availableStorage" :key="userPackage.id">-->
+<!--          <package-->
+<!--            v-on:reload="reload"-->
+<!--            :user-package="userPackage"-->
+<!--            :storage="true"-->
+<!--            :booked="false"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </fieldset>-->
   </div>
 </template>
 

@@ -19,19 +19,6 @@
           </option>
         </select>
       </div>
-      <div
-        class="form-item"
-        v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'"
-        style="margin-top: 0px; margin-bottom: 30px"
-      >
-        <label></label>
-        <h5 style="margin: 0px">
-          Die FLEX Mitgliedschaft hat eine fixe Laufzeit von einem Jahr ab dem Startdatum. ( weitere Infos >
-          <nuxt-link target="_blank" to="/de/agb">
-            {{ $t("conditionsOfParticipation") }} </nuxt-link
-          >)
-        </h5>
-      </div>
       <div class="form-item" v-if="selectedMembership">
         <span class="label">Mitglieder (Gesamt)<span class="red">*</span></span>
         <input
@@ -65,6 +52,26 @@
           </h5>
         </div>
 
+
+      <div
+        class="form-item"
+        v-if="this.selectedMembership"
+        style="margin-top: 0px; margin-bottom: 30px"
+      >
+        <label></label>
+        <label class="space-y-1">
+          <p>Unsere <strong>Team-Mitgliedschaft</strong> ist ab einer <strong>Mindestanzahl von drei Personen </strong> möglich. </p>
+          <p>Dabei könnt ihr als Team vergünstigt im MakerSpace arbeiten und von den attraktiven Rabattvorteilen der Starter- / Maker- / Pro-Mitgliedschaften profitieren.</p>
+          <br>
+          <p>Das <strong>Paket {{getSelectedTeamPackageName}} </strong> erlaubt es dir und deinem Team, für eine <strong>monatliche Gebühr</strong>, diesen Betrag als Guthaben im MakerSpace zu verwenden.</p>
+          <br>
+          <p><strong>Jener Verbrauch, der über das Guthaben hinausgeht, wird gemäß der Maschinenpreisliste berechnet.</strong> Ihr erhaltet auf diese Preise einen dauerhaften Rabatt (Materialkosten sind davon ausgenommen). Der Zusatzverbrauch wird pro Person aufgeschlüsselt und als monatliche Gesamtrechnung an den Hauptnutzer übermittelt.</p>
+          <br>
+          <p> Der detaillierte Verbrauch kann jederzeit im MemberPortal nachverfolgt werden. </p>
+          <br>
+          <p><strong>Im Member-Portal kannst du nach der Anmeldung die weiteren Team-Mitglieder einladen.</strong></p>
+        </label>
+      </div>
       <div
         class="form-item"
         v-if="this.selectedMembership && getMembershipCredits()"
@@ -73,11 +80,11 @@
         <label></label>
         <label class="text-sm space-y-1">
           <hr class="my-1">
-          <p>{{onboardingData.payment.numberOfMembers-1}} zusätzliche Mitglieder</p>
+          <p>Hauptuser plus {{onboardingData.payment.numberOfMembers-1}} zusätzliche Mitglieder </p>
           <hr class="my-1">
           <p>+{{getMembershipCredits()[0]}}€ Guthaben pro Mitglied</p>
           <hr class="my-1">
-          <p>24/7 Makerspace Nutzung</p>
+          <p>24/7 MakerSpace Nutzung</p>
           <hr class="my-1">
         </label>
 
@@ -103,8 +110,7 @@
         >
           <label></label>
           <h5 style="margin: 0px">
-            Die Freikontingente für die Maschinennutzung können nicht ins nächste Monat
-            mitgenommen werden. ( weitere Infos >
+            Das Guthaben für die Maschinennutzung kann <strong>nicht</strong> in den nächsten Monat mitgenommen werden.   ( weitere Infos >
             <nuxt-link target="_blank" to="/de/agb">
               {{ $t("conditionsOfParticipation") }} </nuxt-link
             >)
@@ -225,7 +231,7 @@
         >
           <label></label>
           <h5 style="margin: 0px">
-            Das erste Monat wird alliqout verrechnet. ( weitere Infos >
+            Die Kosten für das erste Monat werden nur für den genutzten Zeitraum berechnet. ( weitere Infos >
             <nuxt-link target="_blank" to="/de/agb">
               {{ $t("conditionsOfParticipation") }} </nuxt-link
             >)
@@ -443,6 +449,27 @@ export default {
     }
   },
   computed: {
+    getSelectedTeamPackageName() {
+      if (this.selectedMembership) {
+      const shortform = this.selectedMembership?.metadata?.shortform;
+      switch (shortform){
+        case 'MS24_STARTER_GROUP': {
+          return 'STARTER-Team'
+        }
+        case 'MS24_MAKER_GROUP': {
+          return 'MAKER-Team'
+        }
+        case 'MS24_PRO_GROUP': {
+          return 'PRO-Team'
+        }
+        default: {
+          return ''
+        }
+      }
+      }else{
+        return ''
+      }
+    },
     storagePrice() {
       let storagePrice = 0.0;
       let selectedStorages = [];

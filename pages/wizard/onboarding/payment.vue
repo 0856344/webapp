@@ -24,6 +24,34 @@
           </option>
         </select>
       </div>
+      <div v-if="!this.onboardingData.contactInformation.company">
+      <div
+        class="form-item"
+        v-if="this.selectedMembership && (this.selectedMembership?.metadata?.shortform === 'MS24_STARTER'
+        || this.selectedMembership?.metadata?.shortform === 'MS24_MAKER'
+        || this.selectedMembership?.metadata?.shortform === 'MS24_PRO')"
+        style="margin-top: 0px; margin-bottom: 30px"
+      >
+        <label></label>
+        <label class="space-y-1">
+          <p>Das <strong>{{ this.selectedMembership.name }}-Paket </strong> erlaubt es dir, für eine monatliche Gebühr, diesen Betrag als Guthaben im MakerSpace zu verwenden. Auf die Maschinenpreisliste erhältst du einen dauerhaften Rabatt. Materialpreise sind davon ausgenommen.
+            Alle Vorteile siehst du<nuxt-link target="_blank" to="/de/mitgliedschaften"> hier </nuxt-link> auf einem Blick. </p>
+        </label>
+      </div>
+      <div
+        class="form-item"
+        v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX'"
+        style="margin-top: 0px; margin-bottom: 30px"
+      >
+        <label></label>
+        <label class="space-y-1">
+          <p>Das <strong> FLEX-Paket kommt ohne monatliche Grundgebühr aus. </strong>
+            Optimal für alle, die einfach loslegen wollen und das bei maximaler Flexibilität.
+            Du bezahlst, was du <strong> tatsächlich an Maschinenstunden und Material nutzt  </strong> (pay per use).
+            Zusätzlich fällt ein jährlicher Beitrag an, der mit Beginn des neuen Abrechnungszeitraums automatisch abgebucht wird – keine Sorge, wir informieren dich rechtzeitig davor!
+            </p>
+        </label>
+      </div>
       <div
         class="form-item"
         v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform === 'MS24_FLEX' && !this.onboardingData.contactInformation.company "
@@ -31,11 +59,12 @@
       >
         <label></label>
         <h5 style="margin: 0px">
-          Die FLEX Mitgliedschaft hat eine fixe Laufzeit von einem Jahr ab dem Startdatum. ( weitere Infos >
+          Die FLEX-Mitgliedschaft hat eine Laufzeit von einem Jahr ab dem Startdatum und wird automatisch verlängert. ( weitere Infos >
           <nuxt-link target="_blank" to="/de/agb">
             {{ $t("conditionsOfParticipation") }} </nuxt-link
           >)
         </h5>
+      </div>
       </div>
       <div
         class="form-item"
@@ -109,13 +138,12 @@
           </div>
           <div
             class="form-item"
-            v-if="this.selectedMembership"
+            v-if="this.selectedMembership && this.selectedMembership?.metadata?.shortform !== 'MS24_FLEX' "
             style="margin-top: 0px; margin-bottom: 30px"
           >
             <label></label>
             <h5 style="margin: 0px">
-              Die Freikontingente können nicht ins nächste Monat
-              mitgenommen werden. ( weitere Infos >
+              Das Guthaben für die Maschinennutzung kann <strong>nicht </strong> in den nächsten Monat mitgenommen werden.  ( weitere Infos >
               <nuxt-link target="_blank" to="/de/agb">
                 {{ $t("conditionsOfParticipation") }} </nuxt-link
               >)

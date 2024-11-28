@@ -2,9 +2,16 @@
   <div class="section">
     <h2>Guthaben</h2>
     <br />
-    <loading-spinner v-if="!currentMembership || loadingCreditActivities"></loading-spinner>
+    <loading-spinner v-if="loadingCreditActivities"></loading-spinner>
     <div v-if="!(hasSmartGarage && currentMembership) &&!loadingCreditActivities ">
-      Es ist kein Guthaben in deiner Mitgliedschaft verfügbar.
+      <p v-if="currentMembership._embedded.package.metadata.shortform ==='MS24_STARTER_PERMISSIONS_TEAMPOT' ||
+                  currentMembership._embedded.package.metadata.shortform ==='MS24_MAKER_PERMISSIONS_TEAMPOT'||
+                  currentMembership._embedded.package.metadata.shortform ==='MS24_PRO_PERMISSIONS_TEAMPOT'" class="text-orange text-bold">
+            Guthaben > ist beim Hauptnutzer ersichtlich.
+      </p>
+      <p v-else>
+        Es ist kein Guthaben in deiner Mitgliedschaft verfügbar.
+      </p>
     </div>
     <div v-if="hasSmartGarage && currentMembership &&!loadingCreditActivities">
       <accordion  v-if="!loadingCreditActivities" bgColor="bg-white" textColor="text-black" class="my-4">
@@ -254,11 +261,10 @@
         </div>
       </accordion>
       <p class="text-sm mx-4">
-        <strong>Neu:</strong> Das Guthaben und die Kosten werden nicht mehr in <strong>Credits</strong>, sondern in <strong>Euro</strong> dargestellt - dadurch sollen die Kosten transparent und verständlich dargestellt werden.
+        <strong>Neu:</strong> Das Guthaben und die Ausgaben werden nicht mehr in <strong>Credits</strong>, sondern direkt in <strong>Euro</strong> angegeben - so wird alles klarer und transparenter.
       </p>
       <p class="text-sm mx-4">
-        Jedes Paket beinhaltet ein gewisses Kontingent an Credits pro Monat. Die
-        Freikontingente können nicht ins nächste Monat mitgenommen werden.
+        Jedes Paket beinhaltet ein monatliches Guthaben. Dieses kann nicht in den nächsten Monat mitgenommen werden.
       </p>
 <!--      <p>-->
 <!--        <strong>UNSER TIPP: </strong>Sichere dir vorab zusätzliche Credits —-->
@@ -599,7 +605,7 @@ export default {
                 }
                 // this.activitiesUsed = []
                 // this.activitiesUsed.push(...this.monthlyCreditActivities)
-                this.loadingCreditActivities = false;
+
                 //console.log('this.activitiesUsed: ', this.activitiesUsed)
               }
               // if (this.monthlyCreditId) {
@@ -611,6 +617,7 @@ export default {
             } catch (err) {
               console.error(err);
             }
+            this.loadingCreditActivities = false;
           }, 30000);
         } catch (err) {
           console.error("Error loading monthly credit activities:", err);

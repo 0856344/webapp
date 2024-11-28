@@ -117,6 +117,7 @@ import MembershipPlanSG from '@/bloks/MembershipPlanSG.vue'
 import Spacer from '@/bloks/basic/Spacer.vue'
 import MembershipTable from '@/bloks/MembershipTable.vue'
 import MembershipAddons from '@/bloks/MembershipAddons.vue'
+import GroupCalculator from '@/bloks/GroupCalculator.vue'
 
 Vue.component('machine-prices', MachinePrices)
 Vue.component('material-prices', MaterialPrices)
@@ -232,6 +233,7 @@ Vue.component('fabman-machine', FabmanMachine)
 Vue.component('membership-plan-sg', MembershipPlanSG)
 Vue.component('membership-table', MembershipTable)
 Vue.component('membership-addons', MembershipAddons)
+Vue.component('group-calculator', GroupCalculator)
 Vue.component('accordion', Accordion)
 Vue.component('alert', Alert)
 Vue.component('big-loading-spinner', BigLoadingSpinner)

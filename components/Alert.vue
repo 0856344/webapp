@@ -10,8 +10,9 @@
       >
         <span class="flex-1">
           <span class="block sm:inline">
-            <font-awesome-icon :icon="icon"></font-awesome-icon><span v-show="headline.length > 0" style="display:inline;padding: 0 0 0 10px;margin: 0;">{{ headline }}</span>
-            <span v-html="message" class="alert-message"></span>
+            <font-awesome-icon :icon="icon"/><span v-show="headline.length > 0" style="display:inline;padding: 0 0 0 10px;margin: 0;">{{ headline }}</span>
+            <span v-html="message" class="alert-message"/>
+             <slot></slot>
           </span>
         </span>
         <span v-show="closeable">
@@ -35,7 +36,7 @@
           class="clickable-icon"
           icon="info-circle"
           @click="toggle"
-        ></font-awesome-icon>
+        />
       </div>
     </div>
   </transition>

@@ -12,18 +12,31 @@ export const PACKAGES_SHORT_FORMS = {
   discount: 'DISCOUNT',
   credits_500: '500_CREDITS',
   credits_500_discounted: '500_CREDITS_DISCOUNTED',
-};
+
+  // MAKER SPACE 2024 - PACKAGES
+  starter: 'MS24_STARTER',
+  maker: 'MS24_MAKER',
+  pro: 'MS24_PRO',
+  flexible: 'MS24_FLEX'
+}
+
+export const FABMAN_FREE_BOOKING_HOURS = {
+  starter: 1,
+  maker: 1,
+  pro: 5,
+  flexible: 0,
+}
 
 export const FABMAN_BOOKING_STATE = {
   pending: 'pending',
   cancelled: 'cancelled',
   confirmed: 'confirmed',
-};
+}
 
 export const FABMAN_DEFAULT_SPACE = {
   earliestHour: 9,
   latestHour: 24,
-  hiddenWeekdays: [1,7], // Monday and Sunday
+  hiddenWeekdays: [1, 7], // Monday and Sunday
   bookingExclusiveMinutes: 15,
   bookingLockInHours: 24,
   bookingMaxMinutesPerMemberDay: 60,
@@ -32,5 +45,5 @@ export const FABMAN_DEFAULT_SPACE = {
   bookingSlotsPerHour: 1, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
   bookingTermsOfService: null,
   bookingWindowMaxDays: 30,
-  bookingWindowMinHours: 2
-};
+  bookingWindowMinHours: 2,
+}

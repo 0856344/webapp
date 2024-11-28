@@ -22,7 +22,7 @@
         @confirm="confirmInfoModal"
       >
       </modal>
-      <v-tour name="myTour" :steps="steps" :options="tourOptions"></v-tour>
+      <v-tour name="myTour" :steps="steps" :options="tourOptions" />
       <div class="flex items-center mb-1">
         <h2 class="m-0 mr-2 text-2xl flex items-center">
           {{ $t('machineBookings') }}
@@ -37,7 +37,7 @@
               d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
             />
           </svg>
-          <loading-spinner-inline v-if="isLoading" class="pl-2"/>
+          <loading-spinner-inline v-if="isLoading" class="pl-2" />
           <svg
             v-show="isFirstVisit"
             xmlns="http://www.w3.org/2000/svg"
@@ -54,18 +54,21 @@
           </p>
         </h2>
       </div>
-      <br/>
+      <br />
       <fieldset class="p-4 text-left">
         <legend>Neue Reservierung</legend>
         <p>Hier kannst du Geräte reservieren. <br><small>Bitte beachte, dass die Reservierung nach {{ expiredReservationInMinutes }}min verfällt, wenn du nicht erscheinst.</small>
-        <span class="flex-1">
+          <span class="flex-1">
           <span class="block sm:inline">
-                <a  target="_blank" @click="redirectToUrl(FAQUrl)" title="Zu den FAQs">
-                  <font-awesome-icon id="v-step-0" class="cursor-pointer pagination-button" icon="info-circle" :class="{ 'jump-animation': isFirstVisit }"/>
+                <a target="_blank" @click="redirectToUrl(FAQUrl)" title="Zu den FAQs">
+                  <font-awesome-icon id="v-step-0" class="cursor-pointer pagination-button" icon="info-circle" :class="{ 'jump-animation': isFirstVisit }" />
                 </a>
           </span>
         </span>
         </p>
+        <div v-if="currentMembership && !hasFlexPackage" class="text-sm">
+          <p class="border py-1 px-2 text-white rounded bg-gray-900 w-[20em]">{{ freeBookingHours }}h / Woche kostenlos (danach 5€ pro Stunde)</p>
+        </div>
         <div>
           <div class="flex-1 mb-4">
             <label>Maschine&nbsp;<small v-if="machines && !noMachinesAvailable">({{ machines.length }})&nbsp;</small></label>
@@ -89,6 +92,17 @@
                    :customCssClass="'min-h-0'">
 
             </Alert>
+            <Alert v-if="!loadingMachines"
+                   :show="hasFlexPackage"
+                   :message="'Deine FLEX Mitgliedschaft inkludiert keine kostenlose Reservierung.'"
+                   :icon="'info-circle'"
+                   :color="'#e69140'"
+                   :customCssClass="'min-h-0'">
+              <p class="text-bold m-0 mt-2 text-sm">
+                <nuxt-link to="/me/packages" class="text-white underline hover:text-gray-900">Wechsle deine Mitgliedschaft</nuxt-link>
+                , für ein kostenloses Buchungskontingent.
+              </p>
+            </Alert>
             <span v-if="selectedMachine" id="v-step-2" class="v-step-3">
               <Alert
                 :show="openingHoursText.length > 0"
@@ -97,7 +111,7 @@
                 :headline="'Öffnungszeiten'"
                 :closeable="true"
                 icon='info-circle'
-              ></Alert>
+              />
               <editable-booking-calendar
                 ref="machineCalender"
                 class="pt-6"
@@ -112,14 +126,14 @@
                 :bookingWindowMaxDays="this.selectedSpace.bookingWindowMaxDays"
                 :bookingWindowMinHours="this.selectedSpace.bookingWindowMinHours"
                 @reload="fetchBookings(member.id)"
-              ></editable-booking-calendar>
+              />
             </span>
             <div v-if="currentMembership">
               <div v-if="selectedMachine" class="flex justify-end">
                 <button
                   class="input-button-primary v-step-4 shadow-md"
                   @click="openModal"
-                  :disabled="this.$store.getters.getSelectedBookings.length <= 0 || currentMembership._embedded.package?.metadata?.shortform ==='MS24_FLEX'"
+                  :disabled="this.$store.getters.getSelectedBookings.length <= 0"
                 >
                   <svg
                     class="fill-white cursor-pointer icon-button inline-block fill-current w-4 h-4"
@@ -133,21 +147,23 @@
                   </svg>
                   {{ $t('confirm') }}
                 </button>
-
-              </div>
-              <div v-if="currentMembership._embedded.package?.metadata?.shortform ==='MS24_FLEX'">
-                <p class="text-bold text-red">Deine FLEX Mitgliedschaft inkludiert keine Reservierung.</p>
-                <p class="text-bold">
-                  <nuxt-link
-                    to="/me/packages"
-                  >Wechsle deine Mitgliedschaft</nuxt-link>, um die Maschinenreservierung nutzen zu können.</p>
               </div>
             </div>
+            <Alert v-else
+                   :show="!currentMembership"
+                   :message="'Keine Mitgliedschaft vorhanden'"
+                   :icon="'info-circle'"
+                   :color="'#e69140'"
+                   :customCssClass="'min-h-0'">
+              <p class="text-bold m-0 mt-2 text-sm">
+                Dir wurde noch keine Mitgliedschaft zugewiesen. Bei Problemen wende dich bitte an  <a href="mailto:frontdesk@grandgarage.eu" class="underline text-white hover:text-gray-900">frontdesk@grandgarage.eu</a>.
+              </p>
+            </Alert>
           </div>
         </div>
       </fieldset>
 
-      <br/>
+      <br />
 
       <fieldset id="v-step-5" class="table-fieldset">
         <legend>Deine Reservierungen</legend>
@@ -196,7 +212,7 @@
               }) }}
               </td>
               <td class="activity-amount">
-                {{ durationAsString(new Date(booking.fromDateTime), new Date(booking.untilDateTime),) }}
+                {{ durationAsString(new Date(booking.fromDateTime), new Date(booking.untilDateTime)) }}
               </td>
               <td class="activity-status">
                 {{ booking.resource.name }}
@@ -207,12 +223,12 @@
               <td class="block lg:hidden activity-description"></td> <!-- empty cell so that arrangement is more beautiful in mobile view-->
               <td class="invoice-status">
                 <div v-if="loadingCancel && booking.id === loadingCancel">
-                  <loading-spinner-inline v-if="true"/>
+                  <loading-spinner-inline v-if="true" />
                 </div>
                 <div v-else-if="!hasBeenCanceled(booking?.state) &&!isInPast(booking?.fromDateTime) &&!isInPast(booking?.untilDateTime)">
                     <span v-if="!beforeHours(booking?.fromDateTime, bookingLockHours)">
                       <button class="cancelButton" @click="startCancellation(booking)">
-                        <font-awesome-icon :class="{ active: infoModalOpen }" icon="trash"/>
+                        <font-awesome-icon :class="{ active: infoModalOpen }" icon="trash" />
                       </button>
                     </span>
                   <span v-else class="mute-text">nur {{ bookingLockHours }}h im voraus möglich</span>
@@ -226,14 +242,14 @@
                 @click="previousPage"
                 :disabled="currentPage === 1"
               >
-                <font-awesome-icon icon="arrow-circle-left"/>
+                <font-awesome-icon icon="arrow-circle-left" />
               </button>
               <button
                 class="pagination-button"
                 @click="nextPage"
                 :disabled="currentPage === totalPages"
               >
-                <font-awesome-icon icon="arrow-circle-right"/>
+                <font-awesome-icon icon="arrow-circle-right" />
               </button>
               <div>
                 <small class="mute-text"
@@ -250,730 +266,758 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import {helper} from '~/plugins/helper';
-import vSelect from 'vue-select';
-import 'vue-select/dist/vue-select.css';
-import EditableBookingCalendar from '@/components/calendar/EditableBookingCalendar.vue';
-import VueTour from 'vue-tour';
-import 'vue-tour/dist/vue-tour.css';
-import Modal from '@/components/modals/Modal.vue';
-import moment from 'moment/moment';
-import {FABMAN_BOOKING_STATE, FABMAN_DEFAULT_SPACE} from '@/services/constants.js';
-import Cookies from 'js-cookie';
-import Alert from '@/components/Alert.vue'
+  import Vue from 'vue'
+  import { helper } from '~/plugins/helper'
+  import vSelect from 'vue-select'
+  import 'vue-select/dist/vue-select.css'
+  import EditableBookingCalendar from '@/components/calendar/EditableBookingCalendar.vue'
+  import VueTour from 'vue-tour'
+  import 'vue-tour/dist/vue-tour.css'
+  import Modal from '@/components/modals/Modal.vue'
+  import moment from 'moment/moment'
+  import { FABMAN_BOOKING_STATE, FABMAN_FREE_BOOKING_HOURS, FABMAN_DEFAULT_SPACE, PACKAGES_SHORT_FORMS } from '@/services/constants.js'
+  import Cookies from 'js-cookie'
+  import Alert from '@/components/Alert.vue'
 
-Vue.use(VueTour);
+  Vue.use(VueTour)
 
-export default {
-  name: 'bookings',
-  middleware: 'authenticated',
-  components: {EditableBookingCalendar, vSelect, Modal, Alert},
-  data () {
-    return {
-      isFirstVisit: false,
-      isMobile: false,
-      modalOpen: false,
-      infoModalOpen: false,
-      infoModalHeadline: '',
-      infoModalText: '',
-      infoModalSubmitMethod: '',
-      selectedTableBooking: null,
-      loadingMachines: false,
-      loadingBookings: false,
-      loadingCancel: null,
-      machines: [],
-      bookings: [],
-      selectedMachine: null,
-      steps: null,
-      memberSpaces: [],
-      tourOptions: {
-        labels: {
-          buttonSkip: 'Überspringen',
-          buttonPrevious: 'Zurück',
-          buttonNext: 'Weiter',
-          buttonStop: 'Fertig',
+  export default {
+    name: 'bookings',
+    middleware: 'authenticated',
+    components: { EditableBookingCalendar, vSelect, Modal, Alert },
+    data () {
+      return {
+        isFirstVisit: false,
+        isMobile: false,
+        modalOpen: false,
+        infoModalOpen: false,
+        infoModalHeadline: '',
+        infoModalText: '',
+        infoModalSubmitMethod: '',
+        selectedTableBooking: null,
+        loadingMachines: false,
+        loadingBookings: false,
+        loadingCancel: null,
+        machines: [],
+        bookings: [],
+        selectedMachine: null,
+        steps: null,
+        memberSpaces: [],
+        tourOptions: {
+          labels: {
+            buttonSkip: 'Überspringen',
+            buttonPrevious: 'Zurück',
+            buttonNext: 'Weiter',
+            buttonStop: 'Fertig',
+          },
         },
-      },
-      currentPage: 1,
-      rowsPerPage: 8,
-      selectedSpace: {
-        openingHours: [],
-        earliestHour: FABMAN_DEFAULT_SPACE.earliestHour,
-        latestHour: FABMAN_DEFAULT_SPACE.latestHour,
-        hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
-        bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
-        bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
-        bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
-        bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
-        bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
-        bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
-        bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
-        bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
-        bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours
-      },
-      currentMembership: null,
-      membership: null
-    };
-  },
-  watch: {
-    selectedMachine (machine) {
-      // Get corresponding SPACE of the machine
-      if (machine) {
-        this.resetSpace()
-        let selectedSpace = this.memberSpaces.find(space => {
-          return machine.space === space.id
-        })
-        this.mapFabmanSpace(selectedSpace)
-      }
-
-      // Call method in child component
-      const machineCalender = this.$refs.machineCalender;
-      if (machineCalender && typeof machineCalender.fetchBookings === 'function') {
-        setTimeout(() => {
-          machineCalender.fetchBookings();
-          machineCalender.resetBookings(true);
-        }, 250);
+        currentPage: 1,
+        rowsPerPage: 8,
+        selectedSpace: {
+          openingHours: [],
+          earliestHour: FABMAN_DEFAULT_SPACE.earliestHour,
+          latestHour: FABMAN_DEFAULT_SPACE.latestHour,
+          hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
+          bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
+          bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
+          bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+          bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+          bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
+          bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+          bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
+          bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
+          bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours,
+        },
+        currentMembership: null,
+        membership: null,
+        consumedWeeklyHours: 0,
       }
     },
-  },
-  created () {
-    this.isMobile = helper.isMobile();
+    watch: {
+      selectedMachine (machine) {
+        // Get corresponding SPACE of the machine
+        if (machine) {
+          this.resetSpace()
+          let selectedSpace = this.memberSpaces.find(space => {
+            return machine.space === space.id
+          })
+          this.mapFabmanSpace(selectedSpace)
+        }
 
-    this.steps = this.createTourText();
-  },
-  async mounted () {
-    // Load current membership (FLEX may not book machines)
-    await this.fetchMembership();
-    // Load machines, which are bookable for this member (depends on space and required trainings)
-    console.log('current membership', this.currentMembership)
-    await this.fetchMachines();
-
-    // Check if user has already selected a machine on another page (e.g. Machine.vue) by query param
-    if(this.$route.query?.resource && this.machines.length > 0) {
-      this.selectedMachine = this.machines.find(machine => machine.id.toString() === this.$route.query.resource)
-    }
-
-    // Load machine bookings
-    await this.fetchBookings(this.member.id);
-
-    // Check first visit
-    if (!Cookies.get('visited')) {
-      Cookies.set('visited', 'true');
-      this.isFirstVisit = true;
-    }
-  },
-  computed: {
-    noMachinesAvailable() {
-      return this.machines.length === 0
+        // Call method in child component
+        const machineCalender = this.$refs.machineCalender
+        if (machineCalender && typeof machineCalender.fetchBookings === 'function') {
+          setTimeout(() => {
+            machineCalender.fetchBookings()
+            machineCalender.resetBookings(true)
+          }, 250)
+        }
+      },
     },
-    FAQUrl() {
-      return '/de/faq#gibt-es-fuer-die-maschinen-ein-reservierungssystem'
-    },
-    expiredReservationInMinutes() {
-      return this.selectedSpace ? this.selectedSpace.bookingExclusiveMinutes : 15
-    },
-    openingHoursText () {
-      if (this.selectedSpace.openingHours.length === 0)
-        return ''
+    created () {
+      this.isMobile = helper.isMobile()
 
-      let msg = '<span class="flex flex-wrap gap-y-2 gap-x-5 ms-4 justify-around">'
-      for (let i = 0; this.selectedSpace.openingHours.length > i; i++) {
-        if (!this.selectedSpace.openingHours[i].fromTime || !this.selectedSpace.openingHours[i].untilTime) {
-          // Hide opening hours if one is NULL (mostly it's then 24/7)
+      this.steps = this.createTourText()
+    },
+    async mounted () {
+      // Load current membership (FLEX may not book machines)
+      await this.fetchMembership()
+      console.log('current membership', this.currentMembership?._embedded?.package?.metadata?.shortform)
+      console.log('has flexible', this.hasFlexPackage)
+
+      // Load machines, which are bookable for this member (depends on space and required trainings)
+      await this.fetchMachines()
+
+      // Check if user has already selected a machine on another page (e.g. Machine.vue) by query param
+      if (this.$route.query?.resource && this.machines.length > 0) {
+        this.selectedMachine = this.machines.find(machine => machine.id.toString() === this.$route.query.resource)
+      }
+
+      // Load machine bookings
+      await this.fetchBookings(this.member.id)
+
+      // Check first visit
+      if (!Cookies.get('visited')) {
+        Cookies.set('visited', 'true')
+        this.isFirstVisit = true
+      }
+    },
+    computed: {
+      hasFlexPackage () {
+        return this.currentMembership?._embedded.package?.metadata?.shortform === PACKAGES_SHORT_FORMS.flexible
+      },
+      freeBookingHours () {
+        if(!this.currentMembership) {
+          return 0
+        }
+        switch (this.currentMembership?._embedded.package?.metadata?.shortform) {
+          case PACKAGES_SHORT_FORMS.starter:
+            return FABMAN_FREE_BOOKING_HOURS.starter
+          case PACKAGES_SHORT_FORMS.maker:
+            return FABMAN_FREE_BOOKING_HOURS.maker
+          case PACKAGES_SHORT_FORMS.pro:
+            return FABMAN_FREE_BOOKING_HOURS.pro
+          case PACKAGES_SHORT_FORMS.flexible:
+            return FABMAN_FREE_BOOKING_HOURS.flexible
+          default:
+            return 0
+        }
+      },
+      noMachinesAvailable () {
+        return this.machines.length === 0
+      },
+      FAQUrl () {
+        return '/de/faq#gibt-es-fuer-die-maschinen-ein-reservierungssystem'
+      },
+      expiredReservationInMinutes () {
+        return this.selectedSpace ? this.selectedSpace.bookingExclusiveMinutes : 15
+      },
+      openingHoursText () {
+        if (this.selectedSpace.openingHours.length === 0)
           return ''
-        }
-        msg += '<ul class="weekday p-0">'
-        msg += '<li><b>' + this.selectedSpace.openingHours[i].weekday + '</b></li>';
-        msg += '<li>Von: ' + this.selectedSpace.openingHours[i].fromTime + '</li>';
-        msg += '<li>Bis: ' + this.selectedSpace.openingHours[i].untilTime + '</li>';
-        msg += '</ul>'
-      }
 
-      return msg + '</span>'
-    },
-    bookingLockHours () {
-      // TODO - Get bookingLockInHours by each bookings.resource
-      return this.selectedSpace.bookingLockInHours;
-    },
-    tourStep2Text () {
-      return this.isMobile
-        ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Doppelklicke auf einen Zeitslot, um eine Buchung zu erstellen."
-        : "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.";
-    },
-    tourStep3Text () {
-      return this.isMobile
-        ? "<b>Neue Reservierung: Schritt 2</b> <br><hr class='m-1'>Halte eine Buchung gedrückt, um einen Termin wieder zu entfernen."
-        : "<b>Reservierung löschen</b> <br><hr class='m-1'>Halte die Maustaste am gewünschten Zeitslot gedrückt, um einen Termin wieder zu entfernen.";
-    },
-    newBookings () {
-      const bookings = this.$store.getters.getSelectedBookings;
-      const readableBookings = bookings.slice();
-      readableBookings.map(function (booking) {
-        const date = moment(booking.fromDateTime).format('DD.MM.YYYY');
-        const fromDateTime = moment(booking.fromDateTime).format('HH:mm');
-        const untilDateTime = moment(booking.untilDateTime).format('HH:mm');
-        booking.value = date + ': ' + fromDateTime + ' - ' + untilDateTime;
-        booking.key = 'Zeitraum';
-        return booking;
-      });
-      return readableBookings;
-    },
-    isLoading () {
-      return (
-        this.loadingBookings ||
-        this.loadingMachines ||
-        this.loadingCancel !== null
-      );
-    },
-    member () {
-      return this.$store.state.member;
-    },
-    displayedBookings () {
-      const startIndex = (this.currentPage - 1) * this.rowsPerPage;
-      const endIndex = startIndex + this.rowsPerPage;
-      return this.bookings.slice(startIndex, endIndex);
-    },
-    totalPages () {
-      return Math.ceil(this.bookings.length / this.rowsPerPage);
-    },
-  },
-  methods: {
-    redirectToUrl(url) {
-      this.$router.push({ path: url });
-    },
-    resetSpace () {
-      this.selectedSpace = {
-        openingHours: [],
-        earliestHour: FABMAN_DEFAULT_SPACE.earliestHour,
-        latestHour: FABMAN_DEFAULT_SPACE.latestHour,
-        hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
-        bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
-        bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
-        bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberDay,
-        bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
-        bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
-        bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
-        bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
-        bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
-        bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours
-      }
-    },
-    mapFabmanSpace (fabmanSpace) {
-      if ('_embedded' in fabmanSpace && 'openingHours' in fabmanSpace._embedded) {
-
-        // Create readable object
-        const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
-        this.selectedSpace.bookingExclusiveMinutes = fabmanSpace.bookingExclusiveMinutes
-        this.selectedSpace.bookingLockInHours = fabmanSpace.bookingLockInHours === null ? 0 : fabmanSpace.bookingLockInHours
-        this.selectedSpace.bookingMaxMinutesPerMemberDay = fabmanSpace.bookingMaxMinutesPerMemberDay === null ? FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberDay : fabmanSpace.bookingMaxMinutesPerMemberDay
-        this.selectedSpace.bookingMaxMinutesPerMemberWeek = fabmanSpace.bookingMaxMinutesPerMemberWeek === null ? FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek : fabmanSpace.bookingMaxMinutesPerMemberWeek
-        this.selectedSpace.bookingRefundable = fabmanSpace.bookingRefundable
-        this.selectedSpace.bookingSlotsPerHour = fabmanSpace.bookingSlotsPerHour
-        this.selectedSpace.bookingTermsOfService = fabmanSpace.bookingTermsOfService
-        this.selectedSpace.bookingWindowMaxDays = fabmanSpace.bookingWindowMaxDays === null ? FABMAN_DEFAULT_SPACE.bookingWindowMaxDays : fabmanSpace.bookingWindowMaxDays
-        this.selectedSpace.bookingWindowMinHours = fabmanSpace.bookingWindowMinHours === null ? FABMAN_DEFAULT_SPACE.bookingWindowMinHours : fabmanSpace.bookingWindowMinHours
-
-        // Remember for better performance
-        let allBeginHours = []
-        let allEndHours = []
-        let weekdays = []
-
-        // Replace day of week number with german spelling
-        this.selectedSpace.openingHours = fabmanSpace._embedded.openingHours
-        this.selectedSpace.openingHours.forEach((openingHour) => {
-          openingHour.weekday = daysOfWeek[openingHour.dayOfWeek - 1];
-          allBeginHours.push(openingHour.fromTime)
-          allEndHours.push(openingHour.untilTime)
-          weekdays.push(openingHour.dayOfWeek)
-        });
-
-        // Find the earliest hour
-        if (!allBeginHours.includes(null)) {
-          this.selectedSpace.earliestHour = helper.getEarliestStringTimeAsInt(allBeginHours)
-        }
-
-        // Find latest hour
-        if (!allEndHours.includes(null)) {
-          this.selectedSpace.latestHour = helper.getLatestStringTimeAsInt(allEndHours)
-        }
-
-        // Find hidden weekdays
-        const allWeekdays = [1,2,3,4,5,6,7]
-        this.selectedSpace.hiddenWeekdays = allWeekdays.filter(day => !weekdays.includes(day));
-
-      } else {
-        this.selectedSpace = null;
-      }
-    },
-    async fetchMachines () {
-      this.loadingMachines = true;
-      await this.$store
-        .dispatch('getMachines')
-        .then(async (res) => {
-          // Filter non-visible and non-bookable machines
-          const filteredMachines = res.filter(function (machine) {
-            return machine.visibleForMembers && machine.canBeBooked && machine.state === 'active';
-          });
-
-          // Filter machines by member trainings
-          const trainedMachines = await this.getTrainedMachines(this.member.id)
-          const memberMachines = filteredMachines.filter(function (machine) {
-            if (!machine.requiresTraining) {
-              // Show machines without training - remove if business logic will change
-              return machine
-            }
-            return trainedMachines.includes(machine.id);
-          });
-
-          // Add dropdown labels to machine
-          let spaces = await this.$store.dispatch('getSpaces');
-          let self = this;
-          memberMachines.map(function (machine) {
-            machine.machineLabel = machine.name;
-            const space = spaces.find(space => space.id === machine.space);
-            if (space) {
-              machine.spaceName = space.name;
-              machine.machineLabel += ' (' + machine.spaceName + ')'
-              if (!self.memberSpaces.some(existingSpace => existingSpace.id === space.id)) {
-                self.memberSpaces.push(space)
-              }
-            }
-            return machine;
-          });
-          this.machines = memberMachines;
-        })
-        .catch((error) => {
-          console.log('Error! Could not load machines', error);
-        })
-        .finally(() => {
-          this.loadingMachines = false;
-        });
-    },
-    async getTrainedMachines (memberId) {
-      return this.$store
-        .dispatch('getTrainedResources', memberId)
-        .then((res) => {
-          return res
-        })
-        .catch((error) => {
-          console.log('Error! Could not load machine trainings for member', error);
-        })
-        .finally(() => {
-          this.loadingCancel = null;
-        });
-    },
-    getBookingStateClass (booking) {
-      if(this.isInPast(booking?.fromDateTime)){
-        return 'bg-gray-300'
-      }
-
-      switch (booking.state) {
-        case 'confirmed':
-          return 'green';
-        case 'cancelled':
-          return 'red';
-        default:
-          return 'gray';
-      }
-    },
-    getBookingStateText (booking) {
-      switch (booking.state) {
-        case 'confirmed':
-          return 'Gebucht';
-        case 'cancelled':
-          return 'Storno';
-        default:
-          return '';
-      }
-    },
-    previousPage () {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    nextPage () {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    openModal () {
-      this.modalOpen = true;
-    },
-    confirmModal () {
-      this.saveEvents();
-    },
-    closeModal () {
-      this.modalOpen = false;
-    },
-    openInfoModal (
-      text,
-      submitMethod = null,
-      headline = 'Bestätigen',
-      duration = 5000,
-    ) {
-      this.infoModalSubmitMethod = submitMethod;
-      this.infoModalText = text;
-      this.infoModalHeadline = headline;
-      this.infoModalOpen = true;
-
-      if (duration > 0) {
-        // Hide alert after duration (milliseconds)
-        setTimeout(() => {
-          this.infoModalOpen = false;
-        }, duration);
-      }
-    },
-    confirmInfoModal () {
-      this.cancelBooking(this.selectedTableBooking.id);
-    },
-    closeInfoModal () {
-      this.infoModalOpen = false;
-      setTimeout(() => {
-        this.infoModalSubmitMethod = '';
-        this.infoModalText = '';
-        this.infoModalHeadline = '';
-      }, 1000);
-    },
-    isInPast (date) {
-      return helper.dateIsInPast(date);
-    },
-    beforeHours (date, hours = 24) {
-      return helper.dateIsBeforeCurrentInHours(date, hours);
-    },
-    saveEvents () {
-      this.closeModal();
-
-      // Call method in child component
-      const machineCalender = this.$refs.machineCalender;
-      if (
-        machineCalender &&
-        typeof machineCalender.writeBookingsToFabman === 'function'
-      ) {
-        machineCalender.writeBookingsToFabman();
-      }
-    },
-    durationInHours (fromDate, untilDate) {
-      return parseFloat(helper.getDifferenceInHours(fromDate, untilDate));
-    },
-    durationAsString (fromDate, untilDate) {
-      const hours = this.durationInHours(fromDate, untilDate);
-
-      // Extract hours and minutes
-      const wholeHours = Math.floor(hours);
-      const remainingMinutes = Math.round((hours - wholeHours) * 60);
-
-      let result = '';
-      if (wholeHours > 0) {
-        result += `${wholeHours}h ${wholeHours === 1 ? '' : 'n'}`;
-      }
-
-      if (remainingMinutes > 0) {
-        if (result.length > 0) {
-          result += ' ';
-        }
-
-        result += `${remainingMinutes}min`;
-      }
-
-      return result.length > 0 ? result : 'weniger als eine Stunde';
-    },
-    hasBeenCanceled (state) {
-      return state === FABMAN_BOOKING_STATE.cancelled;
-    },
-    startCancellation (booking) {
-      this.selectedTableBooking = booking;
-      this.openInfoModal(
-        'Möchtest du die ausgewählte Reservierung wirklich stornieren?',
-        'cancelBooking',
-        'Stornieren?',
-      );
-    },
-    async cancelBooking (id) {
-      if (!id) {
-        id = this?.selectedTableBooking.id;
-      }
-      this.loadingCancel = id;
-      await this.$store
-        .dispatch('cancelBooking', id)
-        .then((res) => {
-          this.fetchBookings();
-          this.closeInfoModal();
-        })
-        .catch((error) => {
-          console.log('Error! Could not cancel booking', error);
-        })
-        .finally(() => {
-          this.loadingCancel = null;
-        });
-    },
-    async fetchBookings (memberId) {
-      if (!memberId) {
-        memberId = this.member.id;
-      }
-      this.loadingBookings = true;
-      await this.$store
-        .dispatch('getBookingsByMember', memberId)
-        .then((res) => {
-          this.bookings = res;
-        })
-        .catch((error) => {
-          console.log('Error! Could not load bookings', error);
-        })
-        .finally(() => {
-          this.loadingBookings = false;
-        });
-    },
-    async fetchMembership(){
-      this.membership = await this.$store.dispatch(
-        'getMemberPackages',
-        this.$store.state.member.id,
-      );
-      this.membership = this.membership.filter((p) => {
-        // filter old packages
-        if (p.untilDate) {
-          const packageDate = new Date(p.untilDate)
-          const currentDate = new Date();
-          if (packageDate.getTime() < currentDate.getTime()) {
-            return false;
+        let msg = '<span class="flex flex-wrap gap-y-2 gap-x-5 ms-4 justify-around">'
+        for (let i = 0; this.selectedSpace.openingHours.length > i; i++) {
+          if (!this.selectedSpace.openingHours[i].fromTime || !this.selectedSpace.openingHours[i].untilTime) {
+            // Hide opening hours if one is NULL (mostly it's then 24/7)
+            return ''
           }
+          msg += '<ul class="weekday p-0">'
+          msg += '<li><b>' + this.selectedSpace.openingHours[i].weekday + '</b></li>'
+          msg += '<li>Von: ' + this.selectedSpace.openingHours[i].fromTime + '</li>'
+          msg += '<li>Bis: ' + this.selectedSpace.openingHours[i].untilTime + '</li>'
+          msg += '</ul>'
         }
-        return true;
-      });
-      // check if package has "is_membership_identifier" flag to identify the membership package
-      this.membership = this.membership.filter((p) => {
-        return p?._embedded?.package?.metadata?.is_membership_identifier
-      });
-      this.membership.forEach((p) => {
-        if (this.isActiveMembership(p.fromDate,  p.untilDate)) {
-          this.currentMembership = p;
+
+        return msg + '</span>'
+      },
+      bookingLockHours () {
+        // TODO - Get bookingLockInHours by each bookings.resource
+        return this.selectedSpace.bookingLockInHours
+      },
+      tourStep2Text () {
+        return this.isMobile
+          ? '<b>Neue Reservierung: Schritt 2</b> <br><hr class=\'m-1\'>Doppelklicke auf einen Zeitslot, um eine Buchung zu erstellen.'
+          : '<b>Neue Reservierung: Schritt 2</b> <br><hr class=\'m-1\'>Ziehe mit gedrückter Maustaste einen Zeitslot in den Kalender, um eine Buchung zu erstellen.'
+      },
+      tourStep3Text () {
+        return this.isMobile
+          ? '<b>Neue Reservierung: Schritt 2</b> <br><hr class=\'m-1\'>Halte eine Buchung gedrückt, um einen Termin wieder zu entfernen.'
+          : '<b>Reservierung löschen</b> <br><hr class=\'m-1\'>Halte die Maustaste am gewünschten Zeitslot gedrückt, um einen Termin wieder zu entfernen.'
+      },
+      newBookings () {
+        const bookings = this.$store.getters.getSelectedBookings
+        const readableBookings = bookings.slice()
+        readableBookings.map(function(booking) {
+          const date = moment(booking.fromDateTime).format('DD.MM.YYYY')
+          const fromDateTime = moment(booking.fromDateTime).format('HH:mm')
+          const untilDateTime = moment(booking.untilDateTime).format('HH:mm')
+          booking.value = date + ': ' + fromDateTime + ' - ' + untilDateTime
+          booking.key = 'Zeitraum'
+          return booking
+        })
+        return readableBookings
+      },
+      isLoading () {
+        return (
+          this.loadingBookings ||
+          this.loadingMachines ||
+          this.loadingCancel !== null
+        )
+      },
+      member () {
+        return this.$store.state.member
+      },
+      displayedBookings () {
+        const startIndex = (this.currentPage - 1) * this.rowsPerPage
+        const endIndex = startIndex + this.rowsPerPage
+        return this.bookings.slice(startIndex, endIndex)
+      },
+      totalPages () {
+        return Math.ceil(this.bookings.length / this.rowsPerPage)
+      },
+    },
+    methods: {
+      redirectToUrl (url) {
+        this.$router.push({ path: url })
+      },
+      resetSpace () {
+        this.selectedSpace = {
+          openingHours: [],
+          earliestHour: FABMAN_DEFAULT_SPACE.earliestHour,
+          latestHour: FABMAN_DEFAULT_SPACE.latestHour,
+          hiddenWeekdays: FABMAN_DEFAULT_SPACE.hiddenWeekdays,
+          bookingExclusiveMinutes: FABMAN_DEFAULT_SPACE.bookingExclusiveMinutes,
+          bookingLockInHours: FABMAN_DEFAULT_SPACE.bookingLockInHours,
+          bookingMaxMinutesPerMemberDay: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberDay,
+          bookingMaxMinutesPerMemberWeek: FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek,
+          bookingRefundable: FABMAN_DEFAULT_SPACE.bookingRefundable,
+          bookingSlotsPerHour: FABMAN_DEFAULT_SPACE.bookingSlotsPerHour, // 1 = 60min, 2 = 30min, 3 = 20min, 4 = 15min
+          bookingTermsOfService: FABMAN_DEFAULT_SPACE.bookingTermsOfService,
+          bookingWindowMaxDays: FABMAN_DEFAULT_SPACE.bookingWindowMaxDays,
+          bookingWindowMinHours: FABMAN_DEFAULT_SPACE.bookingWindowMinHours,
         }
-      })
+      },
+      mapFabmanSpace (fabmanSpace) {
+        if ('_embedded' in fabmanSpace && 'openingHours' in fabmanSpace._embedded) {
+
+          // Create readable object
+          const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
+          this.selectedSpace.bookingExclusiveMinutes = fabmanSpace.bookingExclusiveMinutes
+          this.selectedSpace.bookingLockInHours = fabmanSpace.bookingLockInHours === null ? 0 : fabmanSpace.bookingLockInHours
+          this.selectedSpace.bookingMaxMinutesPerMemberDay = fabmanSpace.bookingMaxMinutesPerMemberDay === null ? FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberDay : fabmanSpace.bookingMaxMinutesPerMemberDay
+          this.selectedSpace.bookingMaxMinutesPerMemberWeek = fabmanSpace.bookingMaxMinutesPerMemberWeek === null ? FABMAN_DEFAULT_SPACE.bookingMaxMinutesPerMemberWeek : fabmanSpace.bookingMaxMinutesPerMemberWeek
+          this.selectedSpace.bookingRefundable = fabmanSpace.bookingRefundable
+          this.selectedSpace.bookingSlotsPerHour = fabmanSpace.bookingSlotsPerHour
+          this.selectedSpace.bookingTermsOfService = fabmanSpace.bookingTermsOfService
+          this.selectedSpace.bookingWindowMaxDays = fabmanSpace.bookingWindowMaxDays === null ? FABMAN_DEFAULT_SPACE.bookingWindowMaxDays : fabmanSpace.bookingWindowMaxDays
+          this.selectedSpace.bookingWindowMinHours = fabmanSpace.bookingWindowMinHours === null ? FABMAN_DEFAULT_SPACE.bookingWindowMinHours : fabmanSpace.bookingWindowMinHours
+
+          // Remember for better performance
+          let allBeginHours = []
+          let allEndHours = []
+          let weekdays = []
+
+          // Replace day of week number with german spelling
+          this.selectedSpace.openingHours = fabmanSpace._embedded.openingHours
+          this.selectedSpace.openingHours.forEach((openingHour) => {
+            openingHour.weekday = daysOfWeek[openingHour.dayOfWeek - 1]
+            allBeginHours.push(openingHour.fromTime)
+            allEndHours.push(openingHour.untilTime)
+            weekdays.push(openingHour.dayOfWeek)
+          })
+
+          // Find the earliest hour
+          if (!allBeginHours.includes(null)) {
+            this.selectedSpace.earliestHour = helper.getEarliestStringTimeAsInt(allBeginHours)
+          }
+
+          // Find latest hour
+          if (!allEndHours.includes(null)) {
+            this.selectedSpace.latestHour = helper.getLatestStringTimeAsInt(allEndHours)
+          }
+
+          // Find hidden weekdays
+          const allWeekdays = [1, 2, 3, 4, 5, 6, 7]
+          this.selectedSpace.hiddenWeekdays = allWeekdays.filter(day => !weekdays.includes(day))
+
+        } else {
+          this.selectedSpace = null
+        }
+      },
+      async fetchMachines () {
+        this.loadingMachines = true
+        await this.$store
+          .dispatch('getMachines')
+          .then(async (res) => {
+            // Filter non-visible and non-bookable machines
+            const filteredMachines = res.filter(function(machine) {
+              return machine.visibleForMembers && machine.canBeBooked && machine.state === 'active'
+            })
+
+            // Filter machines by member trainings
+            const trainedMachines = await this.getTrainedMachines(this.member.id)
+            const memberMachines = filteredMachines.filter(function(machine) {
+              if (!machine.requiresTraining) {
+                // Show machines without training - remove if business logic will change
+                return machine
+              }
+              return trainedMachines.includes(machine.id)
+            })
+
+            // Add dropdown labels to machine
+            let spaces = await this.$store.dispatch('getSpaces')
+            let self = this
+            memberMachines.map(function(machine) {
+              machine.machineLabel = machine.name
+              const space = spaces.find(space => space.id === machine.space)
+              if (space) {
+                machine.spaceName = space.name
+                //machine.machineLabel += ' (' + machine.spaceName + ')'
+                if (!self.memberSpaces.some(existingSpace => existingSpace.id === space.id)) {
+                  self.memberSpaces.push(space)
+                }
+              }
+              return machine
+            })
+            this.machines = memberMachines
+          })
+          .catch((error) => {
+            console.log('Error! Could not load machines', error)
+          })
+          .finally(() => {
+            this.loadingMachines = false
+          })
+      },
+      async getTrainedMachines (memberId) {
+        return this.$store
+          .dispatch('getTrainedResources', memberId)
+          .then((res) => {
+            return res
+          })
+          .catch((error) => {
+            console.log('Error! Could not load machine trainings for member', error)
+          })
+          .finally(() => {
+            this.loadingCancel = null
+          })
+      },
+      getBookingStateClass (booking) {
+        if (this.isInPast(booking?.fromDateTime)) {
+          return 'bg-gray-300'
+        }
+
+        switch (booking.state) {
+          case 'confirmed':
+            return 'green'
+          case 'cancelled':
+            return 'red'
+          default:
+            return 'gray'
+        }
+      },
+      getBookingStateText (booking) {
+        switch (booking.state) {
+          case 'confirmed':
+            return 'Gebucht'
+          case 'cancelled':
+            return 'Storno'
+          default:
+            return ''
+        }
+      },
+      previousPage () {
+        if (this.currentPage > 1) {
+          this.currentPage--
+        }
+      },
+      nextPage () {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++
+        }
+      },
+      openModal () {
+        this.modalOpen = true
+      },
+      confirmModal () {
+        this.saveEvents()
+      },
+      closeModal () {
+        this.modalOpen = false
+      },
+      openInfoModal (
+        text,
+        submitMethod = null,
+        headline = 'Bestätigen',
+        duration = 5000,
+      ) {
+        this.infoModalSubmitMethod = submitMethod
+        this.infoModalText = text
+        this.infoModalHeadline = headline
+        this.infoModalOpen = true
+
+        if (duration > 0) {
+          // Hide alert after duration (milliseconds)
+          setTimeout(() => {
+            this.infoModalOpen = false
+          }, duration)
+        }
+      },
+      confirmInfoModal () {
+        this.cancelBooking(this.selectedTableBooking.id)
+      },
+      closeInfoModal () {
+        this.infoModalOpen = false
+        setTimeout(() => {
+          this.infoModalSubmitMethod = ''
+          this.infoModalText = ''
+          this.infoModalHeadline = ''
+        }, 1000)
+      },
+      isInPast (date) {
+        return helper.dateIsInPast(date)
+      },
+      beforeHours (date, hours = 24) {
+        return helper.dateIsBeforeCurrentInHours(date, hours)
+      },
+      saveEvents () {
+        this.closeModal()
+
+        // Call method in child component
+        const machineCalender = this.$refs.machineCalender
+        if (
+          machineCalender &&
+          typeof machineCalender.writeBookingsToFabman === 'function'
+        ) {
+          machineCalender.writeBookingsToFabman()
+        }
+      },
+      durationInHours (fromDate, untilDate) {
+        return parseFloat(helper.getDifferenceInHours(fromDate, untilDate))
+      },
+      durationAsString (fromDate, untilDate) {
+        const hours = this.durationInHours(fromDate, untilDate)
+
+        // Extract hours and minutes
+        const wholeHours = Math.floor(hours)
+        const remainingMinutes = Math.round((hours - wholeHours) * 60)
+
+        let result = ''
+        if (wholeHours > 0) {
+          result += `${wholeHours}h ${wholeHours === 1 ? '' : 'n'}`
+        }
+
+        if (remainingMinutes > 0) {
+          if (result.length > 0) {
+            result += ' '
+          }
+
+          result += `${remainingMinutes}min`
+        }
+
+        return result.length > 0 ? result : 'weniger als eine Stunde'
+      },
+      hasBeenCanceled (state) {
+        return state === FABMAN_BOOKING_STATE.cancelled
+      },
+      startCancellation (booking) {
+        this.selectedTableBooking = booking
+        this.openInfoModal(
+          'Möchtest du die ausgewählte Reservierung wirklich stornieren?',
+          'cancelBooking',
+          'Stornieren?',
+        )
+      },
+      async cancelBooking (id) {
+        if (!id) {
+          id = this?.selectedTableBooking.id
+        }
+        this.loadingCancel = id
+        await this.$store
+          .dispatch('cancelBooking', id)
+          .then((res) => {
+            this.fetchBookings()
+            this.closeInfoModal()
+          })
+          .catch((error) => {
+            console.log('Error! Could not cancel booking', error)
+          })
+          .finally(() => {
+            this.loadingCancel = null
+          })
+      },
+      async fetchBookings (memberId) {
+        if (!memberId) {
+          memberId = this.member.id
+        }
+        this.loadingBookings = true
+        await this.$store
+          .dispatch('getBookingsByMember', memberId)
+          .then((res) => {
+            this.bookings = res
+            this.bookings.forEach(booking => {
+              if (!this.isInPast(booking?.untilDateTime)){
+                console.log('booking', booking)
+              }
+            })
+          })
+          .catch((error) => {
+            console.log('Error! Could not load bookings', error)
+          })
+          .finally(() => {
+            this.loadingBookings = false
+          })
+      },
+      async fetchMembership () {
+        this.membership = await this.$store.dispatch(
+          'getMemberPackages',
+          this.$store.state.member.id,
+        )
+        this.membership = this.membership.filter((p) => {
+          // filter old packages
+          if (p.untilDate) {
+            const packageDate = new Date(p.untilDate)
+            const currentDate = new Date()
+            if (packageDate.getTime() < currentDate.getTime()) {
+              return false
+            }
+          }
+          return true
+        })
+        // check if package has "is_membership_identifier" flag to identify the membership package
+        this.membership = this.membership.filter((p) => {
+          return p?._embedded?.package?.metadata?.is_membership_identifier
+        })
+        this.membership.forEach((p) => {
+          if (this.isActiveMembership(p.fromDate, p.untilDate)) {
+            this.currentMembership = p
+          }
+        })
+      },
+      isActiveMembership (startDateString, endDateString) {
+        const today = new Date() // Aktuelles Datum
+        // Konvertiere die Eingabe-Strings in Date-Objekte
+        const startDate = new Date(startDateString)
+        if (endDateString) {
+          const endDate = new Date(endDateString)
+          // Vergleiche, ob "heute" zwischen dem Start- und Enddatum liegt
+          return today >= startDate && today <= endDate
+        } else {
+          return today >= startDate
+        }
+      },
+      startTour () {
+        // Start introduction tour
+        this.$tours.myTour.scrollToOptions = {
+          behavior: 'instant',
+        }
+        this.$tours.myTour.start()
+      },
+      createTourText () {
+        return [
+          {
+            target: '#v-step-0',
+            content:
+              '<b>FAQs</b> <br><hr class=\'m-1\'> Hier findest du alle wichtigen Informationen zum Thema Reservierung.',
+            offset: -300,
+            background: '#000',
+          },
+          {
+            target: '#v-step-1',
+            content:
+              '<b>Neue Reservierung: Schritt 1</b> <br><hr class=\'m-1\'> Wähle jetzt deine gewünschte Maschine aus.',
+            offset: -300,
+            background: '#000',
+          },
+          {
+            target: '#v-step-2',
+            content: this.tourStep2Text,
+            offset: -100,
+            background: '#000',
+          },
+          {
+            target: '.v-step-3',
+            content: this.tourStep3Text,
+            offset: -100,
+            background: '#000',
+          },
+          {
+            target: '.v-step-4',
+            content:
+              '<b>Neue Reservierung: Schritt 3</b> <br><hr class=\'m-1\'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.',
+            offset: -300,
+            background: '#000',
+          },
+          {
+            target: '#v-step-5',
+            content:
+              '<b>Reservierungen</b> <br><hr class=\'m-1\'> Hier kannst du deine aktuellen Reservierungen sehen.',
+            offset: -300,
+            background: '#000',
+          },
+        ]
+      },
     },
-    isActiveMembership(startDateString, endDateString) {
-      const today = new Date(); // Aktuelles Datum
-      // Konvertiere die Eingabe-Strings in Date-Objekte
-      const startDate = new Date(startDateString);
-      if (endDateString) {
-        const endDate = new Date(endDateString);
-        // Vergleiche, ob "heute" zwischen dem Start- und Enddatum liegt
-        return today >= startDate && today <= endDate;
-      }
-      else{
-        return today >= startDate
-      }
-    },
-    startTour () {
-      // Start introduction tour
-      this.$tours.myTour.scrollToOptions = {
-        behavior: 'instant',
-      };
-      this.$tours.myTour.start();
-    },
-    createTourText () {
-      return [
-        {
-          target: '#v-step-0',
-          content:
-            "<b>FAQs</b> <br><hr class='m-1'> Hier findest du alle wichtigen Informationen zum Thema Reservierung.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '#v-step-1',
-          content:
-            "<b>Neue Reservierung: Schritt 1</b> <br><hr class='m-1'> Wähle jetzt deine gewünschte Maschine aus.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '#v-step-2',
-          content: this.tourStep2Text,
-          offset: -100,
-          background: '#000',
-        },
-        {
-          target: '.v-step-3',
-          content: this.tourStep3Text,
-          offset: -100,
-          background: '#000',
-        },
-        {
-          target: '.v-step-4',
-          content:
-            "<b>Neue Reservierung: Schritt 3</b> <br><hr class='m-1'>Mit Klick auf <i>Bestätigen</i> werden die Reservierungen verbindlich gespeichert.",
-          offset: -300,
-          background: '#000',
-        },
-        {
-          target: '#v-step-5',
-          content:
-            "<b>Reservierungen</b> <br><hr class='m-1'> Hier kannst du deine aktuellen Reservierungen sehen.",
-          offset: -300,
-          background: '#000',
-        },
-      ];
-    },
-  },
-};
+  }
 </script>
 <style scoped lang="scss">
-::v-deep .weekday {
-  list-style-type: none;
-}
-
-.table-fieldset {
-  padding: 1rem;
-}
-
-button:disabled svg {
-  color: gray;
-}
-
-.pagination-button {
-  color: black;
-}
-
-.pagination-button:hover {
-  color: $color-orange;
-}
-
-.booking-calendar {
-  background-color: transparent;
-}
-
-.icon-button,
-.icon-button-secondary {
-  color: lightgrey;
-  cursor: pointer;
-}
-
-.cancelButton {
-  color: grey;
-}
-
-.cancelButton:hover {
-  color: black;
-}
-
-.cancelButton:active {
-  color: $color-secondary;
-}
-
-.icon-button:hover {
-  fill: $color-secondary;
-}
-
-.icon-button-secondary:hover {
-  fill: #0c0c0c;
-  color: black;
-}
-
-.button-group {
-  justify-content: end;
-}
-
-.v-step {
-  background: black !important;
-}
-
-.spin-animation {
-  animation: rotate 1s linear infinite;
-}
-
-.demo-button {
-  height: 2em;
-}
-
-.info-arrow {
-  height: 1.8em;
-  transform: rotate(102deg);
-  position: relative;
-  top: -20px;
-  left: 0;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@include media-breakpoint-down(md) {
-  .member-portal-table {
-    tr {
-      padding: 0.6rem 0.1rem;
-
-      th {
-        min-width: 135px !important;
-      }
-
-      td {
-        min-width: 130px !important;
-      }
-    }
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .demo-button {
-    height: 1em;
-  }
-  .info-arrow {
-    height: 80px;
-    left: 10px;
-    position: relative;
-    top: -30px;
-    transform: rotate(102deg);
+  ::v-deep .weekday {
+    list-style-type: none;
   }
 
   .table-fieldset {
-    padding-right: 0;
-    padding-left: 0;
+    padding: 1rem;
   }
-  .member-portal-table {
-    thead {
-      padding: 0;
-      width: 100%;
 
+  button:disabled svg {
+    color: gray;
+  }
+
+  .pagination-button {
+    color: black;
+  }
+
+  .pagination-button:hover {
+    color: $color-orange;
+  }
+
+  .booking-calendar {
+    background-color: transparent;
+  }
+
+  .icon-button,
+  .icon-button-secondary {
+    color: lightgrey;
+    cursor: pointer;
+  }
+
+  .cancelButton {
+    color: grey;
+  }
+
+  .cancelButton:hover {
+    color: black;
+  }
+
+  .cancelButton:active {
+    color: $color-secondary;
+  }
+
+  .icon-button:hover {
+    fill: $color-secondary;
+  }
+
+  .icon-button-secondary:hover {
+    fill: #0c0c0c;
+    color: black;
+  }
+
+  .button-group {
+    justify-content: end;
+  }
+
+  .v-step {
+    background: black !important;
+  }
+
+  .spin-animation {
+    animation: rotate 1s linear infinite;
+  }
+
+  .demo-button {
+    height: 2em;
+  }
+
+  .info-arrow {
+    height: 1.8em;
+    transform: rotate(102deg);
+    position: relative;
+    top: -20px;
+    left: 0;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .member-portal-table {
       tr {
         padding: 0.6rem 0.1rem;
-      }
-      th {
-        min-width: 110px;
-      }
 
-      td {
-        min-width: 110px;
-        justify-content: flex-start
+        th {
+          min-width: 135px !important;
+        }
+
+        td {
+          min-width: 130px !important;
+        }
       }
     }
   }
-  .button-group {
-    justify-content: center;
-  }
-}
 
-.jump-animation {
-  animation: jump 1s 3;
-  transform-origin: center;
-  animation-timing-function: ease-in-out;
-}
+  @include media-breakpoint-down(xs) {
+    .demo-button {
+      height: 1em;
+    }
+    .info-arrow {
+      height: 80px;
+      left: 10px;
+      position: relative;
+      top: -30px;
+      transform: rotate(102deg);
+    }
 
-@keyframes jump {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
+    .table-fieldset {
+      padding-right: 0;
+      padding-left: 0;
+    }
+    .member-portal-table {
+      thead {
+        padding: 0;
+        width: 100%;
 
-.disabled {
-  color: #b1b1b1
-}
+        tr {
+          padding: 0.6rem 0.1rem;
+        }
+
+        th {
+          min-width: 110px;
+        }
+
+        td {
+          min-width: 110px;
+          justify-content: flex-start
+        }
+      }
+    }
+    .button-group {
+      justify-content: center;
+    }
+  }
+
+  .jump-animation {
+    animation: jump 1s 3;
+    transform-origin: center;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes jump {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .disabled {
+    color: #b1b1b1
+  }
 </style>

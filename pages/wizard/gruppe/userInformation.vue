@@ -2,9 +2,9 @@
   <div class="section">
     <h3 style="margin-top: 40px">Willkommen in der GRAND GARAGE!</h3>
     <p>
-      Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserer Innovationswerkstatt abschließen möchtest.
+      Wir freuen uns, dass du eine Gruppenmitgliedschaft in unserem MakerSpace abschließen möchtest.
     </p>
-    <p>Bevor ihr in unseren Werkstätten loslegen kannst, brauchen wir noch weitere Infos:</p>
+    <p>Bevor du loslegen kannst, brauchen wir noch weitere Infos:</p>
     <form class="form">
       <div class="form-item">
         <span class="label"
