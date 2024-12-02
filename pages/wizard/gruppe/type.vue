@@ -56,6 +56,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
+
   props: {
     onboardingData: {
       type: Object,
@@ -69,6 +70,9 @@ export default {
     return {
       //selectedGroupType: null,
     };
+  },
+  mounted() {
+    window.scrollTo(0, 0);
   },
   methods: {
     selectOption(option) {
