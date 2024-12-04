@@ -15,6 +15,9 @@
               <th class="activity-date">Datum</th>
               <th class="activity-amount">Betrag</th>
               <th class="activity-description">Buchung</th>
+              <div v-if="isAdmin">
+                <th class="activity-description">Team</th>
+              </div>
               <th class="activity-status"></th>
             </tr>
           </thead>
@@ -35,6 +38,14 @@
                 €
               </td>
               <td class="activity-description">{{ activity.description }}</td>
+              <div v-if="isAdmin">
+                <div v-if="!activity.onBehalfOf">
+                  <td class="activity-description">{{ activity.member.firstName+ ' '+ activity.member.lastName}}</td>
+                </div>
+                <div v-if="activity.onBehalfOf">
+                  <td class="activity-description">{{getMemberFromTeam(activity.onBehalfOf)}}</td>
+                </div>
+              </div>
               <td class="activity-status"></td>
             </tr>
             <tr class="activity-total">
@@ -243,6 +254,9 @@ export default {
     totalInvoicePages() {
       return Math.ceil(this.invoices.length / this.rowsPerPage);
     },
+    isAdmin() {
+      return this.$store.state.member.metadata?.groupMemberType === 'admin';
+    },
   },
   methods: {
     previousActivityPage() {
@@ -324,6 +338,18 @@ export default {
           this.loadingPdf = false;
         });
     },
+    getMemberFromTeam(id){
+      const team = this.$store.state.team;
+      let member = null
+      if (this.$store.state.member.id === id) {
+        member = this.$store.state.member
+      } else {
+        member = team.find(member => member.id === id)
+      }
+      if (member){
+        return member.firstName + ' ' + member.lastName
+      } else return ''
+    }
   },
 };
 </script>
